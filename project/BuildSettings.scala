@@ -2,7 +2,7 @@ import sbt._
 import sbt.Keys._
 
 object BuildSettings {
-  val organization = "com.netflix.atlas"
+  val organization = "com.netflix.iep"
   val scalaVersion = "2.11.4"
 
   // Don't create root.jar, from:

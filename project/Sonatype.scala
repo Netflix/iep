@@ -49,7 +49,7 @@ object Sonatype {
     pomIncludeRepository := { _ => false },
     
     pomExtra := (
-      <url>https://github.com/netflix/atlas/wiki</url>
+      <url>https://github.com/netflix/iep/wiki</url>
       <licenses>
         <license>
           <name>The Apache Software License, Version 2.0</name>
@@ -58,8 +58,8 @@ object Sonatype {
         </license>
       </licenses>
       <scm>
-        <url>git@github.com:netflix/atlas.git</url>
-        <connection>scm:git:git@github.com:netflix/atlas.git</connection>
+        <url>git@github.com:netflix/iep.git</url>
+        <connection>scm:git:git@github.com:netflix/iep.git</connection>
       </scm>
     )
   )
