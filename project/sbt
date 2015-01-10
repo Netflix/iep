@@ -10,9 +10,11 @@ java \
   -XX:+UseG1GC \
   -Xms2g \
   -Xmx2g \
+  -XX:PermSize=512m \
+  -XX:MaxPermSize=512m \
   -XX:ReservedCodeCacheSize=128m \
   -XX:+UseCodeCacheFlushing \
-  -Dsbt.boot.directory=$WORKSPACE/.sbt \
-  -Dsbt.ivy.home=$WORKSPACE/.ivy2 \
+  -Dsbt.boot.directory=${WORKSPACE:-$HOME}/.sbt \
+  -Dsbt.ivy.home=${WORKSPACE:-$HOME}/.ivy2 \
   $OPTIONS \
   -jar `dirname $0`/sbt-launch.jar "$@"

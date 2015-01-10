@@ -1,7 +1,7 @@
 import java.io.File
 import java.io.PrintStream
-import java.time.ZonedDateTime
-import java.time.ZoneOffset
+import java.util.Calendar
+import java.util.TimeZone
 import scala.io.Source
 import sbt._
 
@@ -16,7 +16,7 @@ import sbt._
 object License {
   private val lineSeparator = System.getProperty("line.separator")
 
-  def year = ZonedDateTime.now(ZoneOffset.UTC).getYear
+  def year = Calendar.getInstance(TimeZone.getTimeZone("UTC")).get(Calendar.YEAR)
 
   val apache2 = s"""
    |/*
