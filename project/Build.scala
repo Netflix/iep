@@ -21,7 +21,7 @@ object MainBuild extends Build {
   )
 
   lazy val root = project.in(file("."))
-    .aggregate(`iep-nflxenv`, `iep-config`)
+    .aggregate(`iep-config`, `iep-jmxport`, `iep-nflxenv`)
     .settings(buildSettings: _*)
     .settings(BuildSettings.noPackaging: _*)
 
@@ -32,6 +32,13 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= Seq(
       Dependencies.archaiusCore,
       Dependencies.jodaTime
+    ))
+
+  lazy val `iep-jmxport` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.slf4jApi
     ))
 
   lazy val `iep-nflxenv` = project
