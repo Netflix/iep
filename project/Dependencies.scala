@@ -24,6 +24,7 @@ object Dependencies {
   val awsS3           = "com.amazonaws" % "aws-java-sdk-s3" % aws
   val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.142"
   val frigga          = "com.netflix.frigga" % "frigga" % "0.13"
+  val governator      = "com.netflix.governator" % "governator" % "1.3.3"
   val guava           = "com.google.guava" % "guava" % "15.0"
   val guice           = "com.google.inject" % "guice" % "3.0"
   val hadoopCommon    = "org.apache.hadoop" % "hadoop-common" % "2.5.1"
