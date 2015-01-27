@@ -50,15 +50,13 @@ public final class Governator {
     return INSTANCE;
   }
 
-  /** Add a set of tasks to be executed after shutting down governator. */
-  public static void addShutdownHook(final Runnable... tasks) {
+  /** Add a task to be executed after shutting down governator. */
+  public static void addShutdownHook(final Runnable task) {
     final Runnable r = new Runnable() {
       @Override public void run() {
         try {
           getInstance().shutdown();
-          for (Runnable task : tasks) {
-            task.run();
-          }
+          task.run();
         } catch (Exception e) {
           LOGGER.warn("exception during shutdown sequence", e);
         }
