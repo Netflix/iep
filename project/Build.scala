@@ -21,7 +21,13 @@ object MainBuild extends Build {
   )
 
   lazy val root = project.in(file("."))
-    .aggregate(`iep-config`, `iep-governator`, `iep-jmxport`, `iep-nflxenv`)
+    .aggregate(
+      `iep-config`,
+      `iep-dynprop`,
+      `iep-eureka`,
+      `iep-governator`,
+      `iep-jmxport`,
+      `iep-nflxenv`)
     .settings(buildSettings: _*)
     .settings(BuildSettings.noPackaging: _*)
 
@@ -34,10 +40,30 @@ object MainBuild extends Build {
       Dependencies.jodaTime
     ))
 
+  lazy val `iep-dynprop` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.archaiusCore,
+      Dependencies.eureka,
+      Dependencies.guice,
+      Dependencies.slf4jApi
+    ))
+
+  lazy val `iep-eureka` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.eureka,
+      Dependencies.guice,
+      Dependencies.slf4jApi
+    ))
+
   lazy val `iep-governator` = project
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
+      Dependencies.archaiusCore,
       Dependencies.governator,
       Dependencies.guice,
       Dependencies.slf4jApi
