@@ -90,7 +90,7 @@ public final class Governator {
   public static List<Module> getModulesUsingProp(String k) throws Exception {
     List<Module> modules = new ArrayList<>();
     List<Object> vs = ConfigurationManager.getConfigInstance()
-        .getList(k, Collections.singletonList(SERVICE_LOADER));
+        .getList(k, Collections.<Object>singletonList(SERVICE_LOADER));
     for (Object v : vs) {
       String cname = (String) v;
       if (SERVICE_LOADER.equals(cname)) {
