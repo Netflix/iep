@@ -17,13 +17,19 @@ package com.netflix.iep.gov;
 
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.netflix.config.ConcurrentCompositeConfiguration;
+import com.netflix.config.ConfigurationManager;
 import com.netflix.governator.guice.LifecycleInjector;
 import com.netflix.governator.guice.LifecycleInjectorBuilder;
 import com.netflix.governator.lifecycle.LifecycleManager;
+import org.apache.commons.configuration.EnvironmentConfiguration;
+import org.apache.commons.configuration.SystemConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -35,6 +41,8 @@ public final class Governator {
 
   private static final String SERVICE_LOADER = "service-loader";
   private static final String NONE = "none";
+
+  private static final String ARCHAIUS_CONFIG_FILE = "platformservice";
 
   private static final Governator INSTANCE = new Governator();
 
@@ -79,15 +87,16 @@ public final class Governator {
    * modules using the java ServiceLoader utility. The value {@code none} can be used to indicate
    * an empty list with no modules.
    */
-  public static List<Module> getModulesUsingSystemProp(String k) throws Exception {
+  public static List<Module> getModulesUsingProp(String k) throws Exception {
     List<Module> modules = new ArrayList<>();
-    String v = System.getProperty(k, SERVICE_LOADER);
-    String[] parts = v.split("[,\\s]+");
-    for (String part : parts) {
-      if (SERVICE_LOADER.equals(part)) {
+    List<Object> vs = ConfigurationManager.getConfigInstance()
+        .getList(k, Collections.singletonList(SERVICE_LOADER));
+    for (Object v : vs) {
+      String cname = (String) v;
+      if (SERVICE_LOADER.equals(cname)) {
         modules.addAll(getModulesUsingServiceLoader());
-      } else if (!part.isEmpty() && !NONE.equals(part)) {
-        modules.add((Module) Class.forName(part).newInstance());
+      } else if (!cname.isEmpty() && !NONE.equals(cname)) {
+        modules.add((Module) Class.forName(cname).newInstance());
       }
     }
     return modules;
@@ -95,10 +104,19 @@ public final class Governator {
 
   /** Get modules specified with the system prop {@code netflix.iep.gov.modules}. */
   public static List<Module> getModules() throws Exception {
-    return getModulesUsingSystemProp("netflix.iep.gov.modules");
+    return getModulesUsingProp("netflix.iep.gov.modules");
+  }
+
+  public static void loadProperties(String name) {
+    try {
+      ConfigurationManager.loadCascadedPropertiesFromResources(name);
+    } catch (IOException e) {
+      LOGGER.warn("failed to load properties for '" + name + "'");
+    }
   }
 
   private Governator() {
+    initArchaius();
   }
 
   private Injector injector;
@@ -123,6 +141,15 @@ public final class Governator {
 
     LifecycleManager lcMgr = injector.getInstance(LifecycleManager.class);
     lcMgr.start();
+  }
+
+  private void initArchaius() {
+    ConcurrentCompositeConfiguration composite = new ConcurrentCompositeConfiguration();
+    composite.addConfiguration(new SystemConfiguration(), "system");
+    composite.addConfiguration(new EnvironmentConfiguration(), "environment");
+    ConfigurationManager.install(composite);
+    loadProperties(ARCHAIUS_CONFIG_FILE);
+    loadProperties("application");
   }
 
   /** Shutdown governator. */
