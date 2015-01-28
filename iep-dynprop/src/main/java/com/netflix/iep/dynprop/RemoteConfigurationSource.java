@@ -88,7 +88,7 @@ public class RemoteConfigurationSource implements PolledConfigurationSource {
     String vip = config.getString(VIP, "atlas_archaius-main:7001");
     List<String> hosts = getHostsForVip(vip, config.getBoolean(USE_IP, false));
 
-    int numAttempts = config.getInt(NUM_RETRIES) + 1;
+    int numAttempts = config.getInt(NUM_RETRIES, 2) + 1;
     for (int i = 1; i <= numAttempts; ++i) {
       String host = hosts.get(i % hosts.size());
       String url = "http://" + host + "/api/v1/property"
