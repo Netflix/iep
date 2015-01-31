@@ -4,6 +4,7 @@ import com.typesafe.sbt.SbtPgp
 import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
+import sbtrelease.ReleasePlugin.ReleaseKeys._
 
 object Sonatype {
 
