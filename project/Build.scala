@@ -28,6 +28,7 @@ object MainBuild extends Build {
       `iep-eureka`,
       `iep-governator`,
       `iep-jmxport`,
+      `iep-launcher`,
       `iep-nflxenv`)
     .settings(buildSettings: _*)
     .settings(BuildSettings.noPackaging: _*)
@@ -77,6 +78,10 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= Seq(
       Dependencies.slf4jApi
     ))
+
+  lazy val `iep-launcher` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
 
   lazy val `iep-nflxenv` = project
     .settings(buildSettings: _*)
