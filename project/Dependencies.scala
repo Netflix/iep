@@ -17,7 +17,7 @@ object Dependencies {
   val akkaActor       = "com.typesafe.akka" % "akka-actor_2.11" % akka
   val akkaSlf4j       = "com.typesafe.akka" % "akka-slf4j_2.11" % akka
   val akkaTestkit     = "com.typesafe.akka" % "akka-testkit_2.11" % akka
-  val archaiusCore    = "com.netflix.archaius" % "archaius-core" % "0.6.3"
+  val archaiusCore    = "com.netflix.archaius" % "archaius-core" % "0.6.5"
   val awsCloudWatch   = "com.amazonaws" % "aws-java-sdk-cloudwatch" % aws
   val awsCore         = "com.amazonaws" % "aws-java-sdk-core" % aws
   val awsEC2          = "com.amazonaws" % "aws-java-sdk-ec2" % aws
@@ -37,6 +37,8 @@ object Dependencies {
   val jna             = "net.java.dev.jna" % "jna" % "4.1.0"
   val jodaConvert     = "org.joda" % "joda-convert" % "1.7"
   val jodaTime        = "joda-time" % "joda-time" % "2.5"
+  val karyonAdmin     = "com.netflix.karyon2" % "karyon-admin-web" % "2.2.00-ALPHA7"
+  val karyonCore      = "com.netflix.karyon2" % "karyon-core" % "2.2.00-ALPHA7"
   val log4j           = "log4j" % "log4j" % "1.2.17"
   val junit           = "junit" % "junit" % "4.10"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
