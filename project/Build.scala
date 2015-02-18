@@ -28,6 +28,7 @@ object MainBuild extends Build {
       `iep-eureka`,
       `iep-governator`,
       `iep-jmxport`,
+      `iep-karyon`,
       `iep-launcher`,
       `iep-nflxenv`)
     .settings(buildSettings: _*)
@@ -76,6 +77,17 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
+      Dependencies.slf4jApi
+    ))
+
+  lazy val `iep-karyon` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.archaiusCore,
+      Dependencies.guice,
+      Dependencies.karyonAdmin,
+      Dependencies.karyonCore,
       Dependencies.slf4jApi
     ))
 
