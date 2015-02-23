@@ -30,7 +30,8 @@ object MainBuild extends Build {
       `iep-jmxport`,
       `iep-karyon`,
       `iep-launcher`,
-      `iep-nflxenv`)
+      `iep-nflxenv`,
+      `iep-rxhttp`)
     .settings(buildSettings: _*)
     .settings(BuildSettings.noPackaging: _*)
 
@@ -98,6 +99,22 @@ object MainBuild extends Build {
   lazy val `iep-nflxenv` = project
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
+
+  lazy val `iep-rxhttp` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.archaiusCore,
+      Dependencies.eureka,
+      Dependencies.jzlib,
+      Dependencies.rxjava,
+      Dependencies.rxnetty,
+      Dependencies.rxnettyCtxts,
+      Dependencies.spectatorApi,
+      Dependencies.spectatorSandbox,
+      Dependencies.slf4jApi,
+      Dependencies.equalsVerifier % "test"
+    ))
 
   lazy val commonDeps = Seq(
     Dependencies.junitInterface % "test",
