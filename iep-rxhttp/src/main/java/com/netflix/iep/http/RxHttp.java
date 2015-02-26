@@ -525,12 +525,19 @@ public final class RxHttp {
 
     HttpClientBuilder<ByteBuf, ByteBuf> builder =
         RxNetty.<ByteBuf, ByteBuf>newHttpClientBuilder(server.host(), server.port())
-            .withConnectionPoolLimitStrategy(getPoolLimitStrategy(clientCfg))
-            .withIdleConnectionsTimeoutMillis(clientCfg.idleConnectionsTimeoutMillis())
             .pipelineConfigurator(pipelineCfg)
             .config(config)
             .withName(clientCfg.name())
             .channelOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, clientCfg.connectTimeout());
+
+    final int idleTimeout = clientCfg.idleConnectionsTimeoutMillis();
+    if (idleTimeout == 0) {
+      builder.withNoConnectionPooling();
+    } else {
+      builder
+          .withConnectionPoolLimitStrategy(getPoolLimitStrategy(clientCfg))
+          .withIdleConnectionsTimeoutMillis(idleTimeout);
+    }
 
     if (server.isSecure()) {
       builder.withSslEngineFactory(DefaultFactories.trustAll());
