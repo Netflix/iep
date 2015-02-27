@@ -30,6 +30,7 @@ object MainBuild extends Build {
       `iep-jmxport`,
       `iep-karyon`,
       `iep-launcher`,
+      `iep-module-rxnetty`,
       `iep-nflxenv`,
       `iep-rxhttp`)
     .settings(buildSettings: _*)
@@ -95,6 +96,15 @@ object MainBuild extends Build {
   lazy val `iep-launcher` = project
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
+
+  lazy val `iep-module-rxnetty` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.guice,
+      Dependencies.rxnettySpectator,
+      Dependencies.slf4jApi
+    ))
 
   lazy val `iep-nflxenv` = project
     .settings(buildSettings: _*)

@@ -23,6 +23,7 @@ object Dependencies {
   val rxjava          = "com.netflix.iep-shadow" % "iep-rxjava" % "1.0.6"
   val rxnetty         = "com.netflix.iep-shadow" % "iep-rxnetty" % "0.4.6"
   val rxnettyCtxts    = "com.netflix.iep-shadow" % "iep-rxnetty-contexts" % "0.4.6"
+  val rxnettySpectator= "com.netflix.iep-shadow" % "iep-rxnetty-spectator" % "0.4.6"
   val scalaLibrary    = "org.scala-lang" % "scala-library" % scala
   val scalaLibraryAll = "org.scala-lang" % "scala-library-all" % scala
   val scalaLogging    = "com.typesafe.scala-logging" % "scala-logging_2.11" % "3.1.0"
