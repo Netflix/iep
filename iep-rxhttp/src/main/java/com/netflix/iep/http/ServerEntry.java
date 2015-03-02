@@ -52,6 +52,9 @@ final class ServerEntry {
   List<Server> next(int n) {
     List<Server> out = new ArrayList<>(n);
     int size = servers.size();
+    if (size == 0) {
+      return new ArrayList<>();
+    }
     for (int i = 0, j = nextPos.getAndIncrement(); i < n; ++i, ++j) {
       out.add(servers.get(j % size));
     }
