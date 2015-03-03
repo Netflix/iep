@@ -16,6 +16,7 @@
 package com.netflix.iep.http;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,11 +51,11 @@ final class ServerEntry {
    * servers in the list then servers will be used multiple times.
    */
   List<Server> next(int n) {
+    if (servers.isEmpty()) {
+      return Collections.emptyList();
+    }
     List<Server> out = new ArrayList<>(n);
     int size = servers.size();
-    if (size == 0) {
-      return new ArrayList<>();
-    }
     for (int i = 0, j = nextPos.getAndIncrement(); i < n; ++i, ++j) {
       out.add(servers.get(j % size));
     }
