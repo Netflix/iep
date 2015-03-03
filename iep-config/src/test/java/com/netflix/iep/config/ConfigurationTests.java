@@ -24,6 +24,9 @@ import org.junit.Test;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
+import com.netflix.config.ConfigurationManager;
+import org.apache.commons.configuration.AbstractConfiguration;
+
 public class ConfigurationTests {
   interface TestConfig extends IConfiguration {
     @DefaultValue("string")
@@ -57,7 +60,11 @@ public class ConfigurationTests {
   private TestConfig mkConfig() { return mkConfig(new HashMap<String,String>()); }
   private TestConfig mkConfig(Map<String,String> props) { return mkConfig(null, props); }
   private TestConfig mkConfig(String prefix, Map<String,String> props) {
-    return Configuration.newProxyImpl(TestConfig.class, prefix, new MapConfiguration(null, props));
+    AbstractConfiguration config = ConfigurationManager.getConfigInstance();
+    config.clear();
+    for (Map.Entry<String,String> e : props.entrySet())
+      config.setProperty(e.getKey(), e.getValue());
+    return Configuration.newProxy(TestConfig.class, prefix);
   }
 
   @Test

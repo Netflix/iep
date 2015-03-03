@@ -25,6 +25,9 @@ import java.util.Properties;
 import com.google.common.io.Resources;
 import com.google.common.base.Charsets;
 
+import com.netflix.config.ConfigurationManager;
+import org.apache.commons.configuration.AbstractConfiguration;
+
 public class ResourceConfiguration {
   private ResourceConfiguration() {}
 
@@ -56,13 +59,8 @@ public class ResourceConfiguration {
     for (Map.Entry e : overrides.entrySet()) {
       props.setProperty((String) e.getKey(), (String) e.getValue());
     }
-    Configuration.setBackingStore(
-      new IConfiguration() {
-        @Override
-        public String get(String key) {
-          return (String) props.getProperty(key);
-        }
-      }
-    );
+
+    ConfigurationManager.getConfigInstance().clear();
+    ConfigurationManager.loadProperties(props);
   }
 }

@@ -24,33 +24,18 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.netflix.config.ConfigurationManager;
+import org.apache.commons.configuration.AbstractConfiguration;
+
 public final class Configuration {
   private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
-  private IConfiguration iConfiguration;
-
-  private final AtomicReference<IConfiguration> backingStoreRef =
-    new AtomicReference<IConfiguration>(null);
-
-  private Configuration() {
-    if (iConfiguration == null) {
-      LOGGER.debug("iConfiguration not defined - using PersistedPropertiesConfiguration");
-      backingStoreRef.set(new PersistedPropertiesConfiguration());
+  private static final IConfiguration iConfiguration = new IConfiguration() {
+    public String get(String key) {
+      AbstractConfiguration cfg = ConfigurationManager.getConfigInstance();
+      return cfg.getString(key);
     }
-    else {
-      LOGGER.debug("iConfiguration defined - using " + iConfiguration);
-      backingStoreRef.set(iConfiguration);
-    }
-  }
-
-  private static class SingletonHolder {
-    private static final Configuration INSTANCE = new Configuration();
-  }
-
-
-  public static void setBackingStore(IConfiguration c) {
-    SingletonHolder.INSTANCE.backingStoreRef.set(c);
-  }
+  };
 
   public static <T> T apply(Class<T> ctype) {
     String pkg = ctype.getPackage().getName();
@@ -58,30 +43,25 @@ public final class Configuration {
     return newProxy(ctype, prefix);
   }
 
-  public static <T> T newProxy(Class<T> ctype, String prefix) {
-    return (T) newProxyImpl(ctype, prefix, SingletonHolder.INSTANCE.backingStoreRef.get());
-  }
-
   @SuppressWarnings("unchecked")
-  public static <T> T newProxyImpl(
+  public static <T> T newProxy(
     final Class<T> ctype,
-    final String prefix,
-    final IConfiguration backingStore
+    final String prefix
    ) {
     InvocationHandler handler = new InvocationHandler() {
       @Override
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getName().equals("get")) {
-          return backingStore.get((args[0] == null) ? null : args[0].toString());
+          return iConfiguration.get((args[0] == null) ? null : args[0].toString());
         }
         else {
           Class rt = method.getReturnType();
           String key = (prefix == null) ? method.getName() : prefix + "." + method.getName();
           if (IConfiguration.class.isAssignableFrom(rt)) {
-            return newProxyImpl(rt, key, backingStore);
+            return newProxy(rt, key);
           }
           else {
-            String value = backingStore.get(key);
+            String value = iConfiguration.get(key);
             if (value == null) {
               DefaultValue anno = method.getAnnotation(DefaultValue.class);
               value = (anno == null) ? null : anno.value();
