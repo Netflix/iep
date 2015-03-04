@@ -54,7 +54,7 @@ public class PropertyFileConfigurationTests {
       put("user.dir", userDir);
       put("resources.url", "file://" + userDir + "/src/test/resources");
     }};
-    ResourceConfiguration.load("config.test.properties", subs);
+    TestResourceConfiguration.load("config.test.properties", subs);
   }
 
   private TestConfig mkConfig(String prefix) {

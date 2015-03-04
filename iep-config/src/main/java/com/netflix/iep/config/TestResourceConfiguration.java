@@ -28,8 +28,8 @@ import com.google.common.base.Charsets;
 import com.netflix.config.ConfigurationManager;
 import org.apache.commons.configuration.AbstractConfiguration;
 
-public class ResourceConfiguration {
-  private ResourceConfiguration() {}
+public class TestResourceConfiguration {
+  private TestResourceConfiguration() {}
 
   public static void load(
     String propFile
