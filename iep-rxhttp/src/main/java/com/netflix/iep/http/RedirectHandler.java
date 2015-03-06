@@ -48,7 +48,7 @@ class RedirectHandler implements
   public Observable<HttpClientResponse<ByteBuf>> call(HttpClientResponse<ByteBuf> res) {
     final int code = res.getStatus().code();
     Observable<HttpClientResponse<ByteBuf>> resObs;
-    if (code > 300 && code <= 307) {
+    if (code > 300 && code <= 307 && code != 304) {
       final HttpClientRequest<ByteBuf> req = context.request();
       res.getContent().subscribe();
       final URI loc = URI.create(res.getHeaders().get(HttpHeaders.Names.LOCATION));
