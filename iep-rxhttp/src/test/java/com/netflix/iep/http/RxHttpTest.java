@@ -175,6 +175,16 @@ public class RxHttpTest {
       }
     });
 
+    server.createContext("/notModified", new HttpHandler() {
+      @Override
+      public void handle(HttpExchange exchange) throws IOException {
+        ignore(exchange.getRequestBody());
+        statusCounts.incrementAndGet(304);
+        exchange.sendResponseHeaders(304, -1L);
+        exchange.close();
+      }
+    });
+
     server.createContext("/readTimeout", new HttpHandler() {
       @Override
       public void handle(HttpExchange exchange) throws IOException {
@@ -341,6 +351,36 @@ public class RxHttpTest {
     latch.await();
     Assert.assertNull(throwable.get());
     assertEquals(expected, statusCounts);
+  }
+
+  @Test
+  public void notModified() throws Exception {
+    int code = 304;
+    statusCode.set(code);
+    redirects.set(2);
+    AtomicIntegerArray expected = copy(statusCounts);
+    expected.addAndGet(code, 1);
+
+    final CountDownLatch latch = new CountDownLatch(1);
+    final AtomicReference<Throwable> throwable = new AtomicReference<>();
+    rxHttp.get(uri("/notModified")).subscribe(
+        Actions.empty(),
+        new Action1<Throwable>() {
+          @Override public void call(Throwable t) {
+            latch.countDown();
+            throwable.set(t);
+          }
+        },
+        new Action0() {
+          @Override public void call() {
+            latch.countDown();
+          }
+        }
+    );
+
+    latch.await();
+    assertEquals(expected, statusCounts);
+    Assert.assertNull(throwable.get());
   }
 
   @Test
