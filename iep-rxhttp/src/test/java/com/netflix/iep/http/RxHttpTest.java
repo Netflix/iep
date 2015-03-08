@@ -185,6 +185,16 @@ public class RxHttpTest {
       }
     });
 
+    server.createContext("/redirectNoLocation", new HttpHandler() {
+      @Override
+      public void handle(HttpExchange exchange) throws IOException {
+        ignore(exchange.getRequestBody());
+        statusCounts.incrementAndGet(302);
+        exchange.sendResponseHeaders(302, -1L);
+        exchange.close();
+      }
+    });
+
     server.createContext("/readTimeout", new HttpHandler() {
       @Override
       public void handle(HttpExchange exchange) throws IOException {
@@ -381,6 +391,36 @@ public class RxHttpTest {
     latch.await();
     assertEquals(expected, statusCounts);
     Assert.assertNull(throwable.get());
+  }
+
+  @Test
+  public void redirectResponseMissingLocation() throws Exception {
+    int code = 302;
+    statusCode.set(code);
+    redirects.set(2);
+    AtomicIntegerArray expected = copy(statusCounts);
+    expected.addAndGet(code, 1);
+
+    final CountDownLatch latch = new CountDownLatch(1);
+    final AtomicReference<Throwable> throwable = new AtomicReference<>();
+    rxHttp.get(uri("/redirectNoLocation")).subscribe(
+        Actions.empty(),
+        new Action1<Throwable>() {
+          @Override public void call(Throwable t) {
+            latch.countDown();
+            throwable.set(t);
+          }
+        },
+        new Action0() {
+          @Override public void call() {
+            latch.countDown();
+          }
+        }
+    );
+
+    latch.await();
+    assertEquals(expected, statusCounts);
+    Assert.assertNotNull(throwable.get());
   }
 
   @Test
