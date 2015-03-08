@@ -17,8 +17,8 @@ package com.netflix.iep.rxnetty;
 
 
 import com.google.inject.AbstractModule;
-import iep.io.reactivex.netty.RxNetty;
-import iep.io.reactivex.netty.spectator.SpectatorEventsListenerFactory;
+import io.reactivex.netty.RxNetty;
+import io.reactivex.netty.spectator.SpectatorEventsListenerFactory;
 
 
 public class RxNettyModule extends AbstractModule {

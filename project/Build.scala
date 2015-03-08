@@ -90,6 +90,8 @@ object MainBuild extends Build {
       Dependencies.guice,
       Dependencies.karyonAdmin,
       Dependencies.karyonCore,
+      Dependencies.rxnetty,
+      Dependencies.rxnettyCtxts,
       Dependencies.slf4jApi
     ))
 
@@ -102,6 +104,8 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.guice,
+      Dependencies.rxnetty,
+      Dependencies.rxnettyCtxts,
       Dependencies.rxnettySpectator,
       Dependencies.slf4jApi
     ))

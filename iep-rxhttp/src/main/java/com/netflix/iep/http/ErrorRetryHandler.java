@@ -16,9 +16,9 @@
 package com.netflix.iep.http;
 
 import io.netty.buffer.ByteBuf;
-import iep.io.reactivex.netty.protocol.http.client.HttpClientResponse;
-import iep.rx.Observable;
-import iep.rx.functions.Func1;
+import io.reactivex.netty.protocol.http.client.HttpClientResponse;
+import rx.Observable;
+import rx.functions.Func1;
 import io.netty.handler.timeout.ReadTimeoutException;
 
 import java.net.ConnectException;

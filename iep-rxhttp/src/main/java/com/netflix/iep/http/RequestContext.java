@@ -16,7 +16,7 @@
 package com.netflix.iep.http;
 
 import com.netflix.spectator.sandbox.HttpLogEntry;
-import iep.io.reactivex.netty.protocol.http.client.HttpClientRequest;
+import io.reactivex.netty.protocol.http.client.HttpClientRequest;
 import io.netty.buffer.ByteBuf;
 
 /**
