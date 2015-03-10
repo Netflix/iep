@@ -52,7 +52,13 @@ object MainBuild extends Build {
       Dependencies.archaiusCore,
       Dependencies.eureka,
       Dependencies.guice,
-      Dependencies.slf4jApi
+      Dependencies.slf4jApi,
+
+      // Fix transitive deps
+      Dependencies.ribbonCore,
+      Dependencies.ribbonEureka,
+      Dependencies.ribbonHttp,
+      Dependencies.ribbonLb
     ))
 
   lazy val `iep-eureka` = project
@@ -61,7 +67,13 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= Seq(
       Dependencies.eureka,
       Dependencies.guice,
-      Dependencies.slf4jApi
+      Dependencies.slf4jApi,
+
+      // Fix transitive deps
+      Dependencies.ribbonCore,
+      Dependencies.ribbonEureka,
+      Dependencies.ribbonHttp,
+      Dependencies.ribbonLb
     ))
 
   lazy val `iep-governator` = project
@@ -90,6 +102,8 @@ object MainBuild extends Build {
       Dependencies.guice,
       Dependencies.karyonAdmin,
       Dependencies.karyonCore,
+      Dependencies.rxnetty,
+      Dependencies.rxnettyCtxts,
       Dependencies.slf4jApi
     ))
 
@@ -102,6 +116,8 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.guice,
+      Dependencies.rxnetty,
+      Dependencies.rxnettyCtxts,
       Dependencies.rxnettySpectator,
       Dependencies.slf4jApi
     ))
@@ -123,7 +139,13 @@ object MainBuild extends Build {
       Dependencies.spectatorApi,
       Dependencies.spectatorSandbox,
       Dependencies.slf4jApi,
-      Dependencies.equalsVerifier % "test"
+      Dependencies.equalsVerifier % "test",
+
+      // Fix transitive deps
+      Dependencies.ribbonCore,
+      Dependencies.ribbonEureka,
+      Dependencies.ribbonHttp,
+      Dependencies.ribbonLb
     ))
 
   lazy val commonDeps = Seq(

@@ -17,10 +17,10 @@ package com.netflix.iep.http;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.HttpHeaders;
-import iep.io.reactivex.netty.protocol.http.client.HttpClientRequest;
-import iep.io.reactivex.netty.protocol.http.client.HttpClientResponse;
-import iep.rx.Observable;
-import iep.rx.functions.Func1;
+import io.reactivex.netty.protocol.http.client.HttpClientRequest;
+import io.reactivex.netty.protocol.http.client.HttpClientResponse;
+import rx.Observable;
+import rx.functions.Func1;
 
 import java.net.URI;
 

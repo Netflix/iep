@@ -2,6 +2,7 @@ import sbt._
 
 object Dependencies {
   object Versions {
+    val ribbon     = "2.0.0"
     val scala      = "2.11.5"
     val slf4j      = "1.7.10"
     val spectator  = "0.20.0"
@@ -20,10 +21,14 @@ object Dependencies {
   val junit           = "junit" % "junit" % "4.10"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava          = "com.netflix.iep-shadow" % "iep-rxjava" % "1.0.6"
-  val rxnetty         = "com.netflix.iep-shadow" % "iep-rxnetty" % "0.4.6"
-  val rxnettyCtxts    = "com.netflix.iep-shadow" % "iep-rxnetty-contexts" % "0.4.6"
-  val rxnettySpectator= "com.netflix.iep-shadow" % "iep-rxnetty-spectator" % "0.4.6"
+  val ribbonCore      = "com.netflix.ribbon" % "ribbon-core" % ribbon
+  val ribbonEureka    = "com.netflix.ribbon" % "ribbon-eureka" % ribbon
+  val ribbonHttp      = "com.netflix.ribbon" % "ribbon-httpclient" % ribbon
+  val ribbonLb        = "com.netflix.ribbon" % "ribbon-loadbalancer" % ribbon
+  val rxjava          = "io.reactivex" % "rxjava" % "1.0.8"
+  val rxnetty         = "io.reactivex" % "rxnetty" % "0.4.6"
+  val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % "0.4.6"
+  val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % "0.4.6"
   val scalaLibrary    = "org.scala-lang" % "scala-library" % scala
   val scalaLibraryAll = "org.scala-lang" % "scala-library-all" % scala
   val scalaLogging    = "com.typesafe.scala-logging" % "scala-logging_2.11" % "3.1.0"
