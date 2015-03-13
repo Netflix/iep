@@ -4,7 +4,7 @@ object Dependencies {
   object Versions {
     val archaius   = "2.0.0-rc.3"
     val ribbon     = "2.0.0"
-    val scala      = "2.11.5"
+    val scala      = "2.11.6"
     val slf4j      = "1.7.10"
     val spectator  = "0.20.0"
   }
@@ -14,7 +14,7 @@ object Dependencies {
   val archaiusCore    = "com.netflix.archaius" % "archaius-core" % archaius
   val archaiusLegacy  = "com.netflix.archaius" % "archaius-legacy" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.5.1"
-  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.147"
+  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.150"
   val governator      = "com.netflix.governator" % "governator" % "1.3.3"
   val guice           = "com.google.inject" % "guice" % "3.0"
   val jodaTime        = "joda-time" % "joda-time" % "2.5"
