@@ -2,6 +2,7 @@ import sbt._
 
 object Dependencies {
   object Versions {
+    val archaius   = "2.0.0-rc.3"
     val ribbon     = "2.0.0"
     val scala      = "2.11.5"
     val slf4j      = "1.7.10"
@@ -10,7 +11,8 @@ object Dependencies {
 
   import Versions._
 
-  val archaiusCore    = "com.netflix.archaius" % "archaius-core" % "0.6.5"
+  val archaiusCore    = "com.netflix.archaius" % "archaius-core" % archaius
+  val archaiusLegacy  = "com.netflix.archaius" % "archaius-legacy" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.5.1"
   val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.147"
   val governator      = "com.netflix.governator" % "governator" % "1.3.3"
