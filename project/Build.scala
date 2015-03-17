@@ -43,7 +43,8 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= Seq(
       Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
-      Dependencies.jodaTime
+      Dependencies.jodaTime,
+      Dependencies.equalsVerifier % "test"
     ))
 
   lazy val `iep-dynprop` = project
