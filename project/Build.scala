@@ -43,11 +43,12 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= Seq(
       Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
-      Dependencies.jodaTime
+      Dependencies.jodaTime,
+      Dependencies.equalsVerifier % "test"
     ))
 
   lazy val `iep-governator` = project
-    .dependsOn(`iep-jmxport`)
+    .dependsOn(`iep-config`, `iep-jmxport`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(

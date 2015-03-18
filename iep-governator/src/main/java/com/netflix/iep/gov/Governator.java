@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import com.netflix.iep.config.ScopedPropertiesLoader;
 
 /** Required javadoc for public class. */
 public final class Governator {
@@ -166,6 +167,7 @@ public final class Governator {
     ConfigurationManager.install(composite);
     loadProperties(ARCHAIUS_CONFIG_FILE);
     loadProperties("application");
+    ScopedPropertiesLoader.load();
   }
 
   /** Shutdown governator. */
