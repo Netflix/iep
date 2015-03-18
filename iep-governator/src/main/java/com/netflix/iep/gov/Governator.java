@@ -19,10 +19,13 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.netflix.config.ConcurrentCompositeConfiguration;
 import com.netflix.config.ConfigurationManager;
+import com.netflix.config.AggregatedConfiguration;
+import com.netflix.config.util.ConfigurationUtils;
 import com.netflix.governator.guice.LifecycleInjector;
 import com.netflix.governator.guice.LifecycleInjectorBuilder;
 import com.netflix.governator.lifecycle.LifecycleManager;
 import com.netflix.iep.jmxport.JmxPort;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.EnvironmentConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Properties;
 
 import com.netflix.iep.config.ScopedPropertiesLoader;
 
@@ -120,6 +124,22 @@ public final class Governator {
     }
   }
 
+  public static void loadProperties(Properties props) {
+    AbstractConfiguration abstractConf = ConfigurationManager.getConfigInstance();
+    if (abstractConf instanceof AggregatedConfiguration) {
+      AggregatedConfiguration aggConf = (AggregatedConfiguration) abstractConf;
+      Configuration appConf = aggConf.getConfiguration(ConfigurationManager.APPLICATION_PROPERTIES);
+      if (appConf != null) {
+        ConfigurationUtils.loadProperties(props, appConf);
+        return;
+      } 
+    }
+    // The configuration instance is not an aggregated configuration or it does
+    // not have designated configuration for application properties - just add
+    // the properties using config.setProperty()
+    ConfigurationUtils.loadProperties(props, abstractConf);    
+  }
+
   private Governator() {
     initArchaius();
     initJmxPort();
@@ -167,7 +187,7 @@ public final class Governator {
     ConfigurationManager.install(composite);
     loadProperties(ARCHAIUS_CONFIG_FILE);
     loadProperties("application");
-    ScopedPropertiesLoader.load();
+    loadProperties(ScopedPropertiesLoader.load());
   }
 
   /** Shutdown governator. */

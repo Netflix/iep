@@ -22,7 +22,7 @@ public class ScopedPropertiesLoader {
   private static final String PROP_PROPERTIES_FILE = "netflix.iep.config.propertiesFile";
   private static final String DEF_PROPERTIES_FILE = "application.scoped.properties";
 
-  public static void load() {
+  public static Properties load() {
     String[] propFiles = System.getProperty(PROP_PROPERTIES_FILE, DEF_PROPERTIES_FILE).split(",");
 
     List<URL> propUrls = new ArrayList<URL>();
@@ -38,6 +38,8 @@ public class ScopedPropertiesLoader {
 
     StringBuilder debug = new StringBuilder("# Generated properties\n");
 
+    Properties finalProps = new Properties();;
+
     for (URL propUrl : propUrls) {
       LOGGER.debug("loading properties from " + propUrl);
       String propData;
@@ -52,11 +54,11 @@ public class ScopedPropertiesLoader {
 
       Properties props = ConfigFile.loadProperties(System.getenv(), propData);
       LOGGER.debug("loading properties: " + props);
-      ConfigurationManager.loadProperties(props);
+      finalProps.putAll(props);
       LOGGER.info("loaded properties file " + propUrl);
     }
 
     LOGGER.debug("properties debug: " + debug);
-    LOGGER.info("properties applied to ConfigurationManager");
+    return finalProps;
   }
 }
