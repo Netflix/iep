@@ -68,7 +68,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-governator` = project
-    .dependsOn(`iep-jmxport`)
+    .dependsOn(`iep-config`, `iep-jmxport`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
