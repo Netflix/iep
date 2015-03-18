@@ -24,12 +24,12 @@ object MainBuild extends Build {
   lazy val root = project.in(file("."))
     .aggregate(
       `iep-config`,
-      `iep-dynprop`,
-      `iep-eureka`,
       `iep-governator`,
       `iep-jmxport`,
-      `iep-karyon`,
       `iep-launcher`,
+      `iep-module-dynprop`,
+      `iep-module-eureka`,
+      `iep-module-karyon`,
       `iep-module-rxnetty`,
       `iep-nflxenv`,
       `iep-rxhttp`)
@@ -44,26 +44,6 @@ object MainBuild extends Build {
       Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
       Dependencies.jodaTime
-    ))
-
-  lazy val `iep-dynprop` = project
-    .settings(buildSettings: _*)
-    .settings(libraryDependencies ++= commonDeps)
-    .settings(libraryDependencies ++= Seq(
-      Dependencies.archaiusCore,
-      Dependencies.archaiusLegacy,
-      Dependencies.eureka,
-      Dependencies.guice,
-      Dependencies.slf4jApi
-    ))
-
-  lazy val `iep-eureka` = project
-    .settings(buildSettings: _*)
-    .settings(libraryDependencies ++= commonDeps)
-    .settings(libraryDependencies ++= Seq(
-      Dependencies.eureka,
-      Dependencies.guice,
-      Dependencies.slf4jApi
     ))
 
   lazy val `iep-governator` = project
@@ -85,7 +65,31 @@ object MainBuild extends Build {
       Dependencies.slf4jApi
     ))
 
-  lazy val `iep-karyon` = project
+  lazy val `iep-launcher` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+
+  lazy val `iep-module-dynprop` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.archaiusCore,
+      Dependencies.archaiusLegacy,
+      Dependencies.eureka,
+      Dependencies.guice,
+      Dependencies.slf4jApi
+    ))
+
+  lazy val `iep-module-eureka` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.eureka,
+      Dependencies.guice,
+      Dependencies.slf4jApi
+    ))
+
+  lazy val `iep-module-karyon` = project
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
@@ -98,10 +102,6 @@ object MainBuild extends Build {
       Dependencies.rxnettyCtxts,
       Dependencies.slf4jApi
     ))
-
-  lazy val `iep-launcher` = project
-    .settings(buildSettings: _*)
-    .settings(libraryDependencies ++= commonDeps)
 
   lazy val `iep-module-rxnetty` = project
     .settings(buildSettings: _*)
