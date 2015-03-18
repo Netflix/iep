@@ -16,7 +16,7 @@ object MainBuild extends Build {
               crossPaths := false,
            sourcesInBase := false,
         autoScalaLibrary := false,
-               resolvers += Resolver.sonatypeRepo("snapshots"),
+       externalResolvers := BuildSettings.resolvers,
      checkLicenseHeaders := License.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
     formatLicenseHeaders := License.formatLicenseHeaders(streams.value.log, sourceDirectory.value)
   )
@@ -27,6 +27,7 @@ object MainBuild extends Build {
       `iep-governator`,
       `iep-jmxport`,
       `iep-launcher`,
+      `iep-module-archaius2`,
       `iep-module-dynprop`,
       `iep-module-eureka`,
       `iep-module-karyon`,
@@ -69,6 +70,16 @@ object MainBuild extends Build {
   lazy val `iep-launcher` = project
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
+
+  lazy val `iep-module-archaius2` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.archaiusCore,
+      Dependencies.archaiusTypesafe,
+      Dependencies.guice,
+      Dependencies.slf4jApi
+    ))
 
   lazy val `iep-module-dynprop` = project
     .settings(buildSettings: _*)
