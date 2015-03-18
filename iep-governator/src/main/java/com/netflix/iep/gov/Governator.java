@@ -29,6 +29,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.EnvironmentConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
+import org.apache.commons.configuration.MapConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +133,7 @@ public final class Governator {
       if (appConf != null) {
         ConfigurationUtils.loadProperties(props, appConf);
         return;
-      } 
+      }
     }
     // The configuration instance is not an aggregated configuration or it does
     // not have designated configuration for application properties - just add
@@ -181,10 +182,10 @@ public final class Governator {
   }
 
   private void initArchaius() {
-    ConcurrentCompositeConfiguration composite = new ConcurrentCompositeConfiguration();
-    composite.addConfiguration(new SystemConfiguration(), "system");
-    composite.addConfiguration(new EnvironmentConfiguration(), "environment");
-    ConfigurationManager.install(composite);
+    //ConcurrentCompositeConfiguration composite = new ConcurrentCompositeConfiguration();
+    //composite.addConfiguration(new SystemConfiguration(), "system");
+    //composite.addConfiguration(new EnvironmentConfiguration(), "environment");
+    //ConfigurationManager.install(composite);
     loadProperties(ARCHAIUS_CONFIG_FILE);
     loadProperties("application");
     loadProperties(ScopedPropertiesLoader.load());
