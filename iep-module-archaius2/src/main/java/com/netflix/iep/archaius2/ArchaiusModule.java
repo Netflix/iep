@@ -26,6 +26,7 @@ import com.netflix.archaius.config.polling.FixedPollingStrategy;
 import com.netflix.archaius.config.polling.PollingResponse;
 import com.netflix.archaius.typesafe.TypesafeConfig;
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
@@ -37,6 +38,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ArchaiusModule extends AbstractModule {
   @Override protected void configure() {
+    bind(Config.class).toInstance(ConfigFactory.load());
   }
 
   private Callable<PollingResponse> getCallback(Config cfg) throws MalformedURLException {
