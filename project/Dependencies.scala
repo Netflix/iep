@@ -29,9 +29,9 @@ object Dependencies {
   val ribbonHttp      = "com.netflix.ribbon" % "ribbon-httpclient" % ribbon
   val ribbonLb        = "com.netflix.ribbon" % "ribbon-loadbalancer" % ribbon
   val rxjava          = "io.reactivex" % "rxjava" % "1.0.8"
-  val rxnetty         = "io.reactivex" % "rxnetty" % "0.4.6"
-  val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % "0.4.6"
-  val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % "0.4.6"
+  val rxnetty         = "io.reactivex" % "rxnetty" % "0.4.7"
+  val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % "0.4.7"
+  val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % "0.4.7"
   val scalaLibrary    = "org.scala-lang" % "scala-library" % scala
   val scalaLibraryAll = "org.scala-lang" % "scala-library-all" % scala
   val scalaLogging    = "com.typesafe.scala-logging" % "scala-logging_2.11" % "3.1.0"
