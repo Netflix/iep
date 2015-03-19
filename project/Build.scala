@@ -27,7 +27,7 @@ object MainBuild extends Build {
       `iep-governator`,
       `iep-jmxport`,
       `iep-launcher`,
-      `iep-module-archaius2`,
+      //`iep-module-archaius2`,
       `iep-module-dynprop`,
       `iep-module-eureka`,
       `iep-module-karyon`,
