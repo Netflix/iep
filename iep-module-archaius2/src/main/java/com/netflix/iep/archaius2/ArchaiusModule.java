@@ -19,7 +19,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.netflix.archaius.AppConfig;
 import com.netflix.archaius.DefaultAppConfig;
-import com.netflix.archaius.DynamicConfig;
 import com.netflix.archaius.config.PollingDynamicConfig;
 import com.netflix.archaius.config.PollingStrategy;
 import com.netflix.archaius.config.polling.FixedPollingStrategy;
@@ -53,15 +52,15 @@ public class ArchaiusModule extends AbstractModule {
     return new FixedPollingStrategy(interval, TimeUnit.MILLISECONDS);
   }
 
-  private DynamicConfig getDynamicConfig(Config cfg) throws MalformedURLException {
+  private PollingDynamicConfig getDynamicConfig(Config cfg) throws MalformedURLException {
     return new PollingDynamicConfig("dynamic", getCallback(cfg), getPollingStrategy(cfg));
   }
 
   @Provides @Singleton
   AppConfig getAppConfig(Config root) throws Exception {
     final AppConfig config = DefaultAppConfig.builder().build();
-    config.addConfigFirst(new TypesafeConfig(root.origin().filename(), root));
-    config.addConfigFirst(getDynamicConfig(root));
+    config.addLibraryConfig(new TypesafeConfig(root.origin().filename(), root));
+    config.addOverrideConfig(getDynamicConfig(root));
     return config;
   }
 }

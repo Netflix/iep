@@ -27,7 +27,7 @@ object MainBuild extends Build {
       `iep-governator`,
       `iep-jmxport`,
       `iep-launcher`,
-      //`iep-module-archaius2`,
+      `iep-module-archaius2`,
       `iep-module-dynprop`,
       `iep-module-eureka`,
       `iep-module-karyon`,
@@ -76,6 +76,7 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.archaiusCore,
+      Dependencies.archaiusLegacy,
       Dependencies.archaiusTypesafe,
       Dependencies.guice,
       Dependencies.slf4jApi
