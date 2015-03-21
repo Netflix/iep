@@ -17,19 +17,14 @@ package com.netflix.iep.gov;
 
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.netflix.config.ConcurrentCompositeConfiguration;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.config.AggregatedConfiguration;
 import com.netflix.config.util.ConfigurationUtils;
 import com.netflix.governator.guice.LifecycleInjector;
 import com.netflix.governator.guice.LifecycleInjectorBuilder;
 import com.netflix.governator.lifecycle.LifecycleManager;
-import com.netflix.iep.jmxport.JmxPort;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.AbstractConfiguration;
-import org.apache.commons.configuration.EnvironmentConfiguration;
-import org.apache.commons.configuration.SystemConfiguration;
-import org.apache.commons.configuration.MapConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,10 +41,6 @@ import com.netflix.iep.config.ScopedPropertiesLoader;
 public final class Governator {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Governator.class);
-
-  private static final String RESTRICT_PORT = "netflix.iep.gov.restrictJmxPort";
-  private static final String JMX_HOST = "netflix.iep.gov.jmxHost";
-  private static final String JMX_PORT = "netflix.iep.gov.jmxPort";
 
   private static final String SERVICE_LOADER = "service-loader";
   private static final String NONE = "none";
@@ -143,7 +134,6 @@ public final class Governator {
 
   private Governator() {
     initArchaius();
-    initJmxPort();
   }
 
   private Injector injector;
@@ -168,17 +158,6 @@ public final class Governator {
 
     LifecycleManager lcMgr = injector.getInstance(LifecycleManager.class);
     lcMgr.start();
-  }
-
-  private void initJmxPort() {
-    AbstractConfiguration config = ConfigurationManager.getConfigInstance();
-    if (config.getBoolean(RESTRICT_PORT, false)) {
-      String host = config.getString(JMX_HOST, null);
-      int port = config.getInt(JMX_PORT, 7500);
-      JmxPort.configure(host, port);
-    } else {
-      LOGGER.debug("skipping configuration of jmx port");
-    }
   }
 
   private void initArchaius() {
