@@ -25,11 +25,11 @@ object MainBuild extends Build {
     .aggregate(
       `iep-config`,
       `iep-governator`,
-      `iep-jmxport`,
       `iep-launcher`,
       `iep-module-archaius2`,
       `iep-module-dynprop`,
       `iep-module-eureka`,
+      `iep-module-jmxport`,
       `iep-module-karyon`,
       `iep-module-rxnetty`,
       `iep-nflxenv`,
@@ -49,7 +49,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-governator` = project
-    .dependsOn(`iep-config`, `iep-jmxport`)
+    .dependsOn(`iep-config`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
@@ -57,13 +57,6 @@ object MainBuild extends Build {
       Dependencies.archaiusLegacy,
       Dependencies.governator,
       Dependencies.guice,
-      Dependencies.slf4jApi
-    ))
-
-  lazy val `iep-jmxport` = project
-    .settings(buildSettings: _*)
-    .settings(libraryDependencies ++= commonDeps)
-    .settings(libraryDependencies ++= Seq(
       Dependencies.slf4jApi
     ))
 
@@ -98,6 +91,14 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.eureka,
+      Dependencies.guice,
+      Dependencies.slf4jApi
+    ))
+
+  lazy val `iep-module-jmxport` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
       Dependencies.guice,
       Dependencies.slf4jApi
     ))
