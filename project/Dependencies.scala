@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.0.0-SNAPSHOT"
+    val archaius   = "2.0.0-rc.5"
     val ribbon     = "2.0.0"
     val scala      = "2.11.6"
     val slf4j      = "1.7.10"
