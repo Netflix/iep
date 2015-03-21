@@ -160,8 +160,8 @@ public final class Governator {
 
   /** Start up governator with an arbitrary list of modules. */
   public void start(Iterable<Module> modules) throws Exception {
-    LifecycleInjectorBuilder builder = LifecycleInjector.builder();
     injector = LifecycleInjector.builder()
+        .ignoringAllAutoBindClasses()
         .withModules(modules)
         .build()
         .createInjector();
