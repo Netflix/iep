@@ -16,6 +16,8 @@
 package com.netflix.iep.archaius2;
 
 import com.netflix.archaius.config.polling.PollingResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -28,6 +30,8 @@ import java.util.concurrent.Callable;
 
 public class RemoteProperties implements Callable<PollingResponse> {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(RemoteProperties.class);
+
   private final URL url;
 
   public RemoteProperties(String url) throws MalformedURLException {
@@ -39,6 +43,7 @@ public class RemoteProperties implements Callable<PollingResponse> {
   }
 
   private Properties getProps(URL url) throws Exception {
+    LOGGER.debug("refreshing properties from: {}", url);
     try (InputStream in = url.openStream()) {
       Properties props = new Properties();
       props.load(in);
@@ -50,7 +55,9 @@ public class RemoteProperties implements Callable<PollingResponse> {
     Properties props = getProps(url);
     Map<String, String> propsMap = new HashMap<>();
     for (String k : props.stringPropertyNames()) {
-      propsMap.put(k, props.getProperty(k));
+      String v = props.getProperty(k);
+      propsMap.put(k, v);
+      LOGGER.debug("received property: [{}] = [{}]", k, v);
     }
     return PollingResponse.forSnapshot(propsMap);
   }
