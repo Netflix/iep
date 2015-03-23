@@ -57,7 +57,7 @@ object MainBuild extends Build {
       Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
       Dependencies.governator,
-      Dependencies.guice,
+      Dependencies.guiceCore,
       Dependencies.slf4jApi
     ))
 
@@ -65,7 +65,7 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.guice,
+      Dependencies.guiceCore,
       Dependencies.slf4jApi
     ))
 
@@ -80,7 +80,7 @@ object MainBuild extends Build {
       Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
       Dependencies.archaiusTypesafe,
-      Dependencies.guice,
+      Dependencies.guiceCore,
       Dependencies.slf4jApi
     ))
 
@@ -91,7 +91,7 @@ object MainBuild extends Build {
       Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
       Dependencies.eureka,
-      Dependencies.guice,
+      Dependencies.guiceCore,
       Dependencies.slf4jApi
     ))
 
@@ -100,7 +100,7 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.eureka,
-      Dependencies.guice,
+      Dependencies.guiceCore,
       Dependencies.slf4jApi
     ))
 
@@ -108,7 +108,7 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.guice,
+      Dependencies.guiceCore,
       Dependencies.slf4jApi
     ))
 
@@ -118,7 +118,7 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= Seq(
       Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
-      Dependencies.guice,
+      Dependencies.guiceCore,
       Dependencies.karyonAdmin,
       Dependencies.karyonCore,
       Dependencies.rxnetty,
@@ -130,7 +130,7 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.guice,
+      Dependencies.guiceCore,
       Dependencies.rxnetty,
       Dependencies.rxnettyCtxts,
       Dependencies.rxnettySpectator,

@@ -3,6 +3,7 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.0.0-rc.5"
+    val guice      = "3.0"
     val ribbon     = "2.0.0"
     val scala      = "2.11.6"
     val slf4j      = "1.7.10"
@@ -17,7 +18,8 @@ object Dependencies {
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.5.1"
   val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.150"
   val governator      = "com.netflix.governator" % "governator" % "1.3.3"
-  val guice           = "com.google.inject" % "guice" % "3.0"
+  val guiceCore       = "com.google.inject" % "guice" % guice
+  val guiceMulti      = "com.google.inject.extensions" % "guice-multibindings" % guice
   val jodaTime        = "joda-time" % "joda-time" % "2.5"
   val karyonAdmin     = "com.netflix.karyon2" % "karyon-admin-web" % "2.2.00-ALPHA7"
   val karyonCore      = "com.netflix.karyon2" % "karyon-core" % "2.2.00-ALPHA7"
