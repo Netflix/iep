@@ -21,7 +21,6 @@ import com.netflix.config.ConfigurationManager;
 import com.netflix.config.AggregatedConfiguration;
 import com.netflix.config.util.ConfigurationUtils;
 import com.netflix.governator.guice.LifecycleInjector;
-import com.netflix.governator.guice.LifecycleInjectorBuilder;
 import com.netflix.governator.lifecycle.LifecycleManager;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.AbstractConfiguration;

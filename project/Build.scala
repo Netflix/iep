@@ -25,6 +25,7 @@ object MainBuild extends Build {
     .aggregate(
       `iep-config`,
       `iep-governator`,
+      `iep-guice`,
       `iep-launcher`,
       `iep-module-archaius2`,
       `iep-module-dynprop`,
@@ -56,6 +57,14 @@ object MainBuild extends Build {
       Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
       Dependencies.governator,
+      Dependencies.guice,
+      Dependencies.slf4jApi
+    ))
+
+  lazy val `iep-guice` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
       Dependencies.guice,
       Dependencies.slf4jApi
     ))
