@@ -19,7 +19,9 @@ import com.netflix.archaius.config.polling.PollingResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -44,10 +46,21 @@ public class RemoteProperties implements Callable<PollingResponse> {
 
   private Properties getProps(URL url) throws Exception {
     LOGGER.debug("refreshing properties from: {}", url);
-    try (InputStream in = url.openStream()) {
-      Properties props = new Properties();
-      props.load(in);
-      return props;
+    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+    try {
+      con.connect();
+      int status = con.getResponseCode();
+      if (status != 200) {
+        throw new IOException("request to " + url + " failed with status code: " + status);
+      }
+
+      try (InputStream in = con.getInputStream()) {
+        Properties props = new Properties();
+        props.load(in);
+        return props;
+      }
+    } finally {
+      con.disconnect();
     }
   }
 
