@@ -30,12 +30,7 @@ import org.apache.commons.configuration.AbstractConfiguration;
 public final class Configuration {
   private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
-  private static final IConfiguration iConfiguration = new IConfiguration() {
-    public String get(String key) {
-      AbstractConfiguration cfg = ConfigurationManager.getConfigInstance();
-      return cfg.getString(key);
-    }
-  };
+  private static final IConfiguration iConfiguration = new DynamicPropertiesConfiguration();
 
   public static <T> T apply(Class<T> ctype) {
     String pkg = ctype.getPackage().getName();
