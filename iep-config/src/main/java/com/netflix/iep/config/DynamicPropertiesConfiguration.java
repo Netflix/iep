@@ -40,7 +40,6 @@ public class DynamicPropertiesConfiguration implements IConfiguration {
     String propKey = (prefix == null) ? key : prefix + "." + key;
     DynamicStringProperty prop = props.get(propKey);
     if (prop == null) {
-System.err.println("adding property: " + propKey);
       prop = new DynamicStringProperty(propKey, null);
       props.put(propKey, prop);
     }
