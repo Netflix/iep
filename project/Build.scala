@@ -121,7 +121,7 @@ object MainBuild extends Build {
       Dependencies.guiceCore,
       Dependencies.karyonAdmin,
       Dependencies.karyonCore,
-      Dependencies.rxnetty,
+      Dependencies.rxnettyCore,
       Dependencies.rxnettyCtxts,
       Dependencies.slf4jApi
     ))
@@ -131,7 +131,7 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.guiceCore,
-      Dependencies.rxnetty,
+      Dependencies.rxnettyCore,
       Dependencies.rxnettyCtxts,
       Dependencies.rxnettySpectator,
       Dependencies.slf4jApi
@@ -150,7 +150,7 @@ object MainBuild extends Build {
       Dependencies.eureka,
       Dependencies.jzlib,
       Dependencies.rxjava,
-      Dependencies.rxnetty,
+      Dependencies.rxnettyCore,
       Dependencies.rxnettyCtxts,
       Dependencies.spectatorApi,
       Dependencies.spectatorSandbox,

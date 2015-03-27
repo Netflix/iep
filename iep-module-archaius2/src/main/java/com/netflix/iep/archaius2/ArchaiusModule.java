@@ -59,7 +59,7 @@ public class ArchaiusModule extends AbstractModule {
   @Provides @Singleton
   AppConfig getAppConfig(Config root) throws Exception {
     final AppConfig config = DefaultAppConfig.builder().build();
-    config.addLibraryConfig(new TypesafeConfig(root.origin().filename(), root));
+    config.addOverrideConfig(new TypesafeConfig(root.origin().filename(), root));
     config.addOverrideConfig(getDynamicConfig(root));
     return config;
   }

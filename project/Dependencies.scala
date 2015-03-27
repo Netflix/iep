@@ -2,9 +2,10 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.0.0-rc.5"
-    val guice      = "3.0"
+    val archaius   = "2.0.0-rc.6"
+    val guice      = "4.0-beta5"
     val ribbon     = "2.0.0"
+    val rxnetty    = "0.4.8"
     val scala      = "2.11.6"
     val slf4j      = "1.7.10"
     val spectator  = "0.20.0"
@@ -31,9 +32,9 @@ object Dependencies {
   val ribbonHttp      = "com.netflix.ribbon" % "ribbon-httpclient" % ribbon
   val ribbonLb        = "com.netflix.ribbon" % "ribbon-loadbalancer" % ribbon
   val rxjava          = "io.reactivex" % "rxjava" % "1.0.8"
-  val rxnetty         = "io.reactivex" % "rxnetty" % "0.4.7"
-  val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % "0.4.7"
-  val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % "0.4.7"
+  val rxnettyCore     = "io.reactivex" % "rxnetty" % "0.4.8"
+  val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % "0.4.8"
+  val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % "0.4.8"
   val scalaLibrary    = "org.scala-lang" % "scala-library" % scala
   val scalaLibraryAll = "org.scala-lang" % "scala-library-all" % scala
   val scalaLogging    = "com.typesafe.scala-logging" % "scala-logging_2.11" % "3.1.0"
