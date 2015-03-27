@@ -71,6 +71,8 @@ public final class RxHttp {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RxHttp.class);
 
+  private static final String APPLICATION_JSON = "application/json";
+
   private static final int MIN_COMPRESS_SIZE = 512;
   private static final AtomicInteger NEXT_THREAD_ID = new AtomicInteger(0);
 
@@ -207,7 +209,7 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> get(String uri) {
-    return get(URI.create(uri));
+    return submit(HttpClientRequest.createGet(uri));
   }
 
   /**
@@ -219,9 +221,33 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> get(URI uri) {
-    final ClientConfig clientCfg = ClientConfig.fromUri(uri);
-    final List<Server> servers = getServers(clientCfg);
-    return execute(clientCfg, servers, HttpClientRequest.createGet(clientCfg.relativeUri()));
+    return submit(HttpClientRequest.createGet(uri.toString()));
+  }
+
+  /**
+   * Perform a GET request expecting a JSON response.
+   *
+   * @param uri
+   *     Location to send the request.
+   * @return
+   *     Observable with the response of the request.
+   */
+  public Observable<HttpClientResponse<ByteBuf>> getJson(String uri) {
+    return getJson(URI.create(uri));
+  }
+
+  /**
+   * Perform a GET request expecting a JSON response.
+   *
+   * @param uri
+   *     Location to send the request.
+   * @return
+   *     Observable with the response of the request.
+   */
+  public Observable<HttpClientResponse<ByteBuf>> getJson(URI uri) {
+    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createGet(uri.toString())
+        .withHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
+    return submit(req);
   }
 
   /**
@@ -238,11 +264,9 @@ public final class RxHttp {
    */
   public Observable<HttpClientResponse<ByteBuf>>
   post(URI uri, String contentType, byte[] entity) {
-    final ClientConfig clientCfg = ClientConfig.fromUri(uri);
-    final List<Server> servers = getServers(clientCfg);
-    HttpClientRequest<ByteBuf> req = HttpClientRequest.createPost(clientCfg.relativeUri())
+    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createPost(uri.toString())
         .withHeader(HttpHeaders.Names.CONTENT_TYPE, contentType);
-    return execute(clientCfg, servers, compress(clientCfg, req, entity));
+    return submit(req, entity);
   }
 
   /**
@@ -256,7 +280,10 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> postJson(URI uri, byte[] entity) {
-    return post(uri, "application/json", entity);
+    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createPost(uri.toString())
+        .withHeader(HttpHeaders.Names.CONTENT_TYPE, APPLICATION_JSON)
+        .withHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
+    return submit(req, entity);
   }
 
   /**
@@ -302,11 +329,9 @@ public final class RxHttp {
    */
   public Observable<HttpClientResponse<ByteBuf>>
   put(URI uri, String contentType, byte[] entity) {
-    final ClientConfig clientCfg = ClientConfig.fromUri(uri);
-    final List<Server> servers = getServers(clientCfg);
-    HttpClientRequest<ByteBuf> req = HttpClientRequest.createPut(clientCfg.relativeUri())
+    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createPut(uri.toString())
         .withHeader(HttpHeaders.Names.CONTENT_TYPE, contentType);
-    return execute(clientCfg, servers, compress(clientCfg, req, entity));
+    return submit(req, entity);
   }
 
   /**
@@ -320,7 +345,10 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> putJson(URI uri, byte[] entity) {
-    return put(uri, "application/json", entity);
+    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createPut(uri.toString())
+        .withHeader(HttpHeaders.Names.CONTENT_TYPE, APPLICATION_JSON)
+        .withHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
+    return submit(req, entity);
   }
 
   /**
@@ -346,7 +374,7 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> delete(String uri) {
-    return delete(URI.create(uri));
+    return submit(HttpClientRequest.createDelete(uri));
   }
 
   /**
@@ -358,9 +386,33 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> delete(URI uri) {
-    final ClientConfig clientCfg = ClientConfig.fromUri(uri);
-    final List<Server> servers = getServers(clientCfg);
-    return execute(clientCfg, servers, HttpClientRequest.createDelete(clientCfg.relativeUri()));
+    return submit(HttpClientRequest.createDelete(uri.toString()));
+  }
+
+  /**
+   * Perform a DELETE request expecting a JSON response.
+   *
+   * @param uri
+   *     Location to send the request.
+   * @return
+   *     Observable with the response of the request.
+   */
+  public Observable<HttpClientResponse<ByteBuf>> deleteJson(String uri) {
+    return deleteJson(URI.create(uri));
+  }
+
+  /**
+   * Perform a DELETE request expecting a JSON response.
+   *
+   * @param uri
+   *     Location to send the request.
+   * @return
+   *     Observable with the response of the request.
+   */
+  public Observable<HttpClientResponse<ByteBuf>> deleteJson(URI uri) {
+    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createDelete(uri.toString())
+        .withHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
+    return submit(req);
   }
 
   /**
