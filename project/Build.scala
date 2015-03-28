@@ -57,7 +57,11 @@ object MainBuild extends Build {
       Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
       Dependencies.governator,
+      Dependencies.guiceAssist,
       Dependencies.guiceCore,
+      Dependencies.guiceGrapher,
+      Dependencies.guiceMulti,
+      Dependencies.guiceServlet,
       Dependencies.slf4jApi
     ))
 
