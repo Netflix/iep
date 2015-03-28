@@ -82,7 +82,9 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.archaiusCore,
+      Dependencies.archaiusGuice,
       Dependencies.archaiusLegacy,
+      Dependencies.archaiusPersist,
       Dependencies.archaiusTypesafe,
       Dependencies.guiceCore,
       Dependencies.slf4jApi

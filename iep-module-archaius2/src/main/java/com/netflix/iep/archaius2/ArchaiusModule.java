@@ -23,12 +23,20 @@ import com.netflix.archaius.config.PollingDynamicConfig;
 import com.netflix.archaius.config.PollingStrategy;
 import com.netflix.archaius.config.polling.FixedPollingStrategy;
 import com.netflix.archaius.config.polling.PollingResponse;
+import com.netflix.archaius.persisted2.JsonPersistedV2Reader;
+import com.netflix.archaius.persisted2.ScopePredicates;
+import com.netflix.archaius.persisted2.loader.HTTPStreamLoader;
 import com.netflix.archaius.typesafe.TypesafeConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigValue;
 
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -40,10 +48,22 @@ public class ArchaiusModule extends AbstractModule {
     bind(Config.class).toInstance(ConfigFactory.load());
   }
 
+  private Map<String, String> getScope(Config cfg) {
+    final String prop = "netflix.iep.archaius.scope";
+    final Config scopeCfg = cfg.getConfig(prop);
+    final Map<String, String> scope = new HashMap<>();
+    for (Map.Entry<String, ConfigValue> entry : scopeCfg.entrySet()) {
+      scope.put(entry.getKey(), entry.getValue().unwrapped().toString());
+    }
+    return scope;
+  }
+
   private Callable<PollingResponse> getCallback(Config cfg) throws MalformedURLException {
     final String prop = "netflix.iep.archaius.url";
-    final String url = cfg.getString(prop);
-    return new RemoteProperties(url);
+    final URL url = URI.create(cfg.getString(prop)).toURL();
+    return JsonPersistedV2Reader.builder(new HTTPStreamLoader(url))
+        .withPredicate(new NoGlobalPredicate(ScopePredicates.fromMap(getScope(cfg))))
+        .build();
   }
 
   private PollingStrategy getPollingStrategy(Config cfg) {
@@ -58,7 +78,9 @@ public class ArchaiusModule extends AbstractModule {
 
   @Provides @Singleton
   AppConfig getAppConfig(Config root) throws Exception {
-    final AppConfig config = DefaultAppConfig.builder().build();
+    final AppConfig config = DefaultAppConfig.builder()
+        .withApplicationConfigName("application")
+        .build();
     config.addOverrideConfig(new TypesafeConfig(root.origin().filename(), root));
     config.addOverrideConfig(getDynamicConfig(root));
     return config;
