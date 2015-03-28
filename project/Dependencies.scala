@@ -19,8 +19,11 @@ object Dependencies {
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.5.1"
   val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.150"
   val governator      = "com.netflix.governator" % "governator" % "1.3.3"
+  val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
+  val guiceGrapher    = "com.google.inject.extensions" % "guice-grapher" % guice
   val guiceMulti      = "com.google.inject.extensions" % "guice-multibindings" % guice
+  val guiceServlet    = "com.google.inject.extensions" % "guice-servlet" % guice
   val jodaTime        = "joda-time" % "joda-time" % "2.5"
   val karyonAdmin     = "com.netflix.karyon2" % "karyon-admin-web" % "2.2.00-ALPHA7"
   val karyonCore      = "com.netflix.karyon2" % "karyon-core" % "2.2.00-ALPHA7"
