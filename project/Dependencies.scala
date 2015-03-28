@@ -14,7 +14,9 @@ object Dependencies {
   import Versions._
 
   val archaiusCore    = "com.netflix.archaius" % "archaius-core" % archaius
+  val archaiusGuice   = "com.netflix.archaius" % "archaius-guice" % archaius
   val archaiusLegacy  = "com.netflix.archaius" % "archaius-legacy" % archaius
+  val archaiusPersist = "com.netflix.archaius" % "archaius-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.5.1"
   val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.150"
