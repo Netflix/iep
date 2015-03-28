@@ -32,6 +32,11 @@ class ClientConfig {
   /** Create relative uri string with the path and query. */
   static String relative(URI uri) {
     String r = uri.getRawPath();
+    if (r == null) {
+      r = "/";
+    } else if (r.startsWith("//")) {
+      r = r.substring(1);
+    }
     if (uri.getRawQuery() != null) {
       r += "?" + uri.getRawQuery();
     }
@@ -46,8 +51,8 @@ class ClientConfig {
 
   /** Create a client config instance based on a URI. */
   static ClientConfig fromUri(URI uri) {
-    Matcher m = null;
-    ClientConfig cfg = null;
+    Matcher m;
+    ClientConfig cfg;
     switch (uri.getScheme()) {
       case "niws":
         m = NIWS_URI.matcher(uri.toString());

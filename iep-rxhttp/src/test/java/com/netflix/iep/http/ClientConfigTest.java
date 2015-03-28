@@ -17,7 +17,6 @@ package com.netflix.iep.http;
 
 import com.netflix.config.ConfigurationManager;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,5 +103,25 @@ public class ClientConfigTest {
     ClientConfig config = ClientConfig.fromUri(URI.create("vip://foo:vip:7001/bar?a=b"));
     Assert.assertEquals(config.uri().toString(), "/bar?a=b");
     Assert.assertEquals(config.vip(), "vip:7001");
+  }
+
+  @Test
+  public void doubleSlash() {
+    URI niws = URI.create("niws://some-vip//api/v2/update");
+    ClientConfig cfg = ClientConfig.fromUri(niws);
+    Assert.assertEquals("/api/v2/update", cfg.relativeUri());
+
+    URI query = URI.create("niws://some-vip//api/v2/update?foo=//");
+    ClientConfig cfg1 = ClientConfig.fromUri(query);
+    Assert.assertEquals("/api/v2/update?foo=//", cfg1.relativeUri());
+
+    URI simple = URI.create("http://some-vip//api/v2/update?foo=//");
+    ClientConfig cfg2 = ClientConfig.fromUri(simple);
+    Assert.assertEquals("/api/v2/update?foo=//", cfg2.relativeUri());
+  }
+
+  @Test
+  public void equalsContract() {
+    EqualsVerifier.forClass(ClientConfig.class).usingGetClass().verify();
   }
 }
