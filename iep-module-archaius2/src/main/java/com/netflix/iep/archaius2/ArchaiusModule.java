@@ -32,9 +32,9 @@ import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValue;
 
 import javax.inject.Singleton;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit;
  * Helper for configuring archaius with a dynamic property source.
  */
 public class ArchaiusModule extends AbstractModule {
+
   @Override protected void configure() {
     bind(Config.class).toInstance(ConfigFactory.load());
   }
@@ -58,9 +59,42 @@ public class ArchaiusModule extends AbstractModule {
     return scope;
   }
 
-  private Callable<PollingResponse> getCallback(Config cfg) throws MalformedURLException {
+  private String appQuery(String app, String cluster, String asg) {
+    final String asgEmpty = emptyOrEqual("asg", null);
+    final String asgMatch = "asg = '" + asg + "'";
+    final String clusterEmpty = emptyOrEqual("cluster", null);
+    final String clusterMatch = asgEmpty + " and cluster = '" + cluster + "'";
+    final String asgAndClusterEmpty = asgEmpty + " and " + clusterEmpty;
+    final String appMatch = asgAndClusterEmpty + " and appId = '" + app + "'";
+    return "(" + asgMatch + " or (" + clusterMatch + ") or (" + appMatch + "))";
+  }
+
+  private String emptyOrEqual(String k, String v) {
+    return (v == null || v.isEmpty())
+      ? "(" + k + " is null or " + k + " = '')"
+      : "(" + k + " is null or " + k + " = '' or " + k + " = '" + v + "')";
+  }
+
+  private String getFilter(Map<String, String> scope) throws Exception {
+    final String appId = scope.get("appId");
+    final String cluster = scope.get("cluster");
+    final String asg = scope.get("asg");
+    StringBuilder buf = new StringBuilder();
+    buf.append(appQuery(appId, cluster, asg));
+    for (Map.Entry<String, String> entry : scope.entrySet()) {
+      final String k = entry.getKey();
+      if (!"appId".equals(k) && !"cluster".equals(k) && !"asg".equals(k)) {
+        buf.append(" and ").append(emptyOrEqual(k, entry.getValue()));
+      }
+    }
+    return URLEncoder.encode(buf.toString(), "UTF-8");
+  }
+
+  private Callable<PollingResponse> getCallback(Config cfg) throws Exception {
+    final Map<String, String> scope = getScope(cfg);
     final String prop = "netflix.iep.archaius.url";
-    final URL url = URI.create(cfg.getString(prop)).toURL();
+    final String query = "?skipPropsWithExtraScopes=false&filter=" + getFilter(scope);
+    final URL url = URI.create(cfg.getString(prop) + query).toURL();
     return JsonPersistedV2Reader.builder(new HTTPStreamLoader(url))
         .withPredicate(new NoGlobalPredicate(ScopePredicates.fromMap(getScope(cfg))))
         .build();
@@ -72,7 +106,7 @@ public class ArchaiusModule extends AbstractModule {
     return new FixedPollingStrategy(interval, TimeUnit.MILLISECONDS);
   }
 
-  private PollingDynamicConfig getDynamicConfig(Config cfg) throws MalformedURLException {
+  private PollingDynamicConfig getDynamicConfig(Config cfg) throws Exception {
     return new PollingDynamicConfig("dynamic", getCallback(cfg), getPollingStrategy(cfg));
   }
 
