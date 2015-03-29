@@ -96,6 +96,7 @@ public class ArchaiusModule extends AbstractModule {
     final String query = "?skipPropsWithExtraScopes=false&filter=" + getFilter(scope);
     final URL url = URI.create(cfg.getString(prop) + query).toURL();
     return JsonPersistedV2Reader.builder(new HTTPStreamLoader(url))
+        .withPath("propertiesList")
         .withPredicate(new NoGlobalPredicate(ScopePredicates.fromMap(getScope(cfg))))
         .build();
   }
