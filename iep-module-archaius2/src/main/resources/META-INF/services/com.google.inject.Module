@@ -1,2 +1,2 @@
 com.netflix.iep.archaius2.ArchaiusModule
-com.netflix.com.netflix.archaius.guice.ArchaiusModule
+com.netflix.archaius.guice.ArchaiusModule
