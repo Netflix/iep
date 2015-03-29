@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Helper for configuring archaius with a dynamic property source.
  */
-public class ArchaiusModule extends AbstractModule {
+public class ArchaiusModule extends com.netflix.archaius.guice.ArchaiusModule {
 
   @Override protected void configure() {
     bind(Config.class).toInstance(ConfigFactory.load());
@@ -112,7 +112,7 @@ public class ArchaiusModule extends AbstractModule {
   }
 
   @Provides @Singleton
-  AppConfig getAppConfig(Config root) throws Exception {
+  protected AppConfig createAppConfig(Config root) throws Exception {
     final AppConfig config = DefaultAppConfig.builder()
         .withApplicationConfigName("application")
         .build();
