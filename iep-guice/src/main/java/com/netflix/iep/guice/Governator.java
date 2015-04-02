@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.gov;
+package com.netflix.iep.guice;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 
-/** Required javadoc for public class. */
+/** Helper for using guice with some basic lifecycle. */
 public final class Governator {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Governator.class);
@@ -52,7 +52,7 @@ public final class Governator {
 
   /**
    * Returns a list of all guice modules in the classpath using ServiceLoader. Modules that do
-   * not have a corresponding provider config will not get loaded.
+   * not have a corresponding provider config.properties will not get loaded.
    */
   public static List<Module> getModulesUsingServiceLoader() {
     ServiceLoader<Module> loader = ServiceLoader.load(Module.class);
@@ -80,11 +80,18 @@ public final class Governator {
 
   /** Start up governator with an arbitrary list of modules. */
   public void start(Iterable<Module> modules) throws Exception {
-    injector = Guice.createInjector(modules);
-    // TODO service
+    List<Module> ms = new ArrayList<>();
+    ms.add(new LifecycleModule());
+    for (Module m : modules) {
+      ms.add(m);
+    }
+    injector = Guice.createInjector(ms);
+    addShutdownHook();
   }
 
   /** Shutdown governator. */
   public void shutdown() throws Exception {
+    PreDestroyList list = injector.getInstance(PreDestroyList.class);
+    list.invokeAll();
   }
 }
