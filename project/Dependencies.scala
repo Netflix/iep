@@ -26,6 +26,7 @@ object Dependencies {
   val guiceGrapher    = "com.google.inject.extensions" % "guice-grapher" % guice
   val guiceMulti      = "com.google.inject.extensions" % "guice-multibindings" % guice
   val guiceServlet    = "com.google.inject.extensions" % "guice-servlet" % guice
+  val inject          = "javax.inject" % "javax.inject" % "1"
   val jodaTime        = "joda-time" % "joda-time" % "2.5"
   val karyonAdmin     = "com.netflix.karyon2" % "karyon-admin-web" % "2.2.00-ALPHA7"
   val karyonCore      = "com.netflix.karyon2" % "karyon-core" % "2.2.00-ALPHA7"

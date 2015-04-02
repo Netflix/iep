@@ -34,7 +34,8 @@ object MainBuild extends Build {
       `iep-module-karyon`,
       `iep-module-rxnetty`,
       `iep-nflxenv`,
-      `iep-rxhttp`)
+      `iep-rxhttp`,
+      `iep-service`)
     .settings(buildSettings: _*)
     .settings(BuildSettings.noPackaging: _*)
 
@@ -102,11 +103,13 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-module-eureka` = project
+    .dependsOn(`iep-service`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.eureka,
       Dependencies.guiceCore,
+      Dependencies.guiceMulti,
       Dependencies.slf4jApi
     ))
 
@@ -162,6 +165,14 @@ object MainBuild extends Build {
       Dependencies.spectatorSandbox,
       Dependencies.slf4jApi,
       Dependencies.equalsVerifier % "test"
+    ))
+
+  lazy val `iep-service` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.inject,
+      Dependencies.slf4jApi
     ))
 
   lazy val commonDeps = Seq(
