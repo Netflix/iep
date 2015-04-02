@@ -41,9 +41,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Helper for configuring archaius with a dynamic property source.
+ * Helper for configuring archaius with the Netflix dynamic property source.
  */
-public class ArchaiusModule extends com.netflix.archaius.guice.ArchaiusModule {
+public class ArchaiusModule extends AbstractModule {
 
   @Override protected void configure() {
     bind(Config.class).toInstance(ConfigFactory.load());
@@ -59,6 +59,10 @@ public class ArchaiusModule extends com.netflix.archaius.guice.ArchaiusModule {
     return scope;
   }
 
+  /**
+   * Construct an app query such that there must be a match on at least one of app, cluster, or
+   * asg. This prevents global fast properties from matching.
+   */
   private String appQuery(String app, String cluster, String asg) {
     final String asgEmpty = emptyOrEqual("asg", null);
     final String asgMatch = "asg = '" + asg + "'";
@@ -69,12 +73,14 @@ public class ArchaiusModule extends com.netflix.archaius.guice.ArchaiusModule {
     return "(" + asgMatch + " or (" + clusterMatch + ") or (" + appMatch + "))";
   }
 
+  // Helper for checking if the value for a key is either null, empty, or a specific value.
   private String emptyOrEqual(String k, String v) {
     return (v == null || v.isEmpty())
       ? "(" + k + " is null or " + k + " = '')"
       : "(" + k + " is null or " + k + " = '' or " + k + " = '" + v + "')";
   }
 
+  // Return the URL encoded filter expression for this instance.
   private String getFilter(Map<String, String> scope) throws Exception {
     final String appId = scope.get("appId");
     final String cluster = scope.get("cluster");
@@ -95,10 +101,11 @@ public class ArchaiusModule extends com.netflix.archaius.guice.ArchaiusModule {
     final String prop = "netflix.iep.archaius.url";
     final String query = "?skipPropsWithExtraScopes=false&filter=" + getFilter(scope);
     final URL url = URI.create(cfg.getString(prop) + query).toURL();
-    return JsonPersistedV2Reader.builder(new HTTPStreamLoader(url))
+    final JsonPersistedV2Reader reader = JsonPersistedV2Reader.builder(new HTTPStreamLoader(url))
         .withPath("propertiesList")
         .withPredicate(new NoGlobalPredicate(ScopePredicates.fromMap(getScope(cfg))))
         .build();
+    return new RemotePropertiesCallable(url.toString(), reader);
   }
 
   private PollingStrategy getPollingStrategy(Config cfg) {
@@ -111,7 +118,8 @@ public class ArchaiusModule extends com.netflix.archaius.guice.ArchaiusModule {
     return new PollingDynamicConfig("dynamic", getCallback(cfg), getPollingStrategy(cfg));
   }
 
-  @Provides @Singleton
+  @Provides
+  @Singleton
   protected AppConfig createAppConfig(Config root) throws Exception {
     final AppConfig config = DefaultAppConfig.builder()
         .withApplicationConfigName("application")
