@@ -16,10 +16,13 @@
 package com.netflix.iep.eureka;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.multibindings.Multibinder;
 import com.netflix.appinfo.CloudInstanceConfig;
+import com.netflix.appinfo.HealthCheckHandler;
 import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.DiscoveryManager;
+import com.netflix.iep.service.Service;
 
 
 /**
@@ -33,5 +36,9 @@ public class EurekaModule extends AbstractModule {
     DefaultEurekaClientConfig clientCfg = new DefaultEurekaClientConfig();
     mgr.initComponent(instanceCfg, clientCfg);
     bind(DiscoveryClient.class).toInstance(mgr.getDiscoveryClient());
+    bind(HealthCheckHandler.class).toProvider(HandlerProvider.class).asEagerSingleton();
+
+    Multibinder<Service> serviceBinder = Multibinder.newSetBinder(binder(), Service.class);
+    serviceBinder.addBinding().to(EurekaService.class);
   }
 }
