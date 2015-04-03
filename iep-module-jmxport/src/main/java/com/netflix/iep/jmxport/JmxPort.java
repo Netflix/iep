@@ -23,10 +23,7 @@ import javax.management.MBeanServer;
 import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
-import java.net.URL;
 import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,40 +35,19 @@ public final class JmxPort {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JmxPort.class);
 
-  private static final String META_URL = "http://169.254.169.254/latest/meta-data/";
-
-  private static final String PUBLIC_HOSTNAME = "public-hostname";
-  private static final String LOCAL_IPV4 = "local-ipv4";
-
+  private static final String DEFAULT_HOST = "localhost";
   private static final int DEFAULT_PORT = 7500;
-
-  private static String getKey(String k) {
-    final String urlString = META_URL + k;
-    try {
-      URL url = new URL(urlString);
-      try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
-        return reader.readLine();
-      }
-    } catch (Exception e) {
-      LOGGER.debug("failed to get " + urlString, e);
-      return null;
-    }
-  }
 
   private JmxPort() {
   }
 
   public static void configure() {
-    configure(null, DEFAULT_PORT);
+    configure(DEFAULT_HOST, DEFAULT_PORT);
   }
 
   public static void configure(String hostname, int port) {
-    // Try to get the public hostname, if it can't be determined fall back on local ip
     if (hostname == null) {
-      hostname = getKey(PUBLIC_HOSTNAME);
-    }
-    if (hostname == null) {
-      hostname = getKey(LOCAL_IPV4);
+      throw new IllegalArgumentException("hostname cannot be null");
     }
     System.setProperty("java.rmi.server.hostname", hostname);
     LOGGER.info("set java.rmi.server.hostname to '" + hostname + "'");
