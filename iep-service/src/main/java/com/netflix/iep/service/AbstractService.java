@@ -40,7 +40,7 @@ public abstract class AbstractService implements Service {
     return name;
   }
 
-  @Override public final boolean isHealthy() {
+  @Override public boolean isHealthy() {
     return state == State.RUNNING;
   }
 
