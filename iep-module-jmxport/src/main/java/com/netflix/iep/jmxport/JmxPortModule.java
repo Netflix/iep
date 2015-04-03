@@ -19,11 +19,11 @@ import com.google.inject.AbstractModule;
 
 public class JmxPortModule extends AbstractModule {
 
-  private static final String JMX_HOST = "netflix.iep.gov.jmxHost";
-  private static final String JMX_PORT = "netflix.iep.gov.jmxPort";
+  private static final String JMX_HOST = "netflix.iep.jmx.host";
+  private static final String JMX_PORT = "netflix.iep.jmx.port";
 
   @Override protected void configure() {
-    final String host = System.getProperty(JMX_HOST, null);
+    final String host = System.getProperty(JMX_HOST, "localhost");
     final int port = Integer.parseInt(System.getProperty(JMX_PORT, "7500"));
     JmxPort.configure(host, port);
   }
