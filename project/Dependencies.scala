@@ -4,6 +4,7 @@ object Dependencies {
   object Versions {
     val archaius   = "2.0.0-SNAPSHOT"
     val guice      = "4.0-beta5"
+    val karyon     = "2.2.0-rc.1"
     val ribbon     = "2.0.0"
     val rxnetty    = "0.4.8"
     val scala      = "2.11.6"
@@ -28,8 +29,8 @@ object Dependencies {
   val guiceServlet    = "com.google.inject.extensions" % "guice-servlet" % guice
   val inject          = "javax.inject" % "javax.inject" % "1"
   val jodaTime        = "joda-time" % "joda-time" % "2.5"
-  val karyonAdmin     = "com.netflix.karyon2" % "karyon-admin-web" % "2.2.00-ALPHA7"
-  val karyonCore      = "com.netflix.karyon2" % "karyon-core" % "2.2.00-ALPHA7"
+  val karyonAdmin     = "com.netflix.karyon" % "karyon2-admin-web" % karyon
+  val karyonCore      = "com.netflix.karyon" % "karyon2-core" % karyon
   val junit           = "junit" % "junit" % "4.10"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
