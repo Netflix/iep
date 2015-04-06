@@ -19,11 +19,16 @@ import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.CloudInstanceConfig;
+import com.netflix.appinfo.EurekaInstanceConfig;
 import com.netflix.appinfo.HealthCheckHandler;
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.appinfo.providers.EurekaConfigBasedInstanceInfoProvider;
 import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
-import com.netflix.discovery.DiscoveryManager;
+import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.iep.service.Service;
+
+import javax.inject.Provider;
 
 
 /**
@@ -32,12 +37,32 @@ import com.netflix.iep.service.Service;
 public class EurekaModule extends AbstractModule {
 
   @Override protected void configure() {
-    final DiscoveryManager mgr = DiscoveryManager.getInstance();
+    // EurekaInstanceConfig
     CloudInstanceConfig instanceCfg = new CloudInstanceConfig("netflix.appinfo.");
-    DefaultEurekaClientConfig clientCfg = new DefaultEurekaClientConfig();
-    mgr.initComponent(instanceCfg, clientCfg);
-    bind(ApplicationInfoManager.class).toInstance(ApplicationInfoManager.getInstance());
-    bind(DiscoveryClient.class).toInstance(mgr.getDiscoveryClient());
+    bind(EurekaInstanceConfig.class).toInstance(instanceCfg);
+
+    // InstanceInfo
+    Provider<InstanceInfo> infoProvider = new EurekaConfigBasedInstanceInfoProvider(instanceCfg);
+    bind(InstanceInfo.class).toProvider(infoProvider).asEagerSingleton();
+
+    // Needs:
+    // * EurekaInstanceConfig
+    // * InstanceInfo
+    bind(ApplicationInfoManager.class).asEagerSingleton();
+
+    // EurekaClientConfig
+    bind(EurekaClientConfig.class).to(DefaultEurekaClientConfig.class).asEagerSingleton();
+
+    // DiscoveryClientOptionalArgs, automatic via field injection
+
+    // BackupRegistry, automatic via ImplementedBy annotation
+
+    // Needs:
+    // * InstanceInfo
+    // * EurekaClientConfig
+    // * DiscoveryClientOptionalArgs
+    // * BackupRegistry
+    bind(DiscoveryClient.class).asEagerSingleton();
     bind(HealthCheckHandler.class).toProvider(HandlerProvider.class).asEagerSingleton();
 
     Multibinder<Service> serviceBinder = Multibinder.newSetBinder(binder(), Service.class);

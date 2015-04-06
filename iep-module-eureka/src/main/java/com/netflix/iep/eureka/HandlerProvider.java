@@ -30,9 +30,8 @@ class HandlerProvider implements Provider<HealthCheckHandler> {
   private final HealthCheckHandler handler;
 
   @Inject
-  HandlerProvider(Provider<ServiceManager> mgr, DiscoveryClient client) {
+  HandlerProvider(Provider<ServiceManager> mgr) {
     this.handler = new EurekaHandler(mgr);
-    client.registerHealthCheck(this.handler);
   }
 
   @Override public HealthCheckHandler get() {
