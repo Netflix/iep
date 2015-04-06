@@ -129,7 +129,6 @@ object MainBuild extends Build {
       Dependencies.archaiusLegacy,
       Dependencies.guiceCore,
       Dependencies.karyonAdmin,
-      Dependencies.karyonCore,
       Dependencies.rxnettyCore,
       Dependencies.rxnettyCtxts,
       Dependencies.slf4jApi
