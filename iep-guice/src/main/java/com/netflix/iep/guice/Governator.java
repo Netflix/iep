@@ -83,6 +83,7 @@ public final class Governator {
     List<Module> ms = new ArrayList<>();
     ms.add(new LifecycleModule());
     for (Module m : modules) {
+      LOGGER.debug("adding module: {}", m.getClass());
       ms.add(m);
     }
     injector = Guice.createInjector(ms);
