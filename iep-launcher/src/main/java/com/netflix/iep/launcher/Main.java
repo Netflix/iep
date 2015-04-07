@@ -80,7 +80,19 @@ public final class Main {
     }
   }
 
+  private static void delete(File file) {
+    if (file.isDirectory()) {
+      for (File f : file.listFiles()) {
+        delete(f);
+      }
+    }
+    log("deleting file: " + file);
+    file.delete();
+  }
+
   private static File extract(File loc) throws Exception {
+    boolean clean = Boolean.parseBoolean(System.getProperty(Settings.CLEAN_WORKING_DIR, "true"));
+
     if (loc.isDirectory()) {
       log("already extracted, using directory: " + loc);
       return loc;
@@ -89,6 +101,12 @@ public final class Main {
       String path = System.getProperty(Settings.WORKING_DIR);
       path = (path == null) ? dflt : path;
       File dir = new File(path);
+
+      if (clean && dir.isDirectory()) {
+        log("already extracted, but " + Settings.CLEAN_WORKING_DIR + "=true, deleting " + dir);
+        delete(dir);
+      }
+
       dir.mkdirs();
       extractJar(loc, dir);
       return dir;
