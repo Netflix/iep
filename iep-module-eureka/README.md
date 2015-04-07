@@ -5,7 +5,7 @@ Guice module to configure [eureka](https://github.com/Netflix/eureka). It will d
 
 * Setup binding so you can inject `ApplicationInfoManager` and `DiscoveryClient`.
 * Configure the healthcheck handler to be based on
-  [ServiceManager](https://github.com/Netflix/iep/iep-service).
+  [ServiceManager](https://github.com/Netflix/iep/tree/master/iep-service).
 
 ## Gradle
 

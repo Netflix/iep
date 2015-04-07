@@ -13,7 +13,7 @@ It will also install the base guice module from archaius2. The `AppConfig` is cu
 use `application` as the config name rather than the default of `config`.
   
 > :warning: This module will not load global properties. Properties coming from platformservice
-> must be restricted to via at least one of application, cluster, or auto-scaling group.
+> must be restricted to at least one of application, cluster, or auto-scaling group.
 
 ## Gradle
 
