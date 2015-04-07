@@ -30,18 +30,12 @@ public final class Governator {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Governator.class);
 
-  private static final Governator INSTANCE = new Governator();
-
-  public static Governator getInstance() {
-    return INSTANCE;
-  }
-
   /** Add a task to be executed after shutting down governator. */
-  public static void addShutdownHook() {
+  public static void addShutdownHook(final Governator governator) {
     final Runnable r = new Runnable() {
       @Override public void run() {
         try {
-          getInstance().shutdown();
+          governator.shutdown();
         } catch (Exception e) {
           LOGGER.warn("exception during shutdown sequence", e);
         }
@@ -63,10 +57,10 @@ public final class Governator {
     return modules;
   }
 
-  private Governator() {
-  }
-
   private Injector injector;
+
+  public Governator() {
+  }
 
   /** Return the injector used with the governator lifecycle. */
   public Injector getInjector() {
@@ -87,12 +81,16 @@ public final class Governator {
       ms.add(m);
     }
     injector = Guice.createInjector(ms);
-    addShutdownHook();
   }
 
   /** Shutdown governator. */
   public void shutdown() throws Exception {
     PreDestroyList list = injector.getInstance(PreDestroyList.class);
     list.invokeAll();
+  }
+
+  /** Add a shutdown hook for this instance. */
+  public void addShutdownHook() {
+    addShutdownHook(this);
   }
 }
