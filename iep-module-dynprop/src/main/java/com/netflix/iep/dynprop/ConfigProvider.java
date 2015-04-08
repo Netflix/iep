@@ -30,8 +30,8 @@ import javax.inject.Provider;
 
 class ConfigProvider implements Provider<AbstractConfiguration> {
 
-  @Inject ConfigProvider(DiscoveryClient client) {
-    InstanceInfo info = ApplicationInfoManager.getInstance().getInfo();
+  @Inject ConfigProvider(ApplicationInfoManager appInfo, DiscoveryClient client) {
+    InstanceInfo info = appInfo.getInfo();
     RemoteConfigurationSource source = new RemoteConfigurationSource(info, client);
     AbstractPollingScheduler scheduler = new FixedDelayPollingScheduler();
     DynamicConfiguration dynamic = new DynamicConfiguration(source, scheduler);
