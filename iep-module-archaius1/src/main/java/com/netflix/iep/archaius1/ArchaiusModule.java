@@ -13,23 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.archaius2;
+package com.netflix.iep.archaius1;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Module;
-import com.google.inject.util.Modules;
+import com.netflix.config.ConfigurationManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
- * Work around for overriding the AppConfig, can be removed when we get a release of archaius
- * with:
- * https://github.com/Netflix/archaius/issues/286
- * https://github.com/Netflix/archaius/pull/287
+ * Helper for configuring archaius v1.
  */
-public class OverrideModule extends AbstractModule {
+public class ArchaiusModule extends AbstractModule {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ArchaiusModule.class);
+
+  public static void loadProperties(String name) {
+    try {
+      ConfigurationManager.loadCascadedPropertiesFromResources(name);
+    } catch (IOException e) {
+      LOGGER.warn("failed to load properties for '" + name + "'");
+    }
+  }
+
   @Override protected void configure() {
-    Module m = Modules
-        .override(new com.netflix.archaius.guice.ArchaiusModule())
-        .with(new ArchaiusModule());
-    install(m);
+    loadProperties("application");
   }
 }

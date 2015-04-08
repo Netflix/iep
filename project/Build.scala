@@ -27,6 +27,7 @@ object MainBuild extends Build {
       `iep-governator`,
       `iep-guice`,
       `iep-launcher`,
+      `iep-module-archaius1`,
       `iep-module-archaius2`,
       `iep-module-dynprop`,
       `iep-module-eureka`,
@@ -78,13 +79,22 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
 
+  lazy val `iep-module-archaius1` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.archaiusCore,
+      Dependencies.archaiusLegacy,
+      Dependencies.guiceCore,
+      Dependencies.slf4jApi
+    ))
+
   lazy val `iep-module-archaius2` = project
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.archaiusCore,
       Dependencies.archaiusGuice,
-      Dependencies.archaiusLegacy,
       Dependencies.archaiusPersist,
       Dependencies.archaiusTypesafe,
       Dependencies.guiceCore,
