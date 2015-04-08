@@ -31,7 +31,7 @@ public class ArchaiusModule extends AbstractModule {
 
   public static void loadProperties(String name) {
     try {
-      ConfigurationManager.loadCascadedPropertiesFromResources(name);
+      ConfigurationManager.loadAppOverrideProperties(name);
     } catch (IOException e) {
       LOGGER.warn("failed to load properties for '" + name + "'");
     }
