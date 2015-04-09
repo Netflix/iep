@@ -1,0 +1,185 @@
+:host {
+    display: block;
+}
+
+.is-collapsable {
+    padding: 0;
+}
+
+.is-collapsable tr {
+    background-color: #F8F8F8;
+}
+
+.is-row-table {
+    width: 100%;
+    visibility: hidden;
+}
+
+.column-widths-are-computed .is-row-table {
+    visibility: visible;
+}
+
+.no-border {
+    border: none;
+}
+
+nf-switch span{
+    display: block;
+    height: 15px;
+    width: 15px;
+    line-height: 15px;
+}
+
+th {
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.is-row-table tr:last-child td {
+    border-bottom: none;
+}
+
+tr {
+    transition: background-color 0.3s ease;
+}
+
+tr.is-highlighted {
+    outline: 2px solid #777;
+    background-color: #D9D9D9;
+}
+
+tr.is-highlighted td {
+    border-bottom: none;
+}
+
+.is-hidden {
+    display: none;
+}
+
+
+/* table
+-----------------------------*/
+table {
+    display: table;
+    empty-cells: show;
+    border: none;
+    border-spacing: 0;
+    width: 100%;
+}
+
+td,
+th {
+    border-bottom: 1px solid #C4C4C4;
+    border-width: 0 0 1px 0;
+    font-size: inherit;
+    margin: 0;
+    overflow: hidden;
+    padding: 0.8em 1em;
+    word-break: break-all;
+}
+
+td:first-child,
+th:first-child {
+    border-left-width: 0;
+}
+
+th:first-child {
+    width: 15px;
+    text-align: center;
+}
+
+th:first-child > nf-icon {
+    display: none;
+    width: 22px;
+    height: 22px;
+    margin: 0 0 11px 0;
+}
+
+th:first-child > nf-icon:first-child {
+    margin-right: 2px;
+}
+
+table.column-widths-are-computed th:first-child {
+    padding: 0;
+    min-width: 47px;
+}
+
+table.column-widths-are-computed th:first-child > nf-icon {
+    display: inline-block;
+}
+
+thead {
+    background: transparent;
+    color: #333;
+    font-weight: 600;
+    text-align: left;
+    vertical-align: bottom;
+}
+
+td {
+    background-color: transparent;
+}
+
+
+
+/* TODO: This is a temporary workaround until code is refactored to use the 'content' tag */
+/* pills
+-----------------------------*/
+pill,
+.nf-pill {
+    font-family: inherit;
+    font-size: 0.8em;
+    line-height: 0.8em;
+    padding: 0.3em 1em;
+    color: #333;
+    background-color: transparent;
+    border: 1px solid #c4c4c4;
+    border-radius: 6px;
+    text-transform: uppercase;
+    cursor: default;
+
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: baseline;
+    text-align: center;
+
+    /* this is probably a bad idea, but I'm just testing it */
+    transform: translateY(-0.15em);
+
+}
+
+pill[ok],
+pill.pill-ok,
+.nf-pill.pill-ok,
+.nf-pill[ok] {
+    background: #8DAC71;
+    color: #fff;
+}
+
+pill[failed],
+pill.pill-failed,
+.nf-pill.pill-failed,
+.nf-pill[failed] {
+    background: #B6272B;
+    color: #fff;
+}
+
+pill[marginal],
+pill.pill-marginal,
+.nf-pill.pill-marginal,
+.nf-pill[marginal] {
+    background: #d2bc5e;
+    color: #fff;
+}
+
+pill[primary],
+pill.pill-primary,
+.nf-pill.pill-primary,
+.nf-pill[primary] {
+    background-color: #478CC8;
+    color: #fff;
+}

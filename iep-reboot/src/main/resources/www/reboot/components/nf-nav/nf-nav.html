@@ -1,0 +1,169 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html" />
+<link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html" />
+<link rel="import" href="../bower_components/core-menu/core-menu.html" />
+<link rel="import" href="../bower_components/paper-item/paper-item.html" />
+<link rel="import" href="../bower_components/core-media-query/core-media-query.html" />
+<link rel="import" href="../nf-nav-menu/nf-nav-menu.html" />
+<link rel="import" href="../nf-icon/nf-icon.html" />
+
+<script src="../../js/utils.js"></script>
+
+<polymer-element name="nf-nav" extends="nav" attributes="">
+
+    <template>
+
+        <link rel="stylesheet" href="nf-nav.css">
+
+        <span id="appName">{{appName}}</span>
+
+        <nf-nav-menu id="tabs" selected="{{selectedTab}}">
+            <template repeat="{{ tab in tabs }}">
+                <nf-tab>
+                    <a href="{{tab.link}}">{{tab.text}}</a>
+                </nf-tab>
+            </template>
+        </nf-nav-menu>
+
+        <paper-menu-button>
+            <nf-icon name="menu" class="is-button"></nf-icon>
+            <paper-dropdown class="dropdown" transition>
+                <core-menu class="menu" selected="{{selectedTab}}">
+                    <template repeat="{{ tab in tabs }}">
+                        <paper-item noink>
+                            <a href="{{tab.link}}">{{tab.text}}</a>
+                        </paper-item>
+                    </template>
+                </core-menu>
+            </paper-dropdown>
+        </paper-menu-button>
+
+        <content select="ul"></content>
+
+        <core-media-query query="{{mediaQuery}}" queryMatches="{{narrowMode}}"></core-media-query>
+
+    </template>
+
+    <script>
+
+        (function () {
+
+            'use strict';
+
+            var appNameClassIdentifier = 'logo',
+                tabIsSelectedClass = 'is-selected',
+                narrowModeClass = 'is-narrow-mode';
+
+            Polymer({
+
+                tabs: [],
+
+                init: function() {
+
+                    this.extractData();
+                    this.setBreakpoints();
+
+                    if (!this.runOnlyOnceGuard) {
+                        this.runOnlyOnceGuard = true;
+                        this.addEventHandlers();
+                    }
+
+                },
+
+                setBreakpoints: function() {
+
+                    var tabsCoords = this.$.tabs.getBoundingClientRect(),
+                        appNameCoords = this.$.appName.getBoundingClientRect(),
+                        wiggleRoom = 10,
+                        self = this;
+
+                    if (tabsCoords.width) {
+
+                        this.mediaQuery = 'max-width:' + (appNameCoords.right + tabsCoords.width + wiggleRoom) + 'px';
+
+                    } else if (this.tabs.length) {
+
+                        window.setTimeout(function() {
+                            self.setBreakpoints();
+                        }, 50);
+
+                    }
+
+
+                },
+
+                extractData: function() {
+
+                    var items = this.querySelectorAll('li'),
+                        self = this;
+
+                    [].forEach.call(items, function(item, index){
+                        self.processItem(item, index);
+                    });
+
+                },
+
+                processItem: function(item, index) {
+
+                    var link;
+
+                    if ( item.classList.contains(appNameClassIdentifier) ) {
+
+                        this.appName = item.textContent;
+
+                    } else {
+
+                        link = item.querySelector('a');
+
+                        this.tabs.push({
+                            text: item.textContent,
+                            link: link.getAttribute('href')
+                        });
+
+                    }
+
+                    if ( item.classList.contains(tabIsSelectedClass) ) {
+                        this.selectedTab = this.appName ? index - 1 : index;
+                    }
+
+                },
+
+                narrowModeChanged: function () {
+
+                    if (this.narrowMode) {
+
+                        this.classList.add(narrowModeClass);
+
+                    } else {
+
+                        this.classList.remove(narrowModeClass);
+
+                    }
+
+                },
+
+                addEventHandlers: function() {
+
+                    var self = this;
+
+                    //observing for changes to the nav element
+                    this.observer = new MutationObserver(function(mutations) {
+
+                        self.init();
+
+                    });
+
+                    this.observer.observe(this, {childList: true, attributes: false, subtree: true});
+
+                },
+
+                domReady: function() {
+                    this.init();
+                }
+
+            });
+
+        })();
+    </script>
+
+</polymer-element>

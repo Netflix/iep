@@ -1,0 +1,9 @@
+TODO:
+    -refactor code to use nf-data
+    -make 'highlightable' rows optional
+    -keep 'highlighted' row after sorting (but not after light dom changes)
+    -re-trigger 'highlighted' attribute node after light dom  changes
+    -adjust columns width after resize
+    -keep open/closed state after re-sorting (but not after light dom changes)
+    -refactor 'singleton' bug out
+    -css bug: there seem to be a bug when the table starts collapse and then expanded last body row doesn't seem to have a bottom margin

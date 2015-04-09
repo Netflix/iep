@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+    <title>nf-submenu-pages demo</title>
+    <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="../nf-submenu/nf-submenu.html" />
+    <link rel="import" href="nf-submenu-pages.html" />
+    <style>
+
+        nf-submenu-pages:first-of-type {
+            color: #000;
+            text-align: center;
+            height: 250px;
+        }
+
+        h1 {
+            margin-top: 100px;
+        }
+
+        .one {
+            background-color: #508024;
+        }
+        .two {
+            background-color: #16008b;
+        }
+        .three {
+            background-color: orange;
+        }
+        .four {
+            background-color: red;
+        }
+        .five {
+            background-color: deeppink;
+        }
+
+    </style>
+
+</head>
+<body unresolved="">
+
+<nf-submenu selected="0">
+    <nf-tab>one</nf-tab>
+    <nf-tab>two</nf-tab>
+    <nf-tab>three</nf-tab>
+    <nf-tab>four</nf-tab>
+    <nf-tab>five</nf-tab>
+</nf-submenu>
+
+<nf-submenu-pages>
+    <div class="one"><h1>One</h1></div>
+    <div class="two"><h1>Two</h1></div>
+    <div class="three"><h1>Three</h1></div>
+    <div class="four"><h1>Four</h1></div>
+    <div class="five"><h1>Five</h1></div>
+</nf-submenu-pages>
+
+<nf-submenu-pages>
+    <div><h1>One</h1></div>
+    <div><h1>Two</h1></div>
+    <div><h1>Three</h1></div>
+    <div><h1>Four</h1></div>
+    <div><h1>Five</h1></div>
+</nf-submenu-pages>
+
+</body>
+</html>

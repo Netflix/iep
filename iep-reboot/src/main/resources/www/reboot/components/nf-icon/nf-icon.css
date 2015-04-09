@@ -1,0 +1,18 @@
+:host {
+    display: inline-block;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    fill: currentcolor;
+    position: relative;
+    height: 15px;
+    width: 15px;
+    color: #C4C4C4;
+}
+
+:host(.is-button) {
+    cursor: pointer;
+}
+
+:host(.is-button:hover) {
+    color: #777;
+}

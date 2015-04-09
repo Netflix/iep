@@ -1,0 +1,23 @@
+:host {
+    display: inline-block;
+    cursor: pointer;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+:host ::content .on,
+:host ::content .off {
+    pointer-events: none;
+}
+
+.is-switched ::content .off {
+    display: none
+}
+
+:not(.is-switched) ::content .on {
+    display: none;
+}

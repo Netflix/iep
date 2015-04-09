@@ -1,0 +1,148 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+
+<!--NOTE: can't extend img due to this bug: https://code.google.com/p/chromium/issues/detail?id=234020-->
+<polymer-element name="nf-img" attributes="src, width, height, cssed">
+
+    <template>
+        <link rel="stylesheet" href="nf-img.css" />
+        <div id="wrapper"></div>
+    </template>
+
+    <script>
+        (function () {
+
+            'use strict';
+
+            Polymer({
+
+                cssed: false, //states whether the component dimensions are bing set via CSS or not.
+
+                cssedChanged: function(oldVal, newVal) {
+
+                    if (newVal === true){
+                        this.$.wrapper.classList.add('cssed');
+                    } else {
+                        this.$.wrapper.classList.remove('cssed');
+                    }
+
+                },
+
+                widthChanged: function(oldWidth, newWidth) {
+
+                    var width = newWidth;
+
+                    // if value has units void entry
+                    if (width && isNaN(width)) {
+                        this.width = null;
+                    }
+
+                    this.setDimensionsIfRequired();
+
+                },
+
+                heightChanged: function(oldHeight, newHeight) {
+
+                    var height = newHeight;
+
+                    // if value has units void entry
+                    if (height && isNaN(height)) {
+                        this.height = null
+                    }
+
+                    this.setDimensionsIfRequired();
+
+                },
+
+                srcChanged: function() {
+
+                    //TODO: need to validate src against XSS attacks
+                    this.$.wrapper.style.backgroundImage = '';
+                    this.loadImage();
+
+                },
+
+                imgReadyCallback: function() {
+
+                    //TODO: watch out for XSSs here
+                    this.$.wrapper.style.backgroundImage = 'url("' + this.img.getAttribute('src') + '")';
+
+                },
+
+                loadImage: function() {
+
+                    var self = this,
+                        loadedEvent;
+
+                    this.img = new Image();
+
+                    this.img.addEventListener('load', function() {
+
+                        self.naturalHeight = this.naturalHeight;
+                        self.naturalWidth = this.naturalWidth;
+
+                        self.setDimensionsIfRequired();
+                        self.imgReadyCallback();
+
+                    }, false);
+
+                    this.img.addEventListener('error', function(e) {
+                        //TODO
+                    }, false);
+
+                    this.img.setAttribute('src', this.src);
+
+                    //cached images never trigger load event
+                    if (this.img.complete) {
+
+                        loadedEvent = new Event('load');
+                        this.img.dispatchEvent(loadedEvent);
+
+                    }
+
+                },
+
+                setDimensionsIfRequired: function() {
+
+                    if (this.cssed) {
+                        return;
+                    }
+
+                    if (!this.width && !this.height) {
+
+                        this.suggestedWidth = this.naturalWidth + 'px';
+                        this.suggestedHeight = this.naturalHeight + 'px';
+
+                    } else if (this.width && !this.height && this.naturalHeight) {
+
+                        this.suggestedWidth = this.width + 'px';
+                        this.suggestedHeight = parseInt(( this.naturalHeight * parseInt(this.width, 10) ) / this.naturalWidth, 10) + 'px';
+
+
+                    } else if (!this.width && this.height && this.naturalWidth) {
+
+                        this.suggestedWidth = parseInt(( this.naturalWidth * parseInt(this.height, 10) ) / this.naturalHeight, 10) + 'px';
+                        this.suggestedHeight = this.height + 'px';
+
+                    } else if (this.width && this.height) {
+
+                        this.suggestedWidth = this.width + 'px';
+                        this.suggestedHeight = this.height + 'px';
+
+                    }
+
+                    if (this.suggestedWidth && this.suggestedHeight) {
+
+                        this.$.wrapper.style.width = this.suggestedWidth;
+                        this.$.wrapper.style.height = this.suggestedHeight;
+
+                    }
+
+                }
+
+            });
+
+        })();
+
+    </script>
+
+</polymer-element>

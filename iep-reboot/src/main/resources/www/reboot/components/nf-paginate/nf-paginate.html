@@ -1,0 +1,59 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+
+<polymer-element name="nf-paginate" attributes="type">
+
+    <script>
+        (function () {
+
+            'use strict';
+
+            Polymer({
+
+                publish: {
+
+                    type: {
+                        value: 'table', //default data type
+                        reflect: true
+                    }
+
+                },
+
+                setup: function(nfData) {
+
+                    if (nfData) {
+                        this.nfData = nfData;
+                        this.nfData.setPagination(this);
+                        this.addEventHandlers();
+                    }
+
+                },
+
+                dismantleCallback: function() {
+
+                    this.nfData.clearPagination();
+
+                },
+
+                updateCallback: function() {
+
+                    this.nfData.updatePagination();
+
+                },
+
+                paginateFunction: null, //To be set by "subclass"
+
+                reset: null, //To be set by "subclass"
+
+                addEventHandlers: function() {
+
+                    this.addEventListener('dismantle', this.dismantleCallback, false);
+                    this.addEventListener('update', this.updateCallback, false);
+
+                }
+
+            });
+
+        })();
+    </script>
+
+</polymer-element>

@@ -1,0 +1,622 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+<link rel="import" href="../nf-collapsable/nf-collapsable.html" />
+<link rel="import" href="../nf-switch/nf-switch.html" />
+<link rel="import" href="../nf-iconset/nf-iconset.html" />
+<link rel="import" href="../nf-data/nf-data.html" />
+
+<polymer-element name="nf-collapsable-table" attributes="opened, highlighted">
+
+    <template>
+        <link rel="stylesheet" href="nf-collapsable-table.css" />
+        <nf-data id="nfData" type="collapsable-table"></nf-data>
+        <table id="table">
+            <colgroup id="colgroup"></colgroup>
+            <thead>
+                <tr id="header"></tr>
+            </thead>
+            <tbody id="body"></tbody>
+        </table>
+    </template>
+
+    <script>
+        (function () {
+
+            'use strict';
+
+            var rowClass = 'is-body-row',
+                highlightedRowClass = 'is-highlighted',
+                hiddenClass = 'is-hidden',
+                collapsableClass = 'is-collapsable';
+
+            var cloneArray = function(array) {
+                return JSON.parse(JSON.stringify(array));
+            };
+
+            Polymer({
+
+                domReady: function () {
+
+                    this.nfData = this.$.nfData;
+                    this.init();
+
+                },
+
+                opened: true,
+
+                init: function() {
+
+                    this.$.colgroup.innerHTML = "";
+                    this.$.header.innerHTML = "";
+                    this.$.body.innerHTML = "";
+
+                    if ( this.dataStructureIsValid() ) {
+
+                        this.classList.remove(hiddenClass);
+                        this.createTableHeader();
+                        this.$.colgroup.appendChild( this.generateColgroup(true) );
+
+                        if (!this.runOnlyOnceGuard) {
+                            this.createElementModel();
+                            this.addEventHandlers();
+                        }
+
+                        this.createTableBody();
+                        this.setColumnWidths();
+                        this.autoHighlightIfRequired();
+
+                        this.runOnlyOnceGuard = true;
+
+                    } else {
+
+                        // if the provided structure is not valid, hide element
+                        this.classList.add(hiddenClass);
+
+                    }
+
+                    this.detectLightDomChanges();
+
+                },
+
+                detectLightDomChanges: function() {
+                    var self = this;
+                    this.onMutation(this, function() {
+                        self.init();
+                    });
+                },
+
+                createTableHeader: function() {
+
+                    var header = this.$.header,
+                        dataType = [],
+                        headerData = [],
+                        cellContent,
+                        th = document.createElement('th');
+
+                    // first cell is used for expand/contract arrow button
+                    th.innerHTML = '<nf-icon id="expandAll" name="expandAll" class="is-button"></nf-icon><nf-icon id="contractAll" name="contractAll" class="is-button"></nf-icon>';
+                    header.appendChild(th);
+
+                    [].forEach.call(this.tableHeaders, function(cell) {
+
+                        cellContent = cell.textContent;
+                        th = document.createElement('th');
+                        th.textContent = cellContent;
+
+                        header.appendChild(th);
+                        headerData.push(cellContent);
+
+                        //extracting data type hints/declarations
+                        if (typeof cell.getAttribute('num') === 'string') {
+                            dataType.push('number');
+                        } else {
+                            dataType.push('string');
+                        }
+
+                    });
+
+                    // setting how many columns the table has
+                    // +1 due to cell used for the expand/contract arrow button
+                    this.columns = this.tableHeaders.length + 1;
+
+                    // exposing column data types
+                    this.dataType = dataType;
+
+                    // exposing header data
+                    this.headerData = headerData;
+
+                },
+
+                createTableBody: function() {
+
+                    var body = document.createDocumentFragment(),
+                        self = this,
+                        rowData;
+
+                    self.currentHighlightedRow = null;
+
+                    this.nfData.each(function(row, headerIndex) {
+                        rowData = self.generateRowFromData(row, headerIndex);
+                        rowData.rowHeader.index = headerIndex;
+                        body.appendChild(rowData.rowHeader);
+                        body.appendChild(rowData.rowBody);
+                    });
+
+                    //empty content;
+                    this.$.body.innerHTML = "";
+                    this.$.body.appendChild(body);
+
+                },
+
+                generateRowFromData: function(_data, headerIndex) {
+
+                    var rowHeader = document.createElement('tr'),
+                        rowBody = document.createElement('tr'),
+                        rowBodyWrapper = document.createElement('td'),
+                        rowBodyExpandable = document.createElement('nf-collapsable'),
+                        rowBodyTable = document.createElement('table'),
+                        nfSwitch = document.createElement('nf-switch'),
+                        bodyColumnIndex = this.columns - 1,
+                        i = 0,
+                        self = this,
+                        td;
+
+                    // generating row header
+                    td = document.createElement('td');
+
+                    //TODO: use template for this
+                    if (this.opened) {
+                        nfSwitch.innerHTML = '<nf-icon name="upArrow" class="on"></nf-icon><nf-icon name="downArrow" class="off"></nf-icon>';
+                    } else {
+                        nfSwitch.innerHTML = '<nf-icon name="downArrow" class="on"></nf-icon><nf-icon name="upArrow" class="off"></nf-icon>';
+                    }
+
+                    nfSwitch.classList.add('expand-toggle-button');
+                    td.appendChild(nfSwitch);
+
+                    rowHeader.appendChild(td);
+
+                    // -1 to offset for the expand/contract arrow button
+                    for (i; i < (bodyColumnIndex); i++) {
+
+                        td = document.createElement('td');
+
+                        if (_data[i].html === '%%') { // %% represents live body row count
+
+                            td.textContent = _data[bodyColumnIndex].length;
+
+                        } else {
+
+                            td.innerHTML = _data[i].html;
+
+                        }
+
+                        rowHeader.appendChild(td);
+                    }
+
+                    // generating row body
+                    rowBodyWrapper.setAttribute('colspan', this.columns);
+                    rowBodyWrapper.classList.add(collapsableClass);
+
+                    rowBodyTable.classList.add('is-row-table');
+                    rowBodyTable.appendChild( this.generateColgroup() );
+
+                    [].forEach.call(_data[i], function(row, rowBodyIndex) {
+                        rowBodyTable.appendChild(
+                            self.generateRowBodyFromData(row, rowBodyIndex, headerIndex)
+                        );
+                    });
+
+                    if (this.opened === true){
+                        rowBodyExpandable.setAttribute('opened', 'true');
+                    }
+
+                    rowBodyExpandable.appendChild(rowBodyTable);
+                    rowBodyWrapper.appendChild(rowBodyExpandable);
+                    rowBody.appendChild(rowBodyWrapper);
+
+                    return {
+                        rowHeader: rowHeader,
+                        rowBody: rowBody
+                    }
+
+                },
+
+                generateColgroup: function(useDocFragment) {
+
+                    var container = useDocFragment ? document.createDocumentFragment() : document.createElement('colgroup'),
+                        i = 0,
+                        col;
+
+                    for (i; i < this.columns; i++) {
+                        col = document.createElement('col');
+                        container.appendChild(col);
+                    }
+
+                    return container;
+
+                },
+
+                generateRowBodyFromData: function(_data, bodyRowIndex, headerIndex) {
+
+                    var tr = document.createElement('tr'),
+                        td = document.createElement('td');
+
+                    tr.classList.add(rowClass);
+
+                    tr.bodyRowIndex = bodyRowIndex;
+                    tr.headerIndex = headerIndex;
+
+                    // first cell is used for expand/contract arrow button
+                    tr.appendChild(td);
+
+                    [].forEach.call(_data, function(item) {
+                        td = document.createElement('td');
+                        td.innerHTML = item.html;
+                        tr.appendChild(td);
+                    });
+
+                    return tr;
+
+                },
+
+                setColumnWidths: function() {
+
+                    var widths = [],
+                        stylesheet = this.shadowRoot.styleSheets[0],
+                        cssSelector,
+                        cssRule,
+                        i = 0;
+
+                    [].forEach.call(this.$.header.querySelectorAll('th'), function(column) {
+                        widths.push(window.getComputedStyle(column).width);
+                    });
+
+                    for (i; i < this.columns; i++) {
+
+                        cssSelector = 'colgroup col:nth-child(' + (i + 1) + '),' +
+                                      'td:nth-child(' + (i + 1) + ')';
+
+                        cssRule = '{ width:' + widths[i] +'}';
+                        stylesheet.insertRule(cssSelector + cssRule, 0);
+                    }
+
+                    this.columnWidths = widths;
+
+                    this.$.table.classList.add('column-widths-are-computed');
+
+                },
+
+                //creating underlying data structure for the element
+                createElementModel: function() {
+
+                    var self = this,
+                        cellData,
+                        _data = [],
+                        rowData = [],
+                        rowBody = [],
+                        rbodyRow = [];
+
+                    [].forEach.call(this.bodyRows, function(row) {
+
+                        rowData = [];
+                        rowBody = [];
+
+                        //row header
+                        [].forEach.call(row.querySelectorAll('rhead c'), function(cell, index) {
+
+                            cellData = cell.textContent;
+
+                            if (cellData && self.dataType[index] === 'number') {
+                                cellData = parseFloat(cellData);
+                            }
+
+                            rowData.push({
+                                data: cellData,
+                                html: cell.innerHTML
+                            });
+                        });
+
+                        //row body
+                        [].forEach.call(row.querySelectorAll('rbody row'), function(rbodyRowNodes) {
+
+                            rbodyRow = [];
+
+                            [].forEach.call(rbodyRowNodes.querySelectorAll('c'), function(cell, index) {
+                                cellData = cell.textContent;
+
+                                if (cellData && self.dataType[index] === 'number') {
+                                    cellData = parseFloat(cellData);
+                                }
+
+                                rbodyRow.push({
+                                    data: cellData,
+                                    html: cell.innerHTML
+                                });
+
+                            });
+
+                            rowBody.push(rbodyRow);
+                        });
+
+                        rowData.push(rowBody);
+                        _data.push(rowData);
+
+                    });
+
+                    this.nfData.init(_data);
+
+                },
+
+                sortByColumn: function (index) {
+
+                    var desc = false,
+                        self = this,
+                        dataType = this.dataType[index],
+                        alpha,
+                        alphaDesc,
+                        num,
+                        numDesc,
+                        sortFunction;
+
+                    // Sorting functions:
+
+                    alpha = function (a, b) {
+
+                        if (a[index].data > b[index].data) {
+                            return 1;
+                        }
+
+                        if (a[index].data < b[index].data) {
+                            return -1;
+                        }
+
+                        return 0;
+
+                    };
+
+                    alphaDesc = function (a, b) {
+
+                        if (a[index].data < b[index].data) {
+                            return 1;
+                        }
+
+                        if (a[index].data > b[index].data) {
+                            return -1;
+                        }
+
+                        return 0;
+
+                    };
+
+                    num = function (a, b) {
+                        return a[index].data - b[index].data;
+                    };
+
+                    numDesc = function (a, b) {
+                        return b[index].data - a[index].data;
+                    };
+
+                    // ascertaining sort order
+                    if (this.dataIndexSorted === index) {
+                        desc = true;
+                        this.dataIndexSorted = null;
+                    } else {
+                        this.dataIndexSorted = index;
+                    }
+
+                    // assigning appropriate sort function
+                    if (desc && dataType === 'number') {
+                        sortFunction = numDesc;
+                    } else if(!desc && dataType === 'number') {
+                        sortFunction = num;
+                    } else if (desc && dataType === 'string'){
+                        sortFunction = alphaDesc;
+                    } else {
+                        sortFunction = alpha;
+                    }
+
+                    // sorting row headers
+                    this.nfData.sort(sortFunction);
+
+                    // sorting row bodies
+                    this.nfData.each(function(row) {
+
+                        // -1 to offset the expand/contract arrow button column
+                        row[self.columns - 1].sort(sortFunction);
+
+                    });
+
+                },
+
+                addEventHandlers: function () {
+
+                    var self = this;
+
+                    // expand-contract toggle arrow button
+                    this.$.body.addEventListener('click', function(e) {
+
+                        var rowBody,
+                            rowBodyExpandable,
+                            rowBodyWrapper,
+                            type,
+                            currentHeaderData,
+                            currentBodyData,
+                            node = e.target;
+
+                        if ( node.classList.contains('expand-toggle-button') ) {
+
+                            rowBody = node.parentNode.parentNode.nextSibling;
+                            rowBodyWrapper = rowBody.querySelector('.' + collapsableClass);
+                            rowBodyExpandable = rowBody.querySelector('nf-collapsable');
+
+                            if (node.switched) {
+                                rowBodyWrapper.classList.add('no-border');
+                            } else {
+                                rowBodyWrapper.classList.remove('no-border');
+                            }
+
+                            rowBodyExpandable.toggle();
+
+                        } else {
+
+                            //find TR (row) node
+                            node = self.findParentRow(e.target);
+
+                            if (node) {
+
+                                //we do not want to highlight the tr that contains the row body
+                                if ( typeof node.index === 'undefined' &&
+                                     typeof node.headerIndex === 'undefined' ) {
+                                    return;
+                                }
+
+                                type = node.classList.contains(rowClass) ? 'row-body' : 'row-head';
+
+                                if (self.currentHighlightedRow) {
+                                    self.currentHighlightedRow.classList.remove(highlightedRowClass);
+                                }
+
+                                node.classList.add(highlightedRowClass);
+                                self.currentHighlightedRow = node;
+
+                                if (type === 'row-body') {
+                                    currentHeaderData =  cloneArray(self.nfData.row(node.headerIndex));
+                                    currentBodyData = currentHeaderData[currentHeaderData.length - 1];
+                                    currentBodyData = currentBodyData[node.bodyRowIndex];
+                                } else {
+                                    currentHeaderData =  cloneArray(self.nfData.row(node.index));
+                                    currentBodyData = currentHeaderData[currentHeaderData.length - 1];
+                                    currentHeaderData = currentHeaderData.slice(0, currentHeaderData.length -1);
+                                }
+
+                                if (type === 'row-head') {
+
+                                    self.fire('row-clicked', {
+                                        type: type,
+                                        head: currentHeaderData,
+                                        body: currentBodyData
+                                    });
+
+                                } else {
+
+                                    self.fire('row-clicked', {
+                                        type: type,
+                                        data: currentBodyData
+                                    });
+
+                                }
+
+                            }
+
+                        }
+
+                    }, false);
+
+                    // click on header to re-sort
+                    this.$.header.addEventListener('click', function(e) {
+
+                        var node = e.target,
+                            index;
+
+                        if ( node.nodeName === 'TH' ) {
+
+                            self.opened = true;
+
+                            index = [].indexOf.call(node.parentNode.children, node);
+
+                            // modify index to offset the expand/contract arrow button
+                            index--;
+
+                            self.sortByColumn(index);
+                            self.createTableBody();
+
+                        }
+
+
+                    }, false);
+
+                    this.nfData.addEventListener('filtereddatachanged', function() {
+
+                        self.opened = true;
+                        self.createTableBody();
+
+                    }, false);
+
+                    this.shadowRoot.querySelector("#expandAll").addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        self.opened = true;
+                        self.createTableBody();
+                    }, false);
+
+                    this.shadowRoot.querySelector("#contractAll").addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        self.opened = false;
+                        self.createTableBody();
+                    }, false);
+
+                },
+
+                autoHighlightIfRequired: function() {
+
+                    if (this.highlighted && !this.runOnlyOnceGuard) {
+
+                        var rowIndex = (this.highlighted * 2) - 1, //two actual row per logical row (header + body), -1 to get the header
+                                headerToHighlight = this.shadowRoot.querySelector('tbody > tr:nth-child(' + rowIndex + ')'),
+                                clickEvent = new MouseEvent('click', {
+                                    'view': window,
+                                    'bubbles': true,
+                                    'cancelable': true
+                                });
+
+                        if (headerToHighlight) {
+                            headerToHighlight.dispatchEvent(clickEvent);
+                        }
+
+                    }
+
+                },
+
+                findParentRow: function(target) {
+
+                    var node = target;
+
+                    while (node && node.nodeName !== 'TR') {
+                        node = node.parentNode;
+                    }
+
+                    return node;
+
+                },
+
+                // ensure that the provided data structure (light-dom children) are valid
+                dataStructureIsValid: function() {
+
+                    // making this accessible in order to avoid having to parse the DOM twice
+                    this.tableHeaders = this.querySelectorAll('cthead > c');
+                    this.bodyRows = this.querySelectorAll('ctbody > row');
+
+                    return !!(this.bodyRows &&
+                              this.bodyRows.length &&
+                              this.tableHeaders &&
+                              this.tableHeaders.length &&
+                              this.bodyRows[0].querySelector('rhead > c') &&
+                              this.bodyRows[0].querySelector('ctbody > row > rbody > row > c'));
+
+                },
+
+                getData: function() {
+
+                    return this.nfData.data();
+
+                },
+
+                getHeaderData: function() {
+                    return this.headerData;
+                }
+
+            });
+
+        })();
+    </script>
+
+</polymer-element>

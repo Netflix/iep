@@ -1,0 +1,344 @@
+/*  master styles
+-----------------------------*/
+main {
+    margin: 10px 200px;
+}
+
+main > h1,
+main > section > h2 {
+    font-weight: 100;
+}
+
+ul {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+main > h1 {
+    margin-bottom: 50px;
+}
+
+main > h1,
+section > h2 {
+    position: relative;
+    left: -190px;
+}
+
+main > section {
+    display: block;
+    margin-bottom: 100px;
+}
+
+section > section {
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+section > section > p:first-child {
+    margin-top: 0;
+}
+
+h3.is-subsection {
+    margin-top: 40px;
+}
+
+panel {
+    margin-bottom: 20px;
+}
+
+/* colour section
+------------------------------*/
+#primaryColours li {
+    float: left;
+    width: 190px;
+    height: 135px;
+    margin-left: 10px;
+    margin-bottom: 30px;
+}
+
+#primaryColours span {
+    color: #999;
+    display: block;
+}
+
+#primaryColours .sample {
+    height: 50px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#primaryColours .name {
+    text-transform: capitalize;
+    color: #000;
+
+}
+
+#primaryColours .hex {
+    text-transform: uppercase;
+}
+
+#primaryColours .rgb {
+    text-transform: uppercase;
+}
+
+#primaryColours .var {
+    height: 20px;
+    display: block;
+    text-transform: lowercase;
+}
+
+
+/*textAlignment
+------------------------------*/
+#textAlignment ul {
+    margin-bottom: 10px;
+}
+
+#textAlignment ul code {
+    float: left;
+    line-height: 1.5em;
+    margin-right: 20px;
+}
+
+/*form section
+------------------------------*/
+#focused-input-sample input {
+    width: 370px;
+}
+
+#focused-input-sample input:nth-child(2){
+    width: 200px;
+}
+
+#invalid-input-sample input {
+    width: 350px;
+}
+
+#invalid-input-sample input:nth-child(2) {
+    width: 216px
+}
+
+
+/* grid section
+------------------------------*/
+#grid {
+    position: relative;
+}
+
+#grid ol {
+    padding: 0;
+}
+
+#grid li {
+    margin-bottom: 17px;
+    text-align: right;
+}
+
+#gridShowcase .nf-grid:last-child,
+#grid li:last-child {
+    margin-bottom: 0;
+}
+
+#gridShowcase {
+    margin-left: 40px;
+}
+
+#gridShowcase .nf-grid {
+    background-color: #F1F1F1;
+    height: 25px;
+    margin-bottom: 10px;
+}
+
+#gridShowcase > .nf-grid > div {
+    background-color: #6A6A6A;
+    height: 100%;
+}
+
+#gridClasses {
+    position: absolute;
+    left: 15px;
+    top: 88px;
+}
+
+.gridSample .nf-grid-centered > div,
+.gridSample .nf-grid > div{
+    outline: 1px solid #ccc;
+}
+
+.gridSample b {
+    font-size: 17px;
+    margin: 3px;
+}
+
+
+/* inline code snippets
+------------------------------*/
+#header nav{
+    border-top: 1px solid #5b5b5b;
+}
+
+
+/* inline code snippets
+------------------------------*/
+pre[class*="language-"][data-src] {
+    margin: 0;
+}
+
+
+/* samples
+------------------------------*/
+.sample {
+    margin: 20px 0;
+}
+
+
+/* ribbon
+------------------------------*/
+.ribbon-holder {
+    position: absolute;
+    top: 0;
+    overflow: hidden;
+    height: 10em;
+    right: 0;
+}
+
+.ribbon {
+    opacity: 0.95;
+
+    padding: 0.25em 0;
+    position: relative;
+    top: 2.5em;
+
+    box-shadow:  0 0 13px #888;
+    color: #FFF;
+    display: block;
+    line-height: 1.35em;
+
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    right: -2.6em;
+
+    background-color: #9a0000;
+    background: linear-gradient(to bottom,  #9a0000 0%,#a90000 100%);
+}
+
+.ribbon .text {
+    padding: 0.1em 3em;
+    letter-spacing: 1px;
+    border: 1px solid #bf6060;
+}
+
+/* web components
+------------------------------*/
+panel > ul > li {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+panel > ul > li:last-child{
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+panel panel {
+    margin-bottom: 0;
+}
+
+
+/* nf-switch
+------------------------------*/
+#nfSwitchExample {
+    text-align: center;
+}
+
+#nfSwitchExample img {
+    width: 50px;
+    box-shadow: 0 0 20px #000;
+    margin: 10px;
+}
+
+#nfSwitchExample nf-switch:nth-child(2){
+    margin-left: 20px;
+    position: relative;
+    top: -60px;
+    left: 50px;
+}
+
+/* nf-icon
+------------------------------*/
+#iconsSample nf-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+#iconsSample nf-icon:last-of-type {
+    color: deeppink;
+    margin-right: 0;
+}
+
+
+/* nf-submenu-pages
+------------------------------*/
+#submenuSample nf-submenu-pages{
+    color: #000;
+    text-align: center;
+    height: 250px;
+}
+
+#submenuSample h1 {
+    margin-top: 100px;
+}
+
+#submenuSample .one {
+    background-color: #C4C4C4;
+}
+
+#submenuSample .two {
+    background-color: #777777;
+}
+
+#submenuSample .three {
+    background-color: #B6272B;
+}
+
+#submenuSample .four {
+    background-color: #478CC8;
+}
+
+#submenuSample .five {
+    background-color: #8DAC71;
+}
+
+
+/* nf-accordion
+------------------------------*/
+#nfAccordionDemo nf-switch span {
+    font-size: 18px;
+    color: deeppink;
+}
+
+/* nf-tags
+------------------------------*/
+#nfTagExample nf-tags {
+    width: 400px;
+}
+
+/* nf-lightbox
+------------------------------*/
+#nfLightboxSample textarea {
+    width: 100%;
+}
+
+/* nf-json
+------------------------------*/
+#inline-json-sample {
+    margin-top: 30px;
+}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <title>nf-collapsable-table demo</title>
+    <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="../nf-table/nf-table.html" />
+    <link rel="import" href="nf-tables-search.html" />
+</head>
+<body unresolved>
+
+<nf-tables-search placeholder="Search..." tables="['t1','t2']"></nf-tables-search>
+
+<table id="t1" is="nf-table">
+    <tr>
+        <th>First name A</th>
+        <th>Last name Z</th>
+        <th num>Completed</th>
+    </tr>
+    <tr>
+        <td>John</td>
+        <td>Tregoning</td>
+        <td>9%</td>
+    </tr>
+    <tr>
+        <td>Lisa</td>
+        <td>Tabs</td>
+        <td>13%</td>
+    </tr>
+    <tr>
+        <td>Alex</td>
+        <td>Treg</td>
+        <td>1%</td>
+    </tr>
+</table>
+
+<table id="t2" is="nf-table">
+    <tr>
+        <th>First name B</th>
+        <th>Last name Y</th>
+        <th num>Completed</th>
+    </tr>
+    <tr>
+        <td>John</td>
+        <td>Tregoning</td>
+        <td>9%</td>
+    </tr>
+    <tr>
+        <td>Lisa</td>
+        <td>Tabs</td>
+        <td>13%</td>
+    </tr>
+    <tr>
+        <td>Alex</td>
+        <td>Treg</td>
+        <td>1%</td>
+    </tr>
+</table>
+
+</body>
+</html>

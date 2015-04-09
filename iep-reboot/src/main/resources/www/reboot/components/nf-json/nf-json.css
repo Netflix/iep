@@ -1,0 +1,163 @@
+:host {
+    position: relative;
+    display: block;
+}
+
+#jsoneditor {
+    display: block;
+}
+
+:host button{
+    border-radius: 0;
+}
+
+.jsoneditor {
+    overflow: hidden !important;
+}
+
+.jsoneditor .field, .jsoneditor .value, .jsoneditor td, .jsoneditor textarea, .jsoneditor th {
+    font-family: "Source Sans Pro", sans-serif !important;
+    font-size: 20px;
+}
+
+.jsoneditor div.tree {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.is-updatable div.menu {
+    padding-left: 42px;
+}
+
+.jsoneditor div.menu button:hover:not(:disabled){
+    background-color: rgba(0,0,0,0.2);
+}
+
+.jsoneditor div.menu button.expand-all {
+    background: url(icons/expand.png) no-repeat 0 0;
+    background-size: contain;
+}
+
+.jsoneditor div.menu button.collapse-all {
+    background: url(icons/contract.png) no-repeat 0 0;
+    background-size: contain;
+}
+
+.jsoneditor div.menu button.undo {
+    background: url(icons/undo.png) no-repeat 50% 50%;
+    background-size: 20px 20px;
+}
+
+.jsoneditor div.menu button.redo {
+    background: url(icons/redo.png) no-repeat 50% 50%;
+    background-size: 20px 20px;
+}
+
+.save-button,
+.save-button:hover {
+    background: url('icons/cloud-upload.png') no-repeat 50% 50%;
+    background-size: contain;
+    width: 26px;
+    height: 26px;
+    margin: 2px;
+    padding: 0;
+    border-radius: 2px;
+    border: none;
+    color: #4D4D4D;
+    opacity: .8;
+    font-size: 10pt;
+    position: absolute;
+    z-index: 1;
+    top: 4px;
+    left: 10px;
+    outline: none;
+    cursor: pointer;
+
+}
+
+.save-button:hover{
+    background-color: rgba(0,0,0,0.2);
+}
+
+.jsoneditor div.menu button {
+    border: none;
+    outline: none;
+}
+
+.jsoneditor div.menu button:not(:disabled){
+    cursor: pointer;
+}
+
+.jsoneditor table.search{
+    right: 3px;
+    top: 4px;
+}
+
+.jsoneditor table.search button.refresh{
+    background: url('icons/search.png') no-repeat 0 0;
+    background-size: contain;
+    background-position: 0 3px;
+    background-color: transparent!important;
+}
+
+.jsoneditor table.search input{
+    font-size: 17px;
+    padding: 1px !important;
+}
+
+.jsoneditor table.search .results {
+    line-height: 25px;
+}
+
+.jsoneditor .field[contenteditable=true]:focus, .jsoneditor .field[contenteditable=true]:hover, .jsoneditor .value[contenteditable=true]:focus, .jsoneditor .value[contenteditable=true]:hover{
+    background-color: rgba(71, 140, 200, 0.2);
+    border: 1px solid rgba(71, 140, 200, 1);
+}
+
+.jsoneditor .value.highlight,
+.jsoneditor .field.highlight {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.7);
+}
+
+.jsoneditor tr.highlight {
+    background-color: rgba(0, 0, 0, 0.2);
+    /*border: 1px solid rgba(0, 0, 0, 0.7);*/
+}
+
+.jsoneditor div.menu{
+    background-color: #D9D9D9;
+    border-bottom: 1px solid #6A6A6A;
+}
+
+.jsoneditor {
+    border: 1px solid #6A6A6A;
+}
+
+
+.search .frame tr td:nth-child(3),
+.search .frame tr td:nth-child(4){
+    display: none;
+}
+
+button[disabled]{
+    cursor: default;
+    opacity: 0.2;
+}
+
+nf-json .jsoneditor div.outer{
+    margin-bottom: -11px;
+}
+
+.jsoneditor-contextmenu {
+    position: absolute;
+}
+
+.jsoneditorWrapper {
+    position: relative;
+}
+
+/*fixing safari*/
+button {
+    background-color: transparent !important;
+}

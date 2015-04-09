@@ -1,0 +1,194 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+<link rel="import" href="../nf-filter/nf-filter.html" />
+
+<!--TODO: disabled, readonly, pattern; Also a 'clear' button caseSensitiveSearch?-->
+<polymer-element extends="nf-filter" name="nf-collapsable-table-filter" attributes="placeholder, disabled, readonly, pattern, table">
+
+    <template>
+        <link rel="stylesheet" href="nf-collapsable-table-filter.css" />
+        <input id="input" placeholder="{{placeholder}}"  />
+    </template>
+
+    <script>
+
+        (function () {
+
+            'use strict';
+
+            var component,
+                timeoutId = 0,
+                input,
+                table;
+
+            var getTable = function() {
+
+                var selector,
+                    timer;
+
+                if (component.table) {
+
+                    if (typeof component.table === "string") {
+
+                        selector = component.table.indexOf('#') === 0 ? component.table : "#" + component.table;
+                        table = document.querySelector(selector);
+
+                    } else if (typeof component.table === "object") {
+
+                        table = component.table;
+
+                    }
+
+                } else {
+
+                    table = document.querySelector("nf-collapsable-table");
+
+                }
+
+                if (table) {
+
+                    //TODO: refactor this by using promises
+                    if (table.nfData) {
+
+                        component.setup( table.nfData );
+
+                    } else {
+
+                        timer = setInterval(function(){
+
+                            if (table.nfData) {
+                                component.setup(table.nfData);
+                                clearInterval(timer);
+                            }
+
+                        }, 200);
+                    }
+
+                }
+
+            };
+
+            var filterFunction = function(row) {
+
+                var matchFound = false,
+                    l = row.length,
+                    i = 0;
+
+                for (i; i < l; i++) {
+
+                    if ( doesItemMatchQuery(row[i]) ) {
+                        matchFound = true;
+                        break;
+                    }
+
+                }
+
+                return matchFound;
+
+            };
+
+            var doesItemMatchQuery = function(itemObj) {
+
+                var isMatch = false,
+                    itemVal,
+                    item;
+
+                if (Array.isArray(itemObj)) {
+                    //header last item is an array of the body
+                    item = '';
+                } else {
+                    item = itemObj.data;
+                }
+
+                if (typeof item === "number") {
+                    itemVal = item.toString();
+                } else {
+                    itemVal = item && item.toLowerCase();
+                }
+
+                if ( itemVal && itemVal.indexOf(component.query) !== -1 ) {
+
+                    isMatch = true;
+
+                }
+
+                return isMatch;
+
+            };
+
+            var assignEventHandlers = function() {
+
+                var delay = 270;
+
+                input.addEventListener('keyup', function() {
+
+                    window.clearTimeout(timeoutId);
+
+                    timeoutId = window.setTimeout(function() {
+
+                        component.query = input.value.trim().toLowerCase();
+                        component.fire('update');
+
+                    }, delay);
+
+                }, false);
+
+            };
+
+            Polymer({
+
+                domReady: function () {
+
+                    component = this;
+                    input = this.$.input;
+
+                    getTable(); //fetching relevant table to filter on
+                    assignEventHandlers();
+
+                },
+
+                filter: function(data) {
+
+                    var rowBodyIndex,
+                        retVal;
+
+                    if (data.length === 0) {
+                        return data;
+                    }
+
+                    rowBodyIndex = data[0].length - 1;
+
+                    retVal = data.filter(function(row) {
+
+                        var matchFound,
+                            filteredRowBody;
+
+                        filteredRowBody = row[rowBodyIndex].filter(filterFunction);
+
+                        row[rowBodyIndex] = filteredRowBody;
+
+                        matchFound = !!filteredRowBody.length;
+
+                        // if nothing in the row body matches the query then search the row header
+                        if (!matchFound) {
+                            matchFound = !!row.filter(doesItemMatchQuery).length;
+                        }
+
+                        return matchFound;
+
+                    });
+
+                    return retVal;
+
+                },
+
+                query: '',
+
+                type: 'collapsable-table'
+
+            });
+
+        })();
+
+    </script>
+
+</polymer-element>
