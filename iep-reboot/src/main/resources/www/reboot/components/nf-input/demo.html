@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>nf-input demo</title>
+    <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="stylesheet" href="/css/dist/reboot.css" />
+    <link rel="import" href="nf-input.html" />
+    <style>
+
+        nf-input, select{
+            width: 500px;
+        }
+
+        select {
+            position: absolute;
+            left: 0;
+            top: 31px;
+        }
+
+    </style>
+</head>
+
+<body unresolved>
+
+    <!--there is also the attribute loading or class .is-loading to indicate loading state-->
+    <nf-input for="foo" link="bar" autohide copy></nf-input>
+
+    <input id="foo" class="is-hidden" value="bar">
+
+    <select id="bar" size="5" class="is-hidden">
+        <option>one</option>
+        <option>two</option>
+        <option>three</option>
+        <option>four</option>
+        <option>five</option>
+    </select>
+
+</body>
+</html>

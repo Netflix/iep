@@ -1,0 +1,222 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+<link rel="import" href="../nf-filter/nf-filter.html" />
+
+<!--TODO: disabled, readonly ; Also a 'clear' button -->
+<polymer-element extends="nf-filter" name="nf-collapsable-table-discrete-filter" attributes="disabled, readonly, table, column">
+
+    <template>
+        <link rel="stylesheet" href="nf-collapsable-table-discrete-filter.css" />
+
+        <template repeat="{{filter in filters}}">
+            <label>
+                <input type="checkbox" value="{{filter}}">
+                {{filter}}
+            </label>
+        </template>
+
+    </template>
+
+    <script>
+
+        (function () {
+
+            'use strict';
+
+            var component,
+                query,
+                container,
+                table;
+
+            var injestLightDomFilters = function() {
+
+                var filterNodes = component.querySelectorAll('filter');
+
+                if ( filterNodes && filterNodes.length ) {
+
+                    component.filters = [];
+
+                    [].forEach.call(filterNodes, function(filter){
+
+                        component.filters.push(filter.textContent)
+
+                    });
+
+                }
+
+            };
+
+            var getTable = function() {
+
+                var selector,
+                    timer;
+
+                if (component.table) {
+
+                    if (typeof component.table === "string") {
+
+                        selector = component.table.indexOf('#') === 0 ? component.table : "#" + component.table;
+                        table = document.querySelector(selector);
+
+                    } else if (typeof component.table === "object") {
+                        table = component.table;
+                    }
+
+
+                } else {
+
+                    table = document.querySelector("nf-collapsable-table");
+
+                }
+
+                if (table) {
+
+                    //TODO: refactor this by using promises
+                    if (table.nfData) {
+
+                        component.setup( table.nfData );
+
+                    } else {
+
+                        timer = setInterval(function(){
+
+                            if (table.nfData) {
+                                component.setup(table.nfData);
+                                clearInterval(timer);
+                            }
+
+                        }, 200);
+                    }
+
+                }
+
+            };
+
+            var filterFunction = function(row) {
+
+                var matchFound = false;
+
+                if ( doesItemMatchQuery(row[component.column].data) ) {
+                    matchFound = true;
+                }
+
+                return matchFound;
+
+            };
+
+            var doesItemMatchQuery = function(item) {
+
+                var isMatch = false,
+                    itemVal;
+
+                if (typeof item === "number") {
+                    itemVal = item.toString();
+                } else {
+                    itemVal = item;
+                }
+
+                if ( query.indexOf(itemVal) !== -1 ) {
+
+                    isMatch = true;
+
+                }
+
+                return isMatch;
+
+            };
+
+            var assignEventHandlers = function() {
+
+                container.addEventListener('change', function(e) {
+
+                    var filter = e.target,
+                        filterNodeCollection;
+
+                    if (filter && filter.nodeName === 'INPUT') {
+
+                        filterNodeCollection = container.querySelectorAll('input:checked');
+
+                        query = [];
+
+                        [].forEach.call(filterNodeCollection, function(node) {
+                            query.push(node.value);
+                        });
+
+                        if (query.length === 0) {
+
+                            query = null;
+
+                        }
+
+                        component.fire('update');
+
+                    }
+
+                }, false);
+
+            };
+
+            Polymer({
+
+                domReady: function () {
+
+                    var defaultColumnIndex = 0;
+
+                    component = this;
+                    container = component.shadowRoot;
+                    component.column  = component.column || defaultColumnIndex;
+
+                    getTable(); //fetching relevant table to filter on
+                    injestLightDomFilters();
+
+                    if ( table && component.filters ) {
+                        assignEventHandlers();
+                    }
+
+                },
+
+                filter:  function(data) {
+
+                    var rowBodyIndex,
+                        retVal;
+
+                    if (!query) {
+                        return data;
+                    }
+
+                    rowBodyIndex = data[0].length - 1;
+
+                    retVal = data.filter(function(row) {
+
+                        var matchFound,
+                            filteredRowBody;
+
+                        filteredRowBody = row[rowBodyIndex].filter(filterFunction);
+
+                        row[rowBodyIndex] = filteredRowBody;
+
+                        matchFound = !!filteredRowBody.length;
+
+                        // if nothing in the row body matches the query then search the row header
+                        if (!matchFound) {
+                            matchFound = !![row[component.column].data].filter(doesItemMatchQuery).length;
+                        }
+
+                        return matchFound;
+
+                    });
+
+                    return retVal;
+
+                },
+
+                query: [],
+
+                type: 'collapsable-table'
+
+            });
+
+        })();
+
+    </script>
+
+</polymer-element>

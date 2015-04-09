@@ -1,0 +1,56 @@
+/*! pills
+-----------------------------*/
+pill,
+.nf-pill {
+  font-family: inherit;
+  font-size: 0.8em;
+  line-height: 0.8em;
+  padding: 0.3em 1em;
+  color: #333;
+  background-color: transparent;
+  border: 1px solid #c4c4c4;
+  border-radius: 6px;
+  text-transform: uppercase;
+  cursor: default;
+
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: baseline;
+  text-align: center;
+
+  /* this is probably a bad idea, but I'm just testing it */
+  transform: translateY(-0.15em);
+
+}
+
+pill[ok],
+pill.pill-ok,
+.nf-pill.pill-ok,
+.nf-pill[ok] {
+  background: #8DAC71;
+  color: #fff;
+}
+
+pill[failed],
+pill.pill-failed,
+.nf-pill.pill-failed,
+.nf-pill[failed] {
+  background: #B6272B;
+  color: #fff;
+}
+
+pill[marginal],
+pill.pill-marginal,
+.nf-pill.pill-marginal,
+.nf-pill[marginal] {
+  background: #d2bc5e;
+  color: #fff;
+}
+
+pill[primary],
+pill.pill-primary,
+.nf-pill.pill-primary,
+.nf-pill[primary] {
+  background-color: #478CC8;
+  color: #fff;
+}

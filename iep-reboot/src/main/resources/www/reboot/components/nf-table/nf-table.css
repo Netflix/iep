@@ -1,0 +1,21 @@
+@import url("../../css/dist/reboot.min.css"); /* kludge, temporary solution */
+
+table {
+    width: 100%;
+}
+
+table th {
+
+    cursor: pointer;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+
+table.is-fixed {
+    table-layout: fixed;
+}

@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Styleguide</title>
+    <script src="webcomponents.js"></script>
+    <link rel="import" href="imports.html" />
+    <link rel="import" href="components/nf-json/nf-json.html" />
+    <link rel="stylesheet" href="css/app.css"/>
+    <link rel="stylesheet" href="css/libs/prism.css"/>
+</head>
+<body unresolved>
+<nav>
+    <ul>
+        <li class="logo">Tooling UI Framework</li>
+    </ul>
+</nav>
+
+<main>
+
+    <h1>Style Guide</h1>
+
+    <section>
+
+        <h2>Colours</h2>
+        <section>
+            <h3>Color Fundamentals</h3>
+            <p>
+                For tooling within Netflix, we've chosen a simple palette. Using gray for general structure elements
+                such as nav bars and borders allows you to highlight important elements or warnings with little to no
+                effort. In addition, a light gray body background allows white elements to pop when used as containers.
+            </p>
+            <ul id="primaryColours" class="clearfix">
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#000000"></span>
+                        <span class="name">Black</span>
+                        <span class="hex">#000000</span>
+                        <span class="rgb">R 0 G 0 B 0</span>
+                        <span class="var">@black</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#333333"></span>
+                        <span class="name">Mine Shaft</span>
+                        <span class="hex">#333333</span>
+                        <span class="rgb">R 51 G 51 B 51</span>
+                        <span class="var">@mine-shaft</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#5B5B5B"></span>
+                        <span class="name">Dove Gray</span>
+                        <span class="hex">#5B5B5B</span>
+                        <span class="rgb">R 91 G 91 B 91</span>
+                        <span class="var">@dove-gray</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#6A6A6A"></span>
+                        <span class="name">Concrete</span>
+                        <span class="hex">#6A6A6A</span>
+                        <span class="rgb">R 106 G 106 B 106</span>
+                        <span class="var">@concrete</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#777777"></span>
+                        <span class="name">Boulder</span>
+                        <span class="hex">#777777</span>
+                        <span class="rgb">R 119 G 119 B 119</span>
+                        <span class="var">@boulder</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#C4C4C4"></span>
+                        <span class="name">Silver</span>
+                        <span class="hex">#C4C4C4</span>
+                        <span class="rgb">R 196 G 196 B 196</span>
+                        <span class="var">@silver</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#D9D9D9"></span>
+                        <span class="name">Alto</span>
+                        <span class="hex">#D9D9D9</span>
+                        <span class="rgb">R 217 G 217 B 217</span>
+                        <span class="var">@alto</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#F1F1F1"></span>
+                        <span class="name">Seashell</span>
+                        <span class="hex">#F1F1F1</span>
+                        <span class="rgb">R 241 G 241 B 241</span>
+                        <span class="var">@seashell</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#F8F8F8"></span>
+                        <span class="name">Alabaster</span>
+                        <span class="hex">#F8F8F8</span>
+                        <span class="rgb">R 248 G 248 B 248</span>
+                        <span class="var">@alabaster</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#B6272B"></span>
+                        <span class="name">Flush Mahogany</span>
+                        <span class="hex">#B6272B</span>
+                        <span class="rgb">R 182 G 39 B 43</span>
+                        <span class="var">@flush-mahogany</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#478CC8"></span>
+                        <span class="name">Danube</span>
+                        <span class="hex">#478CC8</span>
+                        <span class="rgb">R 71 G 140 B 200</span>
+                        <span class="var">@danube</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#8DAC71"></span>
+                        <span class="name">Asparagus</span>
+                        <span class="hex">#8DAC71</span>
+                        <span class="rgb">R 141 G 172 B 113</span>
+                        <span class="var">@asparagus</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="meta">
+                        <span class="sample" style="background-color:#C0D7A0"></span>
+                        <span class="name">Sprout</span>
+                        <span class="hex">#C0D7A0</span>
+                        <span class="rgb">R 192 G 215 B 160</span>
+                        <span class="var">@sprout</span>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <h2>Typography</h2>
+        <section>
+            <section>
+                <h3>Typeface</h3>
+                <p>
+                    The default typeface is Source Sans Pro. It is a sans serif typeface intended to work well in user
+                    interfaces.
+                    In order to use this web font you will need to add the following snippet into the header of your
+                    HTML code.
+                </p>
+                <pre data-src="snippets/font.html"></pre>
+            </section>
+            <section>
+                <h3>Font Weight</h3>
+
+                <p>Weight is a strong element when displaying type. Overuse of heavy weights diminishes their
+                    effectiveness. Consider using it for key elements or labels, less for paragraph type.</p>
+                <h4>Use</h4>
+
+                <p>
+                    The weight or boldness of the font can be specified by using the corresponding class.
+                    Please note that the web font Source Sans Pro is not available in all weights
+                    (unlike old traditional fonts where bold is an algorithm to augment a typeface)
+                    For this reason you must choose a font weight within the provided scale: <code>.nf-bold</code>,
+                    <code>.nf-normal</code>(default), <code>.nf-light</code>
+                </p>
+
+                <ul>
+                    <li><h3 class="nf-bold">The Quick Brown Fox Jumps Over The Lazy Dog | font-weight:600</h3></li>
+                    <li><h3 class="nf-normal">The Quick Brown Fox Jumps Over The Lazy Dog | font-weight:400</h3></li>
+                    <li><h3 class="nf-light">The Quick Brown Fox Jumps Over The Lazy Dog | font-weight:300</h3></li>
+                </ul>
+                <pre data-src="snippets/font-weight.html"></pre>
+
+            </section>
+
+            <section id="textAlignment">
+                <h3>Text Alignment</h3>
+
+                <p>
+                    Easily set the correct text alignment declaratively by using one of the following classes: <code>txt-left</code>,
+                    <code>txt-center</code>, <code>txt-right</code>
+                </p>
+
+                <ul >
+                    <li><code>.txt-left</code> <h4 class="txt-left">This text is left aligned</h4></li>
+                    <li><code>.txt-center</code> <h4 class="txt-center">This text is center aligned</h4></li>
+                    <li><code>.txt-right</code> <h4 class="txt-right">This text is right aligned</h4></li>
+                </ul>
+
+                <pre data-src="snippets/text-alignment.html"></pre>
+            </section>
+
+            <section>
+                <h3>Headings</h3>
+
+                <p>Headings are one of the strongest visual elements in this guide. They're best used to visually
+                    describe sections and groups of data. Generally, a page should have a single <code>h1</code> for the
+                    app name. <code>h2</code> is generally used for page title. From there, you can use different
+                    headings to create differing visual impact and organize your screen. Given their weight and size,
+                    headings shouldn't be colored.
+                <h4>Use</h4>
+
+                <p>HTML headings, <code>&lt;h1&gt;</code> through <code>&lt;h6&gt;</code> are styled as appropriate.
+                    Corresponding classnames are also available <code>.h1</code> through <code>.h6</code> for when you
+                    want to match the font styling of a heading but still want your text to be displayed inline.
+                    In order to maintain a consistent visual hierarchy using font sizes outside of the provided
+                    font-size scale is discouraged.
+                </p>
+                <ul id="typography">
+                    <li><h1>Header H1 36px</h1></li>
+                    <li><h2>Header H2 30px</h2></li>
+                    <li><h3>Header H3 24px</h3></li>
+                    <li><h4>Header H4 18px</h4></li>
+                    <li><h5>Header H5 14px</h5></li>
+                    <li><h6>Header H6 12px</h6></li>
+                </ul>
+            </section>
+            <section>
+                <h3>Copy</h3>
+
+                <p>The global default font-size is <code>14px</code>.</p>
+            </section>
+        </section>
+
+        <h2>Buttons</h2>
+        <section id="buttons">
+            <h3>Buttons</h3>
+
+            <p>Buttons are action elements. In their simplest form they allows users to submit forms or start a process.
+                Consider using a single primary style as the default action for a given view. Secondary actions should
+                be visually less important, hence their white coloring. Destructive or dangerous actions can be
+                suggested with a red button. Icons supplement these actions well.</p>
+
+            <p>In addition to simple buttons, menu buttons present several options on which users can act without using
+                a lot of space in a layout.</p>
+
+            <h3>Use</h3>
+
+            <p>To create a default button, add the <code>.pure-button</code> classname to any <code>&lt;a&gt;</code> or
+                <code>&lt;button&gt;</code> element.</p>
+
+            <div class="sample">
+                <button>Netflix Button</button>
+                <a class="nf-button" href="#">Netflix Button</a>
+            </div>
+            <pre data-src="snippets/default-button.html"></pre>
+
+            <h3 class="is-subsection">Disabled Buttons</h3>
+
+            <p>To mark a button as disabled, either add the <code>disabled</code> attribute or add the <code>.is-disabled</code>
+                classname.</p>
+
+            <div class="sample">
+                <button disabled>A Disabled Button</button>
+                <a class="nf-button is-disabled" href="#">A Disabled Button</a>
+            </div>
+            <pre data-src="snippets/disabled-button.html"></pre>
+
+            <h3 class="is-subsection">Buttons Types</h3>
+
+            <p>To customize the style of a button, simply add one of the following classnames to the button/link <code>.btn-primary</code>,
+                <code>.btn-error</code>, <code>.btn-success</code>, <code>.btn-classic</code></p>
+
+            <div class="sample">
+                <button>A Default Button</button>
+                <button class="btn-classic">Classic Button</button>
+                <button class="btn-primary">Primary Button</button>
+                <button class="btn-error">Error Button</button>
+                <button class="btn-success">Success Button</button>
+            </div>
+            <pre data-src="snippets/button-types.html"></pre>
+
+            <h3 class="is-subsection">Grouping</h3>
+            <p>
+                Group a collection of buttons together simply by putting them into a <code>grouped</code> tag or any tag with the <code>.nf-group</code> classname
+            </p>
+            <div class="sample">
+                <grouped>
+                    <button>one</button>
+                    <button>two</button>
+                    <button>three</button>
+                </grouped>
+            </div>
+            <pre data-src="snippets/button-grouped.html"></pre>
+
+            <h3 class="is-subsection" id="groupingRadioInputs">Grouping Radio Inputs</h3>
+            <p>
+                Group a collection of radio inputs together (and automatically make them look like buttons) simply by putting them into a <code>grouped</code> tag or any tag with the <code>.nf-group</code> classname
+            </p>
+            <div class="sample">
+                <grouped>
+                    <input type="radio" id="radio1" name="radios" value="all" checked>
+                    <label for="radio1">All</label>
+
+                    <input type="radio" id="radio2" name="radios" value="false">
+                    <label for="radio2">Open</label>
+
+                    <input type="radio" id="radio3" name="radios" value="true">
+                    <label for="radio3">Archived</label>
+                </grouped>
+            </div>
+            <pre data-src="snippets/grouped-radio-input.html"></pre>
+
+            <h3 class="is-subsection">Grouping Checkbox Inputs</h3>
+            <p>
+                Group a collection of checkbox inputs together (and automatically make them look like buttons) simply by putting them into a <code>grouped</code> tag or any tag with the <code>.nf-group</code> classname
+            </p>
+            <div class="sample">
+                <grouped>
+                    <input type="checkbox" id="checkbox1" name="checkboxes" value="all">
+                    <label for="checkbox1">All</label>
+
+                    <input type="checkbox" id="checkbox2" name="checkboxes" value="false" checked>
+                    <label for="checkbox2">Open</label>
+
+                    <input type="checkbox" id="checkbox3" name="checkboxes" value="true" checked>
+                    <label for="checkbox3">Archived</label>
+                </grouped>
+            </div>
+            <pre data-src="snippets/grouped-checkbox-input.html"></pre>
+        </section>
+
+        <h2>Pills</h2>
+        <section id="pills">
+
+            <p>Pills are small labels often used to display status, tags or system health. Their small size allows for
+                flexible placement while the reversed text creates substantial visual impact. Be careful not to overuse
+                in a view as they can create a lot of visual noise. Consider using pills as an element within a single
+                column. In their simple white or gray state, they make excellent tags or category indicators.</p>
+
+            <h3>Use</h3>
+
+            <p>In order to create a pill simply use the custom <code>pill</code> element tag, alternatively you can also
+                use the <code>.nf-pill</code> classname</p>
+
+            <div class="sample">
+                <pill>info</pill>
+                <span class="nf-pill">info</span>
+            </div>
+            <pre data-src="snippets/pills.html"></pre>
+
+            <h3 class="is-subsection">Variations</h3>
+
+            <p>To customize the style of a pill, simply add one of the following classnames to the relevant tag <code>.pill-ok</code>,
+                <code>.pill-marginal</code>, <code>.pill-failed</code> or if you prefer one of the following attributes:
+                <code>ok</code>, <code>marginal</code>, <code>failed</code></p>
+
+            <div class="sample">
+                <pill class="pill-ok">ok</pill>
+                <pill marginal>marginal</pill>
+                <span class="nf-pill" failed>failed</span>
+                <span class="nf-pill" primary>primary</span>
+            </div>
+            <pre data-src="snippets/pill-types.html"></pre>
+        </section>
+
+        <h2>Badge</h2>
+        <section id="badge">
+
+
+            <h3>Default Badge</h3>
+
+            <p>In order to create a badge simply use the custom <code>badge</code> element tag, alternatively you can
+                also use the <code>.nf-badge</code> classname</p>
+
+            <div class="sample">
+                <badge>info</badge>
+                <span class="nf-badge">info</span>
+            </div>
+            <pre data-src="snippets/badges.html"></pre>
+
+            <h3 class="is-subsection">Badge types</h3>
+
+            <p>To customize the style of a badge, simply add one of the following classnames to the relevant tag <code>.badge-ok</code>,
+                <code>.badge-marginal</code>, <code>.badge-failed</code> or if you prefer one of the following
+                attributes: <code>ok</code>, <code>marginal</code>, <code>failed</code></p>
+
+            <div class="sample">
+                <badge ok>ok</badge>
+                <span class="nf-badge badge-marginal">marginal</span>
+                <badge failed>FAIL
+                    <div class="h1">33%</div>
+                </badge>
+            </div>
+            <pre data-src="snippets/badge-types.html"></pre>
+        </section>
+
+        <h2>Form</h2>
+        <section id="form">
+
+            <p>
+                There is no need for special classes, or markup. Form elements should match match design out of the
+                box.
+            </p>
+
+            <h3>Input</h3>
+
+            <div class="sample">
+                <input placeholder="I am placeholder text">
+                <input value="I am actual (value) text">
+            </div>
+            <pre data-src="snippets/input.html"></pre>
+
+            <h3 class="is-subsection">Focused Input</h3>
+
+            <p>A blue outline will indicate the user when an input element is focused. It's possible to visually
+                force this state by using the <code>is-focused</code> classname in the (rare) case you need to force
+                this pragmatically</p>
+
+            <div class="sample" id="focused-input-sample">
+                <input value="I am always focused because of the .is-focused class" class="is-focused">
+                <input value="I will be blue when focused">
+            </div>
+            <pre data-src="snippets/input-focused.html"></pre>
+
+
+            <h3 class="is-subsection">Invalid Input</h3>
+
+            <p>HTML5 has native validation when using the following attributes:
+                <code>required</code>, <code>pattern</code> and <code>maxlength</code>,
+                type(e.g. <code>email</code>, <code>range</code>, <code>tel</code>, <code>time</code>,
+                <code>url</code>, etc).
+                for more information:
+                https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Forms/Data_form_validation.
+            </p>
+
+            <p>
+                Alternatively is also possible to programmatically trigger this state simply by adding the <code>.is-invalid</code>
+                classname.
+            </p>
+
+            <div class="sample" id="invalid-input-sample">
+                <input value="I am always invalid because of the .is-invalid class" class="is-invalid">
+                <input type="email" placeholder="Email" value="I will be invalid when focused">
+            </div>
+            <pre data-src="snippets/invalid-input.html"></pre>
+
+        </section>
+
+        <h2>Tables</h2>
+        <section id="tables">
+
+            <h3>Default Table</h3>
+
+            <p>There is no need for special classes, or markup. Table elements should match match design out of the
+                box.</p>
+
+            <div class="sample">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Make</th>
+                        <th>Model</th>
+                        <th>Year</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Honda</td>
+                        <td>Accord</td>
+                        <td>2009</td>
+                    </tr>
+
+                    <tr>
+                        <td>2</td>
+                        <td>Toyota</td>
+                        <td>Camry</td>
+                        <td>2012</td>
+                    </tr>
+
+                    <tr>
+                        <td>3</td>
+                        <td>Hyundai</td>
+                        <td>Elantra</td>
+                        <td>2010</td>
+                    </tr>
+
+                    <tr>
+                        <td>4</td>
+                        <td>Ford</td>
+                        <td>Focus</td>
+                        <td>2008</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <pre data-src="snippets/table.html"></pre>
+
+            <h3 class="is-subsection">Striped Table</h3>
+
+            <p>Large tables can be easier to read if rows are easily distinguishable. Adding the
+                <code>.is-striped</code> classname can be added to the &lt;table&gt; element and the zebra-styled
+                striping will be applied automatically.</p>
+
+            <div class="sample">
+                <table class="is-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Make</th>
+                            <th>Model</th>
+                            <th>Year</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Honda</td>
+                            <td>Accord</td>
+                            <td>2009</td>
+                        </tr>
+
+                        <tr>
+                            <td>2</td>
+                            <td>Toyota</td>
+                            <td>Camry</td>
+                            <td>2012</td>
+                        </tr>
+
+                        <tr>
+                            <td>3</td>
+                            <td>Hyundai</td>
+                            <td>Elantra</td>
+                            <td>2010</td>
+                        </tr>
+
+                        <tr>
+                            <td>4</td>
+                            <td>Ford</td>
+                            <td>Focus</td>
+                            <td>2008</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <pre data-src="snippets/table-striped.html"></pre>
+        </section>
+
+        <h2>Navbar</h2>
+        <section id="navbar">
+            <h3>Use</h3>
+
+            <p>The <code>nav</code> element represents a section of a page that serves as navigation links to other
+                pages or to sections within the page.</p>
+
+            <p>You can mark the active navbar section by adding <code>.is-selected</code> classname to the appropriate
+                list element.</p>
+
+            <p>
+                If you are using web components you might want to try <a href="/components/nf-nav/demo.html">nf-nav</a>
+            </p>
+
+            <div class="sample">
+                <nav>
+                    <ul>
+                        <li class="logo">App Name</li>
+                        <li class="is-selected"><a href="#about">About</a></li>
+                        <li><a href="#help">Help</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <pre data-src="snippets/navbar.html"></pre>
+        </section>
+
+        <h2>Header</h2>
+        <section id="header">
+            <h3>Basic</h3>
+
+            <p>
+                The <code>header</code> normally would contain a <code>h1</code> tag and optionally a subnav (see below).
+                By default a divider/breaking line will be set underneath the header section.
+                Please note that the header tag must be a direct descendant of the <code>main</code> tag.
+            </p>
+
+            <div class="sample">
+                <header class="nf-header">
+                    <h1>Title</h1>
+                </header>
+            </div>
+            <pre data-src="snippets/header.html"></pre>
+
+            <h3 class="is-subsection" id="subnav">Subnav</h3>
+
+            <p>
+                Subnav provides a navigation sub-menu. It is usually positioned within the <a href="#header"><code>header</code></a>
+                as shown in this <a href="#headerSubnav">example</a>. You can mark the active subnav item by adding the <code>.is-selected</code> classname to the appropriate <code>li</code> element.
+            </p>
+
+            <p>
+                If you are using web components you should consider the <a href="#nfSubnav"><code>nf-subnav</code></a> component which
+                provides some extra functionality.
+            </p>
+
+            <div class="sample">
+                <ul class="is-subnav">
+                    <li class="is-selected"><a href="#">reports</a></li>
+                    <li><a href="#">configuration</a></li>
+                    <li><a href="#">advanced settings</a></li>
+                </ul>
+            </div>
+            <pre data-src="snippets/subnav.html"></pre>
+
+            <h3 class="is-subsection">Example of subnav within a header</h3>
+            <div class="sample" id="headerSubnav">
+                <header class="nf-header">
+                    <h1>Title</h1>
+                    <ul class="is-subnav">
+                        <li class="is-selected"><a href="#">reports</a></li>
+                        <li><a href="#">configuration</a></li>
+                        <li><a href="#">advanced settings</a></li>
+                    </ul>
+                </header>
+            </div>
+
+        </section>
+
+        <h2>Panel</h2>
+        <section id="panel">
+            <h3>Basic</h3>
+
+            <p>A <code>panel</code> element represents a section of a page which aims to outline sections of your page.
+                This aids with page sections and when adding emphasis to a page section</p>
+
+            <div class="sample">
+                <panel>
+                    This is a panel section
+                </panel>
+            </div>
+            <pre data-src="snippets/panel.html"></pre>
+
+            <h3 class="is-subsection">Panel with Heading</h3>
+
+            <p>Add a heading container to your panel simply by adding the <code>heading</code> tag.</p>
+
+            <div class="sample">
+                <panel>
+                    <header>
+                        This is a panel header
+                    </header>
+                    This is a panel section
+                </panel>
+            </div>
+            <pre data-src="snippets/panel-header.html"></pre>
+
+            <h3 class="is-subsection">Panel with Footer</h3>
+
+            <p>Add a footer container to your panel simply by adding the <code>footer</code> tag.</p>
+
+            <div class="sample">
+                <panel>
+                    This is a panel section
+                    <footer>
+                        This is a panel footer
+                    </footer>
+                </panel>
+            </div>
+            <pre data-src="snippets/panel-footer.html"></pre>
+
+            <h3 class="is-subsection">Panel with Tables</h3>
+
+            <p>Add a table to your panel simply by adding a <code>table</code> tag into it.</p>
+
+            <div class="sample">
+                <panel>
+                    <header>
+                        Now with 100% more table
+                    </header>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    <table>
+                        <tr>
+                            <th>Given Name</th>
+                            <th>Last Name</th>
+                            <th>Handle</th>
+                        </tr>
+                        <tr>
+                            <td>John</td>
+                            <td>Tregoning</td>
+                            <td>@tregoning</td>
+                        </tr>
+                        <tr>
+                            <td>Peter</td>
+                            <td>Smith</td>
+                            <td>@Smithy</td>
+                        </tr>
+                        <tr>
+                            <td>Lisa</td>
+                            <td>Tabs</td>
+                            <td>@taby</td>
+                        </tr>
+
+                    </table>
+                </panel>
+            </div>
+            <pre data-src="snippets/panel-table.html"></pre>
+        </section>
+
+        <h2>Grid</h2>
+        <section id="grid">
+            <h3>Introduction</h3>
+            <p>
+                Grid systems are used for creating page layouts through a series of rows and columns that house your content.
+            </p>
+            <div class="sample">
+
+                <div id="gridClasses">
+                    <ol>
+                        <li>.nf-1</li>
+                        <li>.nf-2</li>
+                        <li>.nf-3</li>
+                        <li>.nf-4</li>
+                        <li>.nf-5</li>
+                        <li>.nf-6</li>
+                        <li>.nf-7</li>
+                        <li>.nf-8</li>
+                        <li>.nf-9</li>
+                        <li>.nf-10</li>
+                        <li>.nf-11</li>
+                        <li>.nf-12</li>
+                        <li>.nf-13</li>
+                        <li>.nf-14</li>
+                        <li>.nf-15</li>
+                        <li>.nf-16</li>
+                    </ol>
+                </div>
+
+                <div id="gridShowcase">
+                    <div class="nf-grid">
+                        <div class="nf-1"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-2"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-3"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-4"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-5"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-6"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-7"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-8"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-9"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-10"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-11"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-12"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-13"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-14"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-15"></div>
+                    </div>
+                    <div class="nf-grid">
+                        <div class="nf-16"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Use</h3>
+
+            <p>
+                Neflix default grid is a 16th based grid. This means that the maximum total allowed (using .nf-x classes) is 16. Here is an example of how said classes can be combined:
+            </p>
+
+            <div class="sample gridSample">
+                <div class="nf-grid txt-center">
+                    <div class="nf-4">1/4 of available space (16/4 == 4) thus <b>.nf-4</b></div>
+                    <div class="nf-2">1/8 of available space (16/8 == 2) thus <b>.nf-2</b></div>
+                    <div class="nf-10">take all the remaining space (16 - (4 + 2)) == 10 thus <b>.nf-10</b></div>
+                </div>
+            </div>
+
+            <p>
+                Note: you can use the <a href="#textAlignment">text alignment classes</a> (e.g: <code>.txt-center</code>, <code>.txt-left</code>, <code>.txt-right</code>) on <code>nf-grid</code> in order to set the text alignment
+            </p>
+
+            <pre data-src="snippets/grid.html"></pre>
+
+            <h3 class="is-subsection">Vertically centering content</h3>
+            <p>
+                If you need to vertically center the content, you can do so by switching to <code>.nf-grid-centered</code>.<br />
+                Note: You will need to add an extra container as shown in the sample code.
+            </p>
+            <div class="sample gridSample">
+                <div class="nf-grid-centered">
+                    <div class="nf-4"><div>1/4 of available space (16/4 == 4) thus <b>.nf-4</b></div></div>
+                    <div class="nf-2"><div>1/8 of available space (16/8 == 2) thus <b>.nf-2</b></div></div>
+                    <div class="nf-10"><div>take all the remaining space (16 - (4 + 2)) == 10 thus <b>.nf-10</b></div></div>
+                </div>
+            </div>
+
+            <pre data-src="snippets/grid-centered.html"></pre>
+
+        </section>
+
+        <h2>Toolbox</h2>
+        <section id="helper">
+
+            <h3>Hiding Elements</h3>
+
+            <p>Add the <code>hidden</code> attribute to an HTML element to hide it from the screen, alternatively you
+                can also use the <code>.is-hidden</code> classname</p>
+            <pre data-src="snippets/hidden.html"></pre>
+            <h3 class="is-subsection">Clearfix</h3>
+
+            <p>Contain floats without resorting to using presentational markup. Easily clear floats by adding the <code>.clearfix</code>
+                classname to the container element.</p>
+        </section>
+
+    </section>
+
+    <h1 id="webcomponents">Web Components</h1>
+
+    <section>
+
+        <h2>Introduction</h2>
+        <section>
+            <p>
+                <a href="http://webcomponents.org/">Web Components</a> is a <a href="http://www.w3.org/TR/components-intro/">W3C standard</a> that enables web development based on encapsulated and interoperable
+                custom elements that extend HTML itself.
+            </p>
+            <p>
+                If you want to learn how to use it please refer to the getting started <a href="#gettingStarted">section</a>
+            </p>
+        </section>
+
+        <h2>nf-table</h2>
+        <section>
+            <p>
+                <code>nf-table</code> extends a table by automatically making it sortable (by clicking on the relevant header it toggles the sorting order ascending/descending). in order to upgrade a native table into nf-table simply add the following to the table tag: <code>is="nf-table"</code>
+            </p>
+
+            <p>
+                Column content will be sorted alphabetically by default, You can override the column data type (and how it gets sorted) more details <a href="#tableColumnDataTypes">here</a>
+                <br/>
+            </p>
+
+            <div class="sample">
+                <table is="nf-table">
+                    <thead>
+                    <tr>
+                        <th>Header content 1</th>
+                        <th>Header content 2</th>
+                        <th num>Numeric content</th>
+                        <th date="YYYY-MM-DD">Date content</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>Body content 1</td>
+                        <td>Body content 2</td>
+                        <td>1%</td>
+                        <td>1426703449787</td>
+                    </tr>
+                    <tr>
+                        <td>Body content 3</td>
+                        <td>Body content 4</td>
+                        <td>55%</td>
+                        <td>2012-08-18T18:30:49.787Z</td>
+                    </tr>
+                    <tr>
+                        <td>Body content 2</td>
+                        <td>Body content 3</td>
+                        <td>15%</td>
+                        <td>1379529049787</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Events</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>sort</h4>
+                        <p>
+                            Fired when a column is sorted.
+                        </p>
+                        <p>
+                            <b>Event Details:</b> <code>e.detail.index</code> contains the index of the column that triggered the sort event.
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <panel>
+                <header>
+                    <h3>Methods</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>getData</h4>
+                        <p>
+                            Returns a JSON object containing the table's data.
+                        </p>
+                    </li>
+                    <li>
+                        <h4>sortTable</h4>
+                        <p>
+                            This method allows you to programmatically sort from <code>nf-table</code>.<br/>
+                            Note: the first call will sort the relevant column in an ascending order and a subsequent call to the same column will change the sort order to descending.
+                        </p>
+                        <panel>
+                            <header>
+                                <h5>Parameters:</h5>
+                            </header>
+                            <ul>
+                                <li><b>index: </b> indicates what column should be sorted by index.</li>
+                            </ul>
+                        </panel>
+                    </li>
+                </ul>
+            </panel>
+
+            <panel id="tableColumnDataTypes">
+                <header>
+                    <h3>Column Data Types &amp; Formats</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>num</h4>
+                        <p>
+                            To specify that a given column should be sorted by its numeric value simply add the <b><code>num</code></b> attribute to the relevant <code>th</code>. Note that the column content can also include non numeric values (e.g. '100$', '30%', etc).<br/>
+                            You can also modify the number of decimal places displayed by giving the num attribute a value (e.g. <b><code>num=3</code></b> will round to 3 decimal places)
+                        </p>
+                    </li>
+                    <li>
+                        <h4>date</h4>
+                        <p>
+                            To specify that a given column should be sorted by its date value simply add the <b><code>date</code></b> attribute to the relevant <code>th</code>.
+                            You can also modify the how dates in this column are displayed by setting the value of the date attribute (e.g. <b><code>date='YYYY-MM-DD'</code></b> ) default is 'MM-DD-YYYY HH:mm'. <br>
+                            The actual values in the table cells can be anything that instanciate a javascript Date object (e.g. "2015-03-18T18:30:49.787Z", 1426703465107, etc).
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-table</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-table</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-table/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-table.html"></pre>
+
+        </section>
+
+        <h2>nf-table-search</h2>
+        <section>
+            <p>
+                <code>nf-table-search</code> introduces the ability to search/filter a nf-table
+            </p>
+            <div class="sample">
+                <nf-table-search placeholder="Search..." table="searchableTable"></nf-table-search>
+                <table is="nf-table" id="searchableTable">
+                    <thead>
+                    <tr>
+                        <th>Header content 1</th>
+                        <th>Header content 2</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>Body content 1</td>
+                        <td>Body content 2</td>
+                    </tr>
+                    <tr>
+                        <td>Body content 3</td>
+                        <td>Body content 4</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                If you need to search in multiple tables simultaneously, there is a component for that <code>nf-tables-search</code> you can find more about it <a href="/components/nf-tables-search/demo.html">here</a>
+            </p>
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>placeholder</h4>
+                        <p>
+                            Sets the placeholder text in the search input box.
+                        </p>
+                        <p>
+                            default: no placeholder text
+                        </p>
+                    </li>
+                    <li>
+                        <h4>table</h4>
+                        <p>
+                            Sets what nf-table the search/filtering should be applied to. This attribute value should be set the the ID of the relevant <code>nf-table</code>
+                        </p>
+                        <p>
+                            default: fetches the first <code>nf-table</code> available in the page.
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <panel>
+                <header>
+                    <h3>Events</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>update</h4>
+                        <p>
+                            Fired when the filter/search query changes.
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-table-search</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-table-search</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-table-search/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-table-search.html"></pre>
+
+        </section>
+
+        <h2>nf-table-paginate</h2>
+        <section>
+            <p>
+                <code>nf-table-paginate</code> introduces the ability to paginate through a nf-table results.
+            </p>
+            <p>
+                This pagination is also aware of the table 'filter' state (e.g. the table is being filtered by nf-table-search)
+            </p>
+            <div class="sample">
+                <table id="paginatableTable" is="nf-table">
+                    <tr>
+                        <th num>Number</th>
+                        <th>Title</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>b</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>b</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>b</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>b</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>c</td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>ab</td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>cd</td>
+                    </tr>
+                </table>
+
+                <nf-table-paginate page="5" table="paginatableTable"></nf-table-paginate>
+            </div>
+
+            <p>There is also a similar pagination component available <code>nf-table-pagination-toggle</code> that toggles between a full table and a truncated one, you can find out more about it <a href="/components/nf-table-paginate-toggle/demo.html">here</a></p>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>table</h4>
+                        <p>
+                            Sets what nf-table the pagination should be applied to. This attribute value should be set to the the ID of the relevant <code>nf-table</code>
+                        </p>
+                        <p>
+                            default: fetches the first <code>nf-table</code> available in the page.
+                        </p>
+                    </li>
+                    <li>
+                        <h4>page</h4>
+                        <p>
+                            Sets what size of the pagination (i.e. how many rows to show per page)
+                        </p>
+                        <p>
+                            default: 5
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-table-pagination</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-table-pagination</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-table-paginate/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-table-pagination.html"></pre>
+
+        </section>
+
+        <h2>nf-table-live-count</h2>
+        <section>
+            <p>
+                <code>nf-table-live-count</code> is a helper component that displays the current number of filtered rows on a table. This might be useful to display number of search results in the UI.
+            </p>
+            <div class="sample">
+
+                <h1>Total live count is: <nf-table-live-count table="liveCountTable"></nf-table-live-count></h1>
+
+                <nf-table-search placeholder="Search..." table="liveCountTable"></nf-table-search>
+
+                <table is="nf-table" id="liveCountTable">
+                    <tr>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th num>Completed</th>
+                    </tr>
+                    <tr>
+                        <td>John</td>
+                        <td>Tregoning</td>
+                        <td>9%</td>
+                    </tr>
+                    <tr>
+                        <td>Lisa</td>
+                        <td>Tabs</td>
+                        <td>13%</td>
+                    </tr>
+                    <tr>
+                        <td>Alex</td>
+                        <td>Treg</td>
+                        <td>1%</td>
+                    </tr>
+                </table>
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>table</h4>
+                        <p>
+                            Sets what nf-table the live count should be applied to. This attribute value should be set to the the ID of the relevant <code>nf-table</code>
+                        </p>
+                        <p>
+                            default: fetches the first <code>nf-table</code> available in the page.
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+            <panel>
+                <header>
+                    <h3>Events</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>change</h4>
+                        <p>
+                            Fired when the live count changes
+                        </p>
+                        <p>
+                            <b>Event Details:</b> <code>e.detail.length</code> contains the total number of rows available in the table
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-table-live-count</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-table-live-count</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-table-live-count/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-table-live-count.html"></pre>
+
+        </section>
+
+        <h2>nf-switch</h2>
+        <section>
+            <p>
+                <code>nf-switch</code> introduces the ability to easily and declaratively toggle content by clicking on it
+            </p>
+
+            <div id="nfSwitchExample">
+                <nf-switch switched>
+                    <img src="/img/switch-on.png" class="on">
+                    <img src="/img/switch-off.png" class="off">
+                </nf-switch>
+
+                <nf-switch switched>
+                    <h3 class="on">See more...</h3>
+                    <h3 class="off">See less...</h3>
+                </nf-switch>
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>switched</h4>
+                        <p>
+                            Boolean attribute, indicating whether nf-switch should be on or off (presence indicates 'on'). This attribute is 'reflected' (kept up to date with the state) so it can be used to style nf-switch's content.
+                        </p>
+                        <p>
+                            default: false
+                        </p>
+                    </li>
+                    <li>
+                        <h4>persist</h4>
+                        <p>
+                            Indicates whether the state of the switch should be persisted into local storage. Its value should be a unique string that will used as the localStorage key (e.g. persist="turbo-switch")
+                        </p>
+                        <p>
+                            default: false
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <panel>
+                <header>
+                    <h3>Events</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>switched</h4>
+                        <p>
+                            Fired when nf-switch is toggled
+                        </p>
+                        <p>
+                            <b>Event Details:</b> <code>e.detail.switched</code> contains the current state of nf-switch
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-switch</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-switch</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-switch/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-switch.html"></pre>
+
+        </section>
+
+        <h2>nf-select</h2>
+        <section>
+            <p>
+                nf-select is a replacement for the native <code>option</code> (with multiple select enabled). It provides a fully searchable, keyboard friendly, upgraded <code>option</code> dropdown component
+            </p>
+            <p>
+                Use: In order to work around <a href="https://code.google.com/p/chromium/issues/detail?id=234020" target="_blank">this bug</a>, you will have to wrap your native <code>select</code> tag with a <code>nf-select</code> tag, as shown in the sample code.
+            </p>
+            <p>
+                If you need to adjust the dimentions of this component (like all other components) you can simply set with and height via CSS and nf-select will automatically adjust.
+            </p>
+            <p>
+                Note: If you are using Angular/Ember/Other you should bind to the native 'select' not the wrapper 'nf-select' value/selectedOptions/change-events/etc. <br/>
+            </p>
+            <div class="sample">
+                <nf-select placeholder="Search">
+                    <select multiple>
+                        <option value="value1">Value 1</option>
+                        <option value="value2">Value 2</option>
+                        <option value="value3">Value 3</option>
+                        <option value="value4">Value 4</option>
+                        <option value="value5">Value 5</option>
+                        <option value="value6">Value 6</option>
+                        <option value="value7">Value 7</option>
+                        <option value="value8">Value 8</option>
+                        <option value="value9">Value 9</option>
+                        <option value="value10">Value 10</option>
+                        <option value="value11">Value 11</option>
+                        <option value="value12">Value 12</option>
+                        <option value="value13">Value 13</option>
+                        <option value="value14">Value 14</option>
+                        <option value="value15">Value 15</option>
+                        <option value="value16">Value 16</option>
+                        <option value="value17">Value 17</option>
+                        <option value="value18">Value 18</option>
+                    </select>
+                </nf-select>
+            </div>
+
+            <p>
+                Finally if you would like a component like <code>nf-select</code> but at a lower level of abstraction <a href="/components/nf-input/demo.html">nf-input</a> might be what you are looking for. (all it does is set style and keyboard navigation for you)
+            </p>
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>placeholder</h4>
+                        <p>
+                            Sets the placeholder text in the search input box.
+                        </p>
+                        <p>
+                            default: no placeholder text
+                        </p>
+                    </li>
+                    <li>
+                        <h4>regex</h4>
+                        <p>
+                            Indicates whether the search query should be treated as a regex.
+                        </p>
+                        <p>
+                            default: true
+                        </p>
+                    </li>
+                    <li>
+                        <h4>disabled</h4>
+                        <p>
+                            Boolean attribute, indicating whether nf-select is disabled or not. (when disabled the user will be unabled to interact with the component)
+                        </p>
+                        <p>
+                            default: false
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <panel>
+                <header>
+                    <h3>Events</h3>
+                </header>
+                <p>
+                    Note: Please note that the underlying native <code>select</code> will also trigger native events such as <code>change</code>, etc. when elements are selected in <code>nf-select</code>
+                </p>
+                <ul>
+                    <li>
+                        <h4>querychanged</h4>
+                        <p>
+                            Fired when the search/filter query is changed
+                        </p>
+                    </li>
+
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-select</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-select</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-select/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-select.html"></pre>
+
+        </section>
+
+        <h2>nf-icon</h2>
+        <section>
+
+            <p>
+                nf-icon provides a standard collection of SVG icons (styleable using CSS)
+            </p>
+            <p>
+                You can customize each icon simply by using CSS to set the width and height in order to change the icon size or by setting color.
+            </p>
+
+            <div class="sample" id="iconsSample">
+                <nf-icon name="upArrow"></nf-icon>
+                <nf-icon name="downArrow"></nf-icon>
+                <nf-icon name="close"></nf-icon>
+                <nf-icon name="arrowUpRight"></nf-icon>
+                <nf-icon name="expandAll"></nf-icon>
+                <nf-icon name="contractAll"></nf-icon>
+                <nf-icon name="trash"></nf-icon>
+                <nf-icon name="plus-circle"></nf-icon>
+                <nf-icon name="plus-circle2"></nf-icon>
+                <nf-icon name="play"></nf-icon>
+                <nf-icon name="cog"></nf-icon>
+                <nf-icon name="x-circle"></nf-icon>
+                <nf-icon name="checkmark"></nf-icon>
+                <nf-icon name="blocked"></nf-icon>
+                <nf-icon name="calendar"></nf-icon>
+                <nf-icon name="hourglass"></nf-icon>
+                <nf-icon name="time"></nf-icon>
+                <nf-icon name="menu"></nf-icon>
+                <nf-icon name="question"></nf-icon>
+                <nf-icon name="trace"></nf-icon>
+                <nf-icon name="dumbbell"></nf-icon>
+                <nf-icon name="fire"></nf-icon>
+                <nf-icon name="meter"></nf-icon>
+                <nf-icon name="chart"></nf-icon>
+                <nf-icon name="syringe"></nf-icon>
+                <nf-icon name="user"></nf-icon>
+                <nf-icon name="user2"></nf-icon>
+                <nf-icon name="user3"></nf-icon>
+                <nf-icon name="target"></nf-icon>
+                <nf-icon name="target2"></nf-icon>
+                <nf-icon name="database"></nf-icon>
+                <nf-icon name="gamepad"></nf-icon>
+                <nf-icon name="earth"></nf-icon>
+                <nf-icon name="edit"></nf-icon>
+                <nf-icon name="regex"></nf-icon>
+                <nf-icon name="server"></nf-icon>
+
+                <!-- examples of icons with style tweaks -->
+                <nf-icon name="cloudUpload" class="is-button"></nf-icon>
+                <nf-icon name="search" style="color:deeppink"></nf-icon>
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>name</h4>
+                        <p>
+                            the name identifies the icon that should be displayed.
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-icon</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-icon</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-iconset/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-icon.html"></pre>
+
+        </section>
+
+        <h2 id="nfSubnav">nf-submenu</h2>
+        <section>
+            <p>
+                nf-submenu should normally be placed inside <a href="#header">the header</a> component.
+            </p>
+
+            <div class="sample">
+
+                <nf-submenu>
+                    <nf-tab>reports</nf-tab>
+                    <nf-tab>configuration</nf-tab>
+                    <nf-tab>advanced settings</nf-tab>
+                </nf-submenu>
+
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>selected</h4>
+                        <p>
+                            Sets the selected tab by index
+                        </p>
+                        <p>
+                            default: 0 (first tab)
+                        </p>
+                    </li>
+                    <li>
+                        <h4>noslide</h4>
+                        <p>
+                            boolean property that if present will removes the bottom bar animation when switching tabs
+                        </p>
+                        <p>
+                            default: by default the bottom bar will animate/slide
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <panel>
+                <header>
+                    <h3>Events</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>submenuchanged</h4>
+                        <p>
+                            Fired when a the selected submenu changes
+                        </p>
+                        <p>
+                            <b>Event Details:</b>
+                            <ul>
+                                <li><code>e.detail.selectedIndex</code>: contains the index of the tab that triggered the event.</li>
+                                <li><code>e.detail.selectedItem</code>: contains reference to the <code>nf-tab</code> element.</li>
+                            </ul>
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-submenu</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-submenu</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-submenu/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-submenu.html"></pre>
+        </section>
+
+        <h2>nf-submenu-pages</h2>
+        <section>
+            <p>
+                nf-submenu-pages is a component designed to be use in conjunction with <code>nf-submenu</code>. In essence <code>nf-submenu-pages</code>
+                is used to selectively/programmatically show one of its children/pages at a time.
+            </p>
+
+            <p>
+                Note: In order for the page sliding animation to work you will need to set the height (via CSS) on the relevant <code>nf-submenu-page</code> tag, otherwise it will still work but without the transition animation.
+            </p>
+
+            <div class="sample" id="submenuSample">
+
+                <nf-submenu id="submenuPages">
+                    <nf-tab>one</nf-tab>
+                    <nf-tab>two</nf-tab>
+                    <nf-tab>three</nf-tab>
+                    <nf-tab>four</nf-tab>
+                    <nf-tab>five</nf-tab>
+                </nf-submenu>
+
+                <nf-submenu-pages submenu="submenuPages">
+                    <div class="one"><h1>One</h1></div>
+                    <div class="two"><h1>Two</h1></div>
+                    <div class="three"><h1>Three</h1></div>
+                    <div class="four"><h1>Four</h1></div>
+                    <div class="five"><h1>Five</h1></div>
+                </nf-submenu-pages>
+
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>submenu</h4>
+                        <p>
+                            Sets which <code>nf-submenu</code> should linked with. This attribute value should be set the the ID of the relevant <code>nf-submenu</code>
+                        </p>
+                        <p>
+                            default: fetches the first <code>nf-submenu</code> available in the page.
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-submenu-pages</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-submenu-pages</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-submenu-pages/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-submenu-pages.html"></pre>
+
+        </section>
+
+        <h2>nf-accordion</h2>
+        <section>
+            <p>
+                nf-accordion is a component to easily fulfill a common pattern found in websites where content is alternatively show/hidden by clicking on a toggle.
+            </p>
+
+            <p>
+                The component is divided into two sections: the first section is always displayed regardless of whether the component is opened or closed.
+                You can set this section either by using a <code>header</code> tag (or any tag with the <code>.nf-accordion-header</code> classname).
+
+            </p>
+            <p>
+                In this first section you will also need to set the toggler by using the <code>.nf-toggler</code> classname (please note that the whole first section could be the toggler or an element within it).
+            </p>
+
+            <p>
+                The second section is anything that's not in the first section, this content will either be shown or not depending on the state of the component.
+            </p>
+
+            <p>
+                Here is an example of using <code>nf-accordion</code> together with the <code>nf-switch</code> component. Also check the standalone <a href="http://jt:8080/components/nf-accordion/demo.html">demo</a> source code for more examples.
+            </p>
+
+            <div class="sample" id="nfAccordionDemo">
+                <nf-accordion closed>
+                    <header>
+                        <nf-switch switched class="nf-toggler">
+                            <span class="on">see more...</span>
+                            <span class="off">see less...</span>
+                        </nf-switch>
+                    </header>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+                    standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
+                    type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
+                    remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
+                    Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of
+                    Lorem Ipsum.
+                </nf-accordion>
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>closed</h4>
+                        <p>
+                            Boolean attribute, indicating whether <code>nf-accordion</code> should be opened or closed (the attribute presence indicates 'closed').
+                        </p>
+                        <p>
+                            default: false (opened)
+                        </p>
+                    </li>
+                    <li>
+                        <h4>persist</h4>
+                        <p>
+                            Indicates whether the state of the accordion should be persisted into local storage. Its value should be a unique string that will used as the localStorage key (e.g. persist="admin-options")
+                        </p>
+                        <p>
+                            default: false
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-accordion</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-accordion</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-accordion/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-accordion.html"></pre>
+        </section>
+
+        <h2>nf-tags</h2>
+
+        <section>
+            <p>
+                <code>nf-tags</code> introduces the ability to easily add/remove tag/tokens via this simple tag editing component.
+            </p>
+            <p>
+                Note: As all components you can set its width/height via CSS and the component will adjust itself. below an example nf-tags with its width set to 400px.
+            </p>
+
+            <div class="sample" id="nfTagExample">
+                <nf-tags tags="['one','two','three','four']" placeholder="Numbers..."></nf-tags>
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>tags</h4>
+                        <p>
+                            Array indicating which tags should be pre-polulated.
+                        </p>
+                        <p>
+                            default: []
+                        </p>
+                    </li>
+                    <li>
+                        <h4>placeholder</h4>
+                        <p>
+                            Sets the placeholder text in the tag input box.
+                        </p>
+                        <p>
+                            default: no placeholder text
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <panel>
+                <header>
+                    <h3>Methods</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>setTags</h4>
+                        <p>
+                            This method allows you to programmatically set the tags in <code>nf-tags</code>.
+                        </p>
+                        <panel>
+                            <header>
+                                <h5>Parameters:</h5>
+                            </header>
+                            <ul>
+                                <li><b>tagsArray: </b> array with the tags to be set.</li>
+                            </ul>
+                        </panel>
+                    </li>
+                    <li>
+                        <h4>addTag</h4>
+                        <p>
+                            This method allows you to programmatically set the tags.
+                        </p>
+                        <panel>
+                            <header>
+                                <h5>Parameters:</h5>
+                            </header>
+                            <ul>
+                                <li><b>tag: </b> the tag to be added.</li>
+                            </ul>
+                        </panel>
+                    </li>
+                    <li>
+                        <h4>removeTag</h4>
+                        <p>
+                            This method allows you to programmatically removea a tag.
+                        </p>
+                        <panel>
+                            <header>
+                                <h5>Parameters:</h5>
+                            </header>
+                            <ul>
+                                <li><b>tag: </b> the tag to be removed.</li>
+                            </ul>
+                        </panel>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-tags</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-tags</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-tags/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-tags.html"></pre>
+
+        </section>
+
+        <h2>nf-lightbox</h2>
+
+        <section>
+            <p>
+                <code>nf-lightbox</code> introduces the ability to easily and declaratively use a lightbox in your web application.
+            </p>
+
+            <p>
+                nf-lightbox automatically includes a close (x) button on the top right, also pressing the 'esc' key will close the lightbox. You can also set any element to close the lightbox simply by giving it the <code>.nf-lightbox-close</code> classname.
+            </p>
+            <div class="sample" id="nfLightboxSample">
+                <nf-lightbox width="500" id="nfLightbox">
+                    <h2>Hello There</h2>
+                    <textarea  rows="15"></textarea>
+                    <button class="nf-right nf-lightbox-close">Close</button>
+                    <button class="nf-right btn-primary">OK</button>
+                </nf-lightbox>
+                <button class="btn-primary" onClick="document.getElementById('nfLightbox').showLightbox();">Show me the Lightbox!</button>
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>state</h4>
+                        <p>
+                            This attribute is 'reflected' (kept up to date with the state of the component). if state anything other than 'hidden' the lightbox will be displayed.
+                        </p>
+                        <p>
+                            default: 'hidden'
+                        </p>
+                    </li>
+                    <li>
+                        <h4>width</h4>
+                        <p>
+                            Sets the width of the lightbox.
+                        </p>
+                        <p>
+                            default: it defaults to the width of the content
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <panel>
+                <header>
+                    <h3>Methods</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>hideLightbox</h4>
+                        <p>
+                            This method allows you to set the state of the lightbox to 'hidden'
+                        </p>
+                    </li>
+                    <li>
+                        <h4>showLightbox</h4>
+                        <p>
+                            This method allows you to set the state of the lightbox to 'visible'
+                        </p>
+                    </li>
+
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-lightbox</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-lightbox</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-lightbox/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-lightbox.html"></pre>
+
+        </section>
+
+        <h2>nf-date-picker</h2>
+
+        <section>
+            <p>
+                <code>nf-date-picker</code> introduces the ability to easily and declaratively create a date/time selector.
+            </p>
+
+            <div class="sample" id="nfDatePickerDemo">
+                <nf-date-picker input="datePickerProxy" placeholder="Start Time"></nf-date-picker>
+                <input id="datePickerProxy" style="display:none" />
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>input</h4>
+                        <p>
+                            This should be the 'id' of the 'proxy input'. <br/>
+                            this proxy input will be populated with the selected value (so submitting a native form will work as expected) also nf-date-picker will automatically trigger the required events on this 'proxy input' ('change/keydown/input/etc') so binding to the proxy input from Angular 1x/Ember should work out of the box.
+                        </p>
+                        <p>
+                            default: none
+                        </p>
+                    </li>
+                    <li>
+                        <h4>format</h4>
+                        <p>
+                            String that sets how the date is visually represented
+                        </p>
+                        <p>
+                            default: 'MM/DD/YY h:mm A'
+                        </p>
+                    </li>
+                    <li>
+                        <h4>placeholder</h4>
+                        <p>
+                            Sets the placeholder text in the date input box.
+                        </p>
+                        <p>
+                            default: no placeholder text
+                        </p>
+                    </li>
+                    <li>
+                        <h4>value</h4>
+                        <p>
+                            Sets the initial value of the nf-date-picker component
+                        </p>
+                        <p>
+                            default: null
+                        </p>
+                    </li>
+                    <li>
+                        <h4>epoch</h4>
+                        <p>
+                            Changes the output value return the numeric value of the selected date as the number of milliseconds since January 1, 1970.
+                        </p>
+                        <p>
+                            default: string following the ISO 8601 Extended Format.
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <panel>
+                <header>
+                    <h3>Events</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>change</h4>
+                        <p>
+                            Fired when a date is set
+                        </p>
+                        <p>
+                            <b>Event Details:</b> <code>e.detail.date</code> contains the newly set Date.
+                        </p>
+                    </li>
+
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-date-picker</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-date-picker</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-date-picker/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-date-picker.html"></pre>
+
+        </section>
+
+        <h2>nf-autosuggest</h2>
+
+        <section>
+            <p>
+                <code>nf-autosuggest</code> introduces the ability to easily and declaratively create an autosuggest component
+            </p>
+
+            <div class="sample" id="nfAutosuggest">
+                <nf-autosuggest placeholder="Search" input="autosuggestProxy" suggestions="['one','two','three','four','five','six','seven','eight','nine','ten']"></nf-autosuggest>
+                <input id="autosuggestProxy" style="display:none"/>
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>input</h4>
+                        <p>
+                            This should be the 'id' of the 'proxy input'. <br/>
+                            this proxy input will be populated with the autosuggest value (so submitting a native form will work as expected) also nf-autosuggest will automatically trigger the required events on this 'proxy input' ('change/keydown/input/etc') so binding to the proxy input from Angular 1x/Ember should work out of the box.
+                        </p>
+                        <p>
+                            default: none
+                        </p>
+                    </li>
+                    <li>
+                        <h4>placeholder</h4>
+                        <p>
+                            Sets the placeholder text in the autosuggest input box.
+                        </p>
+                        <p>
+                            default: no placeholder text
+                        </p>
+                    </li>
+                    <li>
+                        <h4>disabled</h4>
+                        <p>
+                            Boolean attribute that disables the autosuggest component.
+                        </p>
+                        <p>
+                            default: false
+                        </p>
+                    </li>
+                    <li>
+                        <h4>suggestions</h4>
+                        <p>
+                            Array of possible suggestions
+                        </p>
+                        <p>
+                            default: []
+                        </p>
+                    </li>
+                    <li>
+                        <h4>maxSize</h4>
+                        <p>
+                            Number of items to display in the drop down
+                        </p>
+                        <p>
+                            default: 8
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <panel>
+                <header>
+                    <h3>Events</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>querychanged</h4>
+                        <p>
+                            Fired when the search/filter query is changed
+                        </p>
+                    </li>
+
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-autosuggest</code> is automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. If you wish to
+                import <code>nf-autosuggest</code> without importing the whole Netflix library, you can do so. Here is a <a href="components/nf-autosuggest/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-autosuggest.html"></pre>
+
+        </section>
+
+        <h2>nf-json</h2>
+
+        <section>
+            <p>
+                The <code>nf-json</code> enables you to easily deal with JSON. This component has two different modes:
+            </p>
+            <p>
+                <h4>Inline</h4>
+                Simply inline JSON inside the <code>nf-json</code> tags, and the component will render said JSON as 'pretty' JSON (with search, minimize and color highlighting features)
+            </p>
+            <p>
+                <h4>REST</h4>
+                By setting a REST endpoint as a <code>url</code> attribute this components becomes a very powerful JSON editor that can persist changes to the endpoint if desired.
+            </p>
+
+            <div class="sample" id="nfJSONDemo">
+
+                <h2 class="nf-light">Example of editable REST endpoint</h2>
+                <h3 class="nf-light">Note: Feel free to make changes and persist them by clicking on the cloud-arrow icon (in this example the REST endpoint is couchdb), just please don't trash the demo so other people can use it</h3>
+                <nf-json url="https://tregoning.couchappy.com/data/71dd186e8b0a919ec3eba264520034ee" updatable></nf-json>
+
+                <h2 id="inline-json-sample" class="nf-light">Example inline pretty JSON</h2>
+                <nf-json>
+                    {
+                        "a": "hello there",
+                        "b": [1,2,3,4,5],
+                        "c": {
+                        "z": "abcdefg",
+                        "y": 789.23
+                    },
+                        "d": "last one"
+                    }
+                </nf-json>
+
+            </div>
+
+            <panel>
+                <header>
+                    <h3>Attributes</h3>
+                </header>
+                <ul>
+                    <li>
+                        <h4>url</h4>
+                        <p>
+                            Endpoint of a REST interface that returns valid JSON via HTTP 'GET'
+                        </p>
+                        <p>
+                            default: none
+                        </p>
+                    </li>
+                    <li>
+                        <h4>updatable</h4>
+                        <p>
+                            boolean attribute that indicates to the component that the REST endpoint accepts updates via HTTP 'PUT' posts.
+                        </p>
+                        <p>
+                            default: false
+                        </p>
+                    </li>
+                </ul>
+            </panel>
+
+            <p>
+                <code>nf-json</code> is <b>not</b> automatically available when <a href="#gettingStarted">importing</a> <code>netflix.html</code>. Here is a <a href="components/nf-json/demo.html" target="_blank">standalone example</a>
+            </p>
+
+            <pre data-src="snippets/nf-json.html"></pre>
+
+        </section>
+
+    </section>
+
+</main>
+
+<div class="right ribbon-holder">
+    <span class="red ribbon">
+      <span class="text">PRE-ALPHA</span>
+    </span>
+</div>
+
+<script src="js/libs/prism.js"></script>
+</body>
+</html>

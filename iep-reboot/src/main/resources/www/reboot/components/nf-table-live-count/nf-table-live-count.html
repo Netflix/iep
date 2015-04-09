@@ -1,0 +1,90 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+
+<polymer-element name="nf-table-live-count" attributes="table">
+
+    <template>
+        <link rel="stylesheet" href="nf-table-live-count.css" />
+        {{nfData.filteredData.length}}
+    </template>
+
+    <script>
+        (function () {
+
+            'use strict';
+
+            Polymer({
+
+                domReady: function() {
+
+                    this.timeoutId = 0;
+                    this.getTable();
+
+                },
+
+                addEventListeners: function() {
+
+                    var self = this;
+
+                    this.nfData.addEventListener('filtereddatachanged', function() {
+
+                        self.fire('change', {length: this.filteredData.length});
+
+                    }, false);
+
+                },
+
+                getTable: function() {
+
+                    var self = this,
+                        retryDelay = 300,
+                        selector,
+                        table;
+
+                    if (this.table) {
+
+                        if (typeof this.table === "string") {
+
+                            selector = this.table.indexOf('#') === 0 ? this.table : "#" + this.table;
+                            table = document.querySelector(selector);
+
+                        } else if (typeof this.table === "object") {
+
+                            table = this.table;
+
+                        }
+
+
+                    } else {
+
+                        table = document.querySelector("table[is=nf-table]");
+
+                    }
+
+                    if (table) {
+
+                        table.getNfData().then(function(nfData) {
+                            self.nfData = nfData;
+                            self.addEventListeners();
+                        });
+
+                        this.tableRef = table;
+
+                    } else {
+
+                        // relevant table has not yet been found, retry in a little bit (probably template has not run yet)
+                        window.setTimeout(function() {
+
+                            self.getTable();
+
+                        }, retryDelay);
+
+                    }
+
+                }
+
+            });
+
+        })();
+    </script>
+
+</polymer-element>

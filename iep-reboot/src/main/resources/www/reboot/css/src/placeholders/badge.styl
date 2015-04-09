@@ -1,0 +1,23 @@
+/* badge placeholders
+-----------------------------*/
+@require '../scales';
+@require skins;
+@require layout;
+
+$badge {
+
+  @extend $skin-default
+  @extend $flex-absolute-center
+
+  width: 120px;
+  height: 120px;
+
+  border: 1px solid $gray4;
+  border-radius: $radius-large;
+
+  word-break: break-all;
+
+  cursor: default;
+  overflow: hidden;
+
+}

@@ -1,0 +1,65 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+
+<polymer-element name="nf-filter" attributes="type">
+
+    <script>
+        (function () {
+
+            'use strict';
+
+            Polymer({
+
+                publish: {
+
+                    type: {
+                        value: 'table', //default data type
+                        reflect: true
+                    }
+
+                },
+
+                setup: function(nfData) {
+
+                    if (nfData) {
+                        this.nfData = nfData;
+                        this.nfData.addFilter(this);
+                        this.addEventHandlers();
+                    }
+
+                },
+
+                dismantleCallback: function() {
+
+                    this.nfData.removeFilter(this);
+
+                },
+
+                updateCallback: function() {
+
+                    this.nfData.updateFilter(this);
+
+                },
+
+                filter: function() {
+                    //To be implemented by "subclass"
+                },
+
+                getQuery: function() {
+                    return this.query;
+                },
+
+                query: null, //To be set by "subclass"
+
+                addEventHandlers: function() {
+
+                    this.addEventListener('dismantle', this.dismantleCallback, false);
+                    this.addEventListener('update', this.updateCallback, false);
+
+                }
+
+            });
+
+        })();
+    </script>
+
+</polymer-element>

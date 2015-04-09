@@ -35,6 +35,7 @@ object MainBuild extends Build {
       `iep-module-karyon`,
       `iep-module-rxnetty`,
       `iep-nflxenv`,
+      `iep-reboot`,
       `iep-rxhttp`,
       `iep-service`)
     .settings(buildSettings: _*)
@@ -158,6 +159,9 @@ object MainBuild extends Build {
   lazy val `iep-nflxenv` = project
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
+
+  lazy val `iep-reboot` = project
+    .settings(buildSettings: _*)
 
   lazy val `iep-rxhttp` = project
     .settings(buildSettings: _*)

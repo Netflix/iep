@@ -1,0 +1,75 @@
+/*!  normalizing styles
+-----------------------------*/
+@require scales;
+
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: $f-size;
+    background-color: $white2;
+    margin: $margin-0;
+}
+
+main {
+    padding: $padding-larger;
+    margin: $margin-0;
+}
+
+main,
+details,
+summary {
+    display: block;
+}
+
+audio,
+canvas,
+progress,
+video {
+    vertical-align: baseline;
+}
+
+a {
+    color: $blue;
+    text-decoration: none;
+    background: transparent;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+img {
+    border: 0;
+}
+
+hr {
+    box-sizing: content-box;
+    height: 0;
+    border-width: 0 0 1px 0;
+    border-color: $gray4;
+}
+
+pre {
+    overflow: auto;
+}
+
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace, monospace;
+    font-size: $f-size;
+}
+
+ul,
+ol {
+    list-style: none;
+}

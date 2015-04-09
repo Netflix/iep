@@ -1,0 +1,81 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+<link rel="import" href="../bower_components/core-animated-pages/transitions/slide-from-right.html" />
+<link rel="import" href="../nf-pages/nf-pages.html" />
+
+<polymer-element name="nf-submenu-pages" extends="nf-pages" attributes="submenu">
+
+    <template>
+        <shadow></shadow>
+    </template>
+
+    <script>
+        (function () {
+
+            //'use strict'; can't use it due to this.super();
+
+            var component;
+
+            var getSubmenu = function() {
+
+                var selector,
+                    submenu;
+
+                if (component.submenu) {
+
+                    if (typeof component.submenu === "string") {
+
+                        selector = component.submenu.indexOf('#') === 0 ? component.submenu : "#" + component.submenu;
+                        submenu = document.querySelector(selector);
+
+                    } else if (typeof component.submenu === "object") {
+
+                        submenu = component.submenu;
+
+                    }
+
+
+                } else {
+
+                    submenu = document.querySelector("nf-submenu");
+
+                }
+
+                if (submenu) {
+
+                    component.init(submenu);
+
+                }
+
+            };
+
+            Polymer({
+
+                domReady: function() {
+
+                    component = this;
+                    getSubmenu();
+
+                    this.transitions = "slide-from-right";
+
+                    this.super();
+
+                },
+
+                init: function(submenu) {
+                    this.submenu = submenu;
+                    this.addEventHandlers()
+                },
+
+                addEventHandlers: function() {
+                    var self = this;
+                    this.submenu.addEventListener('submenuchanged', function(e) {
+                        self.selected = e.detail.selectedIndex;
+                    });
+                }
+
+            });
+
+        })();
+    </script>
+
+</polymer-element>

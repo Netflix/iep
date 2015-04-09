@@ -1,0 +1,148 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+<script src="../bower_components/jsoneditor/jsoneditor.js"></script>
+<script src="../bower_components/jsoneditor/asset/jsonlint/jsonlint.js"></script>
+
+<polymer-element name="nf-json" attributes="url, updatable">
+
+    <template>
+
+        <link rel="stylesheet" href="../bower_components/jsoneditor/jsoneditor.min.css">
+        <link rel="stylesheet" href="nf-json.css">
+
+        <template if="{{canSave}}">
+            <button title="Save" class="save-button" id="save"></button>
+        </template>
+
+        <div id="jsoneditor" class="{{updatableClassname}}"></div>
+
+    </template>
+
+    <script>
+        (function () {
+
+            'use strict';
+
+            var insertCSS = function() {
+
+                var head = document.getElementsByTagName('head')[0];
+                var cssnode = document.createElement('link');
+
+                cssnode.rel = 'stylesheet';
+                cssnode.href = '//reboot.prod.netflix.net/components/bower_components/jsoneditor/jsoneditor.css';
+
+                head.appendChild(cssnode);
+
+            };
+
+            Polymer({
+
+                addEventHandlers: function() {
+
+                    var self = this;
+
+                    this.saveButton && this.saveButton.addEventListener('click', function() {
+
+                        var xhr = new XMLHttpRequest();
+
+                        xhr.open('PUT', self.url, true);
+                        xhr.responseType = 'json';
+                        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                        xhr.addEventListener('load', function() {
+
+                            self.saveButton.removeAttribute('disabled');
+
+                        }, false);
+
+                        this.setAttribute('disabled', '');
+
+                        xhr.send(JSON.stringify( self.editor.get() ));
+
+                    });
+
+                },
+
+                processPayload: function(payload) {
+
+                    this.editor.set(payload);
+
+                },
+
+                urlChanged: function(oldVal, newVal){
+
+                    var self = this;
+
+                    this.url = newVal;
+
+                    this.fetchData(function() {
+                        self.processPayload(this.response);
+                    });
+
+                },
+
+                fetchData: function(successCallback) {
+
+                    if (this.xhr){
+                        this.xhr.abort();
+                    }
+
+                    this.xhr = new XMLHttpRequest();
+
+                    this.xhr.open('GET', this.url, true);
+                    this.xhr.responseType = 'json';
+
+                    this.xhr.addEventListener('load', function() {
+                        successCallback.call(this);
+                    });
+
+                    this.xhr.addEventListener('error', function(e){
+                        console.error('there was a problem fetching the JSON payload', e);
+                    });
+
+                    this.xhr.send();
+
+                },
+
+                domReady: function () {
+
+                    var self = this;
+
+                    this.editor = new JSONEditor(this.$.jsoneditor);
+
+                    this.saveButton = this.shadowRoot.querySelector('#save');
+
+                    insertCSS();
+
+                    if (this.url) {
+
+                        this.fetchData(function() {
+                            self.processPayload(this.response);
+                        });
+
+                    } else {
+
+                        this.processPayload(JSON.parse(this.textContent));
+
+                    }
+
+                    this.addEventHandlers();
+
+                },
+
+                updatableChanged: function() {
+
+                    if (this.updatable === null) {
+                        this.canSave = false;
+                        this.updatableClassname = "";
+                    } else {
+                        this.canSave = true;
+                        this.updatableClassname = "is-updatable";
+                    }
+
+                }
+
+            });
+
+        })();
+    </script>
+
+</polymer-element>

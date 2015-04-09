@@ -1,0 +1,15 @@
+{
+  "name": "json5",
+  "homepage": "https://github.com/aseemk/json5",
+  "version": "0.4.0",
+  "_release": "0.4.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.4.0",
+    "commit": "3b8f449adb26dc178bf5685888c5542281ae25be"
+  },
+  "_source": "git://github.com/aseemk/json5.git",
+  "_target": "~0.4.0",
+  "_originalSource": "json5",
+  "_direct": true
+}

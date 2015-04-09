@@ -1,0 +1,189 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+<script src="../bower_components/pikaday-time/pikaday.js"></script>
+<script src="../bower_components/moment/min/moment.min.js"></script>
+<script src="../../js/time.js"></script>
+<script src="../../js/lightbox.js"></script>
+
+<polymer-element name="nf-date-picker" attributes="input, format, placeholder, value, epoch" >
+
+    <template>
+        <link rel="stylesheet" href="../bower_components/pikaday-time/css/pikaday.css" />
+        <link rel="stylesheet" href="../bower_components/pikaday-time/css/site.css" />
+        <link rel="stylesheet" href="nf-date-picker.css" />
+        <input id="input" placeholder="{{placeholder}}">
+        <div id="container" class="is-hidden"></div>
+    </template>
+
+    <script>
+        (function () {
+
+            'use strict';
+
+            var keyCodeForReturn = 13,
+                keyCodeForTab = 9;
+
+            Polymer({
+
+                format: 'MM/DD/YY h:mm A',
+                placeholder: '',
+                epoch: false,
+
+                domReady: function() {
+
+                    this.init();
+                    this.addEventHandlers();
+
+                },
+
+                valueChanged: function(oldValue, newValue) {
+
+                    var newDate = new Date(newValue);
+                    this.timepicker.setDate(newDate);
+                    this.fire('change', {date: newDate});
+
+                },
+
+                getInput: function() {
+
+                    var self = this,
+                        node = document.getElementById(this.input);
+
+                    if (node) {
+
+                        this.inputNode = node;
+
+                    } else {
+
+                        // trying again as input is not yet available
+                        window.setTimeout(function() {
+                            self.getInput();
+                        }, 300);
+
+                    }
+                },
+
+                inputChanged: function() {
+
+                    // ensuring that domReady has run
+                    if (this.timepicker) {
+                        this.inputNode = null;
+                        this.getInput();
+                    }
+
+                },
+
+                init: function() {
+
+                    var self = this;
+
+                    this.getInput();
+
+                    this.timepicker = new Pikaday({
+
+                        field    : this.$.input,
+                        firstDay : 1,
+                        showTime : true,
+                        use24hour: false,
+                        showSeconds: false,
+                        bound:false,
+                        container: this.$.container,
+                        onSelect: function(targetTime) {
+
+                            var changeEvent;
+
+                            self.$.input.value = moment(new Date(targetTime)).format(self.format);
+                            self.$.input.classList.remove('is-invalid');
+
+                            if (self.epoch) {
+                                self.value = new Date(targetTime).getTime();
+                            } else {
+                                self.value = new Date(targetTime).toISOString();
+                            }
+
+                            if (self.inputNode) {
+
+                                changeEvent = new Event('change');
+
+                                self.inputNode.value = self.epoch ? new Date(targetTime).getTime() : new Date(targetTime).toISOString();
+
+                                self.inputNode.dispatchEvent( changeEvent );
+
+                            }
+
+                        }
+
+                    });
+
+                },
+
+                addEventHandlers: function() {
+
+                    var self = this;
+
+                    var inputChangeHandler = function(e) {
+
+                        var date = nf.time.parse(this.value, false, self.format),
+                            momentDate;
+
+                        if (date) {
+
+                            momentDate = moment(date);
+
+                        }
+
+                        if ( momentDate && momentDate.isValid() ) {
+
+                            this.classList.remove('is-invalid');
+
+                            if (e.keyCode === keyCodeForReturn || e.type === 'blur') {
+
+                                self.timepicker.setDate(date);
+
+                            }
+
+                        } else if (this.value.trim().length === 0) {
+
+                            this.classList.remove('is-invalid');
+
+                        } else {
+
+                            this.classList.add('is-invalid');
+
+                        }
+
+                    };
+
+                    var showLightboxIfHidden = function(e) {
+
+                        nf.lightbox.setup(self.$.container, false);
+
+                    };
+
+                    this.addEventListener('click', function(e) {
+
+                        e.stopPropagation();
+
+                    });
+
+                    this.$.input.addEventListener('input', inputChangeHandler, false);
+                    this.$.input.addEventListener('blur', inputChangeHandler, false); //needed to set value in case the user has not pressed enter
+                    this.$.input.addEventListener('click', showLightboxIfHidden, false);
+                    this.$.input.addEventListener('focus', showLightboxIfHidden, false);
+                    this.$.input.addEventListener('keydown', function(e) {
+
+                        if (e.keyCode === keyCodeForTab) {
+
+                            nf.lightbox.close();
+
+                        }
+
+                    }, false);
+
+                }
+
+            });
+
+        })();
+    </script>
+
+</polymer-element>

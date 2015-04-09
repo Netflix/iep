@@ -1,0 +1,79 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+<link rel="import" href="../nf-collapsable/nf-collapsable.html" />
+
+<polymer-element name="nf-accordion" attributes="closed, persist">
+
+  <template>
+    <link rel="stylesheet" href="nf-accordion.css" />
+    <content id="header" select="header, .nf-accordion-header"></content>
+    <nf-collapsable id="collapsable" opened="{{!closed}}">
+        <content></content>
+    </nf-collapsable>
+  </template>
+
+  <script>
+    (function () {
+
+      'use strict';
+
+      Polymer({
+
+          publish:{
+
+              closed: {
+                  value: false,
+                  reflect: true
+              }
+
+          },
+
+          ready: function() {
+              this.loadPreviousState();
+          },
+
+          loadPreviousState: function() {
+
+              if (!this.persist) {
+                  return;
+              }
+
+              var previousState = window.localStorage.getItem(this.persist);
+
+              if (previousState !== null) {
+
+                  if (previousState === "true") {
+                      this.closed = true;
+                  } else {
+                      this.closed = false;
+                  }
+
+              }
+
+          },
+
+          domReady:function(){
+              this.addEventHandlers();
+          },
+
+          addEventHandlers: function () {
+
+              var self = this,
+                  toggler = this.querySelector('.nf-toggler');
+
+              toggler.addEventListener('click', function() {
+
+                  self.closed = !self.closed;
+
+                  if (self.persist) {
+                      window.localStorage.setItem(self.persist, self.closed);
+                  }
+
+              }, false);
+
+          }
+
+      });
+
+    })();
+  </script>
+</polymer-element>

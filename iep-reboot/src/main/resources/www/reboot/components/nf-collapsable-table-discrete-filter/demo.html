@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+    <title>nf-collapsable-table demo</title>
+    <link rel="import" href="../nf-collapsable-table/nf-collapsable-table.html" />
+    <link rel="import" href="nf-collapsable-table-discrete-filter.html" />
+</head>
+<body>
+
+<nf-collapsable-table-discrete-filter column="3">
+    <filter>pass</filter>
+    <filter>moderate</filter>
+    <filter>fail</filter>
+    <filter>other</filter>
+</nf-collapsable-table-discrete-filter>
+
+<nf-collapsable-table>
+
+    <cthead>
+        <c num>Group Name</c>
+        <c>metrics</c>
+        <c>% Off</c>
+        <c>State</c>
+    </cthead>
+
+    <ctbody>
+
+        <row>
+            <rhead>
+                <c>0</c>
+                <c>z</c>
+                <c>c</c>
+                <c>pass</c>
+            </rhead>
+            <rbody>
+                <row>
+                    <c>1</c>
+                    <c>4</c>
+                    <c>0%</c>
+                    <c>pass</c>
+                </row>
+                <row>
+                    <c>2</c>
+                    <c>4</c>
+                    <c>0%</c>
+                    <c>fail</c>
+                </row>
+                <row>
+                    <c>3</c>
+                    <c>4</c>
+                    <c>0%</c>
+                    <c>moderate</c>
+                </row>
+                <row>
+                    <c>4</c>
+                    <c>4</c>
+                    <c>0%</c>
+                    <c>pass%</c>
+                </row>
+            </rbody>
+        </row>
+
+        <row>
+            <rhead>
+                <c>5</c>
+                <c>b</c>
+                <c>cadsfasdfdsfadfdasfasdfasdfasdf</c>
+                <c>other</c>
+            </rhead>
+            <rbody>
+                <row>
+                    <c>6</c>
+                    <c>asdf</c>
+                    <c>0%</c>
+                    <c>moderate</c>
+                </row>
+                <row>
+                    <c>7</c>
+                    <c>4</c>
+                    <c>0%</c>
+                    <c>pass</c>
+                </row>
+                <row>
+                    <c>8</c>
+                    <c>4</c>
+                    <c>0%</c>
+                    <c>pass</c>
+                </row>
+                <row>
+                    <c>99</c>
+                    <c>4</c>
+                    <c>0%</c>
+                    <c>fail</c>
+                </row>
+            </rbody>
+        </row>
+
+        <row>
+            <rhead>
+                <c>10</c>
+                <c>a</c>
+                <c>A</c>
+                <c>pass</c>
+            </rhead>
+            <rbody>
+                <row>
+                    <c>11</c>
+                    <c>5</c>
+                    <c>9%</c>
+                    <c>fail</c>
+                </row>
+                <row>
+                    <c>12</c>
+                    <c>4</c>
+                    <c>0%</c>
+                    <c>moderate</c>
+                </row>
+                <row>
+                    <c>13</c>
+                    <c>4</c>
+                    <c>0%</c>
+                    <c>pass</c>
+                </row>
+                <row>
+                    <c>14</c>
+                    <c>4</c>
+                    <c>0%</c>
+                    <c>fail</c>
+                </row>
+            </rbody>
+        </row>
+
+    </ctbody>
+
+</nf-collapsable-table>
+
+</body>
+</html>

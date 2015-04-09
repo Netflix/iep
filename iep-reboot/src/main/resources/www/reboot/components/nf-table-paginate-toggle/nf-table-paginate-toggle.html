@@ -1,0 +1,134 @@
+<link rel="import" href="../bower_components/polymer/polymer.html" />
+<link rel="import" href="../nf-filter/nf-filter.html" />
+<link rel="import" href="../nf-switch/nf-switch.html" />
+<link rel="import" href="../nf-iconset/nf-iconset.html" />
+<link rel="import" href="../nf-paginate/nf-paginate.html" />
+
+<polymer-element name="nf-table-paginate-toggle" attributes="table, page, toggled" extends="nf-paginate">
+
+    <template>
+        <link rel="stylesheet" href="nf-table-paginate-toggle.css" />
+        <nf-switch id="switch" switched?="{{toggled}}">
+            <span class="on">Show all entries</span>
+            <span class="off">Show top {{page}} entries</span>
+        </nf-switch>
+    </template>
+
+    <script>
+        (function () {
+
+            //'use strict'; can't use it due to this.super();
+
+            Polymer({
+
+                publish: {
+
+                    page: {
+                        value: 5,
+                        reflect: true
+                    },
+
+                    toggled: {
+                        value: true,
+                        reflect: true
+                    }
+
+                },
+
+                domReady: function() {
+
+                    this.timeoutId = 0;
+                    this.isPaginating = this.toggled;
+                    this.getTable();
+                    this.assignEventHandlers();
+
+                },
+
+                toggledChanged: function (oldValue, newValue) {
+
+                    if (newValue) {
+                        this.isPaginating = newValue;
+                    }
+
+                },
+
+                getTable: function() {
+
+                    var self = this,
+                        retryDelay = 300,
+                        selector,
+                        table;
+
+                    if (this.table) {
+
+                        if (typeof this.table === "string") {
+
+                            selector = this.table.indexOf('#') === 0 ? this.table : "#" + this.table;
+                            table = document.querySelector(selector);
+
+                        } else if (typeof this.table === "object") {
+
+                            table = this.table;
+
+                        }
+
+
+                    } else {
+
+                        table = document.querySelector("table[is=nf-table]");
+
+                    }
+
+                    if (table) {
+
+                        table.getNfData().then(function(nfData) {
+                            self.setup(nfData);
+                        });
+
+                    } else {
+
+                        // relevant table has not yet been found, retry in a little bit (probably template has not run yet)
+                        window.setTimeout(function() {
+
+                            self.getTable();
+
+                        }, retryDelay);
+                    }
+
+                },
+
+                paginateFunction: function(filteredData) {
+
+                    if (this.isPaginating) {
+                        return filteredData.slice(0, this.page);
+                    } else {
+                        return filteredData;
+                    }
+
+                },
+
+                reset: function() {},
+
+                assignEventHandlers: function() {
+
+                    var self = this;
+
+                    this.$.switch.addEventListener('switched', function(e) {
+
+                        self.isPaginating = e.detail.switched;
+
+                        self.fire('update');
+
+                    });
+
+                    this.super();
+
+                }
+
+
+            });
+
+        })();
+    </script>
+
+</polymer-element>

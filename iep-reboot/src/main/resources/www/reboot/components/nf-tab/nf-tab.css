@@ -1,0 +1,8 @@
+:host::shadow .tab-content {
+    /*! note: the !important is needed when the polyfill is used */
+    opacity: 1 !important;
+}
+
+:host {
+    cursor: pointer;
+}
