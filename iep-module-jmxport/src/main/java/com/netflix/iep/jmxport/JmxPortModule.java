@@ -17,7 +17,7 @@ package com.netflix.iep.jmxport;
 
 import com.google.inject.AbstractModule;
 
-public class JmxPortModule extends AbstractModule {
+public final class JmxPortModule extends AbstractModule {
 
   private static final String JMX_HOST = "netflix.iep.jmx.host";
   private static final String JMX_PORT = "netflix.iep.jmx.port";
@@ -26,5 +26,13 @@ public class JmxPortModule extends AbstractModule {
     final String host = System.getProperty(JMX_HOST, "localhost");
     final int port = Integer.parseInt(System.getProperty(JMX_PORT, "7500"));
     JmxPort.configure(host, port);
+  }
+
+  @Override public boolean equals(Object obj) {
+    return obj != null && getClass().equals(obj.getClass());
+  }
+
+  @Override public int hashCode() {
+    return getClass().hashCode();
   }
 }

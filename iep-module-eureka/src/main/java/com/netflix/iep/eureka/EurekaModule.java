@@ -34,7 +34,7 @@ import javax.inject.Provider;
 /**
  * Setup eureka and create binding for DiscoveryClient.
  */
-public class EurekaModule extends AbstractModule {
+public final class EurekaModule extends AbstractModule {
 
   @Override protected void configure() {
     // EurekaInstanceConfig
@@ -67,5 +67,13 @@ public class EurekaModule extends AbstractModule {
 
     Multibinder<Service> serviceBinder = Multibinder.newSetBinder(binder(), Service.class);
     serviceBinder.addBinding().to(EurekaService.class);
+  }
+
+  @Override public boolean equals(Object obj) {
+    return obj != null && getClass().equals(obj.getClass());
+  }
+
+  @Override public int hashCode() {
+    return getClass().hashCode();
   }
 }
