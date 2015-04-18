@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * Helper for configuring archaius v1.
  */
-public class ArchaiusModule extends AbstractModule {
+public final class ArchaiusModule extends AbstractModule {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ArchaiusModule.class);
 
@@ -39,5 +39,13 @@ public class ArchaiusModule extends AbstractModule {
 
   @Override protected void configure() {
     loadProperties("application");
+  }
+
+  @Override public boolean equals(Object obj) {
+    return obj != null && getClass().equals(obj.getClass());
+  }
+
+  @Override public int hashCode() {
+    return getClass().hashCode();
   }
 }

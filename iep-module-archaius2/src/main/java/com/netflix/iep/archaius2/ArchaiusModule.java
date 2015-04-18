@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Helper for configuring archaius with the Netflix dynamic property source.
  */
-public class ArchaiusModule extends AbstractModule {
+public final class ArchaiusModule extends AbstractModule {
 
   @Override protected void configure() {
     bind(Config.class).toInstance(ConfigFactory.load());
@@ -127,5 +127,13 @@ public class ArchaiusModule extends AbstractModule {
     config.addOverrideConfig(new TypesafeConfig(root.origin().filename(), root));
     config.addOverrideConfig(getDynamicConfig(root));
     return config;
+  }
+
+  @Override public boolean equals(Object obj) {
+    return obj != null && getClass().equals(obj.getClass());
+  }
+
+  @Override public int hashCode() {
+    return getClass().hashCode();
   }
 }
