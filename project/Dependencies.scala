@@ -4,7 +4,7 @@ object Dependencies {
   object Versions {
     val archaius   = "2.0.0-rc.7"
     val guice      = "4.0-beta5"
-    val karyon     = "2.2.0-rc.1"
+    val karyon     = "2.3.0"
     val ribbon     = "2.0.0"
     val rxnetty    = "0.4.8"
     val scala      = "2.11.6"
@@ -19,7 +19,7 @@ object Dependencies {
   val archaiusLegacy  = "com.netflix.archaius" % "archaius-legacy" % archaius
   val archaiusPersist = "com.netflix.archaius" % "archaius-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius-typesafe" % archaius
-  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.5.1"
+  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.2"
   val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.151"
   val governator      = "com.netflix.governator" % "governator" % "1.3.3"
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
@@ -31,7 +31,7 @@ object Dependencies {
   val jodaTime        = "joda-time" % "joda-time" % "2.7"
   val karyonAdmin     = "com.netflix.karyon" % "karyon2-admin-web" % karyon
   val karyonCore      = "com.netflix.karyon" % "karyon2-core" % karyon
-  val junit           = "junit" % "junit" % "4.10"
+  val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
   val ribbonCore      = "com.netflix.ribbon" % "ribbon-core" % ribbon
