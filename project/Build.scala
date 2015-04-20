@@ -146,6 +146,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-module-rxnetty` = project
+    .dependsOn(`iep-rxhttp`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
