@@ -28,7 +28,7 @@ import io.reactivex.netty.spectator.SpectatorEventsListenerFactory;
 import javax.inject.Singleton;
 
 
-public class RxNettyModule extends AbstractModule {
+public final class RxNettyModule extends AbstractModule {
 
   @Override protected void configure() {
     RxNetty.useMetricListenersFactory(new SpectatorEventsListenerFactory());
@@ -39,5 +39,13 @@ public class RxNettyModule extends AbstractModule {
   @Singleton
   private ServerRegistry providesServerRegistry(DiscoveryClient client) {
     return new EurekaServerRegistry(client);
+  }
+
+  @Override public boolean equals(Object obj) {
+    return obj != null && getClass().equals(obj.getClass());
+  }
+
+  @Override public int hashCode() {
+    return getClass().hashCode();
   }
 }
