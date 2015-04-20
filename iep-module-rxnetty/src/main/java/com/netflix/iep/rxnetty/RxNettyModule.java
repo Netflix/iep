@@ -20,6 +20,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.iep.http.EurekaServerRegistry;
+import com.netflix.iep.http.RxHttp;
 import com.netflix.iep.http.ServerRegistry;
 import io.reactivex.netty.RxNetty;
 import io.reactivex.netty.spectator.SpectatorEventsListenerFactory;
@@ -31,6 +32,7 @@ public class RxNettyModule extends AbstractModule {
 
   @Override protected void configure() {
     RxNetty.useMetricListenersFactory(new SpectatorEventsListenerFactory());
+    bind(RxHttp.class).asEagerSingleton();
   }
 
   @Provides
