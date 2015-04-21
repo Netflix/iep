@@ -2,23 +2,23 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.0.0-rc.7"
+    val archaius   = "2.0.0-rc.8"
     val guice      = "4.0-beta5"
     val karyon     = "2.3.0"
     val ribbon     = "2.0.0"
     val rxnetty    = "0.4.8"
     val scala      = "2.11.6"
     val slf4j      = "1.7.12"
-    val spectator  = "0.22.0"
+    val spectator  = "0.23.0"
   }
 
   import Versions._
 
-  val archaiusCore    = "com.netflix.archaius" % "archaius-core" % archaius
-  val archaiusGuice   = "com.netflix.archaius" % "archaius-guice" % archaius
-  val archaiusLegacy  = "com.netflix.archaius" % "archaius-legacy" % archaius
-  val archaiusPersist = "com.netflix.archaius" % "archaius-persisted2" % archaius
-  val archaiusTypesafe= "com.netflix.archaius" % "archaius-typesafe" % archaius
+  val archaiusCore    = "com.netflix.archaius" % "archaius2-core" % archaius
+  val archaiusGuice   = "com.netflix.archaius" % "archaius2-guice" % archaius
+  val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.6.6"
+  val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
+  val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.2"
   val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.151"
   val governator      = "com.netflix.governator" % "governator" % "1.3.3"

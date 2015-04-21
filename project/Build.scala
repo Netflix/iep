@@ -45,7 +45,6 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
       Dependencies.jodaTime,
       Dependencies.equalsVerifier % "test"
@@ -83,7 +82,6 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
       Dependencies.guiceCore,
       Dependencies.slf4jApi
@@ -124,7 +122,6 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
       Dependencies.guiceCore,
       Dependencies.karyonAdmin,
@@ -156,7 +153,6 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.archaiusCore,
       Dependencies.archaiusLegacy,
       Dependencies.eureka,
       Dependencies.jzlib,
