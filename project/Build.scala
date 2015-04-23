@@ -34,6 +34,7 @@ object MainBuild extends Build {
       `iep-module-karyon`,
       `iep-module-rxnetty`,
       `iep-nflxenv`,
+      `iep-platformservice`,
       `iep-reboot`,
       `iep-rxhttp`,
       `iep-service`)
@@ -41,11 +42,12 @@ object MainBuild extends Build {
     .settings(BuildSettings.noPackaging: _*)
 
   lazy val `iep-config` = project
-    .dependsOn(`iep-nflxenv`)
+    .dependsOn(`iep-platformservice`, `iep-nflxenv`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.archaiusLegacy,
+      Dependencies.archaiusCore,
+      Dependencies.guiceCore,
       Dependencies.jodaTime,
       Dependencies.equalsVerifier % "test"
     ))
@@ -88,6 +90,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-module-archaius2` = project
+    .dependsOn(`iep-platformservice`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
@@ -145,6 +148,18 @@ object MainBuild extends Build {
   lazy val `iep-nflxenv` = project
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
+
+  lazy val `iep-platformservice` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.archaiusCore,
+      Dependencies.archaiusGuice,
+      Dependencies.archaiusPersist,
+      Dependencies.archaiusTypesafe,
+      Dependencies.guiceCore,
+      Dependencies.slf4jApi
+    ))
 
   lazy val `iep-reboot` = project
     .settings(buildSettings: _*)

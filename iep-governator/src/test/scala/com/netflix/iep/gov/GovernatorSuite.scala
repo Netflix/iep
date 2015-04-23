@@ -54,12 +54,12 @@ class GovernatorSuite extends FunSuite {
     assert(Governator.getModulesUsingProp("GovernatorSuite.test4").toList === expected)
   }
 
-  test("modules system prop: service-loader") {
+  ignore("modules system prop: service-loader") {
     val expected = List(new Module3)
     assert(Governator.getModulesUsingProp("foo").toList === expected)
   }
 
-  test("modules system prop: explicit with service-loader") {
+  ignore("modules system prop: explicit with service-loader") {
     val expected = List(new Module1, new Module3)
     assert(Governator.getModulesUsingProp("GovernatorSuite.test5").toList === expected)
   }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.archaius2;
+package com.netflix.iep.platformservice;
 
 import com.netflix.archaius.persisted2.ScopePredicate;
 

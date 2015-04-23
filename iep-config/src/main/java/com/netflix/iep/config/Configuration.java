@@ -25,7 +25,15 @@ import org.slf4j.LoggerFactory;
 public final class Configuration {
   private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
-  private static final IConfiguration iConfiguration = new DynamicPropertiesConfiguration();
+  private static volatile IConfiguration iConfiguration = new IConfiguration() {
+    @Override public String get(String key) {
+      throw new IllegalStateException("configuration has not been set");
+    }
+  };
+
+  static void setConfiguration(IConfiguration config) {
+    iConfiguration = config;
+  }
 
   public static <T> T apply(Class<T> ctype) {
     String pkg = ctype.getPackage().getName();

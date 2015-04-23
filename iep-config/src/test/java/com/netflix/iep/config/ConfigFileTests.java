@@ -21,12 +21,6 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-
-import com.netflix.config.ConfigurationManager;
-import org.apache.commons.configuration.AbstractConfiguration;
-
 public class ConfigFileTests {
 
   Map<String, String> envs() {

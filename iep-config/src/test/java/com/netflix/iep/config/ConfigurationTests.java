@@ -19,13 +19,13 @@ import java.util.Map;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
+
+import com.netflix.archaius.AppConfig;
+import com.netflix.archaius.DefaultAppConfig;
 import org.junit.Test;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-
-import com.netflix.config.ConfigurationManager;
-import org.apache.commons.configuration.AbstractConfiguration;
 
 public class ConfigurationTests {
   interface TestConfig extends IConfiguration {
@@ -60,10 +60,10 @@ public class ConfigurationTests {
   private TestConfig mkConfig() { return mkConfig(new HashMap<String,String>()); }
   private TestConfig mkConfig(Map<String,String> props) { return mkConfig(null, props); }
   private TestConfig mkConfig(String prefix, Map<String,String> props) {
-    AbstractConfiguration config = ConfigurationManager.getConfigInstance();
-    config.clear();
+    AppConfig config = DefaultAppConfig.createDefault();
     for (Map.Entry<String,String> e : props.entrySet())
       config.setProperty(e.getKey(), e.getValue());
+    Configuration.setConfiguration(new DynamicPropertiesConfiguration(config));
     return Configuration.newProxy(TestConfig.class, prefix);
   }
 

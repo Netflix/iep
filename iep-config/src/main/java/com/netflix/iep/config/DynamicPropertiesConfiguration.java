@@ -18,28 +18,25 @@ package com.netflix.iep.config;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.netflix.config.DynamicStringProperty;
+import com.netflix.archaius.AppConfig;
+import com.netflix.archaius.Property;
 
 public class DynamicPropertiesConfiguration implements IConfiguration {
-  private final String prefix;
 
-  public DynamicPropertiesConfiguration() {
-    this(null);
+  private final AppConfig config;
+
+  public DynamicPropertiesConfiguration(AppConfig config) {
+    this.config = config;
   }
 
-  public DynamicPropertiesConfiguration(String prefix) {
-    this.prefix = prefix;
-  }
-
-  private final Map<String, DynamicStringProperty> props =
-    new ConcurrentHashMap<String, DynamicStringProperty>();
+  private final Map<String, Property<String>> props =
+    new ConcurrentHashMap<String, Property<String>>();
 
   public String get(String key) {
-    String propKey = (prefix == null) ? key : prefix + "." + key;
-    DynamicStringProperty prop = props.get(propKey);
+    Property<String> prop = props.get(key);
     if (prop == null) {
-      prop = new DynamicStringProperty(propKey, null);
-      props.put(propKey, prop);
+      prop = config.getProperty(key).asString(null);
+      props.put(key, prop);
     }
     return prop.get();
   }
