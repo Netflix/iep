@@ -16,7 +16,6 @@
 package com.netflix.iep.config;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.HashMap;
@@ -25,30 +24,23 @@ import java.util.Properties;
 import com.google.common.io.Resources;
 import com.google.common.base.Charsets;
 
-import com.netflix.config.ConfigurationManager;
-import org.apache.commons.configuration.AbstractConfiguration;
+import com.netflix.archaius.AppConfig;
+import com.netflix.archaius.DefaultAppConfig;
+import com.netflix.archaius.config.MapConfig;
 
 public class TestResourceConfiguration {
   private TestResourceConfiguration() {}
 
-  public static void load(
-    String propFile
-  ) throws IOException {
-    load(propFile, new HashMap<String,String>());
+  public static AppConfig load(String propFile) throws Exception {
+    return load(propFile, new HashMap<String,String>());
   }
 
-  public static void load(
-    String propFile,
-    Map<String,String> subs
-  ) throws IOException {
-    load(propFile, subs, new HashMap<String,String>());
+  public static AppConfig load(String propFile, Map<String,String> subs) throws Exception {
+    return load(propFile, subs, new HashMap<String,String>());
   }
 
-  public static void load(
-    String propFile,
-    Map<String,String> subs,
-    Map<String,String> overrides
-  ) throws IOException {
+  public static AppConfig load(
+      String propFile, Map<String,String> subs, Map<String,String> overrides) throws Exception {
     URL propUrl = Resources.getResource(propFile);
     String propData = Resources.toString(propUrl, Charsets.UTF_8);
     for (Map.Entry e : subs.entrySet()) {
@@ -60,7 +52,8 @@ public class TestResourceConfiguration {
       props.setProperty((String) e.getKey(), (String) e.getValue());
     }
 
-    ConfigurationManager.getConfigInstance().clear();
-    ConfigurationManager.loadProperties(props);
+    AppConfig config = DefaultAppConfig.createDefault();
+    config.addLibraryConfig(new MapConfig("test", props));
+    return config;
   }
 }

@@ -18,18 +18,17 @@ package com.netflix.iep.archaius2;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.util.Modules;
+import com.netflix.archaius.guice.ArchaiusModule;
+import com.netflix.iep.platformservice.PlatformServiceModule;
 
 /**
- * Work around for overriding the AppConfig, can be removed when we get a release of archaius
- * with:
- * https://github.com/Netflix/archaius/issues/286
- * https://github.com/Netflix/archaius/pull/287
+ * Work around for overriding the AppConfig.
  */
 public final class OverrideModule extends AbstractModule {
   @Override protected void configure() {
     Module m = Modules
-        .override(new com.netflix.archaius.guice.ArchaiusModule())
-        .with(new ArchaiusModule());
+        .override(new ArchaiusModule())
+        .with(new PlatformServiceModule());
     install(m);
   }
 }
