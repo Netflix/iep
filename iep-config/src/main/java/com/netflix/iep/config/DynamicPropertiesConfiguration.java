@@ -18,13 +18,20 @@ package com.netflix.iep.config;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import com.netflix.archaius.AppConfig;
 import com.netflix.archaius.Property;
 
+@Singleton
 public class DynamicPropertiesConfiguration implements IConfiguration {
 
   private final AppConfig config;
 
+  @Inject
   public DynamicPropertiesConfiguration(AppConfig config) {
     this.config = config;
   }
@@ -39,5 +46,15 @@ public class DynamicPropertiesConfiguration implements IConfiguration {
       props.put(key, prop);
     }
     return prop.get();
+  }
+
+  @PostConstruct
+  public void init() {
+    Configuration.setConfiguration(this);
+  }
+
+  @PreDestroy
+  public void destroy() {
+    Configuration.setConfiguration(null);
   }
 }

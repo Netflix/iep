@@ -60,6 +60,7 @@ public class ConfigModule extends AbstractModule {
 
     @Override protected void configure() {
       bind(Config.class).toInstance(ConfigFactory.load());
+      bind(DynamicPropertiesConfiguration.class).asEagerSingleton();
     }
 
     @Provides
