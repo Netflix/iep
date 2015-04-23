@@ -17,15 +17,10 @@ package com.netflix.iep.config;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.netflix.config.ConfigurationManager;
-import org.apache.commons.configuration.AbstractConfiguration;
 
 public final class Configuration {
   private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class);

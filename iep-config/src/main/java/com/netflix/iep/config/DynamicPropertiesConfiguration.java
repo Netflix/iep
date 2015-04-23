@@ -20,8 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.netflix.config.DynamicStringProperty;
 
-import com.netflix.iep.config.IConfiguration;
-
 public class DynamicPropertiesConfiguration implements IConfiguration {
   private final String prefix;
 

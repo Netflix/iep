@@ -26,10 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import com.google.common.io.Resources;
-
-import com.netflix.config.ConfigurationManager;
 
 public class ScopedPropertiesLoader {
   private static Logger LOGGER = LoggerFactory.getLogger(ScopedPropertiesLoader.class);
@@ -37,9 +34,13 @@ public class ScopedPropertiesLoader {
   private static final String PROP_PROPERTIES_FILE = "netflix.iep.config.propertiesFile";
   private static final String DEF_PROPERTIES_FILE = "application.scoped.properties";
 
+
   public static Properties load() {
     String[] propFiles = System.getProperty(PROP_PROPERTIES_FILE, DEF_PROPERTIES_FILE).split(",");
+    return load(propFiles);
+  }
 
+  public static Properties load(String[] propFiles) {
     List<URL> propUrls = new ArrayList<URL>();
     for (int i = 0; i < propFiles.length; i++) {
       String propFile = propFiles[i];
