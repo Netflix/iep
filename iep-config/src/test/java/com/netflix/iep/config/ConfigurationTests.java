@@ -60,7 +60,7 @@ public class ConfigurationTests {
   private TestConfig mkConfig() { return mkConfig(new HashMap<String,String>()); }
   private TestConfig mkConfig(Map<String,String> props) { return mkConfig(null, props); }
   private TestConfig mkConfig(String prefix, Map<String,String> props) {
-    AppConfig config = DefaultAppConfig.createDefault();
+    AppConfig config = DefaultAppConfig.builder().withFailOnFirst(false).build();
     for (Map.Entry<String,String> e : props.entrySet())
       config.setProperty(e.getKey(), e.getValue());
     Configuration.setConfiguration(new DynamicPropertiesConfiguration(config));

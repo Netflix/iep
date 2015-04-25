@@ -54,6 +54,7 @@ public final class PlatformServiceModule extends AbstractModule {
   private AppConfig createAppConfig(Config root) throws Exception {
     final AppConfig config = DefaultAppConfig.builder()
         .withApplicationConfigName("application")
+        .withFailOnFirst(false)
         .build();
     config.addLibraryConfig(new TypesafeConfig(root.origin().filename(), root));
     config.addOverrideConfig(getDynamicConfig(root));

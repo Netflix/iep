@@ -52,7 +52,7 @@ public class TestResourceConfiguration {
       props.setProperty((String) e.getKey(), (String) e.getValue());
     }
 
-    AppConfig config = DefaultAppConfig.createDefault();
+    AppConfig config = DefaultAppConfig.builder().withFailOnFirst(false).build();
     config.addLibraryConfig(new MapConfig("test", props));
     return config;
   }
