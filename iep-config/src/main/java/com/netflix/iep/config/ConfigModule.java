@@ -71,6 +71,7 @@ public class ConfigModule extends AbstractModule {
           : ScopedPropertiesLoader.load(propFiles);
       final AppConfig config = DefaultAppConfig.builder()
           .withApplicationConfigName("application")
+          .withFailOnFirst(false)
           .build();
       config.addLibraryConfig(new TypesafeConfig(root.origin().filename(), root));
       config.addOverrideConfig(new MapConfig("scoped", props));
