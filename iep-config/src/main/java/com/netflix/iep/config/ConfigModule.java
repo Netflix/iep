@@ -74,8 +74,8 @@ public class ConfigModule extends AbstractModule {
           .withFailOnFirst(false)
           .build();
       config.addLibraryConfig(new TypesafeConfig(root.origin().filename(), root));
-      config.addOverrideConfig(new MapConfig("scoped", props));
       config.addOverrideConfig(PlatformServiceModule.getDynamicConfig(root));
+      config.addOverrideConfig(new MapConfig("scoped", props));
       return config;
     }
   }
