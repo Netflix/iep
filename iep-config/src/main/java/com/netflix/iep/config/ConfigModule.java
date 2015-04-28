@@ -19,8 +19,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.util.Modules;
-import com.netflix.archaius.AppConfig;
-import com.netflix.archaius.DefaultAppConfig;
+import com.netflix.archaius.annotations.ApplicationLayer;
+import com.netflix.archaius.annotations.OverrideLayer;
+import com.netflix.archaius.config.CompositeConfig;
 import com.netflix.archaius.config.MapConfig;
 import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.typesafe.TypesafeConfig;
@@ -65,18 +66,22 @@ public class ConfigModule extends AbstractModule {
 
     @Provides
     @Singleton
-    protected AppConfig createAppConfig(Config root) throws Exception {
+    @OverrideLayer
+    private com.netflix.archaius.Config providesOverrideConfig(Config cfg) throws Exception {
+      return PlatformServiceModule.getDynamicConfig(cfg);
+    }
+
+    @Provides
+    @Singleton
+    @ApplicationLayer
+    protected com.netflix.archaius.Config providesAppConfig(Config cfg) throws Exception {
       final Properties props = (propFiles == null)
           ? ScopedPropertiesLoader.load()
           : ScopedPropertiesLoader.load(propFiles);
-      final AppConfig config = DefaultAppConfig.builder()
-          .withApplicationConfigName("application")
-          .withFailOnFirst(false)
-          .build();
-      config.addLibraryConfig(new TypesafeConfig(root.origin().filename(), root));
-      config.addOverrideConfig(PlatformServiceModule.getDynamicConfig(root));
-      config.addOverrideConfig(new MapConfig("scoped", props));
-      return config;
+      final CompositeConfig app = new CompositeConfig();
+      app.addConfig("scoped", new MapConfig(props));
+      app.addConfig("typesafe", new TypesafeConfig(cfg));
+      return app;
     }
   }
 }

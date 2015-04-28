@@ -158,6 +158,7 @@ object MainBuild extends Build {
       Dependencies.archaiusPersist,
       Dependencies.archaiusTypesafe,
       Dependencies.guiceCore,
+      Dependencies.guiceMulti,
       Dependencies.slf4jApi
     ))
 

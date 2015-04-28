@@ -17,8 +17,8 @@ package com.netflix.iep.platformservice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.netflix.archaius.AppConfig;
-import com.netflix.archaius.DefaultAppConfig;
+import com.netflix.archaius.annotations.ApplicationLayer;
+import com.netflix.archaius.annotations.OverrideLayer;
 import com.netflix.archaius.config.PollingDynamicConfig;
 import com.netflix.archaius.config.PollingStrategy;
 import com.netflix.archaius.config.polling.FixedPollingStrategy;
@@ -51,14 +51,16 @@ public final class PlatformServiceModule extends AbstractModule {
 
   @Provides
   @Singleton
-  private AppConfig createAppConfig(Config root) throws Exception {
-    final AppConfig config = DefaultAppConfig.builder()
-        .withApplicationConfigName("application")
-        .withFailOnFirst(false)
-        .build();
-    config.addLibraryConfig(new TypesafeConfig(root.origin().filename(), root));
-    config.addOverrideConfig(getDynamicConfig(root));
-    return config;
+  @OverrideLayer
+  private com.netflix.archaius.Config providesOverrideConfig(Config application) throws Exception {
+    return getDynamicConfig(application);
+  }
+
+  @Provides
+  @Singleton
+  @ApplicationLayer
+  private com.netflix.archaius.Config providesAppConfig(Config application) throws Exception {
+    return new TypesafeConfig(application);
   }
 
   @Override public boolean equals(Object obj) {
@@ -135,6 +137,6 @@ public final class PlatformServiceModule extends AbstractModule {
   }
 
   public static PollingDynamicConfig getDynamicConfig(Config cfg) throws Exception {
-    return new PollingDynamicConfig("dynamic", getCallback(cfg), getPollingStrategy(cfg));
+    return new PollingDynamicConfig(getCallback(cfg), getPollingStrategy(cfg));
   }
 }

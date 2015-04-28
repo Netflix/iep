@@ -20,8 +20,10 @@ import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
-import com.netflix.archaius.AppConfig;
-import com.netflix.archaius.DefaultAppConfig;
+import com.netflix.archaius.Config;
+import com.netflix.archaius.DefaultPropertyFactory;
+import com.netflix.archaius.PropertyFactory;
+import com.netflix.archaius.config.MapConfig;
 import org.junit.Test;
 
 import org.joda.time.DateTime;
@@ -60,10 +62,8 @@ public class ConfigurationTests {
   private TestConfig mkConfig() { return mkConfig(new HashMap<String,String>()); }
   private TestConfig mkConfig(Map<String,String> props) { return mkConfig(null, props); }
   private TestConfig mkConfig(String prefix, Map<String,String> props) {
-    AppConfig config = DefaultAppConfig.builder().withFailOnFirst(false).build();
-    for (Map.Entry<String,String> e : props.entrySet())
-      config.setProperty(e.getKey(), e.getValue());
-    Configuration.setConfiguration(new DynamicPropertiesConfiguration(config));
+    PropertyFactory factory = new DefaultPropertyFactory(new MapConfig(props));
+    Configuration.setConfiguration(new DynamicPropertiesConfiguration(factory));
     return Configuration.newProxy(TestConfig.class, prefix);
   }
 

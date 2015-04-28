@@ -23,26 +23,25 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.netflix.archaius.AppConfig;
 import com.netflix.archaius.Property;
+import com.netflix.archaius.PropertyFactory;
 
 @Singleton
 public class DynamicPropertiesConfiguration implements IConfiguration {
 
-  private final AppConfig config;
+  private final PropertyFactory factory;
 
   @Inject
-  public DynamicPropertiesConfiguration(AppConfig config) {
-    this.config = config;
+  public DynamicPropertiesConfiguration(PropertyFactory factory) {
+    this.factory = factory;
   }
 
-  private final Map<String, Property<String>> props =
-    new ConcurrentHashMap<String, Property<String>>();
+  private final Map<String, Property<String>> props = new ConcurrentHashMap<>();
 
   public String get(String key) {
     Property<String> prop = props.get(key);
     if (prop == null) {
-      prop = config.getProperty(key).asString(null);
+      prop = factory.getProperty(key).asString(null);
       props.put(key, prop);
     }
     return prop.get();
