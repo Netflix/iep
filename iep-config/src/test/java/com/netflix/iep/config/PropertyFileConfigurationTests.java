@@ -20,8 +20,9 @@ import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
-import com.netflix.archaius.AppConfig;
-import com.netflix.archaius.DefaultAppConfig;
+import com.netflix.archaius.Config;
+import com.netflix.archaius.DefaultPropertyFactory;
+import com.netflix.archaius.PropertyFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -57,8 +58,9 @@ public class PropertyFileConfigurationTests {
       put("user.dir", userDir);
       put("resources.url", "file://" + userDir + "/src/test/resources");
     }};
-    AppConfig config = TestResourceConfiguration.load("config.test.properties", subs);
-    Configuration.setConfiguration(new DynamicPropertiesConfiguration(config));
+    Config config = TestResourceConfiguration.load("config.test.properties", subs);
+    PropertyFactory factory = new DefaultPropertyFactory(config);
+    Configuration.setConfiguration(new DynamicPropertiesConfiguration(factory));
   }
 
   private TestConfig mkConfig(String prefix) {

@@ -24,22 +24,21 @@ import java.util.Properties;
 import com.google.common.io.Resources;
 import com.google.common.base.Charsets;
 
-import com.netflix.archaius.AppConfig;
-import com.netflix.archaius.DefaultAppConfig;
+import com.netflix.archaius.Config;
 import com.netflix.archaius.config.MapConfig;
 
 public class TestResourceConfiguration {
   private TestResourceConfiguration() {}
 
-  public static AppConfig load(String propFile) throws Exception {
+  public static Config load(String propFile) throws Exception {
     return load(propFile, new HashMap<String,String>());
   }
 
-  public static AppConfig load(String propFile, Map<String,String> subs) throws Exception {
+  public static Config load(String propFile, Map<String,String> subs) throws Exception {
     return load(propFile, subs, new HashMap<String,String>());
   }
 
-  public static AppConfig load(
+  public static Config load(
       String propFile, Map<String,String> subs, Map<String,String> overrides) throws Exception {
     URL propUrl = Resources.getResource(propFile);
     String propData = Resources.toString(propUrl, Charsets.UTF_8);
@@ -52,8 +51,6 @@ public class TestResourceConfiguration {
       props.setProperty((String) e.getKey(), (String) e.getValue());
     }
 
-    AppConfig config = DefaultAppConfig.builder().withFailOnFirst(false).build();
-    config.addLibraryConfig(new MapConfig("test", props));
-    return config;
+    return new MapConfig(props);
   }
 }
