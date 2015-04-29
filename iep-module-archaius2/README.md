@@ -2,16 +2,13 @@
 ## Description
 
 Guice module to configure [archaius2](https://github.com/Netflix/archaius/tree/2.x) for use
-internally at Netflix. It will do the following:
+internally at Netflix. It will install the archaius2 guice module and put in the following
+overrides:
 
-* Setup binding so you can inject `AppConfig` and `Config`.
-* Add typesafe config as an override layer.
-* Add a dynamic layer that queries the internal platformservice for properties that can change
+* Add typesafe config as the application layer.
+* Add an override layer that queries the internal platformservice for properties that can change
   at runtime.
 
-It will also install the base guice module from archaius2. The `AppConfig` is customized to
-use `application` as the config name rather than the default of `config`.
-  
 > :warning: This module will not load global properties. Properties coming from platformservice
 > must be restricted to at least one of application, cluster, or auto-scaling group.
 
