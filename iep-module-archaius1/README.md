@@ -20,8 +20,8 @@ So properties will get chosen in the following order:
 * 1.x library
 
 Note, if accessed via the static methods there is no guarantee the configuration will be setup
-properly yet. If possible inject the `AbstractConfiguration` to ensure that setup is complete
-before use.
+properly yet. If possible inject the `org.apache.commons.configuration.Configuration` to ensure
+that setup is complete before use.
 
 This is mostly for backwards compatibility when using libraries that have not migrated to
 archaius 2.x yet.

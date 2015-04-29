@@ -19,16 +19,18 @@ import com.netflix.archaius.Config;
 import com.netflix.config.ConcurrentCompositeConfiguration;
 import com.netflix.config.ConcurrentMapConfiguration;
 import com.netflix.config.ConfigurationManager;
-import org.apache.commons.configuration.AbstractConfiguration;
+import org.apache.commons.configuration.Configuration;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 
-class ConfigProvider implements Provider<AbstractConfiguration> {
+@Singleton
+class ConfigProvider implements Provider<Configuration> {
 
   @Inject
   ConfigProvider(Config config) {
-    AbstractConfiguration v1config = ConfigurationManager.getConfigInstance();
+    Configuration v1config = ConfigurationManager.getConfigInstance();
     ConcurrentMapConfiguration override = new ConcurrentMapConfiguration();
     if (v1config instanceof ConcurrentCompositeConfiguration) {
       ((ConcurrentCompositeConfiguration) v1config).addConfigurationAtFront(override, "override");
@@ -39,7 +41,7 @@ class ConfigProvider implements Provider<AbstractConfiguration> {
     listener.update(config);
   }
 
-  @Override public AbstractConfiguration get() {
+  @Override public Configuration get() {
     return ConfigurationManager.getConfigInstance();
   }
 }

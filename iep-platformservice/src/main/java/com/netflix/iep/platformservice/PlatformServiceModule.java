@@ -59,8 +59,13 @@ public final class PlatformServiceModule extends AbstractModule {
   @Provides
   @Singleton
   @ApplicationLayer
-  private com.netflix.archaius.Config providesAppConfig(Config application) throws Exception {
-    return new TypesafeConfig(application);
+  private com.netflix.archaius.Config providesAppConfig(final Config application) throws Exception {
+    return new TypesafeConfig(application) {
+      // HACK: avoid missing configuration exceptions. Need to find a better solution.
+      @Override public Object getRawProperty(String k) {
+        return application.getString(k);
+      }
+    };
   }
 
   @Override public boolean equals(Object obj) {
