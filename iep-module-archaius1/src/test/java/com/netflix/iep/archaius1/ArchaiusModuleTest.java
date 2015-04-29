@@ -29,7 +29,7 @@ import com.netflix.archaius.config.SettableConfig;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.iep.archaius2.OverrideModule;
 import com.typesafe.config.ConfigFactory;
-import org.apache.commons.configuration.AbstractConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class ArchaiusModuleTest {
 
   @Test
   public void getValues() {
-    AbstractConfiguration cfg = Guice.createInjector(testModule).getInstance(AbstractConfiguration.class);
+    Configuration cfg = Guice.createInjector(testModule).getInstance(Configuration.class);
     Assert.assertEquals("b", cfg.getString("a"));
     Assert.assertEquals("dynamic", cfg.getString("c"));
   }
@@ -71,7 +71,7 @@ public class ArchaiusModuleTest {
     Key<SettableConfig> key = Key.get(SettableConfig.class, RuntimeLayer.class);
     Injector injector = Guice.createInjector(testModule);
     SettableConfig runtime = injector.getInstance(key);
-    AbstractConfiguration root = injector.getInstance(AbstractConfiguration.class);
+    Configuration root = injector.getInstance(Configuration.class);
 
     Assert.assertEquals("b", root.getString("a"));
     Assert.assertEquals("dynamic", root.getString("c"));
