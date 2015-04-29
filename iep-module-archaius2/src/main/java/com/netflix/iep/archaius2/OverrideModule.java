@@ -31,4 +31,12 @@ public final class OverrideModule extends AbstractModule {
         .with(new PlatformServiceModule());
     install(m);
   }
+
+  @Override public boolean equals(Object obj) {
+    return obj != null && getClass().equals(obj.getClass());
+  }
+
+  @Override public int hashCode() {
+    return getClass().hashCode();
+  }
 }

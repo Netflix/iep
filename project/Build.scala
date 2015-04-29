@@ -81,6 +81,7 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
 
   lazy val `iep-module-archaius1` = project
+    .dependsOn(`iep-module-archaius2`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
