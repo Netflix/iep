@@ -36,9 +36,9 @@ class ConfigProvider implements Provider<Configuration> {
       ((ConcurrentCompositeConfiguration) v1config).addConfigurationAtFront(override, "override");
     }
 
-    Archaius2Listener listener = new Archaius2Listener(override);
+    Archaius2Listener listener = new Archaius2Listener(override, config);
     config.addListener(listener);
-    listener.update(config);
+    listener.initialize();
   }
 
   @Override public Configuration get() {
