@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
 public final class PlatformServiceModule extends AbstractModule {
 
   @Override protected void configure() {
-    bind(Config.class).toInstance(ConfigFactory.load().resolve());
+    bind(Config.class).toInstance(ConfigFactory.load());
   }
 
   @Provides
@@ -60,12 +60,7 @@ public final class PlatformServiceModule extends AbstractModule {
   @Singleton
   @ApplicationLayer
   private com.netflix.archaius.Config providesAppConfig(final Config application) throws Exception {
-    return new TypesafeConfig(application) {
-      // HACK: avoid missing configuration exceptions. Need to find a better solution.
-      @Override public Object getRawProperty(String k) {
-        return application.getString(k);
-      }
-    };
+    return new TypesafeConfig(application);
   }
 
   @Override public boolean equals(Object obj) {

@@ -19,7 +19,7 @@ import com.netflix.archaius.Config;
 import com.netflix.archaius.ConfigListener;
 import com.netflix.config.AbstractPollingScheduler;
 import com.netflix.config.PollResult;
-import org.apache.commons.configuration.AbstractConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +35,18 @@ class Archaius2Listener extends AbstractPollingScheduler implements ConfigListen
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Archaius2Listener.class);
 
-  private final AbstractConfiguration v1config;
+  private final Configuration v1config;
+  private final Config v2config;
+  private volatile boolean initialized;
 
-  Archaius2Listener(AbstractConfiguration v1config) {
+  Archaius2Listener(Configuration v1config, Config v2config) {
     this.v1config = v1config;
+    this.v2config = v2config;
+  }
+
+  void initialize() {
+    initialized = true;
+    update();
   }
 
   @Override protected void schedule(Runnable runnable) {
@@ -47,27 +55,29 @@ class Archaius2Listener extends AbstractPollingScheduler implements ConfigListen
   @Override public void stop() {
   }
 
-  void update(Config config) {
-    Map<String, Object> props = new HashMap<>();
-    Iterator<String> iter = config.getKeys();
-    while (iter.hasNext()) {
-      String k = iter.next();
-      props.put(k, config.getString(k));
+  void update() {
+    if (initialized) {
+      Map<String, Object> props = new HashMap<>();
+      Iterator<String> iter = v2config.getKeys();
+      while (iter.hasNext()) {
+        String k = iter.next();
+        props.put(k, v2config.getString(k));
+      }
+      LOGGER.debug("update received with {} properties", props.size());
+      populateProperties(PollResult.createFull(props), v1config);
     }
-    LOGGER.debug("update received with {} properties", props.size());
-    populateProperties(PollResult.createFull(props), v1config);
   }
 
   @Override public void onConfigAdded(Config config) {
-    update(config);
+    update();
   }
 
   @Override public void onConfigRemoved(Config config) {
-    update(config);
+    update();
   }
 
   @Override public void onConfigUpdated(Config config) {
-    update(config);
+    update();
   }
 
   @Override public void onError(Throwable throwable, Config config) {
