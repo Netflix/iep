@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
 public final class PlatformServiceModule extends AbstractModule {
 
   @Override protected void configure() {
-    bind(Config.class).toInstance(ConfigFactory.load());
+    bind(Config.class).toInstance(ConfigFactory.load().resolve());
   }
 
   @Provides
