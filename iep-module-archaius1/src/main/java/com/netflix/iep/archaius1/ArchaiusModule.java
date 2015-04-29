@@ -16,29 +16,17 @@
 package com.netflix.iep.archaius1;
 
 import com.google.inject.AbstractModule;
-import com.netflix.config.ConfigurationManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
+import com.netflix.iep.archaius2.OverrideModule;
+import org.apache.commons.configuration.AbstractConfiguration;
 
 /**
  * Helper for configuring archaius v1.
  */
 public final class ArchaiusModule extends AbstractModule {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ArchaiusModule.class);
-
-  public static void loadProperties(String name) {
-    try {
-      ConfigurationManager.loadAppOverrideProperties(name);
-    } catch (IOException e) {
-      LOGGER.warn("failed to load properties for '" + name + "'");
-    }
-  }
-
   @Override protected void configure() {
-    loadProperties("application");
+    install(new OverrideModule());
+    bind(AbstractConfiguration.class).toProvider(ConfigProvider.class).asEagerSingleton();
   }
 
   @Override public boolean equals(Object obj) {
