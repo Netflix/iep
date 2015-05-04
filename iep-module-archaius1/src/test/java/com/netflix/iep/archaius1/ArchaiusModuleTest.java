@@ -22,16 +22,14 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.util.Modules;
 import com.netflix.archaius.Config;
-import com.netflix.archaius.ConfigListener;
+import com.netflix.archaius.annotations.ApplicationLayer;
 import com.netflix.archaius.annotations.OverrideLayer;
 import com.netflix.archaius.annotations.RuntimeLayer;
-import com.netflix.archaius.config.CompositeConfig;
 import com.netflix.archaius.config.DefaultSettableConfig;
 import com.netflix.archaius.config.MapConfig;
 import com.netflix.archaius.config.SettableConfig;
+import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.config.ConfigurationManager;
-import com.netflix.iep.archaius2.OverrideModule;
-import com.typesafe.config.ConfigFactory;
 import org.apache.commons.configuration.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,7 +43,11 @@ public class ArchaiusModuleTest {
 
   private Module overrideModule = new AbstractModule() {
     @Override protected void configure() {
-      bind(com.typesafe.config.Config.class).toInstance(ConfigFactory.parseString("a=b\nc=d"));
+      MapConfig cfg = MapConfig.builder()
+          .put("a", "b")
+          .put("c", "d")
+          .build();
+      bind(Config.class).annotatedWith(ApplicationLayer.class).toInstance(cfg);
 
       DefaultSettableConfig dynamic = new DefaultSettableConfig();
       dynamic.setProperty("c", "dynamic");
@@ -55,7 +57,9 @@ public class ArchaiusModuleTest {
     }
   };
 
-  private Module testModule = Modules.override(new ArchaiusModule(), new OverrideModule()).with(overrideModule);
+  private Module testModule = Modules
+      .override(new ArchaiusModule(), new Archaius1Module())
+      .with(overrideModule);
 
   @Before
   public void init() {
