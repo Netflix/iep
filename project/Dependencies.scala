@@ -4,7 +4,7 @@ object Dependencies {
   object Versions {
     val archaius   = "2.0.0-rc.9"
     val guice      = "4.0"
-    val karyon     = "2.6.1"
+    val karyon     = "2.7.0"
     val ribbon     = "2.0.0"
     val rxnetty    = "0.4.8"
     val scala      = "2.11.6"
