@@ -16,16 +16,14 @@
 package com.netflix.iep.archaius1;
 
 import com.google.inject.AbstractModule;
-import com.netflix.iep.archaius2.OverrideModule;
 import org.apache.commons.configuration.Configuration;
 
 /**
  * Helper for configuring archaius v1.
  */
-public final class ArchaiusModule extends AbstractModule {
+public final class Archaius1Module extends AbstractModule {
 
   @Override protected void configure() {
-    install(new OverrideModule());
     bind(Configuration.class).toProvider(ConfigProvider.class).asEagerSingleton();
   }
 
