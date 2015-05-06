@@ -6,7 +6,7 @@ object Dependencies {
     val guice      = "4.0"
     val karyon     = "2.7.0"
     val ribbon     = "2.0.0"
-    val rxnetty    = "0.4.8"
+    val rxnetty    = "0.4.9"
     val scala      = "2.11.6"
     val slf4j      = "1.7.12"
     val spectator  = "0.25.0"
