@@ -19,5 +19,5 @@ Karyon will load tabs based on classpath scanning. Some additional plugins you m
 Show a summary of the eureka state.
 
 ```
-compile 'com.netflix.karyon:karyon2-admin-eureka-plugin:2.3.0'
+compile 'com.netflix.karyon:karyon2-admin-eureka-plugin:2.7.0'
 ```
