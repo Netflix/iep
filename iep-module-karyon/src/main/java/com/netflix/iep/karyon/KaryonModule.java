@@ -16,15 +16,20 @@
 package com.netflix.iep.karyon;
 
 
+import com.google.inject.AbstractModule;
 import com.netflix.config.ConfigurationManager;
+import netflix.admin.GlobalModelContextOverride;
 import netflix.adminresources.resources.KaryonWebAdminModule;
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Properties;
 
 
-public final class KaryonModule extends KaryonWebAdminModule {
+public final class KaryonModule extends AbstractModule {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KaryonModule.class);
 
@@ -38,7 +43,18 @@ public final class KaryonModule extends KaryonWebAdminModule {
 
   @Override protected void configure() {
     loadProperties("iep-karyon");
-    super.configure();
+    bind(GlobalModelContextOverride.class).toInstance(new GlobalModelContextOverride() {
+      @Override public Properties overrideProperties(Properties properties) {
+        Configuration config = ConfigurationManager.getConfigInstance();
+        Iterator<String> keys = config.getKeys();
+        while (keys.hasNext()) {
+          String k = keys.next();
+          properties.setProperty(k, config.getString(k));
+        }
+        return properties;
+      }
+    });
+    install(new KaryonWebAdminModule());
   }
 
   @Override public boolean equals(Object obj) {
