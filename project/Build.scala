@@ -15,6 +15,7 @@ object MainBuild extends Build {
             scalaVersion := Dependencies.Versions.scala,
               crossPaths := false,
            sourcesInBase := false,
+            fork in Test := true,
         autoScalaLibrary := false,
        externalResolvers := BuildSettings.resolvers,
      checkLicenseHeaders := License.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
@@ -84,6 +85,7 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
+      Dependencies.archaiusBridge,
       Dependencies.archaiusCore,
       Dependencies.archaiusGuice,
       Dependencies.archaiusLegacy,

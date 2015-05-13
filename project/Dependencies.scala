@@ -2,9 +2,9 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.0.0-rc.9"
+    val archaius   = "2.0.0-rc.10"
     val guice      = "4.0"
-    val karyon     = "2.7.0"
+    val karyon     = "2.7.1"
     val ribbon     = "2.0.0"
     val rxnetty    = "0.4.9"
     val scala      = "2.11.6"
@@ -14,6 +14,7 @@ object Dependencies {
 
   import Versions._
 
+  val archaiusBridge  = "com.netflix.archaius" % "archaius2-archaius1-bridge" % archaius
   val archaiusCore    = "com.netflix.archaius" % "archaius2-core" % archaius
   val archaiusGuice   = "com.netflix.archaius" % "archaius2-guice" % archaius
   val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.6.6"
