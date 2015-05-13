@@ -13,15 +13,15 @@ Typical usage:
 ```java
 public class Main {
   public static void main(String[] args) throws Exception {
-    List<Module> modules = Governator.getModulesUsingServiceLoader();
+    List<Module> modules = GuiceHelper.getModulesUsingServiceLoader();
     modules.add(new AbstractModule() {
       @Override public void configure() {
         // ... any final bindings ...
       }
     });
-    Governator gov = new Governator();
-    gov.start(modules);
-    gov.addShutdownHook();
+    GuiceHelper helper = new GuiceHelper();
+    helper.start(modules);
+    helper.addShutdownHook();
   }
 }
 ```
