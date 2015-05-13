@@ -16,7 +16,12 @@
 package com.netflix.iep.archaius1;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.netflix.archaius.bridge.StaticArchaiusBridgeModule;
+import com.netflix.config.ConfigurationManager;
 import org.apache.commons.configuration.Configuration;
+
+import javax.inject.Singleton;
 
 /**
  * Helper for configuring archaius v1.
@@ -24,7 +29,14 @@ import org.apache.commons.configuration.Configuration;
 public final class Archaius1Module extends AbstractModule {
 
   @Override protected void configure() {
-    bind(Configuration.class).toProvider(ConfigProvider.class).asEagerSingleton();
+    // It is assumed that some other module will take care of configuring archaius2.
+    install(new StaticArchaiusBridgeModule());
+  }
+
+  @Provides
+  @Singleton
+  private Configuration providesConfiguration() {
+    return ConfigurationManager.getConfigInstance();
   }
 
   @Override public boolean equals(Object obj) {

@@ -22,14 +22,15 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.util.Modules;
 import com.netflix.archaius.Config;
-import com.netflix.archaius.annotations.ApplicationLayer;
-import com.netflix.archaius.annotations.OverrideLayer;
-import com.netflix.archaius.annotations.RuntimeLayer;
+import com.netflix.archaius.bridge.StaticAbstractConfiguration;
+import com.netflix.archaius.bridge.StaticDeploymentContext;
 import com.netflix.archaius.config.DefaultSettableConfig;
 import com.netflix.archaius.config.MapConfig;
 import com.netflix.archaius.config.SettableConfig;
 import com.netflix.archaius.guice.ArchaiusModule;
-import com.netflix.config.ConfigurationManager;
+import com.netflix.archaius.inject.ApplicationLayer;
+import com.netflix.archaius.inject.OverrideLayer;
+import com.netflix.archaius.inject.RuntimeLayer;
 import org.apache.commons.configuration.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,7 +64,8 @@ public class ArchaiusModuleTest {
 
   @Before
   public void init() {
-    ConfigurationManager.getConfigInstance().clear();
+    StaticAbstractConfiguration.reset();
+    StaticDeploymentContext.reset();
   }
 
   @Test

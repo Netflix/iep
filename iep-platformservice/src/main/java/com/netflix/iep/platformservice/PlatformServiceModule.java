@@ -17,12 +17,12 @@ package com.netflix.iep.platformservice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.netflix.archaius.annotations.ApplicationLayer;
-import com.netflix.archaius.annotations.OverrideLayer;
 import com.netflix.archaius.config.PollingDynamicConfig;
 import com.netflix.archaius.config.PollingStrategy;
 import com.netflix.archaius.config.polling.FixedPollingStrategy;
 import com.netflix.archaius.config.polling.PollingResponse;
+import com.netflix.archaius.inject.ApplicationLayer;
+import com.netflix.archaius.inject.OverrideLayer;
 import com.netflix.archaius.persisted2.JsonPersistedV2Reader;
 import com.netflix.archaius.persisted2.ScopePredicates;
 import com.netflix.archaius.persisted2.loader.HTTPStreamLoader;

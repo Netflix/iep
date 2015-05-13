@@ -2,22 +2,8 @@
 ## Description
 
 Guice module to configure [archaius1](https://github.com/Netflix/archaius). This module will
-setup the override layer (dynamic properties) to the properties found in the archaius2 config.
-In other words, any property set via archaius2 will take precedence over archaius1 properties
-except for properties set via the archaius1 runtime layer.
-
-So properties will get chosen in the following order:
-
-* 1.x runtime
-* 1.x override
-    * 2.x runtime
-    * 2.x override (dynamic properties from platformservice)
-    * 2.x system (System.getProperty)
-    * 2.x environment (System.getenv)
-    * 2.x application
-    * 2.x library
-* 1.x application (nothing loaded to this layer)
-* 1.x library
+primarily setup the [archaius2-archaius1-bridge](https://github.com/Netflix/archaius/tree/2.x/archaius2-archaius1-bridge)
+so that archaius1 will be delegating to archaius2.
 
 Note, if accessed via the static methods there is no guarantee the configuration will be setup
 properly yet. If possible inject the `org.apache.commons.configuration.Configuration` to ensure
