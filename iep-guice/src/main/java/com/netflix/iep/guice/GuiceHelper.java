@@ -26,23 +26,9 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 /** Helper for using guice with some basic lifecycle. */
-public final class Governator {
+public final class GuiceHelper {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Governator.class);
-
-  /** Add a task to be executed after shutting down governator. */
-  public static void addShutdownHook(final Governator governator) {
-    final Runnable r = new Runnable() {
-      @Override public void run() {
-        try {
-          governator.shutdown();
-        } catch (Exception e) {
-          LOGGER.warn("exception during shutdown sequence", e);
-        }
-      }
-    };
-    Runtime.getRuntime().addShutdownHook(new Thread(r, "ShutdownHook"));
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(GuiceHelper.class);
 
   /**
    * Returns a list of all guice modules in the classpath using ServiceLoader. Modules that do
@@ -59,20 +45,20 @@ public final class Governator {
 
   private Injector injector;
 
-  public Governator() {
+  public GuiceHelper() {
   }
 
-  /** Return the injector used with the governator lifecycle. */
+  /** Return the injector used with the lifecycle. */
   public Injector getInjector() {
     return injector;
   }
 
-  /** Start up governator using the list of modules from {@link #getModulesUsingServiceLoader()}. */
+  /** Start up using the list of modules from {@link #getModulesUsingServiceLoader()}. */
   public void start() throws Exception {
     start(getModulesUsingServiceLoader());
   }
 
-  /** Start up governator with an arbitrary list of modules. */
+  /** Start up with an arbitrary list of modules. */
   public void start(Iterable<Module> modules) throws Exception {
     List<Module> ms = new ArrayList<>();
     ms.add(new LifecycleModule());
@@ -83,7 +69,7 @@ public final class Governator {
     injector = Guice.createInjector(ms);
   }
 
-  /** Shutdown governator. */
+  /** Shutdown classes with {@link javax.annotation.PreDestroy}. */
   public void shutdown() throws Exception {
     PreDestroyList list = injector.getInstance(PreDestroyList.class);
     list.invokeAll();
@@ -91,6 +77,15 @@ public final class Governator {
 
   /** Add a shutdown hook for this instance. */
   public void addShutdownHook() {
-    addShutdownHook(this);
+    final Runnable r = new Runnable() {
+      @Override public void run() {
+        try {
+          shutdown();
+        } catch (Exception e) {
+          LOGGER.warn("exception during shutdown sequence", e);
+        }
+      }
+    };
+    Runtime.getRuntime().addShutdownHook(new Thread(r, "ShutdownHook"));
   }
 }
