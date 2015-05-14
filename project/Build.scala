@@ -36,7 +36,6 @@ object MainBuild extends Build {
       `iep-module-rxnetty`,
       `iep-nflxenv`,
       `iep-platformservice`,
-      `iep-reboot`,
       `iep-rxhttp`,
       `iep-service`)
     .settings(buildSettings: _*)
@@ -166,9 +165,6 @@ object MainBuild extends Build {
       Dependencies.guiceMulti,
       Dependencies.slf4jApi
     ))
-
-  lazy val `iep-reboot` = project
-    .settings(buildSettings: _*)
 
   lazy val `iep-rxhttp` = project
     .settings(buildSettings: _*)

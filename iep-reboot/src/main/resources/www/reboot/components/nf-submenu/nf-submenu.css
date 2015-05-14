@@ -1,9 +1,0 @@
-:host {
-    text-transform: uppercase;
-    color: #478CC8;
-}
-
-:host::shadow #selectionBar {
-    background-color: #478CC8;
-    height: 5px;
-}
