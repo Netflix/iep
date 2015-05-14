@@ -5,7 +5,6 @@ object Dependencies {
     val archaius   = "2.0.0-rc.10"
     val guice      = "4.0"
     val karyon     = "2.7.1"
-    val ribbon     = "2.0.0"
     val rxnetty    = "0.4.9"
     val scala      = "2.11.6"
     val slf4j      = "1.7.12"
@@ -21,7 +20,7 @@ object Dependencies {
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.2"
-  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.152"
+  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.153"
   val governator      = "com.netflix.governator" % "governator" % "1.3.3"
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
@@ -35,10 +34,6 @@ object Dependencies {
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val ribbonCore      = "com.netflix.ribbon" % "ribbon-core" % ribbon
-  val ribbonEureka    = "com.netflix.ribbon" % "ribbon-eureka" % ribbon
-  val ribbonHttp      = "com.netflix.ribbon" % "ribbon-httpclient" % ribbon
-  val ribbonLb        = "com.netflix.ribbon" % "ribbon-loadbalancer" % ribbon
   val rxjava          = "io.reactivex" % "rxjava" % "1.0.9"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
