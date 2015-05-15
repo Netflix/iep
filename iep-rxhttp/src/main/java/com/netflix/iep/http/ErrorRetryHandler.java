@@ -48,7 +48,8 @@ class ErrorRetryHandler implements
 
   @Override
   public Observable<? extends HttpClientResponse<ByteBuf>> call(Throwable throwable) {
-    if (throwable instanceof ConnectException || throwable instanceof ReadTimeoutException) {
+    final boolean retryReadTimeouts = context.config().retryReadTimeouts();
+    if (throwable instanceof ConnectException || throwable instanceof ReadTimeoutException && retryReadTimeouts) {
       context.entry().withAttempt(attempt);
       return context.rxHttp().execute(context);
     }
