@@ -454,7 +454,7 @@ public class RxHttpTest {
   }
 
   @Test
-  public void readTimeoutDontRetry() throws Exception {
+  public void readTimeoutDoesntRetry() throws Exception {
     set(client + ".niws.client.ReadTimeout", "100");
     set(client + ".niws.client.RetryReadTimeouts", "false");
     int code = 200;
