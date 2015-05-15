@@ -210,6 +210,11 @@ class ClientConfig {
     return getInt("RetryDelay", 500);
   }
 
+  /** Whether to retry read timeouts.  */
+  boolean retryReadTimeouts() {
+    return getBoolean("RetryReadTimeouts", true);
+  }
+
   /** User agent string to use when making the request. */
   String userAgent() {
     return getString("UserAgent", "RxHttp");

@@ -454,6 +454,37 @@ public class RxHttpTest {
   }
 
   @Test
+  public void readTimeoutDontRetry() throws Exception {
+    set(client + ".niws.client.ReadTimeout", "100");
+    set(client + ".niws.client.RetryReadTimeouts", "false");
+    int code = 200;
+    statusCode.set(code);
+    AtomicIntegerArray expected = copy(statusCounts);
+    expected.addAndGet(code, 1);
+
+    final CountDownLatch latch = new CountDownLatch(1);
+    final AtomicReference<Throwable> throwable = new AtomicReference<>();
+    rxHttp.get(uri("/readTimeout")).subscribe(
+        Actions.empty(),
+        new Action1<Throwable>() {
+          @Override public void call(Throwable t) {
+            throwable.set(t);
+            latch.countDown();
+          }
+        },
+        new Action0() {
+          @Override public void call() {
+            latch.countDown();
+          }
+        }
+    );
+
+    latch.await();
+    Assert.assertTrue(throwable.get() instanceof ReadTimeoutException);
+    assertEquals(expected, statusCounts);
+  }
+
+  @Test
   public void connectTimeout() throws Exception {
     // Pick a free port with no server running
     ServerSocket ss = new ServerSocket(0);
