@@ -531,6 +531,8 @@ public final class RxHttp {
 
     final HttpClient<ByteBuf, ByteBuf> client = getClient(context);
     entry.mark("start");
+    entry.withRemoteAddr(context.server().host());
+    entry.withRemotePort(context.server().port());
     return client.submit(context.request())
         .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
           @Override public void call(HttpClientResponse<ByteBuf> res) {
@@ -613,7 +615,7 @@ public final class RxHttp {
   }
 
   private List<Server> getServers(ClientConfig clientCfg) {
-    List<Server> servers = null;
+    List<Server> servers;
     if (clientCfg.uri().isAbsolute()) {
       servers = getServersForUri(clientCfg, clientCfg.uri());
     } else {
