@@ -49,7 +49,12 @@ public final class KaryonModule extends AbstractModule {
         Iterator<String> keys = config.getKeys();
         while (keys.hasNext()) {
           String k = keys.next();
-          properties.setProperty(k, config.getString(k));
+          String v = config.getString(k);
+          if (v != null) {
+            properties.setProperty(k, config.getString(k));
+          } else {
+            LOGGER.debug("skipping property '{}' with null value", k);
+          }
         }
         return properties;
       }
