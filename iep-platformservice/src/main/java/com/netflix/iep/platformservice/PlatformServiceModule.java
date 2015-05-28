@@ -22,7 +22,7 @@ import com.netflix.archaius.config.PollingStrategy;
 import com.netflix.archaius.config.polling.FixedPollingStrategy;
 import com.netflix.archaius.config.polling.PollingResponse;
 import com.netflix.archaius.inject.ApplicationLayer;
-import com.netflix.archaius.inject.OverrideLayer;
+import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.persisted2.JsonPersistedV2Reader;
 import com.netflix.archaius.persisted2.ScopePredicates;
 import com.netflix.archaius.persisted2.loader.HTTPStreamLoader;
@@ -51,7 +51,7 @@ public final class PlatformServiceModule extends AbstractModule {
 
   @Provides
   @Singleton
-  @OverrideLayer
+  @RemoteLayer
   private com.netflix.archaius.Config providesOverrideConfig(Config application) throws Exception {
     return getDynamicConfig(application);
   }

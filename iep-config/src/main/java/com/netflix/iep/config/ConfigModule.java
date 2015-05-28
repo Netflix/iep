@@ -23,7 +23,7 @@ import com.netflix.archaius.config.CompositeConfig;
 import com.netflix.archaius.config.MapConfig;
 import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.inject.ApplicationLayer;
-import com.netflix.archaius.inject.OverrideLayer;
+import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.typesafe.TypesafeConfig;
 import com.netflix.iep.platformservice.PlatformServiceModule;
 import com.typesafe.config.Config;
@@ -66,7 +66,7 @@ public class ConfigModule extends AbstractModule {
 
     @Provides
     @Singleton
-    @OverrideLayer
+    @RemoteLayer
     private com.netflix.archaius.Config providesOverrideConfig(Config cfg) throws Exception {
       return PlatformServiceModule.getDynamicConfig(cfg);
     }

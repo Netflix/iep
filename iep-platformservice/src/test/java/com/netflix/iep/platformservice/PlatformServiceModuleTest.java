@@ -25,7 +25,7 @@ import com.netflix.archaius.Config;
 import com.netflix.archaius.config.DefaultSettableConfig;
 import com.netflix.archaius.config.SettableConfig;
 import com.netflix.archaius.guice.ArchaiusModule;
-import com.netflix.archaius.inject.OverrideLayer;
+import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.inject.RuntimeLayer;
 import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
@@ -44,8 +44,8 @@ public class PlatformServiceModuleTest {
       DefaultSettableConfig dynamic = new DefaultSettableConfig();
       dynamic.setProperty("c", "dynamic");
 
-      bind(DefaultSettableConfig.class).annotatedWith(OverrideLayer.class).toInstance(dynamic);
-      bind(Config.class).annotatedWith(OverrideLayer.class).toInstance(dynamic);
+      bind(DefaultSettableConfig.class).annotatedWith(RemoteLayer.class).toInstance(dynamic);
+      bind(Config.class).annotatedWith(RemoteLayer.class).toInstance(dynamic);
     }
   };
 
