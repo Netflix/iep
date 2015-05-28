@@ -31,6 +31,7 @@ import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.inject.ApplicationLayer;
 import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.inject.RuntimeLayer;
+import com.netflix.config.ConfigurationManager;
 import org.apache.commons.configuration.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
