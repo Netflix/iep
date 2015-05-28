@@ -29,7 +29,7 @@ import com.netflix.archaius.config.MapConfig;
 import com.netflix.archaius.config.SettableConfig;
 import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.inject.ApplicationLayer;
-import com.netflix.archaius.inject.OverrideLayer;
+import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.inject.RuntimeLayer;
 import com.netflix.config.ConfigurationManager;
 import org.apache.commons.configuration.Configuration;
@@ -55,8 +55,8 @@ public class ArchaiusModuleTest {
       DefaultSettableConfig dynamic = new DefaultSettableConfig();
       dynamic.setProperty("c", "dynamic");
 
-      bind(DefaultSettableConfig.class).annotatedWith(OverrideLayer.class).toInstance(dynamic);
-      bind(Config.class).annotatedWith(OverrideLayer.class).toInstance(dynamic);
+      bind(DefaultSettableConfig.class).annotatedWith(RemoteLayer.class).toInstance(dynamic);
+      bind(Config.class).annotatedWith(RemoteLayer.class).toInstance(dynamic);
     }
   };
 
