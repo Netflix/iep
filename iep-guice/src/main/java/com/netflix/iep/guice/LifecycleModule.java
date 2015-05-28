@@ -47,8 +47,14 @@ public class LifecycleModule extends AbstractModule {
         Method postConstruct = AnnotationUtils.getPostConstruct(injectee.getClass());
         if (postConstruct != null) {
           LOGGER.debug("invoking @PostConstruct for {}", injectee.getClass().getName());
-          postConstruct.setAccessible(true);
-          postConstruct.invoke(injectee);
+          try {
+            postConstruct.setAccessible(true);
+            postConstruct.invoke(injectee);
+          } catch (Throwable t) {
+            LOGGER.debug("error calling @PostConstruct (" + postConstruct + ")", t);
+            throw t;
+          }
+          LOGGER.debug("completed @PostConstruct ({})", postConstruct);
         }
 
         Method preDestroy = AnnotationUtils.getPreDestroy(injectee.getClass());
