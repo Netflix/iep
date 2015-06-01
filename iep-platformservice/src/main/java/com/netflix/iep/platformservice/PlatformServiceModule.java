@@ -17,6 +17,7 @@ package com.netflix.iep.platformservice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.netflix.archaius.config.CompositeConfig;
 import com.netflix.archaius.config.PollingDynamicConfig;
 import com.netflix.archaius.config.PollingStrategy;
 import com.netflix.archaius.config.polling.FixedPollingStrategy;
@@ -59,8 +60,10 @@ public final class PlatformServiceModule extends AbstractModule {
   @Provides
   @Singleton
   @ApplicationLayer
-  private com.netflix.archaius.Config providesAppConfig(final Config application) throws Exception {
-    return new TypesafeConfig(application);
+  private CompositeConfig providesAppConfig(final Config application) throws Exception {
+    CompositeConfig app = new CompositeConfig();
+    app.addConfig("TYPESAFE", new TypesafeConfig(application));
+    return app;
   }
 
   @Override public boolean equals(Object obj) {

@@ -24,6 +24,7 @@ import com.google.inject.util.Modules;
 import com.netflix.archaius.Config;
 import com.netflix.archaius.bridge.StaticAbstractConfiguration;
 import com.netflix.archaius.bridge.StaticDeploymentContext;
+import com.netflix.archaius.config.CompositeConfig;
 import com.netflix.archaius.config.DefaultSettableConfig;
 import com.netflix.archaius.config.MapConfig;
 import com.netflix.archaius.config.SettableConfig;
@@ -46,17 +47,23 @@ public class ArchaiusModuleTest {
 
   private Module overrideModule = new AbstractModule() {
     @Override protected void configure() {
-      MapConfig cfg = MapConfig.builder()
-          .put("a", "b")
-          .put("c", "d")
-          .build();
-      bind(Config.class).annotatedWith(ApplicationLayer.class).toInstance(cfg);
+      try {
+        MapConfig cfg = MapConfig.builder()
+            .put("a", "b")
+            .put("c", "d")
+            .build();
+        CompositeConfig app = new CompositeConfig();
+        app.addConfig("MAP", cfg);
+        bind(CompositeConfig.class).annotatedWith(ApplicationLayer.class).toInstance(app);
 
-      DefaultSettableConfig dynamic = new DefaultSettableConfig();
-      dynamic.setProperty("c", "dynamic");
+        DefaultSettableConfig dynamic = new DefaultSettableConfig();
+        dynamic.setProperty("c", "dynamic");
 
-      bind(DefaultSettableConfig.class).annotatedWith(RemoteLayer.class).toInstance(dynamic);
-      bind(Config.class).annotatedWith(RemoteLayer.class).toInstance(dynamic);
+        bind(DefaultSettableConfig.class).annotatedWith(RemoteLayer.class).toInstance(dynamic);
+        bind(Config.class).annotatedWith(RemoteLayer.class).toInstance(dynamic);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
   };
 
