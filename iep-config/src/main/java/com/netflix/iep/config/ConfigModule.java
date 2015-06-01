@@ -74,7 +74,7 @@ public class ConfigModule extends AbstractModule {
     @Provides
     @Singleton
     @ApplicationLayer
-    protected com.netflix.archaius.Config providesAppConfig(Config cfg) throws Exception {
+    protected CompositeConfig providesAppConfig(Config cfg) throws Exception {
       final Properties props = (propFiles == null)
           ? ScopedPropertiesLoader.load()
           : ScopedPropertiesLoader.load(propFiles);
