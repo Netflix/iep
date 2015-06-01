@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.0.0-rc.14"
+    val archaius   = "2.0.0-rc.16"
     val guice      = "4.0"
     val karyon     = "2.7.1"
     val rxnetty    = "0.4.9"
@@ -20,8 +20,8 @@ object Dependencies {
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.2"
-  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.153"
-  val governator      = "com.netflix.governator" % "governator" % "1.3.3"
+  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.155"
+  val governator      = "com.netflix.governator" % "governator" % "1.7.2"
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
   val guiceGrapher    = "com.google.inject.extensions" % "guice-grapher" % guice
