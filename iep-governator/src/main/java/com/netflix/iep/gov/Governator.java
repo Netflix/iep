@@ -44,8 +44,6 @@ public final class Governator {
   private static final String SERVICE_LOADER = "service-loader";
   private static final String NONE = "none";
 
-  private static final String ARCHAIUS_CONFIG_FILE = "platformservice";
-
   private static final Governator INSTANCE = new Governator();
 
   public static Governator getInstance() {
@@ -107,32 +105,7 @@ public final class Governator {
     return getModulesUsingProp("netflix.iep.gov.modules");
   }
 
-  public static void loadProperties(String name) {
-    try {
-      ConfigurationManager.loadCascadedPropertiesFromResources(name);
-    } catch (IOException e) {
-      LOGGER.warn("failed to load properties for '" + name + "'");
-    }
-  }
-
-  public static void loadProperties(Properties props) {
-    AbstractConfiguration abstractConf = ConfigurationManager.getConfigInstance();
-    if (abstractConf instanceof AggregatedConfiguration) {
-      AggregatedConfiguration aggConf = (AggregatedConfiguration) abstractConf;
-      Configuration appConf = aggConf.getConfiguration(ConfigurationManager.APPLICATION_PROPERTIES);
-      if (appConf != null) {
-        ConfigurationUtils.loadProperties(props, appConf);
-        return;
-      }
-    }
-    // The configuration instance is not an aggregated configuration or it does
-    // not have designated configuration for application properties - just add
-    // the properties using config.setProperty()
-    ConfigurationUtils.loadProperties(props, abstractConf);    
-  }
-
   private Governator() {
-    initArchaius();
   }
 
   private Injector injector;
@@ -157,16 +130,6 @@ public final class Governator {
 
     LifecycleManager lcMgr = injector.getInstance(LifecycleManager.class);
     lcMgr.start();
-  }
-
-  private void initArchaius() {
-    //ConcurrentCompositeConfiguration composite = new ConcurrentCompositeConfiguration();
-    //composite.addConfiguration(new SystemConfiguration(), "system");
-    //composite.addConfiguration(new EnvironmentConfiguration(), "environment");
-    //ConfigurationManager.install(composite);
-    loadProperties(ARCHAIUS_CONFIG_FILE);
-    loadProperties("application");
-    loadProperties(ScopedPropertiesLoader.load());
   }
 
   /** Shutdown governator. */
