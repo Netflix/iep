@@ -17,6 +17,7 @@ package com.netflix.iep.eureka;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.CloudInstanceConfig;
@@ -41,7 +42,7 @@ public final class EurekaModule extends AbstractModule {
 
   @Override protected void configure() {
     // InstanceInfo
-    bind(InstanceInfo.class).toProvider(EurekaConfigBasedInstanceInfoProvider.class).asEagerSingleton();
+    bind(InstanceInfo.class).toProvider(InstanceInfoProvider.class);
 
     // Needs:
     // * EurekaInstanceConfig
