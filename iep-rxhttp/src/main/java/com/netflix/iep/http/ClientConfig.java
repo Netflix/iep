@@ -15,8 +15,7 @@
  */
 package com.netflix.iep.http;
 
-import com.netflix.config.ConfigurationManager;
-import org.apache.commons.configuration.AbstractConfiguration;
+import org.apache.commons.configuration.Configuration;
 
 import java.net.URI;
 import java.util.regex.Matcher;
@@ -50,7 +49,7 @@ class ClientConfig {
   }
 
   /** Create a client config instance based on a URI. */
-  static ClientConfig fromUri(URI uri) {
+  static ClientConfig fromUri(Configuration config, URI uri) {
     Matcher m;
     ClientConfig cfg;
     switch (uri.getScheme()) {
@@ -58,7 +57,7 @@ class ClientConfig {
         m = NIWS_URI.matcher(uri.toString());
         if (m.matches()) {
           final URI newUri = URI.create(fixPath(relative(uri)));
-          cfg = new ClientConfig(m.group(1), null, uri, newUri);
+          cfg = new ClientConfig(config, m.group(1), null, uri, newUri);
         } else {
           throw new IllegalArgumentException("invalid niws uri: " + uri);
         }
@@ -66,25 +65,27 @@ class ClientConfig {
       case "vip":
         m = VIP_URI.matcher(uri.toString());
         if (m.matches()) {
-          cfg = new ClientConfig(m.group(1), m.group(2), uri, URI.create(relative(uri)));
+          cfg = new ClientConfig(config, m.group(1), m.group(2), uri, URI.create(relative(uri)));
         } else {
           throw new IllegalArgumentException("invalid vip uri: " + uri);
         }
         break;
       default:
-        cfg = new ClientConfig("default", null, uri, uri);
+        cfg = new ClientConfig(config, "default", null, uri, uri);
         break;
     }
     return cfg;
   }
 
+  private final Configuration config;
   private final String name;
   private final String vipAddress;
   private final URI originalUri;
   private final URI uri;
 
   /** Create a new instance. */
-  ClientConfig(String name, String vipAddress, URI originalUri, URI uri) {
+  ClientConfig(Configuration config, String name, String vipAddress, URI originalUri, URI uri) {
+    this.config = config;
     this.name = name;
     this.vipAddress = vipAddress;
     this.originalUri = originalUri;
@@ -100,9 +101,8 @@ class ClientConfig {
   }
 
   private String getString(String k, String dflt) {
-    AbstractConfiguration cfg = ConfigurationManager.getConfigInstance();
-    String v = cfg.getString(prop(k));
-    return (v == null) ? cfg.getString(dfltProp(k), dflt) : v;
+    String v = config.getString(prop(k));
+    return (v == null) ? config.getString(dfltProp(k), dflt) : v;
   }
 
   private int getInt(String k, int dflt) {

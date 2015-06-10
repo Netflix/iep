@@ -15,12 +15,14 @@
  */
 package com.netflix.iep.http;
 
+import com.netflix.config.ConfigurationManager;
 import com.netflix.spectator.api.Spectator;
 import com.netflix.spectator.impl.Preconditions;
 import com.netflix.spectator.sandbox.HttpLogEntry;
 import io.reactivex.netty.client.CompositePoolLimitDeterminationStrategy;
 import io.reactivex.netty.client.MaxConnectionsBasedStrategy;
 import io.reactivex.netty.client.PoolLimitDeterminationStrategy;
+import org.apache.commons.configuration.Configuration;
 import rx.functions.Actions;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelOption;
@@ -81,7 +83,20 @@ public final class RxHttp {
   private final ConcurrentHashMap<Server, HttpClient<ByteBuf, ByteBuf>> clients = new ConcurrentHashMap<>();
   private ScheduledExecutorService executor;
 
+  private final Configuration config;
   private final ServerRegistry serverRegistry;
+
+  /**
+   * Create a new instance using the specified server registry. Calls using client side
+   * load-balancing (niws:// or vip:// URIs) need a server registry to lookup the set of servers
+   * to balance over.
+   *
+   * @deprecated Use {@link RxHttp#RxHttp(Configuration, ServerRegistry)} instead.
+   */
+  @Deprecated
+  public RxHttp(ServerRegistry serverRegistry) {
+    this(ConfigurationManager.getConfigInstance(), serverRegistry);
+  }
 
   /**
    * Create a new instance using the specified server registry. Calls using client side
@@ -89,9 +104,12 @@ public final class RxHttp {
    * to balance over.
    */
   @Inject
-  public RxHttp(ServerRegistry serverRegistry) {
+  public RxHttp(Configuration config, ServerRegistry serverRegistry) {
+    this.config = config;
     this.serverRegistry = serverRegistry;
   }
+
+
 
   /**
    * Setup the background tasks for cleaning up connections.
@@ -464,7 +482,7 @@ public final class RxHttp {
   public Observable<HttpClientResponse<ByteBuf>>
   submit(HttpClientRequest<ByteBuf> req, byte[] entity) {
     final URI uri = URI.create(req.getUri());
-    final ClientConfig clientCfg = ClientConfig.fromUri(uri);
+    final ClientConfig clientCfg = ClientConfig.fromUri(config, uri);
     final List<Server> servers = getServers(clientCfg);
     final String reqUri = clientCfg.relativeUri();
     final HttpClientRequest<ByteBuf> newReq = copy(req, reqUri);
