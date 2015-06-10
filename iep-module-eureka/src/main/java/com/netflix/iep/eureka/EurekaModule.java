@@ -16,6 +16,7 @@
 package com.netflix.iep.eureka;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.google.inject.multibindings.Multibinder;
 import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.CloudInstanceConfig;
@@ -27,8 +28,10 @@ import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.iep.service.Service;
+import org.apache.commons.configuration.Configuration;
 
 import javax.inject.Provider;
+import javax.inject.Singleton;
 
 
 /**
@@ -37,13 +40,8 @@ import javax.inject.Provider;
 public final class EurekaModule extends AbstractModule {
 
   @Override protected void configure() {
-    // EurekaInstanceConfig
-    CloudInstanceConfig instanceCfg = new CloudInstanceConfig("netflix.appinfo.");
-    bind(EurekaInstanceConfig.class).toInstance(instanceCfg);
-
     // InstanceInfo
-    Provider<InstanceInfo> infoProvider = new EurekaConfigBasedInstanceInfoProvider(instanceCfg);
-    bind(InstanceInfo.class).toProvider(infoProvider).asEagerSingleton();
+    bind(InstanceInfo.class).toProvider(EurekaConfigBasedInstanceInfoProvider.class).asEagerSingleton();
 
     // Needs:
     // * EurekaInstanceConfig
@@ -67,6 +65,13 @@ public final class EurekaModule extends AbstractModule {
 
     Multibinder<Service> serviceBinder = Multibinder.newSetBinder(binder(), Service.class);
     serviceBinder.addBinding().to(EurekaService.class);
+  }
+
+  // Ensure that archaius configuration is setup prior to creating the eureka classes
+  @Provides
+  @Singleton
+  private EurekaInstanceConfig provideInstanceConfig(Configuration archaius) {
+    return new CloudInstanceConfig("netflix.appinfo.");
   }
 
   @Override public boolean equals(Object obj) {
