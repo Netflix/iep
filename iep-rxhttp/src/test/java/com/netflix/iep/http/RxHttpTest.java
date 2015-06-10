@@ -26,6 +26,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.reactivex.netty.protocol.http.client.HttpClientRequest;
 import io.reactivex.netty.protocol.http.client.HttpClientResponse;
+import org.apache.commons.configuration.Configuration;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,7 +71,8 @@ public class RxHttpTest {
 
   private static AtomicInteger redirects = new AtomicInteger(0);
 
-  private static final RxHttp rxHttp = new RxHttp(null);
+  private static final Configuration archaius = ConfigurationManager.getConfigInstance();
+  private static final RxHttp rxHttp = new RxHttp(archaius, null);
 
   private static void set(String k, String v) {
     ConfigurationManager.getConfigInstance().setProperty(k, v);
@@ -667,7 +669,7 @@ public class RxHttpTest {
     set("port-override.niws.client.Port", "2");
     URI origUri = URI.create("niws://port-override/foo");
     URI relUri = URI.create("/foo");
-    ClientConfig cfg = new ClientConfig("port-override", "vip", origUri, relUri);
+    ClientConfig cfg = new ClientConfig(archaius, "port-override", "vip", origUri, relUri);
     InstanceInfo info = InstanceInfo.Builder.newBuilder()
         .setAppName("foo")
         .setPort(1)
@@ -680,7 +682,7 @@ public class RxHttpTest {
   public void portDefaultSetting() throws Exception {
     URI origUri = URI.create("niws://port-default/foo");
     URI relUri = URI.create("/foo");
-    ClientConfig cfg = new ClientConfig("port-default", "vip", origUri, relUri);
+    ClientConfig cfg = new ClientConfig(archaius, "port-default", "vip", origUri, relUri);
     InstanceInfo info = InstanceInfo.Builder.newBuilder()
         .setAppName("foo")
         .setPort(1)
