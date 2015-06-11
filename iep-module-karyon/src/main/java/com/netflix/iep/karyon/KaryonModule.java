@@ -17,6 +17,7 @@ package com.netflix.iep.karyon;
 
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.netflix.config.ConfigurationManager;
 import netflix.admin.GlobalModelContextOverride;
 import netflix.adminresources.resources.KaryonWebAdminModule;
@@ -24,6 +25,7 @@ import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
@@ -42,10 +44,15 @@ public final class KaryonModule extends AbstractModule {
   }
 
   @Override protected void configure() {
+    install(new KaryonWebAdminModule());
+  }
+
+  @Provides
+  @Singleton
+  private GlobalModelContextOverride provideContextOverrides(final Configuration config) {
     loadProperties("iep-karyon");
-    bind(GlobalModelContextOverride.class).toInstance(new GlobalModelContextOverride() {
+    return new GlobalModelContextOverride() {
       @Override public Properties overrideProperties(Properties properties) {
-        Configuration config = ConfigurationManager.getConfigInstance();
         Iterator<String> keys = config.getKeys();
         while (keys.hasNext()) {
           String k = keys.next();
@@ -58,8 +65,7 @@ public final class KaryonModule extends AbstractModule {
         }
         return properties;
       }
-    });
-    install(new KaryonWebAdminModule());
+    };
   }
 
   @Override public boolean equals(Object obj) {
