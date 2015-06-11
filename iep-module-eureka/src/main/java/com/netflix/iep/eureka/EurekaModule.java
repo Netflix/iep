@@ -23,14 +23,12 @@ import com.netflix.appinfo.CloudInstanceConfig;
 import com.netflix.appinfo.EurekaInstanceConfig;
 import com.netflix.appinfo.HealthCheckHandler;
 import com.netflix.appinfo.InstanceInfo;
-import com.netflix.appinfo.providers.EurekaConfigBasedInstanceInfoProvider;
 import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.iep.service.Service;
 import org.apache.commons.configuration.Configuration;
 
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
 
@@ -41,7 +39,7 @@ public final class EurekaModule extends AbstractModule {
 
   @Override protected void configure() {
     // InstanceInfo
-    bind(InstanceInfo.class).toProvider(EurekaConfigBasedInstanceInfoProvider.class).asEagerSingleton();
+    bind(InstanceInfo.class).toProvider(InstanceInfoProvider.class);
 
     // Needs:
     // * EurekaInstanceConfig
