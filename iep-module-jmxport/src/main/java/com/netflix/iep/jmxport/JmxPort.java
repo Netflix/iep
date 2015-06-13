@@ -23,8 +23,11 @@ import javax.management.MBeanServer;
 import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
+import javax.management.remote.rmi.RMIConnectorServer;
 import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.server.RMIServerSocketFactory;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,9 +57,12 @@ public final class JmxPort {
 
     // Setup server on the configured port
     try {
-      LocateRegistry.createRegistry(port);
+      InetAddress address = InetAddress.getByName(hostname);
+      RMIServerSocketFactory factory = new SingleInterfaceRMIServerSocketFactory(address);
+      LocateRegistry.createRegistry(port, null, factory);
       MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
       Map<String, Object> env = new HashMap<>();
+      env.put(RMIConnectorServer.RMI_SERVER_SOCKET_FACTORY_ATTRIBUTE,  factory);
       JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://"
           + hostname + ":" + port
           + "/jndi/rmi://"
@@ -69,5 +75,19 @@ public final class JmxPort {
     } catch (Exception e) {
       throw new IllegalStateException("failed to initialize jmx port", e);
     }
+  }
+
+  public static void main(String[] args) throws Exception {
+    if (args.length < 2) {
+      System.err.println("Usage: jmxport <hostname> <port>");
+      System.exit(1);
+    }
+
+    final String hostname = args[0];
+    final int port = Integer.parseInt(args[1]);
+    configure(hostname, port);
+
+    System.out.println("Press any key to exit...");
+    System.in.read();
   }
 }
