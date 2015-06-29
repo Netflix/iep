@@ -133,7 +133,7 @@ object MainBuild extends Build {
       Dependencies.guiceCore,
       Dependencies.karyonAdmin,
       Dependencies.rxnettyCore,
-      Dependencies.rxnettyCtxts,
+      //Dependencies.rxnettyCtxts,
       Dependencies.slf4jApi
     ))
 
@@ -144,9 +144,10 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= Seq(
       Dependencies.guiceCore,
       Dependencies.rxnettyCore,
-      Dependencies.rxnettyCtxts,
+      //Dependencies.rxnettyCtxts,
       Dependencies.rxnettySpectator,
-      Dependencies.slf4jApi
+      Dependencies.slf4jApi,
+      Dependencies.slf4jSimple % "test"
     ))
 
   lazy val `iep-nflxenv` = project
@@ -175,7 +176,7 @@ object MainBuild extends Build {
       Dependencies.jzlib,
       Dependencies.rxjava,
       Dependencies.rxnettyCore,
-      Dependencies.rxnettyCtxts,
+      //Dependencies.rxnettyCtxts,
       Dependencies.spectatorApi,
       Dependencies.spectatorSandbox,
       Dependencies.slf4jApi,

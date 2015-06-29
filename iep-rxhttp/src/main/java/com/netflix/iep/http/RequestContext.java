@@ -26,7 +26,7 @@ final class RequestContext {
 
   private final RxHttp rxHttp;
   private final HttpLogEntry entry;
-  private final HttpClientRequest<ByteBuf> req;
+  private final HttpRequest req;
   private final ClientConfig config;
   private final Server server;
 
@@ -34,7 +34,7 @@ final class RequestContext {
   RequestContext(
       RxHttp rxHttp,
       HttpLogEntry entry,
-      HttpClientRequest<ByteBuf> req,
+      HttpRequest req,
       ClientConfig config,
       Server server) {
     this.rxHttp = rxHttp;
@@ -55,7 +55,7 @@ final class RequestContext {
   }
 
   /** Return the RxNetty request object. */
-  HttpClientRequest<ByteBuf> request() {
+  HttpRequest request() {
     return req;
   }
 
@@ -70,7 +70,7 @@ final class RequestContext {
   }
 
   /** Return a new context with the specified request. */
-  RequestContext withRequest(HttpClientRequest<ByteBuf> r) {
+  RequestContext withRequest(HttpRequest r) {
     return new RequestContext(rxHttp, entry, r, config, server);
   }
 

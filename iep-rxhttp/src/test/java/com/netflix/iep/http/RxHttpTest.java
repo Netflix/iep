@@ -648,7 +648,7 @@ public class RxHttpTest {
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
-    rxHttp.submit(HttpClientRequest.<ByteBuf>create(HttpMethod.HEAD, uri("/empty").toString()))
+    rxHttp.submit(HttpRequest.create(HttpMethod.HEAD, uri("/empty").toString()))
         .toBlocking().toFuture().get();
     assertEquals(expected, statusCounts);
   }
@@ -659,7 +659,7 @@ public class RxHttpTest {
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
-    rxHttp.submit(HttpClientRequest.createPost(uri("/empty").toString()).withHeader("k", "v"), "{}")
+    rxHttp.submit(HttpRequest.createPost(uri("/empty").toString()).addHeader("k", "v"), "{}")
         .toBlocking().toFuture().get();
     assertEquals(expected, statusCounts);
   }
@@ -693,7 +693,7 @@ public class RxHttpTest {
 
   private int getPortForReq() throws Exception {
     HttpClientResponse<ByteBuf> r = rxHttp.get(uri("/empty")).toBlocking().toFuture().get();
-    return Integer.parseInt(r.getHeaders().get("X-Test-Port"));
+    return Integer.parseInt(r.getHeader("X-Test-Port"));
   }
 
   @Test

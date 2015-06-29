@@ -5,7 +5,7 @@ object Dependencies {
     val archaius   = "2.0.0-rc.18"
     val guice      = "4.0"
     val karyon     = "2.7.1"
-    val rxnetty    = "0.4.10"
+    val rxnetty    = "0.5.0-SNAPSHOT"
     val scala      = "2.11.6"
     val slf4j      = "1.7.12"
     val spectator  = "0.26.0"
@@ -36,7 +36,7 @@ object Dependencies {
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
   val rxjava          = "io.reactivex" % "rxjava" % "1.0.9"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
-  val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
+  //val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
   val scalaLibrary    = "org.scala-lang" % "scala-library" % scala
   val scalaLibraryAll = "org.scala-lang" % "scala-library-all" % scala
@@ -45,6 +45,7 @@ object Dependencies {
   val scalaReflect    = "org.scala-lang" % "scala-reflect" % scala
   val scalatest       = "org.scalatest" % "scalatest_2.11" % "2.2.1"
   val slf4jApi        = "org.slf4j" % "slf4j-api" % slf4j
+  val slf4jSimple     = "org.slf4j" % "slf4j-simple" % slf4j
   val spectatorApi    = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorSandbox= "com.netflix.spectator" % "spectator-ext-sandbox" % spectator
 }

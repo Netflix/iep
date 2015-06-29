@@ -19,9 +19,11 @@ import com.netflix.config.ConfigurationManager;
 import com.netflix.spectator.api.Spectator;
 import com.netflix.spectator.impl.Preconditions;
 import com.netflix.spectator.sandbox.HttpLogEntry;
-import io.reactivex.netty.client.CompositePoolLimitDeterminationStrategy;
-import io.reactivex.netty.client.MaxConnectionsBasedStrategy;
-import io.reactivex.netty.client.PoolLimitDeterminationStrategy;
+//import io.reactivex.netty.client.CompositePoolLimitDeterminationStrategy;
+//import io.reactivex.netty.client.MaxConnectionsBasedStrategy;
+//import io.reactivex.netty.client.PoolLimitDeterminationStrategy;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.logging.LogLevel;
 import org.apache.commons.configuration.Configuration;
 import rx.functions.Actions;
 import io.netty.buffer.ByteBuf;
@@ -30,13 +32,13 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.timeout.ReadTimeoutException;
-import io.reactivex.netty.RxNetty;
-import io.reactivex.netty.pipeline.PipelineConfigurator;
-import io.reactivex.netty.pipeline.PipelineConfiguratorComposite;
-import io.reactivex.netty.pipeline.ssl.DefaultFactories;
+//import io.reactivex.netty.RxNetty;
+//import io.reactivex.netty.pipeline.PipelineConfigurator;
+//import io.reactivex.netty.pipeline.PipelineConfiguratorComposite;
+//import io.reactivex.netty.pipeline.ssl.DefaultFactories;
 import io.reactivex.netty.protocol.http.client.HttpClient;
-import io.reactivex.netty.protocol.http.client.HttpClientBuilder;
-import io.reactivex.netty.protocol.http.client.HttpClientPipelineConfigurator;
+//import io.reactivex.netty.protocol.http.client.HttpClientBuilder;
+//import io.reactivex.netty.protocol.http.client.HttpClientPipelineConfigurator;
 import io.reactivex.netty.protocol.http.client.HttpClientRequest;
 import io.reactivex.netty.protocol.http.client.HttpClientResponse;
 import rx.Observable;
@@ -78,7 +80,7 @@ public final class RxHttp {
   private static final int MIN_COMPRESS_SIZE = 512;
   private static final AtomicInteger NEXT_THREAD_ID = new AtomicInteger(0);
 
-  private final ConcurrentHashMap<String, PoolLimitDeterminationStrategy> poolLimits = new ConcurrentHashMap<>();
+  //private final ConcurrentHashMap<String, PoolLimitDeterminationStrategy> poolLimits = new ConcurrentHashMap<>();
 
   private final ConcurrentHashMap<Server, HttpClient<ByteBuf, ByteBuf>> clients = new ConcurrentHashMap<>();
   private ScheduledExecutorService executor;
@@ -134,7 +136,8 @@ public final class RxHttp {
             if (s.isRegistered() && !serverRegistry.isStillAvailable(s)) {
               LOGGER.debug("cleaning up client for {}", s);
               clients.remove(s);
-              entry.getValue().shutdown();
+              // TODO: how to shutdown clients?
+              // entry.getValue().shutdown();
             }
           }
           LOGGER.debug("cleanup complete with {} clients remaining", clients.size());
@@ -156,14 +159,15 @@ public final class RxHttp {
     LOGGER.info("shutting down backround cleanup threads");
     executor.shutdown();
     for (HttpClient<ByteBuf, ByteBuf> client : clients.values()) {
-      client.shutdown();
+      // TODO: how to shutdown clients?
+      // client.shutdown();
     }
   }
 
-  private static HttpClientRequest<ByteBuf> compress(
-      ClientConfig clientCfg, HttpClientRequest<ByteBuf> req, byte[] entity) {
-    if (entity.length >= MIN_COMPRESS_SIZE && clientCfg.gzipEnabled()) {
-      req.withHeader(HttpHeaders.Names.CONTENT_ENCODING, HttpHeaders.Values.GZIP);
+  private static HttpRequest compress(
+      ClientConfig clientCfg, HttpRequest req, byte[] entity) {
+    /*if (entity.length >= MIN_COMPRESS_SIZE && clientCfg.gzipEnabled()) {
+      req.addHeader(HttpHeaders.Names.CONTENT_ENCODING, HttpHeaders.Values.GZIP);
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       try (GZIPOutputStream gzip = new GZIPOutputStream(baos)) {
         gzip.write(entity);
@@ -171,28 +175,32 @@ public final class RxHttp {
         // This isn't expected to occur
         throw new RuntimeException("failed to gzip request payload", e);
       }
-      req.withContent(baos.toByteArray());
+      return req
+          .addHeader(HttpHeaders.Names.CONTENT_ENCODING, HttpHeaders.Values.GZIP)
+          .writeStringContent();
+          //setContent(baos.toByteArray());
     } else {
       req.withContent(entity);
     }
+    return req;*/
     return req;
   }
 
   /** Create a log entry for an rxnetty request. */
-  public static HttpLogEntry create(HttpClientRequest<ByteBuf> req) {
+  public static HttpLogEntry create(HttpRequest req) {
     HttpLogEntry entry = new HttpLogEntry()
-        .withMethod(req.getMethod().name())
-        .withRequestUri(URI.create(req.getUri()))
-        .withRequestContentLength(req.getHeaders().getContentLength(-1));
+        .withMethod(req.method().name())
+        .withRequestUri(req.uri())
+        .withRequestContentLength(req.getContentLength());
 
-    for (Map.Entry<String, String> h : req.getHeaders().entries()) {
-      entry.withRequestHeader(h.getKey(), h.getValue());
+    for (HttpHeader h : req.headers()) {
+      entry.withRequestHeader(h.name().toString(), h.value().toString());
     }
 
     return entry;
   }
 
-  private static HttpLogEntry create(ClientConfig cfg, HttpClientRequest<ByteBuf> req) {
+  private static HttpLogEntry create(ClientConfig cfg, HttpRequest req) {
     return create(req)
         .withClientName(cfg.name())
         .withOriginalUri(cfg.originalUri())
@@ -205,11 +213,11 @@ public final class RxHttp {
     entry.mark("received-response")
         .withStatusCode(code)
         .withStatusReason(res.getStatus().reasonPhrase())
-        .withResponseContentLength(res.getHeaders().getContentLength(-1))
+        .withResponseContentLength(res.getContentLength(-1))
         .withCanRetry(canRetry);
 
-    for (Map.Entry<String, String> h : res.getHeaders().entries()) {
-      entry.withResponseHeader(h.getKey(), h.getValue());
+    for (String k : res.getHeaderNames()) {
+      entry.withResponseHeader(k, res.getHeader(k));
     }
   }
 
@@ -227,7 +235,7 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> get(String uri) {
-    return submit(HttpClientRequest.createGet(uri));
+    return submit(HttpRequest.createGet(uri));
   }
 
   /**
@@ -239,7 +247,7 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> get(URI uri) {
-    return submit(HttpClientRequest.createGet(uri.toString()));
+    return submit(HttpRequest.createGet(uri.toString()));
   }
 
   /**
@@ -263,8 +271,8 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> getJson(URI uri) {
-    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createGet(uri.toString())
-        .withHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
+    final HttpRequest req = HttpRequest.createGet(uri.toString())
+        .addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
     return submit(req);
   }
 
@@ -282,9 +290,9 @@ public final class RxHttp {
    */
   public Observable<HttpClientResponse<ByteBuf>>
   post(URI uri, String contentType, byte[] entity) {
-    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createPost(uri.toString())
-        .withHeader(HttpHeaders.Names.CONTENT_TYPE, contentType);
-    return submit(req, entity);
+    final HttpRequest req = HttpRequest.createPost(uri.toString())
+        .withContent(contentType, entity);
+    return submit(req);
   }
 
   /**
@@ -298,9 +306,9 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> postJson(URI uri, byte[] entity) {
-    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createPost(uri.toString())
-        .withHeader(HttpHeaders.Names.CONTENT_TYPE, APPLICATION_JSON)
-        .withHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
+    final HttpRequest req = HttpRequest.createPost(uri.toString())
+        .addHeader(HttpHeaders.Names.CONTENT_TYPE, APPLICATION_JSON)
+        .addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
     return submit(req, entity);
   }
 
@@ -347,8 +355,8 @@ public final class RxHttp {
    */
   public Observable<HttpClientResponse<ByteBuf>>
   put(URI uri, String contentType, byte[] entity) {
-    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createPut(uri.toString())
-        .withHeader(HttpHeaders.Names.CONTENT_TYPE, contentType);
+    final HttpRequest req = HttpRequest.createPut(uri.toString())
+        .addHeader(HttpHeaders.Names.CONTENT_TYPE, contentType);
     return submit(req, entity);
   }
 
@@ -363,9 +371,9 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> putJson(URI uri, byte[] entity) {
-    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createPut(uri.toString())
-        .withHeader(HttpHeaders.Names.CONTENT_TYPE, APPLICATION_JSON)
-        .withHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
+    final HttpRequest req = HttpRequest.createPut(uri.toString())
+        .addHeader(HttpHeaders.Names.CONTENT_TYPE, APPLICATION_JSON)
+        .addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
     return submit(req, entity);
   }
 
@@ -392,7 +400,7 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> delete(String uri) {
-    return submit(HttpClientRequest.createDelete(uri));
+    return submit(HttpRequest.createDelete(uri));
   }
 
   /**
@@ -404,7 +412,7 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> delete(URI uri) {
-    return submit(HttpClientRequest.createDelete(uri.toString()));
+    return submit(HttpRequest.createDelete(uri.toString()));
   }
 
   /**
@@ -428,8 +436,8 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>> deleteJson(URI uri) {
-    final HttpClientRequest<ByteBuf> req = HttpClientRequest.createDelete(uri.toString())
-        .withHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
+    final HttpRequest req = HttpRequest.createDelete(uri.toString())
+        .addHeader(HttpHeaders.Names.ACCEPT, APPLICATION_JSON);
     return submit(req);
   }
 
@@ -444,7 +452,7 @@ public final class RxHttp {
    * @return
    *     Observable with the response of the request.
    */
-  public Observable<HttpClientResponse<ByteBuf>> submit(HttpClientRequest<ByteBuf> req) {
+  public Observable<HttpClientResponse<ByteBuf>> submit(HttpRequest req) {
     return submit(req, (byte[]) null);
   }
 
@@ -462,7 +470,7 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>>
-  submit(HttpClientRequest<ByteBuf> req, String entity) {
+  submit(HttpRequest req, String entity) {
     return submit(req, (entity == null) ? null : getBytes(entity));
   }
 
@@ -480,13 +488,12 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   public Observable<HttpClientResponse<ByteBuf>>
-  submit(HttpClientRequest<ByteBuf> req, byte[] entity) {
-    final URI uri = URI.create(req.getUri());
-    final ClientConfig clientCfg = ClientConfig.fromUri(config, uri);
+  submit(HttpRequest req, byte[] entity) {
+    final ClientConfig clientCfg = ClientConfig.fromUri(config, req.uri());
     final List<Server> servers = getServers(clientCfg);
     final String reqUri = clientCfg.relativeUri();
-    final HttpClientRequest<ByteBuf> newReq = copy(req, reqUri);
-    final HttpClientRequest<ByteBuf> finalReq = (entity == null)
+    final HttpRequest newReq = req.withUri(reqUri);
+    final HttpRequest finalReq = (entity == null)
         ? newReq
         : compress(clientCfg, newReq, entity);
     return execute(clientCfg, servers, finalReq);
@@ -508,7 +515,7 @@ public final class RxHttp {
    *     Observable with the response of the request.
    */
   Observable<HttpClientResponse<ByteBuf>>
-  execute(final ClientConfig clientCfg, final List<Server> servers, final HttpClientRequest<ByteBuf> req) {
+  execute(final ClientConfig clientCfg, final List<Server> servers, final HttpRequest req) {
     final HttpLogEntry entry = create(clientCfg, req);
 
     if (servers.isEmpty()) {
@@ -517,7 +524,7 @@ public final class RxHttp {
     }
 
     if (clientCfg.gzipEnabled()) {
-      req.withHeader(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
+      req.addHeader(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
     }
 
     final RequestContext context = new RequestContext(this, entry, req, clientCfg, servers.get(0));
@@ -551,9 +558,16 @@ public final class RxHttp {
     entry.mark("start");
     entry.withRemoteAddr(context.server().host());
     entry.withRemotePort(context.server().port());
-    return client.submit(context.request())
+
+    final HttpRequest request = context.request();
+    HttpClientRequest<ByteBuf, ByteBuf> clientReq = client.createRequest(request.method(), request.uri().toString());
+    for (HttpHeader h : request.headers()) {
+      clientReq = clientReq.addHeader(h.name(), h.value());
+    }
+    return clientReq.writeContent(request.content())
         .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
-          @Override public void call(HttpClientResponse<ByteBuf> res) {
+          @Override
+          public void call(HttpClientResponse<ByteBuf> res) {
             update(entry, res);
             HttpLogEntry.logClientRequest(entry);
           }
@@ -573,7 +587,8 @@ public final class RxHttp {
       c = newClient(context);
       HttpClient<ByteBuf, ByteBuf> tmp = clients.putIfAbsent(context.server(), c);
       if (tmp != null) {
-        c.shutdown();
+        // TODO: how to shutdown a client?
+        // c.shutdown();
         c = tmp;
       }
     }
@@ -584,7 +599,22 @@ public final class RxHttp {
     final Server server = context.server();
     final ClientConfig clientCfg = context.config();
 
-    HttpClient.HttpClientConfig config = new HttpClient.HttpClientConfig.Builder()
+    // User agent?
+    // Client name?
+    // Connection pooling?
+    HttpClient<ByteBuf, ByteBuf> client = HttpClient.newClient(server.host(), server.port())
+        .readTimeOut(clientCfg.readTimeout(), TimeUnit.MILLISECONDS)
+        .channelOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, clientCfg.connectTimeout())
+        .enableWireLogging(LogLevel.DEBUG)
+        .pipelineConfigurator(new HttpDecompressionConfigurator());
+
+    if (server.isSecure()) {
+      client = client.unsafeSecure();
+    }
+
+    return client;
+    // TODO
+    /*HttpClient.HttpClientConfig config = new HttpClient.HttpClientConfig.Builder()
         .readTimeout(clientCfg.readTimeout(), TimeUnit.MILLISECONDS)
         .userAgent(clientCfg.userAgent())
         .build();
@@ -615,10 +645,10 @@ public final class RxHttp {
       builder.withSslEngineFactory(DefaultFactories.trustAll());
     }
 
-    return builder.build();
+    return builder.build();*/
   }
 
-  private PoolLimitDeterminationStrategy getPoolLimitStrategy(ClientConfig clientCfg) {
+  /*private PoolLimitDeterminationStrategy getPoolLimitStrategy(ClientConfig clientCfg) {
     PoolLimitDeterminationStrategy totalStrategy = poolLimits.get(clientCfg.name());
     if (totalStrategy == null) {
       totalStrategy = new MaxConnectionsBasedStrategy(clientCfg.maxConnectionsTotal());
@@ -630,7 +660,7 @@ public final class RxHttp {
     return new CompositePoolLimitDeterminationStrategy(
         new MaxConnectionsBasedStrategy(clientCfg.maxConnectionsPerHost()),
         totalStrategy);
-  }
+  }*/
 
   private List<Server> getServers(ClientConfig clientCfg) {
     List<Server> servers;
@@ -653,19 +683,6 @@ public final class RxHttp {
     return servers;
   }
 
-  /**
-   * Create a copy of a request object. It can only copy the method, uri, and headers so should
-   * not be used for any request with a content already specified.
-   */
-  static HttpClientRequest<ByteBuf> copy(HttpClientRequest<ByteBuf> req, String uri) {
-    HttpClientRequest<ByteBuf> newReq = HttpClientRequest.create(
-        req.getHttpVersion(), req.getMethod(), uri);
-    for (Map.Entry<String, String> h : req.getHeaders().entries()) {
-      newReq.withHeader(h.getKey(), h.getValue());
-    }
-    return newReq;
-  }
-
   /** We expect UTF-8 to always be supported. */
   private static byte[] getBytes(String s) {
     try {
@@ -684,8 +701,8 @@ public final class RxHttp {
     return (uri.getPort() <= 0) ? defaultPort : uri.getPort();
   }
 
-  private static class HttpDecompressionConfigurator implements PipelineConfigurator<ByteBuf, ByteBuf> {
-    @Override public void configureNewPipeline(ChannelPipeline pipeline) {
+  private static class HttpDecompressionConfigurator implements Action1<ChannelPipeline> {
+    @Override public void call(ChannelPipeline pipeline) {
       pipeline.addLast("deflater", new HttpContentDecompressor());
     }
   }

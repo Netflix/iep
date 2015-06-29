@@ -54,9 +54,10 @@ class StatusRetryHandler implements
 
   private static long getRetryDelay(HttpClientResponse<ByteBuf> res, long dflt) {
     try {
-      if (res.getHeaders().contains(HttpHeaders.Names.RETRY_AFTER)) {
+      String retryAfter = res.getHeader(HttpHeaders.Names.RETRY_AFTER);
+      if (retryAfter != null) {
         // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.37
-        int delaySeconds = res.getHeaders().getIntHeader(HttpHeaders.Names.RETRY_AFTER);
+        int delaySeconds = Integer.parseInt(retryAfter);
         return TimeUnit.MILLISECONDS.convert(delaySeconds, TimeUnit.SECONDS);
       }
     } catch (NumberFormatException e) {
