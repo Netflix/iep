@@ -47,7 +47,6 @@ public final class RxNettyModule extends AbstractModule {
 
   @Override protected void configure() {
     RxNetty.useMetricListenersFactory(new SpectatorEventsListenerFactory());
-    bind(RxHttp.class).asEagerSingleton();
   }
 
   @Provides
