@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.discovery.DiscoveryClient;
+import com.netflix.iep.http.BasicServerRegistry;
 import com.netflix.iep.http.EurekaServerRegistry;
 import com.netflix.iep.http.RxHttp;
 import com.netflix.iep.http.ServerRegistry;
@@ -37,23 +38,31 @@ public final class RxNettyModule extends AbstractModule {
     @Inject(optional = true)
     Configuration configuration;
 
+    @Inject(optional = true)
+    DiscoveryClient discovery;
+
     OptionalInjections() {
     }
 
     Configuration getConfig() {
       return (configuration == null) ? ConfigurationManager.getConfigInstance() : configuration;
     }
+
+    ServerRegistry getServerRegistry() {
+      return (discovery == null)
+          ? new BasicServerRegistry()
+          : new EurekaServerRegistry(discovery);
+    }
   }
 
   @Override protected void configure() {
     RxNetty.useMetricListenersFactory(new SpectatorEventsListenerFactory());
-    bind(RxHttp.class).asEagerSingleton();
   }
 
   @Provides
   @Singleton
-  private ServerRegistry providesServerRegistry(DiscoveryClient client) {
-    return new EurekaServerRegistry(client);
+  private ServerRegistry providesServerRegistry(OptionalInjections opts) {
+    return opts.getServerRegistry();
   }
 
   @Provides
