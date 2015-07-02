@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.0.0-rc.18"
+    val archaius   = "2.0.0-rc.21"
     val guice      = "4.0"
     val karyon     = "2.7.1"
     val rxnetty    = "0.4.10"
