@@ -43,11 +43,19 @@ public final class KaryonModule extends AbstractModule {
     @Inject(optional = true)
     private Configuration config;
 
-    Configuration getConfig() {
-      if (config == null) {
-        config = ConfigurationManager.getConfigInstance();
+    private boolean initialized = false;
+
+    void init() {
+      if (!initialized) {
+        if (config == null) {
+          config = ConfigurationManager.getConfigInstance();
+        }
         loadProperties("iep-karyon");
+        initialized = true;
       }
+    }
+
+    Configuration getConfig() {
       return config;
     }
 
@@ -69,13 +77,14 @@ public final class KaryonModule extends AbstractModule {
   private AdminContainerConfig providesAdminConfig(final OptionalInjections opts) {
     // Need to ensure that the admin config is not created until the v1 configuration object
     // is ready and the karyon properties have been loaded.
-    opts.getConfig();
+    opts.init();
     return new AdminConfigImpl();
   }
 
   @Provides
   @Singleton
   private GlobalModelContextOverride provideContextOverrides(final OptionalInjections opts) {
+    opts.init();
     return new GlobalModelContextOverride() {
       @Override public Properties overrideProperties(Properties properties) {
         Configuration config = opts.getConfig();
