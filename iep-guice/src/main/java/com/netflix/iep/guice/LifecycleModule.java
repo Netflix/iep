@@ -92,4 +92,12 @@ public class LifecycleModule extends AbstractModule {
     bindListener(Matchers.any(), new BindingListener(lifecycle));
     bind(PreDestroyList.class).toInstance(list);
   }
+
+  @Override public boolean equals(Object obj) {
+    return obj != null && getClass().equals(obj.getClass());
+  }
+
+  @Override public int hashCode() {
+    return getClass().hashCode();
+  }
 }

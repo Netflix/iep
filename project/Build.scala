@@ -126,6 +126,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-module-karyon` = project
+    .dependsOn(`iep-guice` % "test")
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(

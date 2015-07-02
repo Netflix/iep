@@ -17,8 +17,11 @@ package com.netflix.iep.karyon;
 
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.netflix.config.ConfigurationManager;
+import netflix.admin.AdminConfigImpl;
+import netflix.admin.AdminContainerConfig;
 import netflix.admin.GlobalModelContextOverride;
 import netflix.adminresources.resources.KaryonWebAdminModule;
 import org.apache.commons.configuration.Configuration;
@@ -26,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
@@ -35,11 +39,32 @@ public final class KaryonModule extends AbstractModule {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KaryonModule.class);
 
-  private void loadProperties(String name) {
-    try {
-      ConfigurationManager.loadCascadedPropertiesFromResources(name);
-    } catch (IOException e) {
-      LOGGER.warn("failed to load properties for '" + name + "'");
+  private static class OptionalInjections {
+    @Inject(optional = true)
+    private Configuration config;
+
+    private boolean initialized = false;
+
+    void init() {
+      if (!initialized) {
+        if (config == null) {
+          config = ConfigurationManager.getConfigInstance();
+        }
+        loadProperties("iep-karyon");
+        initialized = true;
+      }
+    }
+
+    Configuration getConfig() {
+      return config;
+    }
+
+    private void loadProperties(String name) {
+      try {
+        ConfigurationManager.loadCascadedPropertiesFromResources(name);
+      } catch (IOException e) {
+        LOGGER.warn("failed to load properties for '" + name + "'");
+      }
     }
   }
 
@@ -49,10 +74,20 @@ public final class KaryonModule extends AbstractModule {
 
   @Provides
   @Singleton
-  private GlobalModelContextOverride provideContextOverrides(final Configuration config) {
-    loadProperties("iep-karyon");
+  private AdminContainerConfig providesAdminConfig(final OptionalInjections opts) {
+    // Need to ensure that the admin config is not created until the v1 configuration object
+    // is ready and the karyon properties have been loaded.
+    opts.init();
+    return new AdminConfigImpl();
+  }
+
+  @Provides
+  @Singleton
+  private GlobalModelContextOverride provideContextOverrides(final OptionalInjections opts) {
+    opts.init();
     return new GlobalModelContextOverride() {
       @Override public Properties overrideProperties(Properties properties) {
+        Configuration config = opts.getConfig();
         Iterator<String> keys = config.getKeys();
         while (keys.hasNext()) {
           String k = keys.next();
