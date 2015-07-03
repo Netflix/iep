@@ -15,6 +15,8 @@
  */
 package com.netflix.iep.guice;
 
+import org.slf4j.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.lang.annotation.Annotation;
@@ -49,5 +51,29 @@ class AnnotationUtils {
     }
     Class<?> superCls = cls.getSuperclass();
     return (superCls != null) ? getAnnotatedMethod(superCls, anno) : null;
+  }
+
+  static void invokePostConstruct(Logger logger, Object injectee, PreDestroyList preDestroyList) {
+    try {
+      Method postConstruct = AnnotationUtils.getPostConstruct(injectee.getClass());
+      if (postConstruct != null) {
+        logger.debug("invoking @PostConstruct for {}", injectee.getClass().getName());
+        try {
+          postConstruct.setAccessible(true);
+          postConstruct.invoke(injectee);
+        } catch (Throwable t) {
+          logger.debug("error calling @PostConstruct (" + postConstruct + ")", t);
+          throw t;
+        }
+        logger.debug("completed @PostConstruct ({})", postConstruct);
+      }
+
+      Method preDestroy = AnnotationUtils.getPreDestroy(injectee.getClass());
+      if (preDestroy != null) {
+        preDestroyList.add(injectee);
+      }
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
   }
 }
