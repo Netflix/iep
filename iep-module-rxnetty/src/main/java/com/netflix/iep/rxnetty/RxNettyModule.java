@@ -29,6 +29,7 @@ import io.reactivex.netty.RxNetty;
 import io.reactivex.netty.spectator.SpectatorEventsListenerFactory;
 import org.apache.commons.configuration.Configuration;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 
@@ -36,6 +37,7 @@ public final class RxNettyModule extends AbstractModule {
 
   private static class OptionalInjections {
     @Inject(optional = true)
+    @Named("IEP")
     Configuration configuration;
 
     @Inject(optional = true)

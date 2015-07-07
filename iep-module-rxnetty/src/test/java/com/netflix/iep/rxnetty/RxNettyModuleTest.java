@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.http;
+package com.netflix.iep.rxnetty;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.netflix.iep.rxnetty.RxNettyModule;
+import com.netflix.iep.http.RxHttp;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

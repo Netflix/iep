@@ -20,6 +20,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.name.Names;
 import com.google.inject.util.Modules;
 import com.netflix.archaius.Config;
 import com.netflix.archaius.bridge.StaticAbstractConfiguration;
@@ -32,7 +33,6 @@ import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.inject.ApplicationLayer;
 import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.inject.RuntimeLayer;
-import com.netflix.config.ConfigurationManager;
 import org.apache.commons.configuration.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,6 +44,8 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class ArchaiusModuleTest {
+
+  private static final Key<Configuration> IEP_CONFIG = Key.get(Configuration.class, Names.named("IEP"));
 
   private Module overrideModule = new AbstractModule() {
     @Override protected void configure() {
@@ -80,7 +82,7 @@ public class ArchaiusModuleTest {
   @Test
   @Ignore
   public void getValues() {
-    Configuration cfg = Guice.createInjector(testModule).getInstance(Configuration.class);
+    Configuration cfg = Guice.createInjector(testModule).getInstance(IEP_CONFIG);
     Assert.assertEquals("b", cfg.getString("a"));
     Assert.assertEquals("dynamic", cfg.getString("c"));
   }
@@ -90,7 +92,7 @@ public class ArchaiusModuleTest {
     Key<SettableConfig> key = Key.get(SettableConfig.class, RuntimeLayer.class);
     Injector injector = Guice.createInjector(testModule);
     SettableConfig runtime = injector.getInstance(key);
-    Configuration root = injector.getInstance(Configuration.class);
+    Configuration root = injector.getInstance(IEP_CONFIG);
 
     Assert.assertEquals("b", root.getString("a"));
     Assert.assertEquals("dynamic", root.getString("c"));

@@ -16,7 +16,6 @@
 package com.netflix.iep.karyon;
 
 import com.netflix.iep.guice.GuiceHelper;
-import com.netflix.iep.guice.LifecycleModule;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
