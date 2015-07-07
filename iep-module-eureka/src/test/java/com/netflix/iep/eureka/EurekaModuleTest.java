@@ -15,33 +15,20 @@
  */
 package com.netflix.iep.eureka;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.netflix.config.ConfigurationManager;
 import com.netflix.discovery.DiscoveryClient;
-import org.apache.commons.configuration.Configuration;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.net.URI;
-
 @RunWith(JUnit4.class)
 public class EurekaModuleTest {
 
-  private static final Module archaius = new AbstractModule() {
-    @Override
-    protected void configure() {
-      bind(Configuration.class).toInstance(ConfigurationManager.getConfigInstance());
-    }
-  };
-
   @Test
   public void getClient() {
-    Injector injector = Guice.createInjector(archaius, new EurekaModule());
+    Injector injector = Guice.createInjector(new EurekaModule());
     DiscoveryClient client = injector.getInstance(DiscoveryClient.class);
     Assert.assertNotNull(client);
   }
