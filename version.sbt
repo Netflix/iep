@@ -1,1 +1,1 @@
-version := sys.env getOrElse ("TRAVIS_TAG", "x.y-SNAPSHOT")
+version in ThisBuild := sys.env getOrElse ("TRAVIS_TAG", "x.y-SNAPPSHOT")
