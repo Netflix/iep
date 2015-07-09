@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.eureka;
+package com.netflix.iep.rxnetty;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.netflix.discovery.DiscoveryClient;
+import com.netflix.iep.http.RxHttp;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class EurekaModuleTest {
+public class RxNettyModuleTest {
 
   @Test
-  public void getClient() {
-    Injector injector = Guice.createInjector(new EurekaModule());
-    DiscoveryClient client = injector.getInstance(DiscoveryClient.class);
-    Assert.assertNotNull(client);
+  public void module() {
+    Injector injector = Guice.createInjector(new RxNettyModule());
+    Assert.assertNotNull(injector.getInstance(RxHttp.class));
   }
-
 }

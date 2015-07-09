@@ -16,6 +16,7 @@
 package com.netflix.iep.eureka;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.Multibinder;
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -23,12 +24,14 @@ import com.netflix.appinfo.CloudInstanceConfig;
 import com.netflix.appinfo.EurekaInstanceConfig;
 import com.netflix.appinfo.HealthCheckHandler;
 import com.netflix.appinfo.InstanceInfo;
+import com.netflix.config.ConfigurationManager;
 import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.iep.service.Service;
 import org.apache.commons.configuration.Configuration;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 
@@ -36,6 +39,16 @@ import javax.inject.Singleton;
  * Setup eureka and create binding for DiscoveryClient.
  */
 public final class EurekaModule extends AbstractModule {
+
+  private static class OptionalInjections {
+    @Inject(optional = true)
+    @Named("IEP")
+    private Configuration config;
+
+    Configuration getConfig() {
+      return (config == null) ? ConfigurationManager.getConfigInstance() : config;
+    }
+  }
 
   @Override protected void configure() {
     // InstanceInfo
@@ -68,7 +81,7 @@ public final class EurekaModule extends AbstractModule {
   // Ensure that archaius configuration is setup prior to creating the eureka classes
   @Provides
   @Singleton
-  private EurekaInstanceConfig provideInstanceConfig(Configuration archaius) {
+  private EurekaInstanceConfig provideInstanceConfig(OptionalInjections opts) {
     return new CloudInstanceConfig("netflix.appinfo.");
   }
 

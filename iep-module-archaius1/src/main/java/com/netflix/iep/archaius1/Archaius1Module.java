@@ -21,6 +21,7 @@ import com.netflix.archaius.bridge.StaticArchaiusBridgeModule;
 import com.netflix.config.ConfigurationManager;
 import org.apache.commons.configuration.Configuration;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -35,6 +36,7 @@ public final class Archaius1Module extends AbstractModule {
 
   @Provides
   @Singleton
+  @Named("IEP")
   private Configuration providesConfiguration() {
     return ConfigurationManager.getConfigInstance();
   }

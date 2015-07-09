@@ -17,28 +17,60 @@ package com.netflix.iep.rxnetty;
 
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Provides;
+import com.netflix.config.ConfigurationManager;
 import com.netflix.discovery.DiscoveryClient;
+import com.netflix.iep.http.BasicServerRegistry;
 import com.netflix.iep.http.EurekaServerRegistry;
 import com.netflix.iep.http.RxHttp;
 import com.netflix.iep.http.ServerRegistry;
 import io.reactivex.netty.RxNetty;
 //import io.reactivex.netty.spectator.SpectatorEventsListenerFactory;
+import org.apache.commons.configuration.Configuration;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 
 public final class RxNettyModule extends AbstractModule {
 
+  private static class OptionalInjections {
+    @Inject(optional = true)
+    @Named("IEP")
+    Configuration configuration;
+
+    @Inject(optional = true)
+    DiscoveryClient discovery;
+
+    OptionalInjections() {
+    }
+
+    Configuration getConfig() {
+      return (configuration == null) ? ConfigurationManager.getConfigInstance() : configuration;
+    }
+
+    ServerRegistry getServerRegistry() {
+      return (discovery == null)
+          ? new BasicServerRegistry()
+          : new EurekaServerRegistry(discovery);
+    }
+  }
+
   @Override protected void configure() {
     //RxNetty.useMetricListenersFactory(new SpectatorEventsListenerFactory());
-    bind(RxHttp.class).asEagerSingleton();
   }
 
   @Provides
   @Singleton
-  private ServerRegistry providesServerRegistry(DiscoveryClient client) {
-    return new EurekaServerRegistry(client);
+  private ServerRegistry providesServerRegistry(OptionalInjections opts) {
+    return opts.getServerRegistry();
+  }
+
+  @Provides
+  @Singleton
+  private RxHttp providesRxHttp(OptionalInjections opts, ServerRegistry registry) {
+    return new RxHttp(opts.getConfig(), registry);
   }
 
   @Override public boolean equals(Object obj) {

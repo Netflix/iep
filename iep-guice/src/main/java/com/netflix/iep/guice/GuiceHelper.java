@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -56,6 +57,11 @@ public final class GuiceHelper {
   /** Start up using the list of modules from {@link #getModulesUsingServiceLoader()}. */
   public void start() throws Exception {
     start(getModulesUsingServiceLoader());
+  }
+
+  /** Start up with an arbitrary list of modules. */
+  public void start(Module... modules) throws Exception {
+    start(Arrays.asList(modules));
   }
 
   /** Start up with an arbitrary list of modules. */

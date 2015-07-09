@@ -13,24 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.eureka;
+package com.netflix.iep.karyon;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.netflix.discovery.DiscoveryClient;
+import com.netflix.iep.guice.GuiceHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 @RunWith(JUnit4.class)
-public class EurekaModuleTest {
+public class KaryonModuleTest {
 
   @Test
-  public void getClient() {
-    Injector injector = Guice.createInjector(new EurekaModule());
-    DiscoveryClient client = injector.getInstance(DiscoveryClient.class);
-    Assert.assertNotNull(client);
-  }
+  public void module() throws Exception {
+    GuiceHelper helper = new GuiceHelper();
+    helper.start(new KaryonModule());
 
+    try {
+      URL url = new URL("http://localhost:8077/v1/platform/base/env");
+      HttpURLConnection con = null;
+      try {
+        con = (HttpURLConnection) url.openConnection();
+        Assert.assertEquals(200, con.getResponseCode());
+      } finally {
+        if (con != null) {
+          con.disconnect();
+        }
+      }
+    } finally {
+      helper.shutdown();
+    }
+  }
 }
