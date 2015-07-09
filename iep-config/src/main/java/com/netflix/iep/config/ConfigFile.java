@@ -39,16 +39,16 @@ import com.google.common.io.Files;
 /**
  * Helpers for loading configuration properties with scoped blocks.
  *
- * {{{
+ * <pre>
  * netflix.atlas.foo=1
  *
  * # Defines a scope, properties after this will only be applied if the condition is true
- * # scope: region == "us-east-1" && stack == "main"
+ * # scope: region == "us-east-1" &amp;&amp; stack == "main"
  * netflix.atlas.foo=1
  *
  * Properties can be deleted by setting them to null
  * netflix.atlas.foo=null
- * }}}
+ * </pre>
  */
 public class ConfigFile {
 
