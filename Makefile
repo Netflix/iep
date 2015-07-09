@@ -9,6 +9,9 @@ IVY_CACHE_URL := https://www.dropbox.com/s/fkv9hscqskyxwgc/iep.tar.gz?dl=0
 build:
 	$(SBT) clean test checkLicenseHeaders
 
+publish:
+	./publishViaTravis.sh
+
 coverage:
 	$(SBT) clean coverage test coverageReport
 	$(SBT) coverageAggregate
