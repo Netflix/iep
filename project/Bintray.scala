@@ -11,7 +11,7 @@ object Bintray {
     bintrayRepository := "maven",
     bintrayPackage := "iep",
     bintrayOrganization := Some("netflixoss"),
-    //bintrayReleaseOnPublish := false,
+    bintrayReleaseOnPublish := false,
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
 
     storeBintrayCredentials := IO.write(bintrayCredentialsFile.value, api.template(sys env "bintrayUser", sys env "bintrayKey")),

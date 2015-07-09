@@ -9,7 +9,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_TAG" != "" ]; then
 
   sbt storeBintrayCredentials
 
-  sbt +publish
+  sbt +publish +bintrayRelease
   RETVAL=$?
 
   if [ $RETVAL -eq 0 ]; then
@@ -19,17 +19,17 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_TAG" != "" ]; then
     exit 1
   fi
 
-  # snyc to Sonatype
-  export SONA_USER=$sonatypeUsername
-  export SONA_PASS=$sonatypePassword
-  sbt +bintray::syncMavenCentral
-  RETVAL=$?
-  if [ $RETVAL -eq 0 ]; then
-    echo 'Completed sync to Sonatype!'
-  else
-    echo 'Sync to Sonatype failed.'
-    exit 2
-  fi
+#  # snyc to Sonatype
+#  export SONA_USER=$sonatypeUsername
+#  export SONA_PASS=$sonatypePassword
+#  sbt +bintray::syncMavenCentral
+#  RETVAL=$?
+#  if [ $RETVAL -eq 0 ]; then
+#    echo 'Completed sync to Sonatype!'
+#  else
+#    echo 'Sync to Sonatype failed.'
+#    exit 2
+#  fi
 
 else
   echo 'Bintray Upload => Not a tagged build so will not upload'
