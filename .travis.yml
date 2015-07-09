@@ -5,9 +5,7 @@ scala:
   - 2.11.5
 sudo: false
 script:
-  - "make get-ivy-cache build"
-after_success:
-- "make publish"
+  - "make get-ivy-cache build publish"
 env:
   global:
   - secure: "d5Pgq/vnpLRqE2feJ1xmLbKL2CPdPS3BTC7MMpviQlRz/ExrcsbY+32Ben+nJJnYIQnEQqlPEKabCNI9kDYuTZmWlQLzaR42D7OcUSptUipJbYSb5Om8YaKHDhjCM9k88/tU5rtojmYIq9648R26M973A8l5maR+gzBK80zT3xY="
