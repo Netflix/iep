@@ -16,8 +16,7 @@ build:
 	$(SBT) clean test checkLicenseHeaders
 
 publish:
-	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish #bintrayRelease
-	#./publishViaTravis.sh
+	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
 
 coverage:
 	$(SBT) clean coverage test coverageReport

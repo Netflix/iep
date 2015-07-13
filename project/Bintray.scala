@@ -14,7 +14,7 @@ object Bintray {
     bintrayReleaseOnPublish := false,
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
 
-    publishTo in ThisBuild := {
+    publishTo := {
       if (isSnapshot.value) Some("jfrog" at "https://oss.jfrog.org/oss-snapshot-local/")
       else publishTo.value
     },
