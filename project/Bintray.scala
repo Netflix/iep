@@ -5,6 +5,11 @@ import bintray.BintrayKeys._
 
 object Bintray {
 
+  lazy val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
+  lazy val (user, pass) = {
+    if (isPullRequest) ("dummyUser", "dummyPass")
+    else (sys env "bintrayUser", sys env "bintrayKey")
+  }
   lazy val storeBintrayCredentials = taskKey[Unit]("store bintray credentials")
 
   lazy val settings: Seq[Def.Setting[_]] = Seq(
@@ -13,6 +18,7 @@ object Bintray {
     bintrayOrganization := Some("netflixoss"),
     bintrayReleaseOnPublish := false,
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
+    credentials += Credentials("Artifactory Realm", "oss.jfrog.org", user, pass),
 
     publishTo := {
       if (isSnapshot.value) Some("jfrog" at "https://oss.jfrog.org/oss-snapshot-local/")
@@ -20,11 +26,6 @@ object Bintray {
     },
 
     storeBintrayCredentials := {
-      val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
-      val (user, pass) = {
-        if (isPullRequest) ("dummyUser", "dummyPass")
-        else (sys env "bintrayUser", sys env "bintrayKey")
-      }
       IO.write(bintrayCredentialsFile.value, api.template(user, pass))
     },
 
