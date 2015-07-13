@@ -7,7 +7,7 @@ IVY_CACHE_URL := https://www.dropbox.com/s/fkv9hscqskyxwgc/iep.tar.gz?dl=0
 .PHONY: build coverage license get-ivy-cache
 
 travis:
-	if [ "${TRAVIS_PULL_REQUEST}" == "false" ];
+	if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
 	  publish
 	else
 	  build
