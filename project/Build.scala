@@ -6,6 +6,7 @@ object MainBuild extends Build {
   lazy val baseSettings =
     sbtrelease.ReleasePlugin.releaseSettings ++
     Bintray.settings ++
+    GitVersion.settings ++
     net.virtualvoid.sbt.graph.Plugin.graphSettings ++
     scoverage.ScoverageSbtPlugin.projectSettings
 
