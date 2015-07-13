@@ -8,7 +8,7 @@ object Bintray {
   lazy val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
   lazy val (user, pass) = {
     if (isPullRequest) ("dummyUser", "dummyPass")
-    else (sys env "bintrayUser", sys env "bintrayKey")
+    else (sys.env.getOrElse("bintrayUser", "missingUser"), sys.env.getOrElse("bintrayKey", "missingKey"))
   }
   lazy val storeBintrayCredentials = taskKey[Unit]("store bintray credentials")
 
@@ -22,7 +22,7 @@ object Bintray {
 
     publishTo := {
       if (isSnapshot.value) Some("jfrog" at "https://oss.jfrog.org/oss-snapshot-local/")
-      else publishTo.value
+      else Some("bintray" at "https://api.bintray.com/maven/")
     },
 
     storeBintrayCredentials := {
