@@ -5,6 +5,7 @@ import bintray.BintrayKeys._
 
 object Bintray {
 
+  lazy val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
   lazy val (user, pass) = {
     if (isPullRequest) ("dummyUser", "dummyPass")
     else (sys env "bintrayUser", sys env "bintrayKey")
@@ -25,7 +26,6 @@ object Bintray {
     },
 
     storeBintrayCredentials := {
-      val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
       IO.write(bintrayCredentialsFile.value, api.template(user, pass))
     },
 
