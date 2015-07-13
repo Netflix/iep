@@ -14,7 +14,19 @@ object Bintray {
     bintrayReleaseOnPublish := false,
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
 
-    storeBintrayCredentials := IO.write(bintrayCredentialsFile.value, api.template(sys env "bintrayUser", sys env "bintrayKey")),
+    publishTo in ThisBuild := {
+      if (isSnapshot.value) Some("jfrog" at "https://oss.jfrog.org/oss-snapshot-local/")
+      else publishTo.value
+    },
+
+    storeBintrayCredentials := {
+      val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
+      val (user, pass) = {
+        if (isPullRequest) ("dummyUser", "dummyPass")
+        else (sys env "bintrayUser", sys env "bintrayKey")
+      }
+      IO.write(bintrayCredentialsFile.value, api.template(user, pass))
+    },
 
     pomExtra := (
       <url>https://github.com/netflix/iep/wiki</url>
