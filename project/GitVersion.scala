@@ -10,7 +10,7 @@ object GitVersion {
       val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
       git.gitDescribedVersion.value getOrElse "0.1-SNAPSHOT" match {
         case v if (isPullRequest) => s"0.0.0-PULLREQUEST"
-        case snapshotVersion(v, n, h) => s"${v}-${"%02d".format(n.toInt)}-${h}-SNAPSHOT"
+        case snapshotVersion(v, n, h) => s"${v}.${"%02d".format(n.toInt)}-${h}-SNAPSHOT"
         case releaseVersion(v) => v
         case v => v
       }
