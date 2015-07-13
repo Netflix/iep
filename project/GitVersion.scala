@@ -10,7 +10,7 @@ object GitVersion {
       git.gitDescribedVersion.value getOrElse "0.1-SNAPSHOT" match {
         case v if (isPullRequest) => s"0.0.0-PULLREQUEST"
         case descVersion(v, "0", _) => v
-        case descVersion(v, n, h) => s"$v-${"%02d".format(n.toInt)}-$h-SNAPSHOT"
+        case descVersion(v, n, h) => s"${v}-SNAPSHOT"//s"${v}-${"%02d".format(n.toInt)}-${h}-SNAPSHOT"
         case v => v
       }
     }
