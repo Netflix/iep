@@ -551,6 +551,7 @@ public class RxHttpTest {
 
   @Test
   public void gzipPost() throws Exception {
+    set(client + ".niws.client.ReadTimeout", "1000");
     int code = 200;
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
