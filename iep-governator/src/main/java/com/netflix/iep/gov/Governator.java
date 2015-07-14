@@ -17,26 +17,20 @@ package com.netflix.iep.gov;
 
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.netflix.config.ConfigurationManager;
-import com.netflix.config.AggregatedConfiguration;
-import com.netflix.config.util.ConfigurationUtils;
-import com.netflix.governator.guice.LifecycleInjector;
-import com.netflix.governator.lifecycle.LifecycleManager;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.AbstractConfiguration;
+import com.netflix.governator.LifecycleInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 import java.util.ServiceLoader;
-import java.util.Properties;
 
-import com.netflix.iep.config.ScopedPropertiesLoader;
-
-/** Required javadoc for public class. */
+/**
+ * Helper to simplify common usage of governator.
+ *
+ * @deprecated Use {@link com.netflix.governator.Governator} directly.
+ */
 public final class Governator {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Governator.class);
@@ -78,63 +72,33 @@ public final class Governator {
     return modules;
   }
 
-  /**
-   * Return a list of all modules based on the value of property {@code k}. The value should be
-   * a comma separated list of classes that implement {@link com.google.inject.Module}. If the
-   * property is not set or uses the value {@code service-loader} then it will add in all the
-   * modules using the java ServiceLoader utility. The value {@code none} can be used to indicate
-   * an empty list with no modules.
-   */
-  public static List<Module> getModulesUsingProp(String k) throws Exception {
-    List<Module> modules = new ArrayList<>();
-    List<Object> vs = ConfigurationManager.getConfigInstance()
-        .getList(k, Collections.<Object>singletonList(SERVICE_LOADER));
-    for (Object v : vs) {
-      String cname = (String) v;
-      if (SERVICE_LOADER.equals(cname)) {
-        modules.addAll(getModulesUsingServiceLoader());
-      } else if (!cname.isEmpty() && !NONE.equals(cname)) {
-        modules.add((Module) Class.forName(cname).newInstance());
-      }
-    }
-    return modules;
-  }
-
-  /** Get modules specified with the system prop {@code netflix.iep.gov.modules}. */
-  public static List<Module> getModules() throws Exception {
-    return getModulesUsingProp("netflix.iep.gov.modules");
-  }
-
   private Governator() {
   }
 
-  private Injector injector;
+  private LifecycleInjector injector;
 
   /** Return the injector used with the governator lifecycle. */
   public Injector getInjector() {
     return injector;
   }
 
-  /** Start up governator using the list of modules from {@link #getModules()}. */
+  /** Start up governator using the list of modules from {@link #getModulesUsingServiceLoader()}. */
   public void start() throws Exception {
-    start(getModules());
+    start(getModulesUsingServiceLoader());
   }
 
   /** Start up governator with an arbitrary list of modules. */
-  public void start(Iterable<Module> modules) throws Exception {
-    injector = LifecycleInjector.builder()
-        .ignoringAllAutoBindClasses()
-        .withModules(modules)
-        .build()
-        .createInjector();
+  public void start(Collection<Module> modules) throws Exception {
+    injector = com.netflix.governator.Governator.createInjector(modules);
+  }
 
-    LifecycleManager lcMgr = injector.getInstance(LifecycleManager.class);
-    lcMgr.start();
+  /** Start up governator with an arbitrary list of modules. */
+  public void start(Module... modules) throws Exception {
+    injector = com.netflix.governator.Governator.createInjector(modules);
   }
 
   /** Shutdown governator. */
   public void shutdown() throws Exception {
-    LifecycleManager lcMgr = injector.getInstance(LifecycleManager.class);
-    lcMgr.close();
+    injector.shutdown();
   }
 }

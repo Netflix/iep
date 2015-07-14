@@ -25,7 +25,8 @@ object Bintray {
       if (isSnapshot.value)
         Some("OJO" at s"https://oss.jfrog.org/oss-snapshot-local;build.timestamp=${now}/")
       else
-        Some("bintray" at s"https://api.bintray.com/${bintrayOrganization.value.get}/${bintrayRepository.value}/")
+        publishTo in bintray value
+        //Some("bintray" at s"https://api.bintray.com/${bintrayOrganization.value.get}/${bintrayRepository.value}/")
     },
 
     storeBintrayCredentials := {

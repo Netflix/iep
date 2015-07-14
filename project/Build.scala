@@ -53,18 +53,11 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-governator` = project
-    .dependsOn(`iep-config`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.archaiusCore,
-      Dependencies.archaiusLegacy,
       Dependencies.governator,
-      Dependencies.guiceAssist,
       Dependencies.guiceCore,
-      Dependencies.guiceGrapher,
-      Dependencies.guiceMulti,
-      Dependencies.guiceServlet,
       Dependencies.slf4jApi
     ))
 
