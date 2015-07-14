@@ -1,5 +1,6 @@
 import sbt._
 import sbt.Keys._
+import bintray.BintrayPlugin._
 import bintray.BintrayCredentials.api
 import bintray.BintrayKeys._
 
@@ -13,7 +14,7 @@ object Bintray {
   }
   lazy val storeBintrayCredentials = taskKey[Unit]("store bintray credentials")
 
-  lazy val settings: Seq[Def.Setting[_]] = Seq(
+  lazy val settings: Seq[Def.Setting[_]] = buildPublishSettings ++ Seq(
     bintrayRepository := "maven",
     bintrayPackage := "iep",
     bintrayOrganization := Some("netflixoss"),
