@@ -5,6 +5,7 @@ import bintray.BintrayKeys._
 
 object Bintray {
 
+  lazy val now = System.currentTimeMillis
   lazy val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
   lazy val (user, pass) = {
     if (isPullRequest) ("dummyUser", "dummyPass")
@@ -21,8 +22,10 @@ object Bintray {
     credentials += Credentials("Artifactory Realm", "oss.jfrog.org", user, pass),
 
     publishTo := {
-      if (isSnapshot.value) Some("jfrog" at "https://oss.jfrog.org/oss-snapshot-local/")
-      else Some("bintray" at "https://api.bintray.com/maven/")
+      if (isSnapshot.value)
+        Some("OJO" at s"https://oss.jfrog.org/oss-snapshot-local;timestamp=${now}/")
+      else
+        Some("bintray" at "https://api.bintray.com/maven/netflixoss/maven/")
     },
 
     storeBintrayCredentials := {
@@ -31,13 +34,6 @@ object Bintray {
 
     pomExtra := (
       <url>https://github.com/netflix/iep/wiki</url>
-      <licenses>
-        <license>
-          <name>The Apache Software License, Version 2.0</name>
-          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-          <distribution>repo</distribution>
-        </license>
-      </licenses>
       <scm>
         <url>git@github.com:netflix/iep.git</url>
         <connection>scm:git:git@github.com:netflix/iep.git</connection>
