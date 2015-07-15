@@ -37,9 +37,5 @@ license:
 
 get-ivy-cache:
 	stty cols 5000
-	$(SBT) --version
-	ls -l /etc/sbt/sbtopts
-	cat /etc/sbt/sbtopts
-	env
 	curl -L $(IVY_CACHE_URL) -o $(HOME)/ivy.tar.gz
 	tar -C $(HOME) -xzf $(HOME)/ivy.tar.gz
