@@ -18,15 +18,15 @@ endif
 
 build:
 	echo "Starting build"
-	$(SBT) clean test checkLicenseHeaders
+	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders
 
 publish:
 	echo "Starting publish"
-	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish
+	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders storeBintrayCredentials publish
 
 release:
 	echo "Starting release"
-	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
+	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
 
 coverage:
 	$(SBT) clean coverage test coverageReport
