@@ -37,6 +37,7 @@ license:
 
 get-ivy-cache:
 	stty cols 5000
-	$(SBT) --version
+	which java
+	#$(SBT) --version
 	curl -L $(IVY_CACHE_URL) -o $(HOME)/ivy.tar.gz
 	tar -C $(HOME) -xzf $(HOME)/ivy.tar.gz
