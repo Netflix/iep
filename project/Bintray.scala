@@ -22,13 +22,13 @@ object Bintray {
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
     credentials += Credentials("Artifactory Realm", "oss.jfrog.org", user, pass),
 
-    publishTo := {
-      if (isSnapshot.value)
-        Some("OJO" at s"https://oss.jfrog.org/oss-snapshot-local;build.timestamp=${now}/")
-      else
-        publishTo in bintray value
-        //Some("bintray" at s"https://api.bintray.com/${bintrayOrganization.value.get}/${bintrayRepository.value}/")
-    },
+//    publishTo := {
+//      if (isSnapshot.value)
+//        Some("OJO" at s"https://oss.jfrog.org/oss-snapshot-local;build.timestamp=${now}/")
+//      else
+//        publishTo in bintray value
+//        //Some("bintray" at s"https://api.bintray.com/${bintrayOrganization.value.get}/${bintrayRepository.value}/")
+//    },
 
     storeBintrayCredentials := {
       IO.write(bintrayCredentialsFile.value, api.template(user, pass))
