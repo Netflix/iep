@@ -18,7 +18,6 @@ endif
 
 build:
 	echo "Starting build"
-	stty cols 5000
 	$(SBT) 'inspect tree clean' test checkLicenseHeaders
 
 publish:
@@ -37,5 +36,7 @@ license:
 	$(SBT) formatLicenseHeaders
 
 get-ivy-cache:
+	stty cols 5000
+	env
 	curl -L $(IVY_CACHE_URL) -o $(HOME)/ivy.tar.gz
 	tar -C $(HOME) -xzf $(HOME)/ivy.tar.gz
