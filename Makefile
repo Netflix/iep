@@ -18,15 +18,15 @@ endif
 
 build:
 	echo "Starting build"
-	$(SBT) 'inspect tree clean' test checkLicenseHeaders
+	$(SBT) clean test checkLicenseHeaders
 
 publish:
 	echo "Starting publish"
-	$(SBT) 'inspect tree clean' test checkLicenseHeaders storeBintrayCredentials publish
+	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish
 
 release:
 	echo "Starting release"
-	$(SBT) 'inspect tree clean' test checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
+	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
 
 coverage:
 	$(SBT) clean coverage test coverageReport
@@ -37,5 +37,6 @@ license:
 
 get-ivy-cache:
 	stty cols 5000
+	$(SBT) --version
 	curl -L $(IVY_CACHE_URL) -o $(HOME)/ivy.tar.gz
 	tar -C $(HOME) -xzf $(HOME)/ivy.tar.gz
