@@ -18,6 +18,7 @@ endif
 
 build:
 	echo "Starting build"
+	stty cols 5000
 	$(SBT) 'inspect tree clean' test checkLicenseHeaders
 
 publish:
