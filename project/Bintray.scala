@@ -14,7 +14,7 @@ object Bintray {
   }
   lazy val storeBintrayCredentials = taskKey[Unit]("store bintray credentials")
 
-  lazy val settings: Seq[Def.Setting[_]] = buildPublishSettings ++ Seq(
+  lazy val settings: Seq[Def.Setting[_]] = bintraySettings ++ Seq(
     bintrayRepository := "maven",
     bintrayPackage := "iep",
     bintrayOrganization := Some("netflixoss"),
