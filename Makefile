@@ -37,6 +37,7 @@ license:
 
 get-ivy-cache:
 	stty cols 5000
+	$(SBT) --version
 	ls -l /etc/sbt/sbtopts
 	cat /etc/sbt/sbtopts
 	env
