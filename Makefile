@@ -22,7 +22,7 @@ build:
 
 publish:
 	echo "Starting publish"
-	$(SBT) storeBintrayCredentials
+	#$(SBT) storeBintrayCredentials
 	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders publish
 
 release:
