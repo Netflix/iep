@@ -18,6 +18,7 @@ object GitVersion {
       val releaseVersion = """v?([0-9\.]+)""".r
       val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
       val branch = git.gitCurrentBranch.value
+println(s"BRANCH: ${branch}")
       git.gitDescribedVersion.value getOrElse "0.1-SNAPSHOT" match {
         case v if (isPullRequest) => s"0.0.0-PULLREQUEST"
         case snapshotVersion(v, n, h) => {
@@ -26,6 +27,7 @@ object GitVersion {
           branch match {
             case versionBranch(b, x) if (!v2.startsWith(b)) => {
               val newVersion = s"${b}${Option(x).map(_ => "0").getOrElse("")}"
+println(s"BRANCH_VERSION: ${newVersion}")
               s"${Version(newVersion).map(_.string).getOrElse(v2)}${suffix}"
             }
             case _ => s"${v2}${suffix}"
