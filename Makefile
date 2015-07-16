@@ -6,8 +6,28 @@ IVY_CACHE_URL := https://www.dropbox.com/s/fkv9hscqskyxwgc/iep.tar.gz?dl=0
 
 .PHONY: build coverage license get-ivy-cache
 
+ifeq (${TRAVIS_PULL_REQUEST},false)
+ifeq (${TRAVIS_TAG},)
+travis: get-ivy-cache publish
+else
+travis: get-ivy-cache release
+endif
+else
+travis: get-ivy-cache build
+endif
+
 build:
-	$(SBT) clean test checkLicenseHeaders
+	echo "Starting build"
+	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders
+
+publish:
+	echo "Starting publish"
+	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders storeBintrayCredentials publish
+
+release:
+	echo "Starting release"
+	$(SBT) storeBintrayCredentials
+	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders publish storeBintrayCredentials bintrayRelease
 
 coverage:
 	$(SBT) clean coverage test coverageReport
