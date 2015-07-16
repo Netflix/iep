@@ -35,7 +35,9 @@ object Dependencies {
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val nettyAll        = "io.netty" % "netty-transport" % netty
+  val nettyCodec      = "io.netty" % "netty-codec-http" % netty
+  val nettyHandler    = "io.netty" % "netty-handler" % netty
+  val nettyTransport  = "io.netty" % "netty-transport-native-epoll" % netty
   val rxjava          = "io.reactivex" % "rxjava" % "1.0.9"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   //val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty

@@ -134,7 +134,9 @@ object MainBuild extends Build {
       Dependencies.archaiusLegacy,
       Dependencies.guiceCore,
       Dependencies.karyonAdmin,
-      Dependencies.nettyAll,
+      Dependencies.nettyCodec,
+      Dependencies.nettyHandler,
+      Dependencies.nettyTransport,
       Dependencies.rxnettyCore,
       //Dependencies.rxnettyCtxts,
       Dependencies.slf4jApi
@@ -146,7 +148,9 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.guiceCore,
-      Dependencies.nettyAll,
+      Dependencies.nettyCodec,
+      Dependencies.nettyHandler,
+      Dependencies.nettyTransport,
       Dependencies.rxnettyCore,
       //Dependencies.rxnettyCtxts,
       Dependencies.rxnettySpectator,
@@ -179,7 +183,9 @@ object MainBuild extends Build {
       Dependencies.eureka,
       Dependencies.jzlib,
       Dependencies.rxjava,
-      Dependencies.nettyAll,
+      Dependencies.nettyCodec,
+      Dependencies.nettyHandler,
+      Dependencies.nettyTransport,
       Dependencies.rxnettyCore,
       //Dependencies.rxnettyCtxts,
       Dependencies.spectatorApi,
