@@ -23,12 +23,12 @@ build:
 publish:
 	echo "Starting publish"
 	#$(SBT) storeBintrayCredentials
-	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders publish
+	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders storeBintrayCredentials publish
 
 release:
 	echo "Starting release"
 	$(SBT) storeBintrayCredentials
-	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders publish bintrayRelease
+	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders publish storeBintrayCredentials bintrayRelease
 
 coverage:
 	$(SBT) clean coverage test coverageReport
