@@ -101,12 +101,14 @@ public class RxHttpTest {
     server.createContext("/empty", new HttpHandler() {
       @Override
       public void handle(HttpExchange exchange) throws IOException {
+System.out.println("/empty: start " + statusCode.get());
         ignore(exchange.getRequestBody());
         int port = exchange.getRemoteAddress().getPort();
         exchange.getResponseHeaders().add("X-Test-Port", "" + port);
         statusCounts.incrementAndGet(statusCode.get());
         exchange.sendResponseHeaders(statusCode.get(), -1L);
         exchange.close();
+System.out.println("/empty: end " + statusCode.get());
       }
     });
 
