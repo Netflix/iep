@@ -260,7 +260,14 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, attempts);
 
-    rxHttp.get(uri("/empty")).toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    rxHttp.get(uri("/empty"))
+    .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+      @Override
+      public void call(HttpClientResponse<ByteBuf> res) {
+        res.discardContent();
+      }
+    })
+    .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
 
     assertEquals(expected, statusCounts);
   }
