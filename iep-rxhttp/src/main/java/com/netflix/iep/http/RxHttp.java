@@ -569,17 +569,19 @@ public final class RxHttp {
         .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
           @Override
           public void call(HttpClientResponse<ByteBuf> res) {
+System.out.println("doOnNext");
             update(entry, res);
             HttpLogEntry.logClientRequest(entry);
           }
         })
         .doOnError(new Action1<Throwable>() {
           @Override public void call(Throwable throwable) {
+System.out.println("doOnError - " + throwable);
             update(entry, throwable);
             HttpLogEntry.logClientRequest(entry);
           }
-        })
-        .doOnTerminate(Actions.empty());
+        });
+        //.doOnTerminate(Actions.empty());
   }
 
   private HttpClient<ByteBuf, ByteBuf> getClient(final RequestContext context) {
