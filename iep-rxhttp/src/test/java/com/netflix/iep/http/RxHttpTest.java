@@ -255,47 +255,53 @@ System.out.println(contentEnc);
     }
   }
 
+  private long delta(long t) {
+    return System.currentTimeMillis() - t;
+  }
+
   private void codeTest(final int code, final int attempts) throws Exception {
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, attempts);
 
+    long now = System.currentTimeMillis();
+
     rxHttp.get(uri("/empty"))
     .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
       @Override
       public void call(HttpClientResponse<ByteBuf> res) {
-System.out.println("next: codeTest(" + code + ", " + attempts + ")");
+System.out.println("next [" + delta(now) + "]: codeTest(" + code + ", " + attempts + ")");
         res.discardContent();
       }
     })
 .doOnError(new Action1<Throwable>() {
   @Override
   public void call(Throwable t) {
-    System.out.println("error: next: codeTest(" + code + ", " + attempts + ") -> " + t);
+    System.out.println("error [" + delta(now) + "]: codeTest(" + code + ", " + attempts + ") -> " + t);
   }
 })
 .doOnCompleted(new Action0() {
   @Override
   public void call() {
-    System.out.println("completed: codeTest(" + code + ", " + attempts + ")");
+    System.out.println("completed [" + delta(now) + "]: codeTest(" + code + ", " + attempts + ")");
   }
 })
 .doOnTerminate(new Action0() {
   @Override
   public void call() {
-    System.out.println("terminate: codeTest(" + code + ", " + attempts + ")");
+    System.out.println("terminate [" + delta(now) + "]: codeTest(" + code + ", " + attempts + ")");
   }
 })
 .doOnSubscribe(new Action0() {
   @Override
   public void call() {
-    System.out.println("subscribe: codeTest(" + code + ", " + attempts + ")");
+    System.out.println("subscribe [" + delta(now) + "]: codeTest(" + code + ", " + attempts + ")");
   }
 })
 .doOnUnsubscribe(new Action0() {
   @Override
   public void call() {
-    System.out.println("unsubscribe: codeTest(" + code + ", " + attempts + ")");
+    System.out.println("unsubscribe [" + delta(now) + "]: codeTest(" + code + ", " + attempts + ")");
   }
 })
     .timeout(9, TimeUnit.SECONDS)
