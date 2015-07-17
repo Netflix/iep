@@ -264,7 +264,7 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, attempts);
 
-    long now = System.currentTimeMillis();
+    final long now = System.currentTimeMillis();
 
     rxHttp.get(uri("/empty"))
     .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
