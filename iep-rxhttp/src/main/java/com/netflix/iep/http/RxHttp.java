@@ -562,7 +562,7 @@ public final class RxHttp {
 
     final HttpRequest request = context.request();
     HttpClientRequest<ByteBuf, ByteBuf> clientReq = client.createRequest(request.method(), request.uri().toString());
-clientReq.enableWireLogging(LogLevel.DEBUG);
+clientReq.enableWireLogging(LogLevel.ERROR);
     for (HttpHeader h : request.headers()) {
       clientReq = clientReq.addHeader(h.name(), h.value());
     }
