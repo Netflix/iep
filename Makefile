@@ -18,7 +18,7 @@ endif
 
 build:
 	echo "Starting build"
-	$(SBT) iep-rxhttp/test #'inspect tree clean' clean test checkLicenseHeaders
+	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders
 
 publish:
 	echo "Starting publish"

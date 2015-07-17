@@ -315,25 +315,20 @@ System.out.println(contentEnc);
     expected.addAndGet(302, 2);
     expected.addAndGet(code, 1);
 
-    final CountDownLatch latch = new CountDownLatch(1);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    rxHttp.get(uri("/relativeRedirect")).subscribe(
-        Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            latch.countDown();
-            throwable.set(t);
-          }
-        },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
+    try {
+      rxHttp.get(uri("/relativeRedirect"))
+      .doOnError(new Action1<Throwable>() {
+        @Override public void call(Throwable t) {
+          throwable.set(t);
         }
-    );
+      })
+      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    }
+    catch (Throwable t) {}
 
-    latch.await();
     assertEquals(expected, statusCounts);
+    Assert.assertNull(throwable.get());
   }
 
   @Test
@@ -345,26 +340,20 @@ System.out.println(contentEnc);
     expected.incrementAndGet(code);
     expected.addAndGet(302, 3);
 
-    final CountDownLatch latch = new CountDownLatch(1);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    rxHttp.get(uri("/absoluteRedirect")).subscribe(
-        Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            throwable.set(t);
-            latch.countDown();
-          }
-        },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
+    try {
+      rxHttp.get(uri("/absoluteRedirect"))
+      .doOnError(new Action1<Throwable>() {
+        @Override public void call(Throwable t) {
+          throwable.set(t);
         }
-    );
+      })
+      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    }
+    catch (Throwable t) {}
 
-    latch.await();
-    Assert.assertNull(throwable.get());
     assertEquals(expected, statusCounts);
+    Assert.assertNull(throwable.get());
   }
 
   @Test
@@ -375,24 +364,18 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
 
-    final CountDownLatch latch = new CountDownLatch(1);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    rxHttp.get(uri("/notModified")).subscribe(
-        Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            latch.countDown();
-            throwable.set(t);
-          }
-        },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
+    try {
+      rxHttp.get(uri("/notModified"))
+      .doOnError(new Action1<Throwable>() {
+        @Override public void call(Throwable t) {
+          throwable.set(t);
         }
-    );
+      })
+      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    }
+    catch (Throwable t) {}
 
-    latch.await();
     assertEquals(expected, statusCounts);
     Assert.assertNull(throwable.get());
   }
@@ -405,24 +388,18 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
 
-    final CountDownLatch latch = new CountDownLatch(1);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    rxHttp.get(uri("/redirectNoLocation")).subscribe(
-        Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            latch.countDown();
-            throwable.set(t);
-          }
-        },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
+    try {
+      rxHttp.get(uri("/redirectNoLocation"))
+      .doOnError(new Action1<Throwable>() {
+        @Override public void call(Throwable t) {
+          throwable.set(t);
         }
-    );
+      })
+      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    }
+    catch (Throwable t) {}
 
-    latch.await();
     assertEquals(expected, statusCounts);
     Assert.assertNotNull(throwable.get());
   }
@@ -435,24 +412,18 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 3);
 
-    final CountDownLatch latch = new CountDownLatch(1);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    rxHttp.get(uri("/readTimeout")).subscribe(
-        Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            throwable.set(t);
-            latch.countDown();
-          }
-        },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
+    try {
+      rxHttp.get(uri("/readTimeout"))
+      .doOnError(new Action1<Throwable>() {
+        @Override public void call(Throwable t) {
+          throwable.set(t);
         }
-    );
+      })
+      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    }
+    catch (Throwable t) {}
 
-    latch.await();
     Assert.assertTrue(throwable.get() instanceof ReadTimeoutException);
     assertEquals(expected, statusCounts);
   }
@@ -466,24 +437,18 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
 
-    final CountDownLatch latch = new CountDownLatch(1);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    rxHttp.get(uri("/readTimeout")).subscribe(
-        Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            throwable.set(t);
-            latch.countDown();
-          }
-        },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
+    try {
+      rxHttp.get(uri("/readTimeout"))
+      .doOnError(new Action1<Throwable>() {
+        @Override public void call(Throwable t) {
+          throwable.set(t);
         }
-    );
+      })
+      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    }
+    catch (Throwable t) {}
 
-    latch.await();
     Assert.assertTrue(throwable.get() instanceof ReadTimeoutException);
     assertEquals(expected, statusCounts);
   }
@@ -499,26 +464,19 @@ System.out.println(contentEnc);
     int code = 200;
     statusCode.set(code);
 
-    final CountDownLatch latch = new CountDownLatch(1);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    rxHttp.get("niws://test/http://localhost:" + serverPort + "/empty").subscribe(
-        Actions.empty(),
-        new Action1<Throwable>() {
-          @Override
-          public void call(Throwable t) {
-            throwable.set(t);
-            latch.countDown();
-          }
-        },
-        new Action0() {
-          @Override
-          public void call() {
-            latch.countDown();
-          }
+    try {
+      rxHttp.get("niws://test/http://localhost:" + serverPort + "/empty")
+      .doOnError(new Action1<Throwable>() {
+        @Override
+        public void call(Throwable t) {
+          throwable.set(t);
         }
-    );
+      })
+      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    }
+    catch (Throwable t) {}
 
-    latch.await();
     Assert.assertTrue(throwable.get() instanceof ConnectException);
   }
 
