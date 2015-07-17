@@ -264,9 +264,29 @@ System.out.println(contentEnc);
     .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
       @Override
       public void call(HttpClientResponse<ByteBuf> res) {
+System.out.println("next: codeTest(" + code + ", " + attempts + ")");
         res.discardContent();
       }
     })
+.doOnError(new Action1<Throwable>() {
+  @Override
+  public void call(Throwable t) {
+    System.out.println("error: next: codeTest(" + code + ", " + attempts + ") -> " + t);
+  }
+})
+.doOnCompleted(new Action0() {
+  @Override
+  public void call() {
+    System.out.println("completed: codeTest(" + code + ", " + attempts + ")");
+  }
+})
+.doOnTerminate(new Action0() {
+  @Override
+  public void call() {
+    System.out.println("terminate: codeTest(" + code + ", " + attempts + ")");
+  }
+})
+    .timeout(9, TimeUnit.SECONDS)
     .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
 
     assertEquals(expected, statusCounts);
