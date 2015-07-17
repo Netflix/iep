@@ -156,7 +156,7 @@ public final class RxHttp {
    */
   @PreDestroy
   public void stop() {
-    LOGGER.info("shutting down backround cleanup threads");
+    LOGGER.info("shutting down background cleanup threads");
     executor.shutdown();
     for (HttpClient<ByteBuf, ByteBuf> client : clients.values()) {
       // TODO: how to shutdown clients?
@@ -166,7 +166,8 @@ public final class RxHttp {
 
   private static HttpRequest compress(
       ClientConfig clientCfg, HttpRequest req, byte[] entity) {
-    /*if (entity.length >= MIN_COMPRESS_SIZE && clientCfg.gzipEnabled()) {
+/**
+    if (entity.length >= MIN_COMPRESS_SIZE && clientCfg.gzipEnabled()) {
       req.addHeader(HttpHeaders.Names.CONTENT_ENCODING, HttpHeaders.Values.GZIP);
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       try (GZIPOutputStream gzip = new GZIPOutputStream(baos)) {
@@ -177,12 +178,12 @@ public final class RxHttp {
       }
       return req
           .addHeader(HttpHeaders.Names.CONTENT_ENCODING, HttpHeaders.Values.GZIP)
-          .writeStringContent();
-          //setContent(baos.toByteArray());
+          //.writeStringContent();
+          .setContent(baos.toByteArray());
     } else {
       req.withContent(entity);
     }
-    return req;*/
+*/
     return req;
   }
 

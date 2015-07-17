@@ -17,6 +17,7 @@ object MainBuild extends Build {
               crossPaths := false,
            sourcesInBase := false,
             fork in Test := true,
+                //logLevel := Level.Debug,
         autoScalaLibrary := false,
        externalResolvers := BuildSettings.resolvers,
      checkLicenseHeaders := License.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
@@ -134,6 +135,9 @@ object MainBuild extends Build {
       Dependencies.archaiusLegacy,
       Dependencies.guiceCore,
       Dependencies.karyonAdmin,
+      Dependencies.nettyCodec,
+      Dependencies.nettyHandler,
+      Dependencies.nettyTransport,
       Dependencies.rxnettyCore,
       //Dependencies.rxnettyCtxts,
       Dependencies.slf4jApi
@@ -145,6 +149,9 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.guiceCore,
+      Dependencies.nettyCodec,
+      Dependencies.nettyHandler,
+      Dependencies.nettyTransport,
       Dependencies.rxnettyCore,
       //Dependencies.rxnettyCtxts,
       Dependencies.rxnettySpectator,
@@ -177,6 +184,9 @@ object MainBuild extends Build {
       Dependencies.eureka,
       Dependencies.jzlib,
       Dependencies.rxjava,
+      Dependencies.nettyCodec,
+      Dependencies.nettyHandler,
+      Dependencies.nettyTransport,
       Dependencies.rxnettyCore,
       //Dependencies.rxnettyCtxts,
       Dependencies.spectatorApi,
