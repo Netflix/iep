@@ -17,6 +17,7 @@ object MainBuild extends Build {
               crossPaths := false,
            sourcesInBase := false,
             fork in Test := true,
+                logLevel := Level.Debug,
         autoScalaLibrary := false,
        externalResolvers := BuildSettings.resolvers,
      checkLicenseHeaders := License.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
