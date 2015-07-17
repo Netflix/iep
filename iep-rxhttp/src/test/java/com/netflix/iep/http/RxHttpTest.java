@@ -325,6 +325,12 @@ System.out.println(contentEnc);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     try {
       rxHttp.get(uri("/relativeRedirect"))
+      .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+        @Override
+        public void call(HttpClientResponse<ByteBuf> res) {
+          res.discardContent();
+        }
+      })
       .doOnError(new Action1<Throwable>() {
         @Override public void call(Throwable t) {
           throwable.set(t);
@@ -350,6 +356,12 @@ System.out.println(contentEnc);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     try {
       rxHttp.get(uri("/absoluteRedirect"))
+      .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+        @Override
+        public void call(HttpClientResponse<ByteBuf> res) {
+          res.discardContent();
+        }
+      })
       .doOnError(new Action1<Throwable>() {
         @Override public void call(Throwable t) {
           throwable.set(t);
@@ -374,6 +386,12 @@ System.out.println(contentEnc);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     try {
       rxHttp.get(uri("/notModified"))
+      .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+        @Override
+        public void call(HttpClientResponse<ByteBuf> res) {
+          res.discardContent();
+        }
+      })
       .doOnError(new Action1<Throwable>() {
         @Override public void call(Throwable t) {
           throwable.set(t);
@@ -398,6 +416,12 @@ System.out.println(contentEnc);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     try {
       rxHttp.get(uri("/redirectNoLocation"))
+      .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+        @Override
+        public void call(HttpClientResponse<ByteBuf> res) {
+          res.discardContent();
+        }
+      })
       .doOnError(new Action1<Throwable>() {
         @Override public void call(Throwable t) {
           throwable.set(t);
@@ -422,6 +446,12 @@ System.out.println(contentEnc);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     try {
       rxHttp.get(uri("/readTimeout"))
+      .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+        @Override
+        public void call(HttpClientResponse<ByteBuf> res) {
+          res.discardContent();
+        }
+      })
       .doOnError(new Action1<Throwable>() {
         @Override public void call(Throwable t) {
           throwable.set(t);
@@ -447,6 +477,12 @@ System.out.println(contentEnc);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     try {
       rxHttp.get(uri("/readTimeout"))
+      .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+        @Override
+        public void call(HttpClientResponse<ByteBuf> res) {
+          res.discardContent();
+        }
+      })
       .doOnError(new Action1<Throwable>() {
         @Override public void call(Throwable t) {
           throwable.set(t);
@@ -474,6 +510,12 @@ System.out.println(contentEnc);
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     try {
       rxHttp.get("niws://test/http://localhost:" + serverPort + "/empty")
+      .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+        @Override
+        public void call(HttpClientResponse<ByteBuf> res) {
+          res.discardContent();
+        }
+      })
       .doOnError(new Action1<Throwable>() {
         @Override
         public void call(Throwable t) {
@@ -507,6 +549,7 @@ System.out.println(contentEnc);
           @Override
           public void call(ByteBuf byteBuf) {
             builder.append(byteBuf.toString(Charset.defaultCharset()));
+byteBuf.release();
           }
         })
         .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
@@ -544,6 +587,7 @@ System.out.println(contentEnc);
           @Override
           public void call(ByteBuf byteBuf) {
             builder.append(byteBuf.toString(Charset.defaultCharset()));
+byteBuf.release();
           }
         })
         .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
@@ -560,7 +604,14 @@ System.out.println(contentEnc);
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
-    rxHttp.postJson(uri("/empty"), "{}").toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    rxHttp.postJson(uri("/empty"), "{}")
+    .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+      @Override
+      public void call(HttpClientResponse<ByteBuf> res) {
+        res.discardContent();
+      }
+    })
+    .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     assertEquals(expected, statusCounts);
   }
 
@@ -584,6 +635,7 @@ System.out.println(contentEnc);
           @Override
           public void call(ByteBuf byteBuf) {
             builder.append(byteBuf.toString(Charset.defaultCharset()));
+byteBuf.release();
           }
         })
         .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
@@ -598,7 +650,14 @@ System.out.println(contentEnc);
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
-    rxHttp.putJson(uri("/empty"), "{}").toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    rxHttp.putJson(uri("/empty"), "{}")
+    .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+      @Override
+      public void call(HttpClientResponse<ByteBuf> res) {
+        res.discardContent();
+      }
+    })
+    .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     assertEquals(expected, statusCounts);
   }
 
@@ -608,7 +667,14 @@ System.out.println(contentEnc);
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
-    rxHttp.delete(uri("/empty").toString()).toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    rxHttp.delete(uri("/empty").toString())
+    .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+      @Override
+      public void call(HttpClientResponse<ByteBuf> res) {
+        res.discardContent();
+      }
+    })
+    .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     assertEquals(expected, statusCounts);
   }
 
@@ -619,7 +685,13 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
     rxHttp.submit(HttpRequest.create(HttpMethod.HEAD, uri("/empty").toString()))
-        .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+      @Override
+      public void call(HttpClientResponse<ByteBuf> res) {
+        res.discardContent();
+      }
+    })
+    .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     assertEquals(expected, statusCounts);
   }
 
@@ -630,7 +702,13 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
     rxHttp.submit(HttpRequest.createPost(uri("/empty").toString()).addHeader("k", "v"), "{}")
-        .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+      @Override
+      public void call(HttpClientResponse<ByteBuf> res) {
+        res.discardContent();
+      }
+    })
+    .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     assertEquals(expected, statusCounts);
   }
 
@@ -662,7 +740,14 @@ System.out.println(contentEnc);
   }
 
   private int getPortForReq() throws Exception {
-    HttpClientResponse<ByteBuf> r = rxHttp.get(uri("/empty")).toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    HttpClientResponse<ByteBuf> r = rxHttp.get(uri("/empty"))
+    .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
+      @Override
+      public void call(HttpClientResponse<ByteBuf> res) {
+        res.discardContent();
+      }
+    })
+    .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     return Integer.parseInt(r.getHeader("X-Test-Port"));
   }
 
