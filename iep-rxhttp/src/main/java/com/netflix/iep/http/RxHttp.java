@@ -562,10 +562,12 @@ public final class RxHttp {
 
     final HttpRequest request = context.request();
     HttpClientRequest<ByteBuf, ByteBuf> clientReq = client.createRequest(request.method(), request.uri().toString());
+clientReq.enableWireLogging(LogLevel.DEBUG);
     for (HttpHeader h : request.headers()) {
       clientReq = clientReq.addHeader(h.name(), h.value());
     }
     return clientReq.writeContent(request.content())
+/**
         .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
           @Override
           public void call(HttpClientResponse<ByteBuf> res) {
@@ -581,6 +583,8 @@ System.out.println("doOnError - " + throwable);
             HttpLogEntry.logClientRequest(entry);
           }
         });
+*/
+;
         //.doOnTerminate(Actions.empty());
   }
 
