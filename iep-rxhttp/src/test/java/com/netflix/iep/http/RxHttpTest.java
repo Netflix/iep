@@ -538,13 +538,13 @@ System.out.println(contentEnc);
             return res.getContent();
           }
         })
-        .toBlocking()
-        .forEach(new Action1<ByteBuf>() {
+        .doOnNext(new Action1<ByteBuf>() {
           @Override
           public void call(ByteBuf byteBuf) {
             builder.append(byteBuf.toString(Charset.defaultCharset()));
           }
-        });
+        })
+        .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
 
     Assert.assertEquals("foo bar", builder.toString());
 
@@ -575,13 +575,13 @@ System.out.println(contentEnc);
             return res.getContent();
           }
         })
-        .toBlocking()
         .forEach(new Action1<ByteBuf>() {
           @Override
           public void call(ByteBuf byteBuf) {
             builder.append(byteBuf.toString(Charset.defaultCharset()));
           }
-        });
+        })
+        .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
 
     Assert.assertEquals(body, builder.toString());
 
@@ -595,7 +595,7 @@ System.out.println(contentEnc);
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
-    rxHttp.postJson(uri("/empty"), "{}").toBlocking().toFuture().get();
+    rxHttp.postJson(uri("/empty"), "{}").toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     assertEquals(expected, statusCounts);
   }
 
@@ -615,13 +615,13 @@ System.out.println(contentEnc);
             return res.getContent();
           }
         })
-        .toBlocking()
-        .forEach(new Action1<ByteBuf>() {
+        .doOnNext(new Action1<ByteBuf>() {
           @Override
           public void call(ByteBuf byteBuf) {
             builder.append(byteBuf.toString(Charset.defaultCharset()));
           }
-        });
+        })
+        .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
 
     assertEquals(expected, statusCounts);
     Assert.assertEquals("foo=bar&name=John+Doe&pct=%2042%25", builder.toString());
@@ -633,7 +633,7 @@ System.out.println(contentEnc);
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
-    rxHttp.putJson(uri("/empty"), "{}").toBlocking().toFuture().get();
+    rxHttp.putJson(uri("/empty"), "{}").toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     assertEquals(expected, statusCounts);
   }
 
@@ -643,7 +643,7 @@ System.out.println(contentEnc);
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
-    rxHttp.delete(uri("/empty").toString()).toBlocking().toFuture().get();
+    rxHttp.delete(uri("/empty").toString()).toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     assertEquals(expected, statusCounts);
   }
 
@@ -654,7 +654,7 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
     rxHttp.submit(HttpRequest.create(HttpMethod.HEAD, uri("/empty").toString()))
-        .toBlocking().toFuture().get();
+        .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     assertEquals(expected, statusCounts);
   }
 
@@ -665,7 +665,7 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
     rxHttp.submit(HttpRequest.createPost(uri("/empty").toString()).addHeader("k", "v"), "{}")
-        .toBlocking().toFuture().get();
+        .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     assertEquals(expected, statusCounts);
   }
 
@@ -697,7 +697,7 @@ System.out.println(contentEnc);
   }
 
   private int getPortForReq() throws Exception {
-    HttpClientResponse<ByteBuf> r = rxHttp.get(uri("/empty")).toBlocking().toFuture().get();
+    HttpClientResponse<ByteBuf> r = rxHttp.get(uri("/empty")).toBlocking().toFuture().get(10, TimeUnit.SECONDS);
     return Integer.parseInt(r.getHeader("X-Test-Port"));
   }
 
