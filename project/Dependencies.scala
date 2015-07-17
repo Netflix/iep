@@ -32,6 +32,10 @@ object Dependencies {
   val jodaTime        = "joda-time" % "joda-time" % "2.7"
   val karyonAdmin     = "com.netflix.karyon" % "karyon2-admin-web" % karyon
   val karyonCore      = "com.netflix.karyon" % "karyon2-core" % karyon
+  val log4jSlf4jImpl  = "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.1"
+  val log4jCore       = "org.apache.logging.log4j" % "log4j-core" % "2.1"
+  val log4jJul        = "org.apache.logging.log4j" % "log4j-jul" % "2.1"
+  val log4jJcl        = "org.apache.logging.log4j" % "log4j-jcl" % "2.1"
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"

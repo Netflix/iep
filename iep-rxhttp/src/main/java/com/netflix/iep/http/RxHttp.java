@@ -567,7 +567,6 @@ clientReq.enableWireLogging(LogLevel.DEBUG);
       clientReq = clientReq.addHeader(h.name(), h.value());
     }
     return clientReq.writeContent(request.content())
-/**
         .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
           @Override
           public void call(HttpClientResponse<ByteBuf> res) {
@@ -583,8 +582,6 @@ System.out.println("doOnError - " + throwable);
             HttpLogEntry.logClientRequest(entry);
           }
         });
-*/
-;
         //.doOnTerminate(Actions.empty());
   }
 
