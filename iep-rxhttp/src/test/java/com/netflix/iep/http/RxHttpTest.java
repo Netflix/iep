@@ -286,6 +286,18 @@ System.out.println("next: codeTest(" + code + ", " + attempts + ")");
     System.out.println("terminate: codeTest(" + code + ", " + attempts + ")");
   }
 })
+.doOnSubscribe(new Action0() {
+  @Override
+  public void call() {
+    System.out.println("subscribe: codeTest(" + code + ", " + attempts + ")");
+  }
+})
+.doOnUnsubscribe(new Action0() {
+  @Override
+  public void call() {
+    System.out.println("unsubscribe: codeTest(" + code + ", " + attempts + ")");
+  }
+})
     .timeout(9, TimeUnit.SECONDS)
     .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
 
