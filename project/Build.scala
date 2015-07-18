@@ -17,7 +17,7 @@ object MainBuild extends Build {
               crossPaths := false,
            sourcesInBase := false,
             fork in Test := true,
-                //logLevel := Level.Debug,
+                logLevel := Level.Debug,
         autoScalaLibrary := false,
        externalResolvers := BuildSettings.resolvers,
      checkLicenseHeaders := License.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
@@ -155,8 +155,8 @@ object MainBuild extends Build {
       Dependencies.rxnettyCore,
       //Dependencies.rxnettyCtxts,
       Dependencies.rxnettySpectator,
-      Dependencies.slf4jApi,
-      Dependencies.slf4jSimple % "test"
+      Dependencies.slf4jApi
+      //Dependencies.slf4jSimple % "test"
     ))
 
   lazy val `iep-nflxenv` = project
@@ -205,7 +205,12 @@ object MainBuild extends Build {
 
   lazy val commonDeps = Seq(
     Dependencies.junitInterface % "test",
-    Dependencies.scalatest % "test"
+    Dependencies.scalatest % "test",
+    Dependencies.slf4jSimple
+    //Dependencies.log4jSlf4jImpl % "test",
+    //Dependencies.log4jCore % "test",
+    //Dependencies.log4jJul % "test",
+    //Dependencies.log4jJcl % "test"
   )
 
   lazy val checkLicenseHeaders = taskKey[Unit]("Check the license headers for all source files.")
