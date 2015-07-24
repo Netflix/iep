@@ -17,7 +17,7 @@ object GitVersion {
       val snapshotVersion = """v?([0-9\.]+)-(\d+)-([0-9a-z]+)""".r
       val releaseVersion = """v?([0-9\.]+)""".r
       val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
-      val branch = git.gitCurrentBranch.value
+      val branch = GitKeys.gitReader.value.withGit(_.branches).headOption.getOrElse("unknown")
       git.gitDescribedVersion.value getOrElse "0.1-SNAPSHOT" match {
         case v if (isPullRequest) => s"0.0.0-PULLREQUEST"
         case snapshotVersion(v, n, h) => {
