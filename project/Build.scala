@@ -27,6 +27,7 @@ object MainBuild extends Build {
   lazy val root = project.in(file("."))
     .aggregate(
       `iep-config`,
+      `iep-eureka-testconfig`,
       `iep-governator`,
       `iep-guice`,
       `iep-launcher`,
@@ -53,6 +54,9 @@ object MainBuild extends Build {
       Dependencies.jodaTime,
       Dependencies.equalsVerifier % "test"
     ))
+
+  lazy val `iep-eureka-testconfig` = project
+    .settings(buildSettings: _*)
 
   lazy val `iep-governator` = project
     .settings(buildSettings: _*)
@@ -102,7 +106,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-module-eureka` = project
-    .dependsOn(`iep-service`)
+    .dependsOn(`iep-service`, `iep-eureka-testconfig` % "test")
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
@@ -134,7 +138,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-module-rxnetty` = project
-    .dependsOn(`iep-rxhttp`, `iep-module-eureka` % "test")
+    .dependsOn(`iep-rxhttp`, `iep-module-eureka` % "test", `iep-eureka-testconfig` % "test")
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
