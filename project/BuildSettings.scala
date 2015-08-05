@@ -8,6 +8,8 @@ object BuildSettings {
     "-source", "1.8",
     "-target", "1.8")
 
+  val javadocFlags = Seq("-Xdoclint:none")
+
   val compilerFlags = Seq(
     "-deprecation",
     "-unchecked",
