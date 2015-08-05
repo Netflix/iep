@@ -2,13 +2,13 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.0.0-rc.21"
+    val archaius   = "2.0.0-rc.28"
     val guice      = "4.0"
     val karyon     = "2.7.1"
     val rxnetty    = "0.4.11"
-    val scala      = "2.11.6"
+    val scala      = "2.11.7"
     val slf4j      = "1.7.12"
-    val spectator  = "0.26.0"
+    val spectator  = "0.27.0"
   }
 
   import Versions._
@@ -16,12 +16,12 @@ object Dependencies {
   val archaiusBridge  = "com.netflix.archaius" % "archaius2-archaius1-bridge" % archaius
   val archaiusCore    = "com.netflix.archaius" % "archaius2-core" % archaius
   val archaiusGuice   = "com.netflix.archaius" % "archaius2-guice" % archaius
-  val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.6.6"
+  val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.7.2"
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.2"
   val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.155"
-  val governator      = "com.netflix.governator" % "governator-core" % "1.7.6-rc.5"
+  val governator      = "com.netflix.governator" % "governator-core" % "1.8.1"
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
   val guiceGrapher    = "com.google.inject.extensions" % "guice-grapher" % guice
@@ -34,7 +34,7 @@ object Dependencies {
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava          = "io.reactivex" % "rxjava" % "1.0.9"
+  val rxjava          = "io.reactivex" % "rxjava" % "1.0.13"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
