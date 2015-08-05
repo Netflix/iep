@@ -13,6 +13,8 @@ object MainBuild extends Build {
   lazy val buildSettings = baseSettings ++ Seq(
             organization := BuildSettings.organization,
             scalaVersion := Dependencies.Versions.scala,
+           scalacOptions ++= BuildSettings.compilerFlags,
+            javacOptions ++= BuildSettings.javaCompilerFlags,
               crossPaths := false,
            sourcesInBase := false,
             fork in Test := true,

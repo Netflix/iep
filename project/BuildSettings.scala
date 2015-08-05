@@ -4,6 +4,18 @@ import sbt.Keys._
 object BuildSettings {
   val organization = "com.netflix.iep"
 
+  val javaCompilerFlags = Seq(
+    "-source", "1.8",
+    "-target", "1.8")
+
+  val compilerFlags = Seq(
+    "-deprecation",
+    "-unchecked",
+    "-Xexperimental",
+    "-Xlint:_,-infer-any",
+    "-feature",
+    "-target:jvm-1.8")
+
   val resolvers = Seq(
     Resolver.mavenLocal,
     Resolver.jcenterRepo,
