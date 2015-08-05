@@ -15,6 +15,7 @@ object MainBuild extends Build {
             scalaVersion := Dependencies.Versions.scala,
            scalacOptions ++= BuildSettings.compilerFlags,
             javacOptions ++= BuildSettings.javaCompilerFlags,
+     javacOptions in doc := BuildSettings.javadocFlags,
               crossPaths := false,
            sourcesInBase := false,
             fork in Test := true,
