@@ -21,6 +21,7 @@ import com.google.inject.util.Modules;
 import com.netflix.iep.service.Service;
 import com.netflix.karyon.admin.AbstractAdminModule;
 import com.netflix.karyon.admin.rest.AdminServerModule;
+import com.netflix.karyon.archaius.admin.ArchaiusAdminModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ public final class KaryonModule extends AbstractAdminModule {
 
   @Override protected void configure() {
     install(Modules.override(new AdminServerModule()).with(new CompatModule()));
+    install(new ArchaiusAdminModule());
 
     Multibinder<Service> serviceBinder =
         Multibinder.newSetBinder(binder(), Service.class);
