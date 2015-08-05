@@ -17,6 +17,7 @@ package com.netflix.iep.rxnetty;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.netflix.iep.eureka.EurekaModule;
 import com.netflix.iep.http.RxHttp;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class RxNettyModuleTest {
 
   @Test
   public void module() {
-    Injector injector = Guice.createInjector(new RxNettyModule());
+    Injector injector = Guice.createInjector(new RxNettyModule(), new EurekaModule());
     Assert.assertNotNull(injector.getInstance(RxHttp.class));
   }
 }

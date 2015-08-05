@@ -20,7 +20,7 @@ object Dependencies {
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.2"
-  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.1.155"
+  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.2.0"
   val governator      = "com.netflix.governator" % "governator-core" % "1.8.1"
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice

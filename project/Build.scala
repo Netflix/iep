@@ -132,7 +132,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-module-rxnetty` = project
-    .dependsOn(`iep-rxhttp`)
+    .dependsOn(`iep-rxhttp`, `iep-module-eureka` % "test")
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
