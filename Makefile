@@ -18,17 +18,18 @@ endif
 
 build:
 	echo "Starting build"
-	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders
+	$(SBT) clean test checkLicenseHeaders
 
 publish:
 	echo "Starting publish"
-	#$(SBT) storeBintrayCredentials
-	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders storeBintrayCredentials publish
+	$(SBT) clean test checkLicenseHeaders publish
 
 release:
+	# Storing the bintray credentials needs to be done as a separate command so they will
+	# be available early enough for the publish task.
 	echo "Starting release"
 	$(SBT) storeBintrayCredentials
-	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders publish storeBintrayCredentials bintrayRelease
+	$(SBT) clean test checkLicenseHeaders publish bintrayRelease
 
 coverage:
 	$(SBT) clean coverage test coverageReport
@@ -40,7 +41,5 @@ license:
 get-ivy-cache:
 	stty cols 5000
 	which java
-	#find ${WORKSPACE:-$HOME}/.sbt
-	#$(SBT) --version
 	curl -L $(IVY_CACHE_URL) -o $(HOME)/ivy.tar.gz
 	tar -C $(HOME) -xzf $(HOME)/ivy.tar.gz
