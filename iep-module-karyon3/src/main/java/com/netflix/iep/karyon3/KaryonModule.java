@@ -43,7 +43,6 @@ public final class KaryonModule extends AbstractAdminModule {
 
     // Resources from karyon3-core. Not using module because I don't necessarily want all
     // the core resources. In particular I'm not using the karyon healthcheck stuff.
-    bindAdminResource("env").to(EnvAdminResource.class);
     bindAdminResource("jars").to(JarsAdminResource.class);
 
     // These are needed in DIGraphResource
