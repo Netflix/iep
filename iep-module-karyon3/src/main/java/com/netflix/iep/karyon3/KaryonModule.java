@@ -16,10 +16,17 @@
 package com.netflix.iep.karyon3;
 
 
+import com.google.inject.grapher.NameFactory;
+import com.google.inject.grapher.ShortNameFactory;
+import com.google.inject.grapher.graphviz.PortIdFactory;
+import com.google.inject.grapher.graphviz.PortIdFactoryImpl;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.util.Modules;
 import com.netflix.iep.service.Service;
 import com.netflix.karyon.admin.AbstractAdminModule;
+import com.netflix.karyon.admin.DIGraphResource;
+import com.netflix.karyon.admin.EnvAdminResource;
+import com.netflix.karyon.admin.JarsAdminResource;
 import com.netflix.karyon.admin.rest.AdminServerModule;
 import com.netflix.karyon.archaius.admin.ArchaiusAdminModule;
 import org.slf4j.Logger;
@@ -33,6 +40,16 @@ public final class KaryonModule extends AbstractAdminModule {
   @Override protected void configure() {
     install(Modules.override(new AdminServerModule()).with(new CompatModule()));
     install(new ArchaiusAdminModule());
+
+    // Resources from karyon3-core. Not using module because I don't necessarily want all
+    // the core resources. In particular I'm not using the karyon healthcheck stuff.
+    bindAdminResource("env").to(EnvAdminResource.class);
+    bindAdminResource("jars").to(JarsAdminResource.class);
+
+    // These are needed in DIGraphResource
+    bind(NameFactory.class).to(ShortNameFactory.class);
+    bind(PortIdFactory.class).to(PortIdFactoryImpl.class);
+    bindAdminResource("di-graph").to(DIGraphResource.class);
 
     Multibinder<Service> serviceBinder =
         Multibinder.newSetBinder(binder(), Service.class);
