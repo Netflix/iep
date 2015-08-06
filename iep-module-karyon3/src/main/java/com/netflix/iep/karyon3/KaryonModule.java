@@ -25,7 +25,6 @@ import com.google.inject.util.Modules;
 import com.netflix.iep.service.Service;
 import com.netflix.karyon.admin.AbstractAdminModule;
 import com.netflix.karyon.admin.DIGraphResource;
-import com.netflix.karyon.admin.EnvAdminResource;
 import com.netflix.karyon.admin.JarsAdminResource;
 import com.netflix.karyon.admin.rest.AdminServerModule;
 import com.netflix.karyon.archaius.admin.ArchaiusAdminModule;
