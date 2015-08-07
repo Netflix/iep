@@ -2,18 +2,16 @@
 # build script.
 SBT := cat /dev/null | project/sbt
 
-IVY_CACHE_URL := https://www.dropbox.com/s/fkv9hscqskyxwgc/iep.tar.gz?dl=0
-
-.PHONY: build coverage license get-ivy-cache
+.PHONY: build coverage license
 
 ifeq (${TRAVIS_PULL_REQUEST},false)
 ifeq (${TRAVIS_TAG},)
-travis: get-ivy-cache publish
+travis: publish
 else
-travis: get-ivy-cache release
+travis: release
 endif
 else
-travis: get-ivy-cache build
+travis: build
 endif
 
 build:
@@ -41,8 +39,3 @@ coverage:
 license:
 	$(SBT) formatLicenseHeaders
 
-get-ivy-cache:
-	stty cols 5000
-	which java
-	curl -L $(IVY_CACHE_URL) -o $(HOME)/ivy.tar.gz
-	tar -C $(HOME) -xzf $(HOME)/ivy.tar.gz
