@@ -2,24 +2,14 @@
 # build script.
 SBT := cat /dev/null | project/sbt
 
-.PHONY: build coverage license
-
-ifeq (${TRAVIS_PULL_REQUEST},false)
-ifeq (${TRAVIS_TAG},)
-travis: publish
-else
-travis: release
-endif
-else
-travis: build
-endif
+.PHONY: build snapshot release coverage license
 
 build:
 	echo "Starting build"
 	$(SBT) clean test checkLicenseHeaders
 
-publish:
-	echo "Starting publish"
+snapshot:
+	echo "Starting snapshot build"
 	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish
 
 release:
@@ -28,7 +18,7 @@ release:
 	#
 	# The storeBintrayCredentials still needs to be on the subsequent command or we get:
 	# [error] (iep-service/*:bintrayEnsureCredentials) java.util.NoSuchElementException: None.get
-	echo "Starting release"
+	echo "Starting release build"
 	$(SBT) storeBintrayCredentials
 	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
 
