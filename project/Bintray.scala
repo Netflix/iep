@@ -8,10 +8,14 @@ object Bintray {
 
   lazy val now = System.currentTimeMillis
   lazy val isPullRequest = sys.env.getOrElse("TRAVIS_PULL_REQUEST", "false") != "false"
-  lazy val (user, pass) = {
-    if (isPullRequest) ("dummyUser", "dummyPass")
-    else (sys.env.getOrElse("bintrayUser", "missingUser"), sys.env.getOrElse("bintrayKey", "missingKey"))
+
+  private def get(k: String): String = {
+    if (isPullRequest) s"dummy$k" else sys.env.getOrElse(s"bintray$k", s"missing$k")
   }
+
+  lazy val user = get("User")
+  lazy val pass = get("Key")
+
   lazy val storeBintrayCredentials = taskKey[Unit]("store bintray credentials")
 
   lazy val settings: Seq[Def.Setting[_]] = bintraySettings ++ Seq(
@@ -27,7 +31,6 @@ object Bintray {
         Some("OJO" at s"https://oss.jfrog.org/oss-snapshot-local;build.timestamp=${now}/")
       else
         publishTo in bintray value
-        //Some("bintray" at s"https://api.bintray.com/${bintrayOrganization.value.get}/${bintrayRepository.value}/")
     },
 
     storeBintrayCredentials := {

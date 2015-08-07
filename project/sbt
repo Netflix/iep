@@ -1,4 +1,4 @@
-#!/bin/bash -v
+#!/bin/bash
 
 # This script is used to launch sbt on developer workstations.
 
@@ -12,8 +12,6 @@ java \
   -XX:+UseG1GC \
   -Xms2g \
   -Xmx2g \
-  -XX:PermSize=512m \
-  -XX:MaxPermSize=512m \
   -XX:ReservedCodeCacheSize=128m \
   -XX:+UseCodeCacheFlushing \
   -Dsbt.boot.directory=${WORKSPACE:-$HOME}/.sbt \
