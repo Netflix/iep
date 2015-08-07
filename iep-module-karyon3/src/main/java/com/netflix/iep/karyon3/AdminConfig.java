@@ -15,14 +15,11 @@
  */
 package com.netflix.iep.karyon3;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.netflix.archaius.guice.ArchaiusModule;
+import com.netflix.archaius.annotations.Configuration;
+import com.netflix.archaius.annotations.DefaultValue;
 
-public class Main {
-
-  public static void main(String[] args) {
-    System.setProperty("@serverId", "localhost");
-    Injector injector = Guice.createInjector(new KaryonModule(), new ArchaiusModule());
-  }
+@Configuration(prefix = "netflix.iep.karyon3")
+interface AdminConfig {
+  @DefaultValue("/resources")
+  String uiLocation();
 }
