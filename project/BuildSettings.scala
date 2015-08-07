@@ -21,7 +21,6 @@ object BuildSettings {
   val resolvers = Seq(
     Resolver.mavenLocal,
     Resolver.jcenterRepo,
-    DefaultMavenRepository,
     "jfrog" at "http://oss.jfrog.org/oss-snapshot-local",
     "rrd4j" at "https://raw.githubusercontent.com/brharrington/rrd4j/repo")
 
