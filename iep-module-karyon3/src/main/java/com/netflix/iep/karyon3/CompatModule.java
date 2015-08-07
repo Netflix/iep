@@ -17,10 +17,10 @@ package com.netflix.iep.karyon3;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.netflix.archaius.ConfigProxyFactory;
 import com.netflix.karyon.admin.AdminServer;
 import com.netflix.karyon.admin.HttpServerConfig;
 import com.netflix.karyon.admin.SimpleHttpServer;
-import com.netflix.karyon.admin.rest.AdminHttpHandler;
 import com.sun.net.httpserver.HttpHandler;
 
 import javax.inject.Singleton;
@@ -32,10 +32,16 @@ public class CompatModule extends AbstractModule {
 
   @Provides
   @Singleton
+  protected AdminConfig getAdminServerConfig(ConfigProxyFactory factory) {
+    return (AdminConfig) factory.newProxy(AdminConfig.class);
+  }
+
+  @Provides
+  @Singleton
   @AdminServer
   protected SimpleHttpServer getAdminServer(
       @AdminServer HttpServerConfig config,
-      AdminHttpHandler handler,
+      DefaultHandler handler,
       AppinfoHandler appinfoHandler,
       EnvHandler envHandler,
       JarHandler jarHandler,
