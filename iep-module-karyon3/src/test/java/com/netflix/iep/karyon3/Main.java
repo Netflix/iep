@@ -24,6 +24,5 @@ public class Main {
   public static void main(String[] args) {
     System.setProperty("@serverId", "localhost");
     Injector injector = Guice.createInjector(new KaryonModule(), new ArchaiusModule());
-
   }
 }

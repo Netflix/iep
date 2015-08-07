@@ -15,30 +15,39 @@
  */
 package com.netflix.iep.karyon3;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.karyon.admin.rest.AdminHttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
-import java.io.OutputStream;
 
 
-abstract class SimpleHandler implements HttpHandler {
+@Singleton
+class DefaultHandler implements HttpHandler {
 
-  private final ObjectMapper mapper;
+  private final AdminConfig config;
+  private final AdminHttpHandler karyon;
 
-  SimpleHandler(ObjectMapper mapper) {
-    this.mapper = mapper;
+  @Inject
+  DefaultHandler(AdminConfig config, AdminHttpHandler karyon) {
+    this.config = config;
+    this.karyon = karyon;
   }
 
   @Override
   public void handle(HttpExchange exchange) throws IOException {
-    byte[] json = mapper.writeValueAsString(get()).getBytes("UTF-8");
-    exchange.sendResponseHeaders(200, json.length);
-    try (OutputStream out = exchange.getResponseBody()) {
-      out.write(json);
+    String path = exchange.getRequestURI().getPath();
+    if (path == null
+        || path.equals("/")
+        || path.startsWith("/baseserver")
+        || path.startsWith("/admin")
+        || path.startsWith("/ui")) {
+      exchange.getResponseHeaders().add("Location", config.uiLocation());
+      exchange.sendResponseHeaders(302, -1);
+    } else {
+      karyon.handle(exchange);
     }
   }
-
-  protected abstract Object get();
 }
