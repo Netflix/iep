@@ -5,7 +5,7 @@ object Dependencies {
     val archaius   = "2.0.0-rc.28"
     val guice      = "4.0"
     val karyon     = "2.7.1"
-    val karyon3    = "3.0.1-rc.5"
+    val karyon3    = "3.0.1-rc.6"
     val rxnetty    = "0.4.11"
     val scala      = "2.11.7"
     val slf4j      = "1.7.12"
@@ -22,7 +22,7 @@ object Dependencies {
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.2"
   val eureka          = "com.netflix.eureka" % "eureka-client" % "1.2.0"
-  val governator      = "com.netflix.governator" % "governator-core" % "1.9.0"
+  val governator      = "com.netflix.governator" % "governator-core" % "1.9.3"
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
   val guiceGrapher    = "com.google.inject.extensions" % "guice-grapher" % guice
