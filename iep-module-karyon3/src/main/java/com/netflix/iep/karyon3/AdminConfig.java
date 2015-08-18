@@ -13,28 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.http;
+package com.netflix.iep.karyon3;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
+import com.netflix.archaius.annotations.Configuration;
+import com.netflix.archaius.annotations.DefaultValue;
 
-public final class HttpStatus {
-  private final int code;
-  private final String reason;
-
-  public HttpStatus(int code, String reason) {
-    this.code = code;
-    this.reason = reason;
-  }
-
-  public int code() {
-    return code;
-  }
-
-  public String reason() {
-    return reason;
-  }
-
-  public static HttpStatus create(HttpResponseStatus s) {
-    return new HttpStatus(s.code(), s.reasonPhrase());
-  }
+@Configuration(prefix = "netflix.iep.karyon3")
+interface AdminConfig {
+  @DefaultValue("/resources")
+  String uiLocation();
 }

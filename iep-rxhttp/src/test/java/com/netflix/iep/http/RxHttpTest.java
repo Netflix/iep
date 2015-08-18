@@ -233,7 +233,7 @@ System.out.println(contentEnc);
     set(client + ".niws.client.MaxAutoRetriesNextServer", "" + retries);
     set(client + ".niws.client.RetryDelay", "100");
     set(client + ".niws.client.ConnectTimeout", "1000");
-    set(client + ".niws.client.ReadTimeout", "30000");
+    //set(client + ".niws.client.ReadTimeout", "30000");
   }
 
   private URI uri(String path) {
@@ -406,7 +406,7 @@ System.out.println(contentEnc);
 
   @Test
   public void readTimeout() throws Exception {
-    set(client + ".niws.client.ReadTimeout", "100");
+    //set(client + ".niws.client.ReadTimeout", "100");
     int code = 200;
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
@@ -430,7 +430,7 @@ System.out.println(contentEnc);
 
   @Test
   public void readTimeoutDoesntRetry() throws Exception {
-    set(client + ".niws.client.ReadTimeout", "100");
+    //set(client + ".niws.client.ReadTimeout", "100");
     set(client + ".niws.client.RetryReadTimeouts", "false");
     int code = 200;
     statusCode.set(code);
@@ -513,6 +513,7 @@ System.out.println(contentEnc);
   TODO
   @Test
   public void gzipPost() throws Exception {
+    //set(client + ".niws.client.ReadTimeout", "1000");
     int code = 200;
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);

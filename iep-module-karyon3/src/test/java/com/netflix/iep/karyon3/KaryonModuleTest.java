@@ -13,23 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.rxnetty;
+package com.netflix.iep.karyon3;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.netflix.iep.eureka.EurekaModule;
-import com.netflix.iep.http.RxHttp;
+import com.netflix.archaius.guice.ArchaiusModule;
+import com.netflix.iep.guice.GuiceHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 @RunWith(JUnit4.class)
-public class RxNettyModuleTest {
+public class KaryonModuleTest {
 
   @Test
-  public void module() {
-    Injector injector = Guice.createInjector(new RxNettyModule(), new EurekaModule());
-    Assert.assertNotNull(injector.getInstance(RxHttp.class));
+  public void module() throws Exception {
+    GuiceHelper helper = new GuiceHelper();
+    helper.start(new KaryonModule(), new ArchaiusModule());
+
+    try {
+      URL url = new URL("http://localhost:8077/v1/platform/base/env");
+      HttpURLConnection con = null;
+      try {
+        con = (HttpURLConnection) url.openConnection();
+        Assert.assertEquals(200, con.getResponseCode());
+      } finally {
+        if (con != null) {
+          con.disconnect();
+        }
+      }
+    } finally {
+      helper.shutdown();
+    }
   }
 }

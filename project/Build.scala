@@ -1,6 +1,5 @@
 import sbt._
 import sbt.Keys._
-import com.typesafe.sbt.pgp.PgpKeys._
 
 object MainBuild extends Build {
 
@@ -14,6 +13,9 @@ object MainBuild extends Build {
   lazy val buildSettings = baseSettings ++ Seq(
             organization := BuildSettings.organization,
             scalaVersion := Dependencies.Versions.scala,
+           scalacOptions ++= BuildSettings.compilerFlags,
+            javacOptions ++= BuildSettings.javaCompilerFlags,
+     javacOptions in doc := BuildSettings.javadocFlags,
               crossPaths := false,
            sourcesInBase := false,
             fork in Test := true,
@@ -27,6 +29,7 @@ object MainBuild extends Build {
   lazy val root = project.in(file("."))
     .aggregate(
       `iep-config`,
+      `iep-eureka-testconfig`,
       `iep-governator`,
       `iep-guice`,
       `iep-launcher`,
@@ -35,6 +38,7 @@ object MainBuild extends Build {
       `iep-module-eureka`,
       `iep-module-jmxport`,
       `iep-module-karyon`,
+      `iep-module-karyon3`,
       `iep-module-rxnetty`,
       `iep-nflxenv`,
       `iep-platformservice`,
@@ -54,19 +58,15 @@ object MainBuild extends Build {
       Dependencies.equalsVerifier % "test"
     ))
 
+  lazy val `iep-eureka-testconfig` = project
+    .settings(buildSettings: _*)
+
   lazy val `iep-governator` = project
-    .dependsOn(`iep-config`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.archaiusCore,
-      Dependencies.archaiusLegacy,
       Dependencies.governator,
-      Dependencies.guiceAssist,
       Dependencies.guiceCore,
-      Dependencies.guiceGrapher,
-      Dependencies.guiceMulti,
-      Dependencies.guiceServlet,
       Dependencies.slf4jApi
     ))
 
@@ -109,7 +109,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-module-eureka` = project
-    .dependsOn(`iep-service`)
+    .dependsOn(`iep-service`, `iep-eureka-testconfig` % "test")
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
@@ -143,8 +143,19 @@ object MainBuild extends Build {
       Dependencies.slf4jApi
     ))
 
+  lazy val `iep-module-karyon3` = project
+    .dependsOn(`iep-service`, `iep-guice` % "test")
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.guiceCore,
+      Dependencies.karyon3Admin,
+      Dependencies.karyon3Archaius,
+      Dependencies.slf4jApi
+    ))
+
   lazy val `iep-module-rxnetty` = project
-    .dependsOn(`iep-rxhttp`)
+    .dependsOn(`iep-rxhttp`, `iep-module-eureka` % "test", `iep-eureka-testconfig` % "test")
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(

@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.http;
+package com.netflix.iep.karyon3;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public final class HttpStatus {
-  private final int code;
-  private final String reason;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.Map;
+import java.util.TreeMap;
 
-  public HttpStatus(int code, String reason) {
-    this.code = code;
-    this.reason = reason;
+
+@Singleton
+class EnvHandler extends SimpleHandler {
+
+  @Inject
+  EnvHandler(ObjectMapper mapper) {
+    super(mapper);
   }
 
-  public int code() {
-    return code;
-  }
-
-  public String reason() {
-    return reason;
-  }
-
-  public static HttpStatus create(HttpResponseStatus s) {
-    return new HttpStatus(s.code(), s.reasonPhrase());
+  @Override
+  protected Object get() {
+    // TreeMap is used for so user will conveniently get sorted keys, but is not required.
+    Map<String, Object> wrapper = new TreeMap<>();
+    wrapper.put("env", new TreeMap<>(System.getenv()));
+    return wrapper;
   }
 }

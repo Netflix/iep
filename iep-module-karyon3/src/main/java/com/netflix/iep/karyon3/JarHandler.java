@@ -13,31 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.http;
+package com.netflix.iep.karyon3;
 
-import java.util.Iterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.karyon.admin.JarsAdminResource;
 
-final class SLists {
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.Map;
+import java.util.TreeMap;
 
-  private static final SList<?> EMPTY = new SList.Nil<>();
 
-  private SLists() {
+@Singleton
+class JarHandler extends SimpleHandler {
+
+  private final JarsAdminResource resource;
+
+  @Inject
+  JarHandler(ObjectMapper mapper, JarsAdminResource resource) {
+    super(mapper);
+    this.resource = resource;
   }
 
-  @SuppressWarnings("unchecked")
-  static <T> SList<T> empty() {
-    return (SList<T>) EMPTY;
-  }
-
-  static <T> SList<T> create(Iterator<T> iter) {
-    SList<T> data = empty();
-    while (iter.hasNext()) {
-      data = data.prepend(iter.next());
-    }
-    return data;
-  }
-
-  static <T> SList<T> create(Iterable<T> vs) {
-    return create(vs.iterator());
+  @Override
+  protected Object get() {
+    Map<String, Object> wrapper = new TreeMap<>();
+    wrapper.put("jars", resource.get());
+    return wrapper;
   }
 }
