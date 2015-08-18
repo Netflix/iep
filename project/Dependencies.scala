@@ -41,7 +41,7 @@ object Dependencies {
   val nettyCodec      = "io.netty" % "netty-codec-http" % netty
   val nettyHandler    = "io.netty" % "netty-handler" % netty
   val nettyTransport  = "io.netty" % "netty-transport-native-epoll" % netty
-  val rxjava          = "io.reactivex" % "rxjava" % "1.0.13"
+  val rxjava          = "io.reactivex" % "rxjava" % "1.0.14"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   //val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
