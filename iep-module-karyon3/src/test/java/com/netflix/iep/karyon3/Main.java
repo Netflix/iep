@@ -13,28 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.http;
+package com.netflix.iep.karyon3;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.netflix.archaius.guice.ArchaiusModule;
 
-public final class HttpStatus {
-  private final int code;
-  private final String reason;
+public class Main {
 
-  public HttpStatus(int code, String reason) {
-    this.code = code;
-    this.reason = reason;
-  }
-
-  public int code() {
-    return code;
-  }
-
-  public String reason() {
-    return reason;
-  }
-
-  public static HttpStatus create(HttpResponseStatus s) {
-    return new HttpStatus(s.code(), s.reasonPhrase());
+  public static void main(String[] args) {
+    System.setProperty("@serverId", "localhost");
+    Injector injector = Guice.createInjector(new KaryonModule(), new ArchaiusModule());
   }
 }

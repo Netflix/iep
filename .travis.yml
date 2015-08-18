@@ -1,14 +1,18 @@
 language: scala
 jdk:
-  - oraclejdk7
+  - oraclejdk8
 scala:
-  - 2.11.6
+  - 2.11.7
 sudo: false
 script:
-  - "make travis"
+  - "./buildViaTravis.sh"
 env:
   global:
   - secure: "d5Pgq/vnpLRqE2feJ1xmLbKL2CPdPS3BTC7MMpviQlRz/ExrcsbY+32Ben+nJJnYIQnEQqlPEKabCNI9kDYuTZmWlQLzaR42D7OcUSptUipJbYSb5Om8YaKHDhjCM9k88/tU5rtojmYIq9648R26M973A8l5maR+gzBK80zT3xY="
   - secure: "RQzGFVIW7hj1cVl9EG6HMIP3XFHInmo/StpAoloyJZ6qVXcKZGvLY2NKTHS9ECW8ZKuJH/sCnSxATRJdnPaPIq/qQAvc1ilavdeU03Se/jOabA0FFHvKwd7YA/lQLPRYuiSHV4wjv15wAWiscwnSYsKtpnj0k2D+SZjS9GD1YDM="
   - secure: "LiXzFlAvQjj8BpomTmubzgnkYNilCW4z6DuMTAtyOou/qcsQLY7cnMJeC7v193zbKR0AHpxEyRNKgKvEXsFdosd8H4vb/mnLBsUU3h3vMtOmfCbN8fDk9ufXvAnhAyo0WkKdA4aJ5XEGLs78F/bLJwMRX9ytKVBrVQOoEZOmebk="
   - secure: "U/NXJHs54GOyc321rdWCN0TG0cFUoa3y7jOTCcQnIoG9JI82dgxbonRieS9U3J2cvBzzxWusaDWHeDf1hHKqI4oBM3iy+rWbCTeq+/UdUcso+t1kDdEovF05jguEq4khDE634XjG+pyff5AkGB6DkQZ2uImaruvtJ9hnKKqCiPA="
+cache:
+  directories:
+  - $HOME/.sbt
+  - $HOME/.ivy2

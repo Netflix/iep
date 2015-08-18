@@ -2,32 +2,27 @@
 # build script.
 SBT := cat /dev/null | project/sbt
 
-IVY_CACHE_URL := https://www.dropbox.com/s/fkv9hscqskyxwgc/iep.tar.gz?dl=0
-
-.PHONY: build coverage license get-ivy-cache
-
-ifeq (${TRAVIS_PULL_REQUEST},false)
-ifeq (${TRAVIS_TAG},)
-travis: get-ivy-cache publish
-else
-travis: get-ivy-cache release
-endif
-else
-travis: get-ivy-cache build
-endif
+.PHONY: build snapshot release coverage license
 
 build:
 	echo "Starting build"
-	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders
+	$(SBT) clean test checkLicenseHeaders
 
-publish:
-	echo "Starting publish"
-	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders storeBintrayCredentials publish
+snapshot:
+	echo "Starting snapshot build"
+	git fetch --unshallow
+	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish
 
 release:
-	echo "Starting release"
+	# Storing the bintray credentials needs to be done as a separate command so they will
+	# be available early enough for the publish task.
+	#
+	# The storeBintrayCredentials still needs to be on the subsequent command or we get:
+	# [error] (iep-service/*:bintrayEnsureCredentials) java.util.NoSuchElementException: None.get
+	echo "Starting release build"
+	git fetch --unshallow
 	$(SBT) storeBintrayCredentials
-	$(SBT) 'inspect tree clean' clean test checkLicenseHeaders publish storeBintrayCredentials bintrayRelease
+	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
 
 coverage:
 	$(SBT) clean coverage test coverageReport
@@ -36,6 +31,3 @@ coverage:
 license:
 	$(SBT) formatLicenseHeaders
 
-get-ivy-cache:
-	curl -L $(IVY_CACHE_URL) -o $(HOME)/ivy.tar.gz
-	tar -C $(HOME) -xzf $(HOME)/ivy.tar.gz
