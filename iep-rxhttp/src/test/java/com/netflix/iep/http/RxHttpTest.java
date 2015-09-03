@@ -256,6 +256,7 @@ System.out.println(contentEnc);
   }
 
   private void codeTest(int code, int attempts) throws Exception {
+    System.out.println("STARTING codeTest: " + code + ", " + attempts);
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, attempts);
