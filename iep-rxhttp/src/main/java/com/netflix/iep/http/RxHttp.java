@@ -606,7 +606,7 @@ public final class RxHttp {
     HttpClient<ByteBuf, ByteBuf> client = HttpClient.newClient(server.host(), server.port())
         .readTimeOut(clientCfg.readTimeout(), TimeUnit.MILLISECONDS)
         .channelOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, clientCfg.connectTimeout())
-        .enableWireLogging(LogLevel.DEBUG)
+        .enableWireLogging(LogLevel.ERROR)
         .pipelineConfigurator(new HttpDecompressionConfigurator());
 
     if (server.isSecure()) {

@@ -167,7 +167,7 @@ object MainBuild extends Build {
       //Dependencies.rxnettyCtxts,
       Dependencies.rxnettySpectator,
       Dependencies.slf4jApi,
-      Dependencies.slf4jSimple % "test"
+      Dependencies.slf4jlog4j % "test"
     ))
 
   lazy val `iep-nflxenv` = project
@@ -216,7 +216,8 @@ object MainBuild extends Build {
 
   lazy val commonDeps = Seq(
     Dependencies.junitInterface % "test",
-    Dependencies.scalatest % "test"
+    Dependencies.scalatest % "test",
+    Dependencies.slf4jlog4j % "test"
   )
 
   lazy val checkLicenseHeaders = taskKey[Unit]("Check the license headers for all source files.")

@@ -52,7 +52,7 @@ object Dependencies {
   val scalaReflect    = "org.scala-lang" % "scala-reflect" % scala
   val scalatest       = "org.scalatest" % "scalatest_2.11" % "2.2.1"
   val slf4jApi        = "org.slf4j" % "slf4j-api" % slf4j
-  val slf4jSimple     = "org.slf4j" % "slf4j-simple" % slf4j
+  val slf4jlog4j     = "org.slf4j" % "slf4j-log4j" % slf4j
   val spectatorApi    = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorSandbox= "com.netflix.spectator" % "spectator-ext-sandbox" % spectator
 }
