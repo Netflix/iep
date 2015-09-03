@@ -5,7 +5,7 @@ object Dependencies {
     val archaius   = "2.0.0-rc.21"
     val guice      = "4.0"
     val karyon     = "2.7.1"
-    val netty      = "4.1.0.Beta6-SNAPSHOT"
+    val netty      = "4.1.0.Beta6"
     val rxnetty    = "0.5.0-SNAPSHOT"
     val scala      = "2.11.6"
     val slf4j      = "1.7.12"
