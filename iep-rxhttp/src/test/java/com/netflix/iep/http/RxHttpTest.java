@@ -34,6 +34,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -60,6 +62,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RunWith(JUnit4.class)
 public class RxHttpTest {
+
+  private static final Logger logger = LoggerFactory.getLogger(RxHttpTest.class);
 
   private static final String client = "test";
   private static final int retries = 2;
@@ -256,7 +260,7 @@ System.out.println(contentEnc);
   }
 
   private void codeTest(int code, int attempts) throws Exception {
-    System.out.println("STARTING codeTest: " + code + ", " + attempts);
+    logger.error("STARTING codeTest: " + code + ", " + attempts);
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, attempts);
