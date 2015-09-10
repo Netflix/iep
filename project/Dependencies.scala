@@ -9,7 +9,7 @@ object Dependencies {
     val rxnetty    = "0.4.11"
     val scala      = "2.11.7"
     val slf4j      = "1.7.12"
-    val spectator  = "0.29.0"
+    val spectator  = "0.30.0"
   }
 
   import Versions._
@@ -21,8 +21,8 @@ object Dependencies {
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.2"
-  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.2.2"
-  val governator      = "com.netflix.governator" % "governator-core" % "1.9.3"
+  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.2.3"
+  val governator      = "com.netflix.governator" % "governator-core" % "1.10.0"
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
   val guiceGrapher    = "com.google.inject.extensions" % "guice-grapher" % guice
