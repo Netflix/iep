@@ -134,9 +134,10 @@ public final class PlatformServiceModule extends AbstractModule {
   }
 
   private static PollingStrategy getPollingStrategy(Config cfg) {
-    final String prop = "netflix.iep.archaius.polling-interval";
-    final long interval = cfg.getDuration(prop, TimeUnit.MILLISECONDS);
-    return new FixedPollingStrategy(interval, TimeUnit.MILLISECONDS);
+    final String propPollingInterval = "netflix.iep.archaius.polling-interval";
+    final String propSyncInit = "netflix.iep.archaius.sync-init";
+    final long interval = cfg.getDuration(propPollingInterval, TimeUnit.MILLISECONDS);
+    return new FixedPollingStrategy(interval, TimeUnit.MILLISECONDS, cfg.getBoolean(propSyncInit));
   }
 
   public static PollingDynamicConfig getDynamicConfig(Config cfg) throws Exception {
