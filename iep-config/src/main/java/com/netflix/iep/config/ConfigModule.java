@@ -51,6 +51,14 @@ public class ConfigModule extends AbstractModule {
     install(m);
   }
 
+  @Override public boolean equals(Object obj) {
+    return obj != null && getClass().equals(obj.getClass());
+  }
+
+  @Override public int hashCode() {
+    return getClass().hashCode();
+  }
+
   private static class OverrideModule extends AbstractModule {
 
     private final String[] propFiles;
@@ -74,7 +82,7 @@ public class ConfigModule extends AbstractModule {
     @Provides
     @Singleton
     @ApplicationLayer
-    protected CompositeConfig providesAppConfig(Config cfg) throws Exception {
+    private CompositeConfig providesAppConfig(Config cfg) throws Exception {
       final Properties props = (propFiles == null)
           ? ScopedPropertiesLoader.load()
           : ScopedPropertiesLoader.load(propFiles);
