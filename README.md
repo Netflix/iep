@@ -1,5 +1,7 @@
 # Insight Engineering Platform
 
+[![Build Status](https://travis-ci.org/Netflix/iep.svg)](https://travis-ci.org/Netflix/iep/builds)
+
 Experiment for:
 
 * Breaking out parts of the legacy monolithic platform library into simple modules so we can
