@@ -36,7 +36,6 @@ object MainBuild extends Build {
       `iep-module-archaius2`,
       `iep-module-eureka`,
       `iep-module-jmxport`,
-      `iep-module-karyon`,
       `iep-module-karyon3`,
       `iep-module-rxnetty`,
       `iep-nflxenv`,
@@ -123,19 +122,6 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.guiceCore,
-      Dependencies.slf4jApi
-    ))
-
-  lazy val `iep-module-karyon` = project
-    .dependsOn(`iep-guice` % "test")
-    .settings(buildSettings: _*)
-    .settings(libraryDependencies ++= commonDeps)
-    .settings(libraryDependencies ++= Seq(
-      Dependencies.archaiusLegacy,
-      Dependencies.guiceCore,
-      Dependencies.karyonAdmin,
-      Dependencies.rxnettyCore,
-      Dependencies.rxnettyCtxts,
       Dependencies.slf4jApi
     ))
 
