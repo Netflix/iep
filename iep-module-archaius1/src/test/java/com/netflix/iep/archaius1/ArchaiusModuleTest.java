@@ -51,6 +51,15 @@ public class ArchaiusModuleTest {
     @Override protected void configure() {
       try {
         MapConfig cfg = MapConfig.builder()
+            .put("netflix.iep.archaius.scope.environment", "test")
+            .put("netflix.iep.archaius.scope.datacenter",  "cloud")
+            .put("netflix.iep.archaius.scope.appId",       "local")
+            .put("netflix.iep.archaius.scope.cluster",     "local-dev")
+            .put("netflix.iep.archaius.scope.asg",         "local-dev-v000")
+            .put("netflix.iep.archaius.scope.serverId",    "localhost")
+            .put("netflix.iep.archaius.scope.stack",       "dev")
+            .put("netflix.iep.archaius.scope.region",      "us-east-1")
+            .put("netflix.iep.archaius.scope.zone",        "us-east-1a")
             .put("a", "b")
             .put("c", "d")
             .build();
