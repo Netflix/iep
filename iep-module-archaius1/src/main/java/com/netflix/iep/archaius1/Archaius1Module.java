@@ -17,8 +17,11 @@ package com.netflix.iep.archaius1;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.util.Modules;
+import com.netflix.archaius.Config;
 import com.netflix.archaius.bridge.StaticArchaiusBridgeModule;
 import com.netflix.config.ConfigurationManager;
+import com.netflix.config.DeploymentContext;
 import org.apache.commons.configuration.Configuration;
 
 import javax.inject.Named;
@@ -30,8 +33,83 @@ import javax.inject.Singleton;
 public final class Archaius1Module extends AbstractModule {
 
   @Override protected void configure() {
-    // It is assumed that some other module will take care of configuring archaius2.
-    install(new StaticArchaiusBridgeModule());
+    install(Modules.override(new StaticArchaiusBridgeModule()).with(new OverrideModule()));
+  }
+
+  private static class OverrideModule extends AbstractModule {
+
+    @Override protected void configure() {
+    }
+
+    @Provides
+    @Singleton
+    private DeploymentContext providesDeploymentContext(Config config) {
+      return new DeploymentContext() {
+        @Override
+        public String getDeploymentEnvironment() {
+          return getValue(ContextKey.environment);
+        }
+
+        @Override
+        public void setDeploymentEnvironment(String s) {
+        }
+
+        @Override
+        public String getDeploymentDatacenter() {
+          return getValue(ContextKey.datacenter);
+        }
+
+        @Override
+        public void setDeploymentDatacenter(String s) {
+        }
+
+        @Override
+        public String getApplicationId() {
+          return getValue(ContextKey.appId);
+        }
+
+        @Override
+        public void setApplicationId(String s) {
+        }
+
+        @Override
+        public String getDeploymentServerId() {
+          return getValue(ContextKey.serverId);
+        }
+
+        @Override
+        public void setDeploymentServerId(String s) {
+        }
+
+        @Override
+        public String getDeploymentStack() {
+          return getValue(ContextKey.stack);
+        }
+
+        @Override
+        public void setDeploymentStack(String s) {
+        }
+
+        @Override
+        public String getDeploymentRegion() {
+          return getValue(ContextKey.region);
+        }
+
+        @Override
+        public void setDeploymentRegion(String s) {
+        }
+
+        @Override
+        public String getValue(ContextKey contextKey) {
+          String s = contextKey.name();
+          return config.getString("netflix.iep.archaius.scope." + s);
+        }
+
+        @Override
+        public void setValue(ContextKey contextKey, String s) {
+        }
+      };
+    }
   }
 
   @Provides
