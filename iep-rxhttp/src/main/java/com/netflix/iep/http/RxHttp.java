@@ -522,7 +522,8 @@ public final class RxHttp {
 
     final RequestContext context = new RequestContext(this, entry, req, clientCfg, servers.get(0));
     final long backoffMillis = clientCfg.retryDelay();
-    Observable<HttpClientResponse<ByteBuf>> observable = execute(context);
+    Observable<HttpClientResponse<ByteBuf>> observable =
+        execute(context).flatMap(new RedirectHandler(context));
     for (int i = 1; i < servers.size(); ++i) {
       final RequestContext ctxt = context.withServer(servers.get(i));
       final long delay = backoffMillis << (i - 1);
@@ -552,17 +553,13 @@ public final class RxHttp {
     entry.withRemoteAddr(context.server().host());
     entry.withRemotePort(context.server().port());
     return client.submit(context.request())
-        .doOnNext(new Action1<HttpClientResponse<ByteBuf>>() {
-          @Override public void call(HttpClientResponse<ByteBuf> res) {
-            update(entry, res);
-            HttpLogEntry.logClientRequest(entry);
-          }
+        .doOnNext(res -> {
+          update(entry, res);
+          HttpLogEntry.logClientRequest(entry);
         })
-        .doOnError(new Action1<Throwable>() {
-          @Override public void call(Throwable throwable) {
-            update(entry, throwable);
-            HttpLogEntry.logClientRequest(entry);
-          }
+        .doOnError(throwable -> {
+          update(entry, throwable);
+          HttpLogEntry.logClientRequest(entry);
         })
         .doOnTerminate(Actions.empty());
   }

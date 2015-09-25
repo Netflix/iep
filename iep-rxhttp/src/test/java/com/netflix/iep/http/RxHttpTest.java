@@ -335,6 +335,12 @@ public class RxHttpTest {
   }
 
   @Test
+  public void relativeRedirectAndRetries() throws Exception {
+    set(client + ".niws.client.MaxAutoRetriesNextServer", "0");
+    relativeRedirect();
+  }
+
+  @Test
   public void absoluteRedirect() throws Exception {
     int code = 200;
     statusCode.set(code);
@@ -363,6 +369,12 @@ public class RxHttpTest {
     latch.await();
     Assert.assertNull(throwable.get());
     assertEquals(expected, statusCounts);
+  }
+
+  @Test
+  public void absoluteRedirectAndRetries() throws Exception {
+    set(client + ".niws.client.MaxAutoRetriesNextServer", "0");
+    absoluteRedirect();
   }
 
   @Test
