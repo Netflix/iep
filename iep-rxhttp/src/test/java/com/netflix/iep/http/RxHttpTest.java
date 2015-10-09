@@ -375,7 +375,7 @@ System.out.println(contentEnc);
     Assert.assertNotNull(throwable.get());
   }
 
-  @Test
+  //@Test
   public void readTimeout() throws Exception {
     //set(client + ".niws.client.ReadTimeout", "100");
     int code = 200;
@@ -389,7 +389,7 @@ System.out.println(contentEnc);
     assertEquals(expected, statusCounts);
   }
 
-  @Test
+  //@Test
   public void readTimeoutDoesntRetry() throws Exception {
     //set(client + ".niws.client.ReadTimeout", "100");
     set(client + ".niws.client.RetryReadTimeouts", "false");
@@ -404,7 +404,7 @@ System.out.println(contentEnc);
     assertEquals(expected, statusCounts);
   }
 
-  @Test
+  //@Test
   public void connectTimeout() throws Exception {
     // Pick a free port with no server running
     ServerSocket ss = new ServerSocket(0);
