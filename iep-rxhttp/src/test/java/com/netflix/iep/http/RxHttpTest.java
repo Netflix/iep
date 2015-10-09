@@ -237,7 +237,7 @@ System.out.println(contentEnc);
   }
 
   private URI uri(String path) {
-    return URI.create("niws://test/http://localhost:" + port + path);
+    return URI.create("niws://test/http://127.0.0.1:" + port + path);
   }
 
   private AtomicIntegerArray copy(AtomicIntegerArray src) {
@@ -466,7 +466,7 @@ System.out.println(contentEnc);
 
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     try {
-      rxHttp.get("niws://test/http://localhost:" + serverPort + "/empty")
+      rxHttp.get("niws://test/http://127.0.0.1:" + serverPort + "/empty")
       .doOnError(new Action1<Throwable>() {
         @Override
         public void call(Throwable t) {
