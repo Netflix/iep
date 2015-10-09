@@ -4,8 +4,7 @@ object Dependencies {
   object Versions {
     val archaius   = "2.0.0-rc.32"
     val guice      = "4.0"
-    val karyon     = "2.7.3"
-    val karyon3    = "3.0.1-rc.13"
+    val karyon3    = "3.0.1-rc.15"
     val rxnetty    = "0.4.11"
     val scala      = "2.11.7"
     val slf4j      = "1.7.12"
@@ -21,17 +20,15 @@ object Dependencies {
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.5"
-  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.2.5"
-  val governator      = "com.netflix.governator" % "governator-core" % "1.10.2"
+  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.3.0"
+  val governator      = "com.netflix.governator" % "governator-core" % "1.10.5"
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
   val guiceGrapher    = "com.google.inject.extensions" % "guice-grapher" % guice
   val guiceMulti      = "com.google.inject.extensions" % "guice-multibindings" % guice
   val guiceServlet    = "com.google.inject.extensions" % "guice-servlet" % guice
   val inject          = "javax.inject" % "javax.inject" % "1"
-  val jodaTime        = "joda-time" % "joda-time" % "2.7"
-  val karyonAdmin     = "com.netflix.karyon" % "karyon2-admin-web" % karyon
-  val karyonCore      = "com.netflix.karyon" % "karyon2-core" % karyon
+  val jodaTime        = "joda-time" % "joda-time" % "2.8.2"
   val karyon3Admin    = "com.netflix.karyon" % "karyon3-admin-simple" % karyon3
   val karyon3Archaius = "com.netflix.karyon" % "karyon3-archaius2" % karyon3
   val junit           = "junit" % "junit" % "4.12"
