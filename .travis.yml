@@ -1,6 +1,7 @@
 language: scala
 jdk:
   - oraclejdk8
+sudo: required
 scala:
   - 2.11.7
 script:
