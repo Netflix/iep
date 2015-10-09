@@ -90,7 +90,7 @@ public class RxHttpTest {
   public static void startServer() throws Exception {
     rxHttp.start();
 
-    server = HttpServer.create(new InetSocketAddress(0), 100);
+    server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 100);
     server.setExecutor(Executors.newFixedThreadPool(10, new ThreadFactory() {
       @Override public Thread newThread(Runnable r) {
         return new Thread(r, "HttpServer");
@@ -255,12 +255,23 @@ System.out.println(contentEnc);
     }
   }
 
+  private AtomicReference<Throwable> httpGet(String path) {
+    final AtomicReference<Throwable> throwable = new AtomicReference<>();
+    try {
+      rxHttp.get(uri(path))
+          .doOnError(t -> throwable.set(t))
+          .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    }
+    catch (Throwable t) {}
+    return throwable;
+  }
+
   private void codeTest(int code, int attempts) throws Exception {
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, attempts);
 
-    rxHttp.get(uri("/empty")).toBlocking().toFuture().get(10, TimeUnit.SECONDS);
+    httpGet("/empty");
 
     assertEquals(expected, statusCounts);
   }
@@ -315,17 +326,7 @@ System.out.println(contentEnc);
     expected.addAndGet(302, 2);
     expected.addAndGet(code, 1);
 
-    final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    try {
-      rxHttp.get(uri("/relativeRedirect"))
-      .doOnError(new Action1<Throwable>() {
-        @Override public void call(Throwable t) {
-          throwable.set(t);
-        }
-      })
-      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
-    }
-    catch (Throwable t) {}
+    final AtomicReference<Throwable> throwable = httpGet("/relativeRedirect");
 
     assertEquals(expected, statusCounts);
     Assert.assertNull(throwable.get());
@@ -340,17 +341,7 @@ System.out.println(contentEnc);
     expected.incrementAndGet(code);
     expected.addAndGet(302, 3);
 
-    final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    try {
-      rxHttp.get(uri("/absoluteRedirect"))
-      .doOnError(new Action1<Throwable>() {
-        @Override public void call(Throwable t) {
-          throwable.set(t);
-        }
-      })
-      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
-    }
-    catch (Throwable t) {}
+    final AtomicReference<Throwable> throwable = httpGet("/absoluteRedirect");
 
     assertEquals(expected, statusCounts);
     Assert.assertNull(throwable.get());
@@ -364,17 +355,7 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
 
-    final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    try {
-      rxHttp.get(uri("/notModified"))
-      .doOnError(new Action1<Throwable>() {
-        @Override public void call(Throwable t) {
-          throwable.set(t);
-        }
-      })
-      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
-    }
-    catch (Throwable t) {}
+    final AtomicReference<Throwable> throwable = httpGet("/notModified");
 
     assertEquals(expected, statusCounts);
     Assert.assertNull(throwable.get());
@@ -388,17 +369,7 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
 
-    final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    try {
-      rxHttp.get(uri("/redirectNoLocation"))
-      .doOnError(new Action1<Throwable>() {
-        @Override public void call(Throwable t) {
-          throwable.set(t);
-        }
-      })
-      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
-    }
-    catch (Throwable t) {}
+    final AtomicReference<Throwable> throwable = httpGet("/redirectNoLocation");
 
     assertEquals(expected, statusCounts);
     Assert.assertNotNull(throwable.get());
@@ -412,17 +383,7 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 3);
 
-    final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    try {
-      rxHttp.get(uri("/readTimeout"))
-      .doOnError(new Action1<Throwable>() {
-        @Override public void call(Throwable t) {
-          throwable.set(t);
-        }
-      })
-      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
-    }
-    catch (Throwable t) {}
+    final AtomicReference<Throwable> throwable = httpGet("/readTimeout");
 
     Assert.assertTrue(throwable.get() instanceof ReadTimeoutException);
     assertEquals(expected, statusCounts);
@@ -437,17 +398,7 @@ System.out.println(contentEnc);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
 
-    final AtomicReference<Throwable> throwable = new AtomicReference<>();
-    try {
-      rxHttp.get(uri("/readTimeout"))
-      .doOnError(new Action1<Throwable>() {
-        @Override public void call(Throwable t) {
-          throwable.set(t);
-        }
-      })
-      .toBlocking().toFuture().get(10, TimeUnit.SECONDS);
-    }
-    catch (Throwable t) {}
+    final AtomicReference<Throwable> throwable = httpGet("/readTimeout");
 
     Assert.assertTrue(throwable.get() instanceof ReadTimeoutException);
     assertEquals(expected, statusCounts);
