@@ -15,6 +15,7 @@
  */
 package com.netflix.iep.http;
 
+import io.netty.handler.logging.LogLevel;
 import org.apache.commons.configuration.Configuration;
 
 import java.net.URI;
@@ -195,6 +196,20 @@ class ClientConfig {
    */
   boolean gzipEnabled() {
     return getBoolean("GzipEnabled", true);
+  }
+
+  /**
+   * Should detailed wire logging be enabled on the underlying client?
+   */
+  boolean wireLoggingEnabled() {
+    return getBoolean("WireLoggingEnabled", false);
+  }
+
+  /**
+   * Log level to use for logging events.
+   */
+  LogLevel wireLoggingLevel() {
+    return LogLevel.valueOf(getString("WireLoggingLevel", "ERROR"));
   }
 
   /** Max number of retries. */
