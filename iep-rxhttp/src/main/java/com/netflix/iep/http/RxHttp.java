@@ -599,6 +599,10 @@ public final class RxHttp {
             .withName(clientCfg.name())
             .channelOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, clientCfg.connectTimeout());
 
+    if (clientCfg.wireLoggingEnabled()) {
+      builder.enableWireLogging(clientCfg.wireLoggingLevel());
+    }
+
     final int idleTimeout = clientCfg.idleConnectionsTimeoutMillis();
     if (idleTimeout == 0) {
       builder.withNoConnectionPooling();
