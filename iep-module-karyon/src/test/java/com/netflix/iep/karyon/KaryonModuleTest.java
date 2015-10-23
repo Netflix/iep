@@ -33,7 +33,7 @@ public class KaryonModuleTest {
     helper.start(new KaryonModule());
 
     try {
-      URL url = new URL("http://localhost:8077/v1/platform/base/env");
+      URL url = new URL("http://127.0.0.1:8077/v1/platform/base/env");
       HttpURLConnection con = null;
       try {
         con = (HttpURLConnection) url.openConnection();
