@@ -42,9 +42,9 @@ object Dependencies {
   val nettyHandler    = "io.netty" % "netty-handler" % netty
   val nettyTransport  = "io.netty" % "netty-transport-native-epoll" % netty
   val rxjava          = "io.reactivex" % "rxjava" % "1.0.14"
-  val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
-  //val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
-  val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
+  val rxnettyCommon   = "io.reactivex" % "rxnetty-common" % rxnetty
+  val rxnettyHttp     = "io.reactivex" % "rxnetty-http" % rxnetty
+  val rxnettySpectator= "io.reactivex" % "rxnetty-spectator-http" % rxnetty
   val scalaLibrary    = "org.scala-lang" % "scala-library" % scala
   val scalaLibraryAll = "org.scala-lang" % "scala-library-all" % scala
   val scalaLogging    = "com.typesafe.scala-logging" % "scala-logging_2.11" % "3.1.0"

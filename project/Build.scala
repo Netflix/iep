@@ -138,8 +138,6 @@ object MainBuild extends Build {
       Dependencies.nettyCodec,
       Dependencies.nettyHandler,
       Dependencies.nettyTransport,
-      Dependencies.rxnettyCore,
-      //Dependencies.rxnettyCtxts,
       Dependencies.slf4jApi
     ))
 
@@ -163,8 +161,7 @@ object MainBuild extends Build {
       Dependencies.nettyCodec,
       Dependencies.nettyHandler,
       Dependencies.nettyTransport,
-      Dependencies.rxnettyCore,
-      //Dependencies.rxnettyCtxts,
+      Dependencies.rxnettyHttp,
       Dependencies.rxnettySpectator,
       Dependencies.slf4jApi,
       Dependencies.slf4jSimple % "test"
@@ -198,8 +195,8 @@ object MainBuild extends Build {
       Dependencies.nettyCodec,
       Dependencies.nettyHandler,
       Dependencies.nettyTransport,
-      Dependencies.rxnettyCore,
-      //Dependencies.rxnettyCtxts,
+      Dependencies.rxnettyCommon,
+      Dependencies.rxnettyHttp,
       Dependencies.spectatorApi,
       Dependencies.spectatorSandbox,
       Dependencies.slf4jApi,
