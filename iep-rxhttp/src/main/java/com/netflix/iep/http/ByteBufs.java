@@ -19,6 +19,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.compression.JdkZlibDecoder;
 import io.netty.handler.codec.compression.JdkZlibEncoder;
 import io.netty.handler.codec.compression.ZlibWrapper;
@@ -74,6 +77,39 @@ public final class ByteBufs {
    */
   public static Observable.Transformer<ByteBuf, ByteBuf> json() {
     return input -> decode(input, new EmbeddedChannel(new JsonObjectDecoder(true)));
+  }
+
+  /**
+   * Process text data so that each output ByteBuf is a single line. The final line must have a
+   * trailing line feed or it will be skipped.
+   *
+   * @param maxLength
+   *     Maximum length of a line. If a line that is too long is reached a TooLongFrameException
+   *     will be thrown.
+   * @return
+   *     Observable where each ByteBuf is a single line.
+   */
+  public static Observable.Transformer<ByteBuf, ByteBuf> lines(int maxLength) {
+    return input -> {
+      LineBasedFrameDecoder decoder = new LineBasedFrameDecoder(maxLength, true, true);
+      return decode(input, new EmbeddedChannel(decoder));
+    };
+  }
+
+  /**
+   * Map a sequence of ByteBufs to a sequence of ServerSentEvent objects.
+   *
+   * @param maxLength
+   *     Maximum length of a line. If a line that is too long is reached a TooLongFrameException
+   *     will be thrown.
+   * @return
+   *     Observable of server sent events.
+   */
+  public static Observable.Transformer<ByteBuf, ServerSentEvent> sse(int maxLength) {
+    return input -> input
+        .compose(lines(maxLength))
+        .map(ServerSentEvent::parse)
+        .filter(v -> v != null);
   }
 
   /**

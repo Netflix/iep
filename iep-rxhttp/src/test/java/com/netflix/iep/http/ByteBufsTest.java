@@ -17,6 +17,7 @@ package com.netflix.iep.http;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.TooLongFrameException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,8 @@ import rx.functions.Action1;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 @RunWith(JUnit4.class)
@@ -79,6 +82,104 @@ public class ByteBufsTest {
       public void call(ByteBuf byteBuf) {
         String obj = byteBuf.toString(Charset.forName("UTF-8"));
         Assert.assertEquals(String.format("{\"a\":%d}", ++i), obj);
+      }
+    });
+  }
+
+  @Test
+  public void sse() throws Exception {
+    byte[] data = "event:\ndata: foo\ndata:bar\n\ndata:  baz\n".getBytes("UTF-8");
+    List<ServerSentEvent> events = obs(data)
+        .compose(ByteBufs.sse(10))
+        .reduce(new ArrayList<ServerSentEvent>(), (acc, v) -> { acc.add(v); return acc; })
+        .toBlocking()
+        .single();
+
+    List<ServerSentEvent> expected = new ArrayList<>();
+    expected.add(new ServerSentEvent("event", ""));
+    expected.add(new ServerSentEvent("data", "foo"));
+    expected.add(new ServerSentEvent("data", "bar"));
+    expected.add(new ServerSentEvent("data", " baz"));
+
+    Assert.assertEquals(expected, events);
+  }
+
+  @Test
+  public void linesLF() throws Exception {
+    byte[] data = "0\n1\n2\n3\n".getBytes("UTF-8");
+    int count = obs(data).compose(ByteBufs.lines(10))
+        .reduce(0, (acc, b) -> {
+          Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
+          return acc + 1;
+        })
+        .toBlocking()
+        .single();
+    Assert.assertEquals(4, count);
+  }
+
+  @Test
+  public void linesCRLF() throws Exception {
+    byte[] data = "0\r\n1\r\n2\r\n3\r\n".getBytes("UTF-8");
+    int count = obs(data).compose(ByteBufs.lines(10))
+        .reduce(0, (acc, b) -> {
+          Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
+          return acc + 1;
+        })
+        .toBlocking()
+        .single();
+    Assert.assertEquals(4, count);
+  }
+
+  @Test
+  public void linesCR() throws Exception {
+    byte[] data = "0\r1\r2\r3\r".getBytes("UTF-8");
+    int count = obs(data).compose(ByteBufs.lines(10))
+        .reduce(0, (acc, b) -> {
+          Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
+          return acc + 1;
+        })
+        .toBlocking()
+        .single();
+    Assert.assertEquals(0, count);
+  }
+
+  // Currently ignores the last bit, not sure how to force it to flush
+  @Test
+  public void linesNoEndingLF() throws Exception {
+    byte[] data = "0\n1\n2\n3".getBytes("UTF-8");
+    int count = obs(data).compose(ByteBufs.lines(10))
+        .reduce(0, (acc, b) -> {
+          System.out.println(b.toString(Charset.forName("UTF-8")));
+          Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
+          return acc + 1;
+        })
+        .toBlocking()
+        .single();
+    Assert.assertEquals(3, count);
+  }
+
+  @Test
+  public void linesEmpty() throws Exception {
+    byte[] data = "\n\n\n".getBytes("UTF-8");
+    int count = obs(data).compose(ByteBufs.lines(10))
+        .reduce(0, (acc, b) -> {
+          Assert.assertEquals("", b.toString(Charset.forName("UTF-8")));
+          return acc + 1;
+        })
+        .toBlocking()
+        .single();
+    Assert.assertEquals(3, count);
+  }
+
+  @Test(expected = TooLongFrameException.class)
+  public void linesFailure() throws Exception {
+    byte[] data = "1\n22\r\n3\r4".getBytes("UTF-8");
+    obs(data).compose(ByteBufs.lines(1)).toBlocking().forEach(new Action1<ByteBuf>() {
+      private int i = 0;
+      @Override
+      public void call(ByteBuf byteBuf) {
+        String obj = byteBuf.toString(Charset.forName("UTF-8"));
+        Assert.assertEquals(String.format("%d", ++i), obj);
       }
     });
   }
