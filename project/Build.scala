@@ -35,6 +35,7 @@ object MainBuild extends Build {
       `iep-module-archaius1`,
       `iep-module-archaius2`,
       `iep-module-eureka`,
+      `iep-module-eureka-admin`,
       `iep-module-jmxport`,
       `iep-module-karyon3`,
       `iep-module-rxnetty`,
@@ -115,6 +116,14 @@ object MainBuild extends Build {
       Dependencies.guiceCore,
       Dependencies.guiceMulti,
       Dependencies.slf4jApi
+    ))
+
+  lazy val `iep-module-eureka-admin` = project
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.karyon3Eureka,
+      Dependencies.guiceCore
     ))
 
   lazy val `iep-module-jmxport` = project
