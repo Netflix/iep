@@ -28,6 +28,7 @@ import com.netflix.iep.service.Service;
 import com.netflix.karyon.admin.AbstractAdminModule;
 import com.netflix.karyon.admin.DIGraphResource;
 import com.netflix.karyon.admin.JarsAdminResource;
+import com.netflix.karyon.admin.ThreadsAdminResource;
 import com.netflix.karyon.admin.rest.AdminServerModule;
 import com.netflix.karyon.admin.ui.AdminUIServerConfig;
 import com.netflix.karyon.archaius.admin.ArchaiusAdminModule;
@@ -48,6 +49,7 @@ public final class KaryonModule extends AbstractAdminModule {
     // Resources from karyon3-core. Not using module because I don't necessarily want all
     // the core resources. In particular I'm not using the karyon healthcheck stuff.
     bindAdminResource("jars").to(JarsAdminResource.class);
+    bindAdminResource("threads").to(ThreadsAdminResource.class);
 
     // These are needed in DIGraphResource
     bind(NameFactory.class).to(ShortNameFactory.class);
