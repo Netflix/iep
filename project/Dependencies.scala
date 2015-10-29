@@ -4,11 +4,11 @@ object Dependencies {
   object Versions {
     val archaius   = "2.0.0-rc.33"
     val guice      = "4.0"
-    val karyon3    = "3.0.1-rc.18"
+    val karyon3    = "3.0.1-rc.20"
     val rxnetty    = "0.4.13"
     val scala      = "2.11.7"
     val slf4j      = "1.7.12"
-    val spectator  = "0.32.0"
+    val spectator  = "0.33.0"
   }
 
   import Versions._
