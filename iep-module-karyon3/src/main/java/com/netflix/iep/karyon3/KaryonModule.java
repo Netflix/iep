@@ -16,20 +16,25 @@
 package com.netflix.iep.karyon3;
 
 
+import com.google.inject.Provides;
 import com.google.inject.grapher.NameFactory;
 import com.google.inject.grapher.ShortNameFactory;
 import com.google.inject.grapher.graphviz.PortIdFactory;
 import com.google.inject.grapher.graphviz.PortIdFactoryImpl;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.util.Modules;
+import com.netflix.archaius.ConfigProxyFactory;
 import com.netflix.iep.service.Service;
 import com.netflix.karyon.admin.AbstractAdminModule;
 import com.netflix.karyon.admin.DIGraphResource;
 import com.netflix.karyon.admin.JarsAdminResource;
 import com.netflix.karyon.admin.rest.AdminServerModule;
+import com.netflix.karyon.admin.ui.AdminUIServerConfig;
 import com.netflix.karyon.archaius.admin.ArchaiusAdminModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Singleton;
 
 
 public final class KaryonModule extends AbstractAdminModule {
@@ -52,6 +57,13 @@ public final class KaryonModule extends AbstractAdminModule {
     Multibinder<Service> serviceBinder =
         Multibinder.newSetBinder(binder(), Service.class);
     bindAdminResource("services").to(ServicesResource.class);
+  }
+
+  // HACK to get around: https://github.com/Netflix/karyon/issues/310
+  @Provides
+  @Singleton
+  protected AdminUIServerConfig getAdminServerConfig(ConfigProxyFactory factory) {
+    return factory.newProxy(AdminUIServerConfig.class);
   }
 
   @Override public boolean equals(Object obj) {
