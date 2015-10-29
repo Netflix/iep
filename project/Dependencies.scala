@@ -31,6 +31,7 @@ object Dependencies {
   val jodaTime        = "joda-time" % "joda-time" % "2.8.2"
   val karyon3Admin    = "com.netflix.karyon" % "karyon3-admin-simple" % karyon3
   val karyon3Archaius = "com.netflix.karyon" % "karyon3-archaius2" % karyon3
+  val karyon3Eureka   = "com.netflix.karyon" % "karyon3-eureka" % karyon3
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
