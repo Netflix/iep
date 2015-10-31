@@ -47,5 +47,6 @@ object Dependencies {
   val scalatest       = "org.scalatest" % "scalatest_2.11" % "2.2.1"
   val slf4jApi        = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi    = "com.netflix.spectator" % "spectator-api" % spectator
+  val spectatorAws    = "com.netflix.spectator" % "spectator-ext-aws" % spectator
   val spectatorSandbox= "com.netflix.spectator" % "spectator-ext-sandbox" % spectator
 }

@@ -34,6 +34,7 @@ object MainBuild extends Build {
       `iep-launcher`,
       `iep-module-archaius1`,
       `iep-module-archaius2`,
+      `iep-module-awsmetrics`,
       `iep-module-eureka`,
       `iep-module-eureka-admin`,
       `iep-module-jmxport`,
@@ -103,6 +104,17 @@ object MainBuild extends Build {
       Dependencies.archaiusGuice,
       Dependencies.archaiusPersist,
       Dependencies.archaiusTypesafe,
+      Dependencies.guiceCore,
+      Dependencies.slf4jApi
+    ))
+
+  lazy val `iep-module-awsmetrics` = project
+    .dependsOn(`iep-platformservice`)
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.spectatorApi,
+      Dependencies.spectatorAws,
       Dependencies.guiceCore,
       Dependencies.slf4jApi
     ))
