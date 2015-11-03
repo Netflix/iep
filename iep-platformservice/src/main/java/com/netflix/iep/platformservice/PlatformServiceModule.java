@@ -40,7 +40,14 @@ import java.util.concurrent.TimeUnit;
 public final class PlatformServiceModule extends AbstractModule {
 
   @Override protected void configure() {
-    bind(Config.class).toInstance(ConfigFactory.load());
+  }
+
+  @Provides
+  @Singleton
+  Config providesTypesafeConfig() {
+    final Config baseConfig = ConfigFactory.load();
+    final String envConfigName = "iep-" + baseConfig.getString("netflix.iep.env.environment");
+    return ConfigFactory.load(envConfigName).withFallback(baseConfig);
   }
 
   @Provides
