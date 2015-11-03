@@ -46,7 +46,7 @@ public final class PlatformServiceModule extends AbstractModule {
   @Singleton
   Config providesTypesafeConfig() {
     final Config baseConfig = ConfigFactory.load();
-    final String envConfigName = "iep-" + baseConfig.getString("netflix.iep.env.environment");
+    final String envConfigName = "iep-" + baseConfig.getString("netflix.iep.env.account-type");
     return ConfigFactory.load(envConfigName).withFallback(baseConfig);
   }
 
