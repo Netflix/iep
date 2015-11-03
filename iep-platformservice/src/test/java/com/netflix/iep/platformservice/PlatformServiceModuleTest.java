@@ -53,6 +53,13 @@ public class PlatformServiceModuleTest {
   private Module testModule = Modules.override(baseModule).with(overrideModule);
 
   @Test
+  public void loadConfig() {
+    PlatformServiceModule m = new PlatformServiceModule();
+    com.typesafe.config.Config c = m.providesTypesafeConfig();
+    Assert.assertEquals("main", c.getString("account-specific-prop"));
+  }
+
+  @Test
   public void getValues() {
     Config cfg = Guice.createInjector(testModule).getInstance(Config.class);
     Assert.assertEquals("b", cfg.getString("a"));
