@@ -68,8 +68,15 @@ public class ConfigModule extends AbstractModule {
     }
 
     @Override protected void configure() {
-      bind(Config.class).toInstance(ConfigFactory.load());
       bind(DynamicPropertiesConfiguration.class).asEagerSingleton();
+    }
+
+    @Provides
+    @Singleton
+    Config providesTypesafeConfig() {
+      final Config baseConfig = ConfigFactory.load();
+      final String envConfigName = "iep-" + baseConfig.getString("netflix.iep.env.account-type");
+      return ConfigFactory.load(envConfigName).withFallback(baseConfig);
     }
 
     @Provides
