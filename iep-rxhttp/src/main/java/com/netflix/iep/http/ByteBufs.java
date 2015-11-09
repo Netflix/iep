@@ -26,6 +26,7 @@ import io.netty.handler.codec.compression.JdkZlibDecoder;
 import io.netty.handler.codec.compression.JdkZlibEncoder;
 import io.netty.handler.codec.compression.ZlibWrapper;
 import io.netty.handler.codec.json.JsonObjectDecoder;
+import io.netty.handler.codec.json.ModifiedJsonObjectDecoder;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -77,6 +78,10 @@ public final class ByteBufs {
    */
   public static Observable.Transformer<ByteBuf, ByteBuf> json() {
     return input -> decode(input, new EmbeddedChannel(new JsonObjectDecoder(true)));
+  }
+
+  public static Observable.Transformer<ByteBuf, ByteBuf> modifiedJson() {
+    return input -> decode(input, new EmbeddedChannel(new ModifiedJsonObjectDecoder(true)));
   }
 
   /**
