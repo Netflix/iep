@@ -22,9 +22,8 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.compression.JdkZlibDecoder;
 import io.netty.handler.codec.compression.JdkZlibEncoder;
 import io.netty.handler.codec.compression.ZlibWrapper;
-import io.netty.handler.codec.json.JsonObjectDecoder;
+import io.netty.handler.codec.json.NetflixJsonObjectDecoder;
 import io.reactivex.netty.protocol.http.sse.ServerSentEvent;
-import io.reactivex.netty.protocol.http.sse.client.ServerSentEventDecoder;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -78,7 +77,7 @@ public final class ByteBufs {
   public static Observable.Transformer<ByteBuf, ByteBuf> json() {
     return new Observable.Transformer<ByteBuf, ByteBuf>() {
       @Override public Observable<ByteBuf> call(Observable<ByteBuf> input) {
-        EmbeddedChannel channel = new EmbeddedChannel(new JsonObjectDecoder(true));
+        EmbeddedChannel channel = new EmbeddedChannel(new NetflixJsonObjectDecoder(true));
         return decode(input, channel);
       }
     };
