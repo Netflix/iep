@@ -214,7 +214,7 @@ public final class RxHttp {
     entry.mark("received-response")
         .withStatusCode(code)
         .withStatusReason(res.getStatus().reasonPhrase())
-        .withResponseContentLength(res.getContentLength(-1))
+        .withResponseContentLength(res.getContentLength(-1L))
         .withCanRetry(canRetry);
 
     for (String k : res.getHeaderNames()) {

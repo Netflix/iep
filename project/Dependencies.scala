@@ -3,14 +3,15 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.0.0-rc.28"
+    val eureka     = "1.3.4"
     val guice      = "4.0"
     val karyon     = "2.7.1"
     val karyon3    = "3.0.1-rc.6"
-    val netty      = "4.1.0.Beta5"
+    val netty      = "4.1.0.Beta8-SNAPSHOT"
     val rxnetty    = "0.5.0-SNAPSHOT"
     val scala      = "2.11.7"
     val slf4j      = "1.7.12"
-    val spectator  = "0.29.0"
+    val spectator  = "0.33.0"
   }
 
   import Versions._
@@ -22,7 +23,7 @@ object Dependencies {
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.2"
-  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.2.0"
+  val eurekaClient    = "com.netflix.eureka" % "eureka-client" % eureka
   val governator      = "com.netflix.governator" % "governator-core" % "1.9.3"
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
@@ -42,7 +43,8 @@ object Dependencies {
   val nettyHandler    = "io.netty" % "netty-handler" % netty
   val nettyTransport  = "io.netty" % "netty-transport-native-epoll" % netty
   val rxjava          = "io.reactivex" % "rxjava" % "1.0.14"
-  val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
+  //val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
+  val rxnettyHttp     = "io.reactivex" % "rxnetty-http" % rxnetty
   //val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
   val scalaLibrary    = "org.scala-lang" % "scala-library" % scala

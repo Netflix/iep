@@ -21,6 +21,7 @@ object BuildSettings {
   val resolvers = Seq(
     Resolver.mavenLocal,
     Resolver.jcenterRepo,
+    "sonasnap" at "https://oss.sonatype.org/content/repositories/snapshots",
     "jfrog" at "http://oss.jfrog.org/oss-snapshot-local")
 
   // Don't create root.jar, from:
