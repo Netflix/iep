@@ -7,7 +7,7 @@ object Dependencies {
     val karyon3    = "3.0.1-rc.20"
     val rxnetty    = "0.4.13"
     val scala      = "2.11.7"
-    val slf4j      = "1.7.12"
+    val slf4j      = "1.7.13"
     val spectator  = "0.33.0"
   }
 
@@ -20,7 +20,7 @@ object Dependencies {
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.5"
-  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.3.3"
+  val eureka          = "com.netflix.eureka" % "eureka-client" % "1.3.4"
   val governator      = "com.netflix.governator" % "governator-core" % "1.10.5"
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
@@ -35,7 +35,7 @@ object Dependencies {
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava          = "io.reactivex" % "rxjava" % "1.0.14"
+  val rxjava          = "io.reactivex" % "rxjava" % "1.0.16"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
