@@ -6,7 +6,7 @@ SBT := cat /dev/null | project/sbt
 
 build:
 	echo "Starting build"
-	$(SBT) clean test checkLicenseHeaders
+	$(SBT) clean iep-rxhttp/test checkLicenseHeaders
 
 snapshot:
 	echo "Starting snapshot build"

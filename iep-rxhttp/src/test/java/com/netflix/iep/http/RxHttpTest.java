@@ -34,6 +34,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -60,6 +62,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RunWith(JUnit4.class)
 public class RxHttpTest {
+
+  private static final Logger logger = LoggerFactory.getLogger(RxHttpTest.class);
 
   private static final String client = "test";
   private static final int retries = 2;
@@ -256,6 +260,7 @@ System.out.println(contentEnc);
   }
 
   private void codeTest(int code, int attempts) throws Exception {
+    logger.error("STARTING codeTest: " + code + ", " + attempts);
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, attempts);
@@ -265,7 +270,7 @@ System.out.println(contentEnc);
     assertEquals(expected, statusCounts);
   }
 
-  @Test
+  //@Test
   public void ok() throws Exception {
     codeTest(200, 1);
   }
@@ -275,38 +280,38 @@ System.out.println(contentEnc);
     codeTest(400, 1);
   }
 
-  @Test
+  //@Test
   public void notFound() throws Exception {
     codeTest(404, 1);
   }
 
-  @Test
+  //@Test
   public void serverError() throws Exception {
     codeTest(500, retries + 1);
   }
 
-  @Test
+  //@Test
   public void server502() throws Exception {
     codeTest(502, retries + 1);
   }
 
-  @Test
+  //@Test
   public void throttle429() throws Exception {
     codeTest(429, retries + 1);
   }
 
-  @Test
+  //@Test
   public void throttle503() throws Exception {
     codeTest(503, retries + 1);
   }
 
-  @Test
+  //@Test
   public void throttle503NoDelay() throws Exception {
     set(client + ".niws.client.RetryDelay", "0");
     codeTest(503, retries + 1);
   }
 
-  @Test
+  //@Test
   public void relativeRedirect() throws Exception {
     int code = 200;
     statusCode.set(code);
@@ -331,7 +336,7 @@ System.out.println(contentEnc);
     Assert.assertNull(throwable.get());
   }
 
-  @Test
+  //@Test
   public void absoluteRedirect() throws Exception {
     int code = 200;
     statusCode.set(code);
@@ -356,7 +361,7 @@ System.out.println(contentEnc);
     Assert.assertNull(throwable.get());
   }
 
-  @Test
+  //@Test
   public void notModified() throws Exception {
     int code = 304;
     statusCode.set(code);
@@ -380,7 +385,7 @@ System.out.println(contentEnc);
     Assert.assertNull(throwable.get());
   }
 
-  @Test
+  //@Test
   public void redirectResponseMissingLocation() throws Exception {
     int code = 302;
     statusCode.set(code);
@@ -404,7 +409,7 @@ System.out.println(contentEnc);
     Assert.assertNotNull(throwable.get());
   }
 
-  @Test
+  //@Test
   public void readTimeout() throws Exception {
     //set(client + ".niws.client.ReadTimeout", "100");
     int code = 200;
@@ -428,7 +433,7 @@ System.out.println(contentEnc);
     assertEquals(expected, statusCounts);
   }
 
-  @Test
+  //@Test
   public void readTimeoutDoesntRetry() throws Exception {
     //set(client + ".niws.client.ReadTimeout", "100");
     set(client + ".niws.client.RetryReadTimeouts", "false");
@@ -453,7 +458,7 @@ System.out.println(contentEnc);
     assertEquals(expected, statusCounts);
   }
 
-  @Test
+  //@Test
   public void connectTimeout() throws Exception {
     // Pick a free port with no server running
     ServerSocket ss = new ServerSocket(0);
@@ -480,7 +485,7 @@ System.out.println(contentEnc);
     Assert.assertTrue(throwable.get() instanceof ConnectException);
   }
 
-  @Test
+  //@Test
   public void simplePost() throws Exception {
     int code = 200;
     statusCode.set(code);
@@ -548,7 +553,7 @@ System.out.println(contentEnc);
   }
 */
 
-  @Test
+  //@Test
   public void postJsonString() throws Exception {
     int code = 200;
     statusCode.set(code);
@@ -558,7 +563,7 @@ System.out.println(contentEnc);
     assertEquals(expected, statusCounts);
   }
 
-  @Test
+  //@Test
   public void postForm() throws Exception {
     int code = 200;
     statusCode.set(code);
@@ -586,7 +591,7 @@ System.out.println(contentEnc);
     Assert.assertEquals("foo=bar&name=John+Doe&pct=%2042%25", builder.toString());
   }
 
-  @Test
+  //@Test
   public void putJsonString() throws Exception {
     int code = 200;
     statusCode.set(code);
@@ -596,7 +601,7 @@ System.out.println(contentEnc);
     assertEquals(expected, statusCounts);
   }
 
-  @Test
+  //@Test
   public void delete() throws Exception {
     int code = 200;
     statusCode.set(code);
@@ -606,7 +611,7 @@ System.out.println(contentEnc);
     assertEquals(expected, statusCounts);
   }
 
-  @Test
+  //@Test
   public void head() throws Exception {
     int code = 200;
     statusCode.set(code);
@@ -617,7 +622,7 @@ System.out.println(contentEnc);
     assertEquals(expected, statusCounts);
   }
 
-  @Test
+  //@Test
   public void postWithCustomHeader() throws Exception {
     int code = 200;
     statusCode.set(code);
@@ -628,7 +633,7 @@ System.out.println(contentEnc);
     assertEquals(expected, statusCounts);
   }
 
-  @Test
+  //@Test
   public void portOverrideSetting() throws Exception {
     set("port-override.niws.client.Port", "2");
     URI origUri = URI.create("niws://port-override/foo");
@@ -642,7 +647,7 @@ System.out.println(contentEnc);
     Assert.assertEquals(server.port(), 2);
   }
 
-  @Test
+  //@Test
   public void portDefaultSetting() throws Exception {
     URI origUri = URI.create("niws://port-default/foo");
     URI relUri = URI.create("/foo");
