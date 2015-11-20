@@ -56,6 +56,14 @@ public class DynamicNoOpConfigModule extends AbstractModule {
     install(m);
   }
 
+  @Override public boolean equals(Object obj) {
+    return obj != null && getClass().equals(obj.getClass());
+  }
+
+  @Override public int hashCode() {
+    return getClass().hashCode();
+  }
+
   private static class OverrideModule extends AbstractModule {
 
     private final String[] propFiles;
@@ -65,8 +73,16 @@ public class DynamicNoOpConfigModule extends AbstractModule {
     }
 
     @Override protected void configure() {
-      bind(Config.class).toInstance(ConfigFactory.load());
+      //bind(Config.class).toInstance(ConfigFactory.load());
       bind(DynamicPropertiesConfiguration.class).asEagerSingleton();
+    }
+
+    @Provides
+    @Singleton
+    Config providesTypesafeConfig() {
+      final Config baseConfig = ConfigFactory.load();
+      final String envConfigName = "iep-" + baseConfig.getString("netflix.iep.env.account-type");
+      return ConfigFactory.load(envConfigName).withFallback(baseConfig);
     }
 
     @Provides
@@ -87,7 +103,7 @@ public class DynamicNoOpConfigModule extends AbstractModule {
     @Provides
     @Singleton
     @ApplicationLayer
-    protected CompositeConfig providesAppConfig(Config cfg) throws Exception {
+    private CompositeConfig providesAppConfig(Config cfg) throws Exception {
       final Properties props = (propFiles == null)
           ? ScopedPropertiesLoader.load()
           : ScopedPropertiesLoader.load(propFiles);
