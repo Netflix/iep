@@ -16,7 +16,7 @@
 package com.netflix.iep.http;
 
 import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.DiscoveryClient;
+import com.netflix.discovery.EurekaClient;
 import com.netflix.spectator.impl.Preconditions;
 
 import javax.inject.Inject;
@@ -37,11 +37,11 @@ public class EurekaServerRegistry implements ServerRegistry {
 
   private final ConcurrentHashMap<String, ServerEntry> serversByVip = new ConcurrentHashMap<>();
 
-  private final DiscoveryClient client;
+  private final EurekaClient client;
 
   /** Create a new instance. */
   @Inject
-  public EurekaServerRegistry(DiscoveryClient client) {
+  public EurekaServerRegistry(EurekaClient client) {
     this.client = client;
   }
 
