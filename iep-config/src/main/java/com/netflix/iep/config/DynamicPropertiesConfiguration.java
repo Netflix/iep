@@ -27,29 +27,36 @@ import com.netflix.archaius.Property;
 import com.netflix.archaius.PropertyFactory;
 
 @Singleton
-public class DynamicPropertiesConfiguration implements IConfiguration {
+public class DynamicPropertiesConfiguration {
 
-  private final PropertyFactory factory;
+  private final IConfiguration instance;
 
   @Inject
   public DynamicPropertiesConfiguration(PropertyFactory factory) {
-    this.factory = factory;
+    instance = new DynamicPropertiesConfigurationInstance(factory);
+    Configuration.setConfiguration(instance);
   }
 
-  private final Map<String, Property<String>> props = new ConcurrentHashMap<>();
+  protected IConfiguration getInstance() {
+    return instance;
+  }
 
-  public String get(String key) {
-    Property<String> prop = props.get(key);
-    if (prop == null) {
-      prop = factory.getProperty(key).asString(null);
-      props.put(key, prop);
+  protected class DynamicPropertiesConfigurationInstance implements IConfiguration {
+    private final PropertyFactory factory;
+    private final Map<String, Property<String>> props = new ConcurrentHashMap<>();
+
+    protected DynamicPropertiesConfigurationInstance(PropertyFactory factory) {
+      this.factory = factory;
     }
-    return prop.get();
-  }
 
-  @PostConstruct
-  public void init() {
-    Configuration.setConfiguration(this);
+    public String get(String key) {
+      Property<String> prop = props.get(key);
+      if (prop == null) {
+        prop = factory.getProperty(key).asString(null);
+        props.put(key, prop);
+      }
+      return prop.get();
+    }
   }
 
   @PreDestroy

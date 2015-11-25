@@ -18,6 +18,7 @@ package com.netflix.iep.platformservice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.netflix.archaius.config.CompositeConfig;
+import com.netflix.archaius.config.EmptyConfig;
 import com.netflix.archaius.config.PollingDynamicConfig;
 import com.netflix.archaius.config.PollingStrategy;
 import com.netflix.archaius.config.polling.FixedPollingStrategy;
@@ -87,7 +88,10 @@ public final class PlatformServiceModule extends AbstractModule {
     return new FixedPollingStrategy(interval, TimeUnit.MILLISECONDS, cfg.getBoolean(propSyncInit));
   }
 
-  public static PollingDynamicConfig getDynamicConfig(Config cfg) throws Exception {
-    return new PollingDynamicConfig(getCallback(cfg), getPollingStrategy(cfg));
+  public static com.netflix.archaius.Config getDynamicConfig(Config cfg) throws Exception {
+    final String propUseDynamic = "netflix.iep.archaius.use-dynamic";
+    return (cfg.getBoolean(propUseDynamic))
+      ? new PollingDynamicConfig(getCallback(cfg), getPollingStrategy(cfg))
+      : EmptyConfig.INSTANCE;
   }
 }

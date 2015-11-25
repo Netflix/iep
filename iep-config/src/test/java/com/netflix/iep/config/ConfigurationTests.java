@@ -63,7 +63,7 @@ public class ConfigurationTests {
   private TestConfig mkConfig(Map<String,String> props) { return mkConfig(null, props); }
   private TestConfig mkConfig(String prefix, Map<String,String> props) {
     PropertyFactory factory = new DefaultPropertyFactory(new MapConfig(props));
-    Configuration.setConfiguration(new DynamicPropertiesConfiguration(factory));
+    Configuration.setConfiguration(new DynamicPropertiesConfiguration(factory).getInstance());
     return Configuration.newProxy(TestConfig.class, prefix);
   }
 

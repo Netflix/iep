@@ -60,7 +60,7 @@ public class PropertyFileConfigurationTests {
     }};
     Config config = TestResourceConfiguration.load("config.test.properties", subs);
     PropertyFactory factory = new DefaultPropertyFactory(config);
-    Configuration.setConfiguration(new DynamicPropertiesConfiguration(factory));
+    Configuration.setConfiguration(new DynamicPropertiesConfiguration(factory).getInstance());
   }
 
   private TestConfig mkConfig(String prefix) {
