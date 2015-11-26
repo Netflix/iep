@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.netflix.config.ConfigurationManager;
-import com.netflix.discovery.DiscoveryClient;
+import com.netflix.discovery.EurekaClient;
 import com.netflix.iep.http.BasicServerRegistry;
 import com.netflix.iep.http.EurekaServerRegistry;
 import com.netflix.iep.http.RxHttp;
@@ -41,7 +41,7 @@ public final class RxNettyModule extends AbstractModule {
     Configuration configuration;
 
     @Inject(optional = true)
-    DiscoveryClient discovery;
+    EurekaClient discovery;
 
     OptionalInjections() {
     }

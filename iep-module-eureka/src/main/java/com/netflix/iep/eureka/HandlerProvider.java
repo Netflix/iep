@@ -17,7 +17,6 @@ package com.netflix.iep.eureka;
 
 import com.google.inject.Inject;
 import com.netflix.appinfo.HealthCheckHandler;
-import com.netflix.discovery.DiscoveryClient;
 import com.netflix.iep.service.ServiceManager;
 
 import javax.inject.Provider;
