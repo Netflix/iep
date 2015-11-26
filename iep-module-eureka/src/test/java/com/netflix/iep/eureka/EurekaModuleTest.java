@@ -18,6 +18,7 @@ package com.netflix.iep.eureka;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.netflix.discovery.DiscoveryClient;
+import com.netflix.discovery.EurekaClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +31,13 @@ public class EurekaModuleTest {
   public void getClient() {
     Injector injector = Guice.createInjector(new EurekaModule());
     DiscoveryClient client = injector.getInstance(DiscoveryClient.class);
+    Assert.assertNotNull(client);
+  }
+
+  @Test
+  public void getEurekaClient() {
+    Injector injector = Guice.createInjector(new EurekaModule());
+    EurekaClient client = injector.getInstance(EurekaClient.class);
     Assert.assertNotNull(client);
   }
 
