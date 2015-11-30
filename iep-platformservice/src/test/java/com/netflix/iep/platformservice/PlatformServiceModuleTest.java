@@ -60,6 +60,13 @@ public class PlatformServiceModuleTest {
   }
 
   @Test
+  public void appConfigIsLoaded() {
+    PlatformServiceModule m = new PlatformServiceModule();
+    com.typesafe.config.Config c = m.providesTypesafeConfig();
+    Assert.assertEquals(42, c.getInt("iep.test.foo"));
+  }
+
+  @Test
   public void getValues() {
     Config cfg = Guice.createInjector(testModule).getInstance(Config.class);
     Assert.assertEquals("b", cfg.getString("a"));
