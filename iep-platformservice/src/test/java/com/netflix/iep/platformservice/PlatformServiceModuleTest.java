@@ -63,7 +63,7 @@ public class PlatformServiceModuleTest {
   public void appConfigIsLoaded() {
     PlatformServiceModule m = new PlatformServiceModule();
     com.typesafe.config.Config c = m.providesTypesafeConfig();
-    Assert.assertEquals(42, c.getInt("iep.test.foo"));
+    Assert.assertEquals("app", c.getString("iep.test.which-config"));
   }
 
   @Test
