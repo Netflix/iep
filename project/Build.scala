@@ -29,7 +29,6 @@ object MainBuild extends Build {
     .aggregate(
       `iep-config`,
       `iep-eureka-testconfig`,
-      `iep-governator`,
       `iep-guice`,
       `iep-launcher`,
       `iep-module-archaius1`,
@@ -60,15 +59,6 @@ object MainBuild extends Build {
 
   lazy val `iep-eureka-testconfig` = project
     .settings(buildSettings: _*)
-
-  lazy val `iep-governator` = project
-    .settings(buildSettings: _*)
-    .settings(libraryDependencies ++= commonDeps)
-    .settings(libraryDependencies ++= Seq(
-      Dependencies.governator,
-      Dependencies.guiceCore,
-      Dependencies.slf4jApi
-    ))
 
   lazy val `iep-guice` = project
     .settings(buildSettings: _*)
