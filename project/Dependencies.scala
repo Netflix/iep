@@ -28,14 +28,14 @@ object Dependencies {
   val guiceMulti      = "com.google.inject.extensions" % "guice-multibindings" % guice
   val guiceServlet    = "com.google.inject.extensions" % "guice-servlet" % guice
   val inject          = "javax.inject" % "javax.inject" % "1"
-  val jodaTime        = "joda-time" % "joda-time" % "2.8.2"
+  val jodaTime        = "joda-time" % "joda-time" % "2.9.1"
   val karyon3Admin    = "com.netflix.karyon" % "karyon3-admin-simple" % karyon3
   val karyon3Archaius = "com.netflix.karyon" % "karyon3-archaius2" % karyon3
   val karyon3Eureka   = "com.netflix.karyon" % "karyon3-eureka" % karyon3
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava          = "io.reactivex" % "rxjava" % "1.0.16"
+  val rxjava          = "io.reactivex" % "rxjava" % "1.0.17"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
@@ -44,7 +44,7 @@ object Dependencies {
   val scalaLogging    = "com.typesafe.scala-logging" % "scala-logging_2.11" % "3.1.0"
   val scalaParsec     = "org.scala-lang.modules" % "scala-parser-combinators_2.11" % "1.0.2"
   val scalaReflect    = "org.scala-lang" % "scala-reflect" % scala
-  val scalatest       = "org.scalatest" % "scalatest_2.11" % "2.2.1"
+  val scalatest       = "org.scalatest" % "scalatest_2.11" % "2.2.5"
   val slf4jApi        = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi    = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorAws    = "com.netflix.spectator" % "spectator-ext-aws" % spectator
