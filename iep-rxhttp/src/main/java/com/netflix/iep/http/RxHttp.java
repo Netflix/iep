@@ -16,7 +16,6 @@
 package com.netflix.iep.http;
 
 import com.netflix.config.ConfigurationManager;
-import com.netflix.spectator.api.Spectator;
 import com.netflix.spectator.impl.Preconditions;
 import com.netflix.spectator.sandbox.HttpLogEntry;
 import io.reactivex.netty.client.CompositePoolLimitDeterminationStrategy;
@@ -144,7 +143,7 @@ public final class RxHttp {
       }
     };
 
-    final long cleanupFreq = Spectator.config().getLong("spectator.http.cleanupFrequency", 60);
+    final long cleanupFreq = config.getLong("netflix.iep.http.cleanupFrequency", 60);
     executor.scheduleWithFixedDelay(task, 0L, cleanupFreq, TimeUnit.SECONDS);
   }
 
