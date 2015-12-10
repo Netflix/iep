@@ -16,40 +16,90 @@
 package com.netflix.iep.platformservice;
 
 import com.netflix.archaius.config.polling.PollingResponse;
+import com.netflix.spectator.api.Functions;
+import com.netflix.spectator.api.Registry;
+import com.netflix.spectator.sandbox.HttpLogEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 class PropertiesReader implements Callable<PollingResponse> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesReader.class);
 
+  private final AtomicLong lastUpdateTime;
   private final URL url;
 
-  PropertiesReader(URL url) {
+  PropertiesReader(Registry registry, URL url) {
+    this.lastUpdateTime = registry.gauge(
+        "iep.archaius.cacheAge",
+        new AtomicLong(System.currentTimeMillis()),
+        Functions.AGE);
     this.url = url;
   }
 
   @Override public PollingResponse call() throws Exception {
     LOGGER.debug("updating properties from {}", url);
-    try (InputStream in = url.openStream()) {
-      final Properties props = new Properties();
-      props.load(in);
-      if (LOGGER.isTraceEnabled()) {
-        props.stringPropertyNames().forEach(k -> {
-          LOGGER.trace("received property: [{}] = [{}]", k, props.getProperty(k));
-        });
+
+    HttpLogEntry entry = new HttpLogEntry()
+        .withClientName("iep-archaius")
+        .withMethod("GET")
+        .withRequestUri(url.toURI())
+        .mark("start");
+
+    HttpURLConnection client = null;
+    int status = -1;
+    try {
+      client = (HttpURLConnection) url.openConnection();
+      status = client.getResponseCode();
+      entry.withStatusCode(status);
+      entry.withStatusReason(client.getResponseMessage());
+      client.getHeaderFields().forEach((k, vs) -> {
+        vs.forEach(v -> entry.withResponseHeader(k, v));
+      });
+
+      if (status == 200) {
+        try (InputStream in = client.getInputStream()) {
+          entry.withResponseContentLength(in.available());
+          final Properties props = new Properties();
+          props.load(in);
+
+          if (LOGGER.isTraceEnabled()) {
+            props.stringPropertyNames().forEach(k -> {
+              LOGGER.trace("received property: [{}] = [{}]", k, props.getProperty(k));
+            });
+          }
+
+          Map<String, String> data = props.stringPropertyNames()
+              .stream()
+              .collect(Collectors.toMap(k -> k, props::getProperty));
+
+          lastUpdateTime.set(System.currentTimeMillis());
+          return PollingResponse.forSnapshot(data);
+        }
+      } else {
+        throw new IOException("request failed with status: " + status);
       }
-      Map<String, String> data = props.stringPropertyNames()
-          .stream()
-          .collect(Collectors.toMap(k -> k, props::getProperty));
-      return PollingResponse.forSnapshot(data);
+    } catch (Exception e) {
+      if (status == -1) {
+        entry.withException(e);
+      }
+      throw e;
+    } finally {
+      entry.mark("end");
+      HttpLogEntry.logClientRequest(entry);
+      if (client != null) {
+        client.disconnect();
+      }
     }
   }
 }

@@ -26,6 +26,7 @@ import com.netflix.archaius.inject.ApplicationLayer;
 import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.typesafe.TypesafeConfig;
 import com.netflix.iep.platformservice.PlatformServiceModule;
+import com.netflix.spectator.api.Spectator;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -83,7 +84,7 @@ public class ConfigModule extends AbstractModule {
     @Singleton
     @RemoteLayer
     private com.netflix.archaius.Config providesOverrideConfig(Config cfg) throws Exception {
-      return PlatformServiceModule.getDynamicConfig(cfg);
+      return PlatformServiceModule.getDynamicConfig(Spectator.globalRegistry(), cfg);
     }
 
     @Provides
