@@ -57,8 +57,8 @@ public class FixedPollingStrategy implements PollingStrategy {
       try {
         callback.run();
         break;
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
+        LOG.warn("sync-init, failed to load properties", e);
         try {
           units.sleep(interval);
         }
@@ -74,7 +74,7 @@ public class FixedPollingStrategy implements PollingStrategy {
         try {
           callback.run();
         } catch (Exception e) {
-          LOG.warn("Failed to load properties", e);
+          LOG.warn("failed to load properties", e);
         }
       }
     }, interval, interval, units);
