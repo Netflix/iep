@@ -64,7 +64,10 @@ class PropertiesReader implements Callable<PollingResponse> {
       entry.withStatusCode(status);
       entry.withStatusReason(client.getResponseMessage());
       client.getHeaderFields().forEach((k, vs) -> {
-        vs.forEach(v -> entry.withResponseHeader(k, v));
+        // The status line, e.g. [HTTP/1.1 200 OK], is reported as a header with a null key value
+        if (k != null) {
+          vs.forEach(v -> entry.withResponseHeader(k, v));
+        }
       });
 
       if (status == 200) {
