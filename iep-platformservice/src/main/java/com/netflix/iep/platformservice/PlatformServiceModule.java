@@ -16,6 +16,7 @@
 package com.netflix.iep.platformservice;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.netflix.archaius.config.CompositeConfig;
 import com.netflix.archaius.config.EmptyConfig;
@@ -26,6 +27,8 @@ import com.netflix.archaius.config.polling.PollingResponse;
 import com.netflix.archaius.inject.ApplicationLayer;
 import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.typesafe.TypesafeConfig;
+import com.netflix.spectator.api.DefaultRegistry;
+import com.netflix.spectator.api.Registry;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -56,8 +59,9 @@ public final class PlatformServiceModule extends AbstractModule {
   @Provides
   @Singleton
   @RemoteLayer
-  private com.netflix.archaius.Config providesOverrideConfig(Config application) throws Exception {
-    return getDynamicConfig(application);
+  private com.netflix.archaius.Config providesOverrideConfig(OptionalInjections opts, Config cfg)
+      throws Exception {
+    return getDynamicConfig(opts.getRegistry(), cfg);
   }
 
   @Provides
@@ -77,10 +81,11 @@ public final class PlatformServiceModule extends AbstractModule {
     return getClass().hashCode();
   }
 
-  private static Callable<PollingResponse> getCallback(Config cfg) throws Exception {
+  private static Callable<PollingResponse> getCallback(Registry registry, Config cfg)
+      throws Exception {
     final String prop = "netflix.iep.archaius.url";
     final URL url = URI.create(cfg.getString(prop)).toURL();
-    return new PropertiesReader(url);
+    return new PropertiesReader(registry, url);
   }
 
   private static PollingStrategy getPollingStrategy(Config cfg) {
@@ -90,10 +95,24 @@ public final class PlatformServiceModule extends AbstractModule {
     return new FixedPollingStrategy(interval, TimeUnit.MILLISECONDS, cfg.getBoolean(propSyncInit));
   }
 
-  public static com.netflix.archaius.Config getDynamicConfig(Config cfg) throws Exception {
+  public static com.netflix.archaius.Config getDynamicConfig(Registry registry, Config cfg)
+      throws Exception {
     final String propUseDynamic = "netflix.iep.archaius.use-dynamic";
     return (cfg.getBoolean(propUseDynamic))
-      ? new PollingDynamicConfig(getCallback(cfg), getPollingStrategy(cfg))
+      ? new PollingDynamicConfig(getCallback(registry, cfg), getPollingStrategy(cfg))
       : EmptyConfig.INSTANCE;
+  }
+
+  @Singleton
+  private static class OptionalInjections {
+    @Inject(optional = true)
+    Registry registry;
+
+    Registry getRegistry() {
+      if (registry == null) {
+        registry = new DefaultRegistry();
+      }
+      return registry;
+    }
   }
 }

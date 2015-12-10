@@ -173,7 +173,9 @@ object MainBuild extends Build {
       Dependencies.archaiusTypesafe,
       Dependencies.guiceCore,
       Dependencies.guiceMulti,
-      Dependencies.slf4jApi
+      Dependencies.slf4jApi,
+      Dependencies.spectatorApi,
+      Dependencies.spectatorSandbox
     ))
 
   lazy val `iep-rxhttp` = project
