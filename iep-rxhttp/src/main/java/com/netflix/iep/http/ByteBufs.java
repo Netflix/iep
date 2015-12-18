@@ -25,7 +25,7 @@ import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.compression.JdkZlibDecoder;
 import io.netty.handler.codec.compression.JdkZlibEncoder;
 import io.netty.handler.codec.compression.ZlibWrapper;
-import io.netty.handler.codec.json.JsonObjectDecoder;
+//import io.netty.handler.codec.json.JsonObjectDecoder;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -76,7 +76,7 @@ public final class ByteBufs {
    * will be a single ByteBuf in the output.
    */
   public static Observable.Transformer<ByteBuf, ByteBuf> json() {
-    return input -> decode(input, new EmbeddedChannel(new JsonObjectDecoder(true)));
+    return input -> decode(input, new EmbeddedChannel(new NetflixJsonObjectDecoder(true)));
   }
 
   /**
