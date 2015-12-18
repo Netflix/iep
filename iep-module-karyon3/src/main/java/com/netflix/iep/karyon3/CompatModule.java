@@ -21,6 +21,7 @@ import com.netflix.archaius.ConfigProxyFactory;
 import com.netflix.karyon.admin.AdminServer;
 import com.netflix.karyon.admin.HttpServerConfig;
 import com.netflix.karyon.admin.SimpleHttpServer;
+import com.netflix.karyon.admin.rest.AdminServerFallback;
 import com.sun.net.httpserver.HttpHandler;
 
 import javax.inject.Singleton;
@@ -55,6 +56,13 @@ public class CompatModule extends AbstractModule {
     handlers.put("/v1/platform/base/props",   propsHandler);
 
     return new SimpleHttpServer(config, handlers);
+  }
+
+  @Provides
+  @Singleton
+  @AdminServerFallback
+  protected HttpHandler provideFallback() {
+    return new NotFoundHandler();
   }
 
   @Override
