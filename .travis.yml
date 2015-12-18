@@ -3,7 +3,7 @@ jdk:
   - oraclejdk8
 scala:
   - 2.11.7
-sudo: false
+sudo: required
 script:
   - "./buildViaTravis.sh"
 env:
