@@ -151,6 +151,21 @@ class ClientConfig {
     return getInt("ConnectTimeout", 1000);
   }
 
+  /** Maximum time to allow connection to be put into connection pool. */
+  int connectionActiveLifeAge() {
+    return getInt("ConnectionActiveLifeAge", 0);
+  }
+
+  /** RxNetty auto-release content ByteBufs. */
+  boolean contentAutoRelease() {
+    return getBoolean("ContentAutoRelease", true);
+  }
+
+  /** RxNetty auto-dispose content if not subscribed with timeout milliseconds. */
+  int contentSubscribeTimeout() {
+    return getInt("ContentSubscribeTimeout", 0);
+  }
+
   /** Maximum time to wait for reading data in milliseconds. */
   int readTimeout() {
     return getInt("ReadTimeout", 30000);

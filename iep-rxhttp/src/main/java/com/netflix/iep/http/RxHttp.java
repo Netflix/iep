@@ -20,10 +20,13 @@ import com.netflix.spectator.impl.Preconditions;
 import com.netflix.spectator.sandbox.HttpLogEntry;
 import io.reactivex.netty.client.CompositePoolLimitDeterminationStrategy;
 import io.reactivex.netty.client.MaxConnectionsBasedStrategy;
+import io.reactivex.netty.client.PooledConnectionReleasedEvent;
 import io.reactivex.netty.client.PoolLimitDeterminationStrategy;
 import org.apache.commons.configuration.Configuration;
 import rx.functions.Actions;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpContentDecompressor;
@@ -33,6 +36,7 @@ import io.reactivex.netty.RxNetty;
 import io.reactivex.netty.pipeline.PipelineConfigurator;
 import io.reactivex.netty.pipeline.PipelineConfiguratorComposite;
 import io.reactivex.netty.pipeline.ssl.DefaultFactories;
+import io.reactivex.netty.protocol.http.client.ClientRequestResponseConverter;
 import io.reactivex.netty.protocol.http.client.HttpClient;
 import io.reactivex.netty.protocol.http.client.HttpClientBuilder;
 import io.reactivex.netty.protocol.http.client.HttpClientPipelineConfigurator;
@@ -580,16 +584,28 @@ public final class RxHttp {
     final Server server = context.server();
     final ClientConfig clientCfg = context.config();
 
-    HttpClient.HttpClientConfig config = new HttpClient.HttpClientConfig.Builder()
+    HttpClient.HttpClientConfig.Builder configBuilder = new HttpClient.HttpClientConfig.Builder()
         .readTimeout(clientCfg.readTimeout(), TimeUnit.MILLISECONDS)
-        .userAgent(clientCfg.userAgent())
-        .build();
+        .userAgent(clientCfg.userAgent());
+
+    int subscribeTimeout = clientCfg.contentSubscribeTimeout();
+    if (subscribeTimeout > 0)
+      configBuilder.responseSubscriptionTimeout(subscribeTimeout, TimeUnit.MILLISECONDS);
+
+    HttpClient.HttpClientConfig config = configBuilder.build();
 
     PipelineConfiguratorComposite<HttpClientResponse<ByteBuf>, HttpClientRequest<ByteBuf>>
         pipelineCfg = new PipelineConfiguratorComposite<HttpClientResponse<ByteBuf>, HttpClientRequest<ByteBuf>>(
         new HttpClientPipelineConfigurator<ByteBuf, ByteBuf>(),
         new HttpDecompressionConfigurator()
-    );
+    ) {
+          @Override public void configureNewPipeline(ChannelPipeline pipeline) {
+            super.configureNewPipeline(pipeline);
+            int activeLife = clientCfg.connectionActiveLifeAge();
+            if (activeLife > 0)
+              pipeline.addLast(new ActiveLifeTracker(activeLife));
+          }
+    };
 
     HttpClientBuilder<ByteBuf, ByteBuf> builder =
         RxNetty.<ByteBuf, ByteBuf>newHttpClientBuilder(server.host(), server.port())
@@ -614,6 +630,9 @@ public final class RxHttp {
     if (server.isSecure()) {
       builder.withSslEngineFactory(DefaultFactories.trustAll());
     }
+
+    if (!clientCfg.contentAutoRelease())
+      builder.disableAutoReleaseBuffers();
 
     return builder.build();
   }
@@ -690,4 +709,27 @@ public final class RxHttp {
     }
   }
 
+  private static class ActiveLifeTracker extends ChannelDuplexHandler {
+    private final long maxActiveDuration;
+    private volatile long activationTime = 0L;
+
+    ActiveLifeTracker(long maxActiveDuration) {
+      this.maxActiveDuration = maxActiveDuration;
+    }
+
+    @Override public void channelActive(ChannelHandlerContext ctx) throws Exception {
+      activationTime = System.currentTimeMillis();
+      super.channelActive(ctx);
+    }
+
+    @Override public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+      if (evt instanceof PooledConnectionReleasedEvent) {
+        long activeDuration = System.currentTimeMillis() - activationTime;
+        if (activeDuration > maxActiveDuration) {
+          ctx.channel().attr(ClientRequestResponseConverter.DISCARD_CONNECTION).set(true);
+        }
+      }
+      super.userEventTriggered(ctx, evt);
+    }
+  }
 }
