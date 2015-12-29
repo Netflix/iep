@@ -114,7 +114,7 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.eureka,
+      Dependencies.eurekaClient,
       Dependencies.guiceCore,
       Dependencies.guiceMulti,
       Dependencies.slf4jApi
@@ -183,7 +183,7 @@ object MainBuild extends Build {
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
       Dependencies.archaiusLegacy,
-      Dependencies.eureka,
+      Dependencies.eurekaClient,
       Dependencies.jzlib,
       Dependencies.rxjava,
       Dependencies.rxnettyCore,
