@@ -144,10 +144,12 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
                 if (state == ST_DECODING_ARRAY_STREAM) {
                     // Discard the array bracket
                     in.skipBytes(1);
+                    len--;
                 }
             // Discard leading spaces in front of a JSON object/array.
             } else if (Character.isWhitespace(c)) {
                 in.skipBytes(1);
+                len--;
             } else {
                 state = ST_CORRUPTED;
                 throw new CorruptedFrameException(
