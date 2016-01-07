@@ -91,15 +91,14 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
         int len = this.len;
         int wrtIdx = in.writerIndex();
 
-        if (wrtIdx > maxObjectLength) {
-            // buffer size exceeded maxObjectLength; discarding the complete buffer.
-            in.skipBytes(in.readableBytes());
-            reset();
-            throw new TooLongFrameException(
-                            "object length exceeds " + maxObjectLength + ": " + wrtIdx + " bytes discarded");
-        }
-
         for (; in.readerIndex() + len < wrtIdx; len++) {
+            if (len > maxObjectLength) {
+                // buffer size exceeded maxObjectLength; discarding the complete buffer.
+                in.skipBytes(in.readableBytes());
+                reset();
+                throw new TooLongFrameException(
+                                "object length exceeds " + maxObjectLength + ": " + wrtIdx + " bytes discarded");
+            }
             byte c = in.getByte(in.readerIndex() + len);
             if (state == ST_DECODING_NORMAL) {
                 decodeByte(c, in, in.readerIndex() + len);

@@ -75,15 +75,26 @@ public class ByteBufsTest {
 
   @Test
   public void json() throws Exception {
-    byte[] data = "[{\"a\":1},{\"a\":2},{\"a\":3},{\"a\":4},{\"a\":5}]".getBytes("UTF-8");
-    obs(data).compose(ByteBufs.json()).toBlocking().forEach(new Action1<ByteBuf>() {
+    ByteBuf[] bufs = new ByteBuf[7];
+    byte[] data0 = "[{\"a\":1},{\"a\":2},{\"a\":3".getBytes("UTF-8");
+    byte[] data1 = "},{\"a\":4},{\"a\":5}]".getBytes("UTF-8");
+    bufs[0] = Unpooled.wrappedBuffer(data0);
+    bufs[1] = Unpooled.wrappedBuffer(data1);
+    Observable.just(bufs[0], bufs[1])
+    .compose(ByteBufs.json()).toBlocking().forEach(new Action1<ByteBuf>() {
       private int i = 0;
       @Override
       public void call(ByteBuf byteBuf) {
+        bufs[2 + i] = byteBuf;
         String obj = byteBuf.toString(Charset.forName("UTF-8"));
+        byteBuf.release();
         Assert.assertEquals(String.format("{\"a\":%d}", ++i), obj);
       }
     });
+    for (int i = 0; i < bufs.length; i++) {
+      //System.err.println("bufs[" + i + "]: " + bufs[i].refCnt());
+      Assert.assertEquals(0, bufs[i].refCnt());
+    }
   }
 
   @Test
