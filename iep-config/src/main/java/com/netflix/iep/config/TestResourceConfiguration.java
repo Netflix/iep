@@ -24,6 +24,7 @@ import java.util.Properties;
 import com.google.common.io.Resources;
 import com.google.common.base.Charsets;
 
+import com.netflix.config.ConfigurationManager;
 import com.netflix.archaius.Config;
 import com.netflix.archaius.config.MapConfig;
 
@@ -49,6 +50,10 @@ public class TestResourceConfiguration {
     props.load(new ByteArrayInputStream(propData.getBytes()));
     for (Map.Entry e : overrides.entrySet()) {
       props.setProperty((String) e.getKey(), (String) e.getValue());
+    }
+
+    for (String k : props.stringPropertyNames()) {
+      ConfigurationManager.getConfigInstance().setProperty(k, props.getProperty(k));
     }
 
     return new MapConfig(props);
