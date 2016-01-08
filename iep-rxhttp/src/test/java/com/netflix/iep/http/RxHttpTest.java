@@ -293,8 +293,8 @@ public class RxHttpTest {
     rxHttp.get(uri("/relativeRedirect")).subscribe(
         Actions.empty(),
         t -> {
-          latch.countDown();
           throwable.set(t);
+          latch.countDown();
         },
         () -> latch.countDown()
     );
@@ -353,8 +353,8 @@ public class RxHttpTest {
     rxHttp.get(uri("/notModified")).subscribe(
         Actions.empty(),
         t -> {
-          latch.countDown();
           throwable.set(t);
+          latch.countDown();
         },
         () -> latch.countDown()
     );
@@ -377,8 +377,8 @@ public class RxHttpTest {
     rxHttp.get(uri("/redirectNoLocation")).subscribe(
         Actions.empty(),
         t -> {
-          latch.countDown();
           throwable.set(t);
+          latch.countDown();
         },
         () -> latch.countDown()
     );
