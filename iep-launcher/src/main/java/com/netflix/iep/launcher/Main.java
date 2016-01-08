@@ -47,7 +47,11 @@ public final class Main {
       Properties props = new Properties();
       props.load(in);
       for (String k : props.stringPropertyNames()) {
-        System.setProperty(k, props.getProperty(k));
+        // To allow overrides to be set via the command line with -D, only update the system
+        // property if the key is not already set.
+        if (System.getProperty(k) == null) {
+          System.setProperty(k, props.getProperty(k));
+        }
       }
     }
   }
