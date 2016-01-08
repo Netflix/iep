@@ -90,126 +90,101 @@ public class RxHttpTest {
     rxHttp.start();
 
     server = HttpServer.create(new InetSocketAddress(0), 100);
-    server.setExecutor(Executors.newFixedThreadPool(10, new ThreadFactory() {
-      @Override public Thread newThread(Runnable r) {
-        return new Thread(r, "HttpServer");
-      }
-    }));
+    server.setExecutor(Executors.newFixedThreadPool(10, r -> new Thread(r, "HttpServer")));
     port = server.getAddress().getPort();
 
-    server.createContext("/empty", new HttpHandler() {
-      @Override
-      public void handle(HttpExchange exchange) throws IOException {
-        ignore(exchange.getRequestBody());
-        int port = exchange.getRemoteAddress().getPort();
-        exchange.getResponseHeaders().add("X-Test-Port", "" + port);
+    server.createContext("/empty", exchange -> {
+      ignore(exchange.getRequestBody());
+      int port1 = exchange.getRemoteAddress().getPort();
+      exchange.getResponseHeaders().add("X-Test-Port", "" + port1);
+      statusCounts.incrementAndGet(statusCode.get());
+      exchange.sendResponseHeaders(statusCode.get(), -1L);
+      exchange.close();
+    });
+
+    server.createContext("/echo", exchange -> {
+      Headers headers = exchange.getRequestHeaders();
+      int contentLength = Integer.parseInt(headers.getFirst("Content-Length"));
+      String contentEnc = headers.getFirst("Content-Encoding");
+      if (contentEnc != null) {
+        exchange.getResponseHeaders().add("Content-Encoding", contentEnc);
+      }
+
+      int code = statusCode.get();
+      if (contentLength > 512 && !"gzip".equals(contentEnc)) {
+        code = 400;
+      }
+
+      statusCounts.incrementAndGet(code);
+      exchange.sendResponseHeaders(code, contentLength);
+      try (InputStream input = exchange.getRequestBody();
+           OutputStream output = exchange.getResponseBody()) {
+        byte[] buf = new byte[1024];
+        int length;
+        while ((length = input.read(buf)) > 0) {
+          output.write(buf, 0, length);
+        }
+      }
+      exchange.close();
+    });
+
+    server.createContext("/relativeRedirect", exchange -> {
+      ignore(exchange.getRequestBody());
+      if (redirects.get() <= 0) {
         statusCounts.incrementAndGet(statusCode.get());
+        exchange.getResponseHeaders().add("Location", "/empty");
         exchange.sendResponseHeaders(statusCode.get(), -1L);
         exchange.close();
-      }
-    });
-
-    server.createContext("/echo", new HttpHandler() {
-      @Override
-      public void handle(HttpExchange exchange) throws IOException {
-        Headers headers = exchange.getRequestHeaders();
-        int contentLength = Integer.parseInt(headers.getFirst("Content-Length"));
-        String contentEnc = headers.getFirst("Content-Encoding");
-        if (contentEnc != null) {
-          exchange.getResponseHeaders().add("Content-Encoding", contentEnc);
-        }
-
-        int code = statusCode.get();
-        if (contentLength > 512 && !"gzip".equals(contentEnc)) {
-          code = 400;
-        }
-
-        statusCounts.incrementAndGet(code);
-        exchange.sendResponseHeaders(code, contentLength);
-        try (InputStream input = exchange.getRequestBody();
-            OutputStream output = exchange.getResponseBody()) {
-          byte[] buf = new byte[1024];
-          int length;
-          while ((length = input.read(buf)) > 0) {
-            output.write(buf, 0, length);
-          }
-        }
-        exchange.close();
-      }
-    });
-
-    server.createContext("/relativeRedirect", new HttpHandler() {
-      @Override
-      public void handle(HttpExchange exchange) throws IOException {
-        ignore(exchange.getRequestBody());
-        if (redirects.get() <= 0) {
-          statusCounts.incrementAndGet(statusCode.get());
-          exchange.getResponseHeaders().add("Location", "/empty");
-          exchange.sendResponseHeaders(statusCode.get(), -1L);
-          exchange.close();
-        } else {
-          redirects.decrementAndGet();
-          statusCounts.incrementAndGet(302);
-          exchange.getResponseHeaders().add("Location", "/relativeRedirect");
-          exchange.sendResponseHeaders(302, -1L);
-          exchange.close();
-        }
-      }
-    });
-
-    server.createContext("/absoluteRedirect", new HttpHandler() {
-      @Override
-      public void handle(HttpExchange exchange) throws IOException {
-        String host = "http://" + exchange.getRequestHeaders().getFirst("Host");
-        ignore(exchange.getRequestBody());
-        if (redirects.get() <= 0) {
-          statusCounts.incrementAndGet(302);
-          exchange.getResponseHeaders().add("Location", host + "/empty");
-          exchange.sendResponseHeaders(302, -1L);
-          exchange.close();
-        } else {
-          redirects.decrementAndGet();
-          statusCounts.incrementAndGet(302);
-          exchange.getResponseHeaders().add("Location", host + "/absoluteRedirect");
-          exchange.sendResponseHeaders(302, -1L);
-          exchange.close();
-        }
-      }
-    });
-
-    server.createContext("/notModified", new HttpHandler() {
-      @Override
-      public void handle(HttpExchange exchange) throws IOException {
-        ignore(exchange.getRequestBody());
-        statusCounts.incrementAndGet(304);
-        exchange.sendResponseHeaders(304, -1L);
-        exchange.close();
-      }
-    });
-
-    server.createContext("/redirectNoLocation", new HttpHandler() {
-      @Override
-      public void handle(HttpExchange exchange) throws IOException {
-        ignore(exchange.getRequestBody());
+      } else {
+        redirects.decrementAndGet();
         statusCounts.incrementAndGet(302);
+        exchange.getResponseHeaders().add("Location", "/relativeRedirect");
         exchange.sendResponseHeaders(302, -1L);
         exchange.close();
       }
     });
 
-    server.createContext("/readTimeout", new HttpHandler() {
-      @Override
-      public void handle(HttpExchange exchange) throws IOException {
-        ignore(exchange.getRequestBody());
-        statusCounts.incrementAndGet(statusCode.get()); // So we can track retries
-        Object lock = new Object();
-        try {
-          synchronized (lock) {
-            lock.wait();
-          }
-        } catch (InterruptedException e) {
-          e.printStackTrace();
+    server.createContext("/absoluteRedirect", exchange -> {
+      String host = "http://" + exchange.getRequestHeaders().getFirst("Host");
+      ignore(exchange.getRequestBody());
+      if (redirects.get() <= 0) {
+        statusCounts.incrementAndGet(302);
+        exchange.getResponseHeaders().add("Location", host + "/empty");
+        exchange.sendResponseHeaders(302, -1L);
+        exchange.close();
+      } else {
+        redirects.decrementAndGet();
+        statusCounts.incrementAndGet(302);
+        exchange.getResponseHeaders().add("Location", host + "/absoluteRedirect");
+        exchange.sendResponseHeaders(302, -1L);
+        exchange.close();
+      }
+    });
+
+    server.createContext("/notModified", exchange -> {
+      ignore(exchange.getRequestBody());
+      statusCounts.incrementAndGet(304);
+      exchange.sendResponseHeaders(304, -1L);
+      exchange.close();
+    });
+
+    server.createContext("/redirectNoLocation", exchange -> {
+      ignore(exchange.getRequestBody());
+      statusCounts.incrementAndGet(302);
+      exchange.sendResponseHeaders(302, -1L);
+      exchange.close();
+    });
+
+    server.createContext("/readTimeout", exchange -> {
+      ignore(exchange.getRequestBody());
+      statusCounts.incrementAndGet(statusCode.get()); // So we can track retries
+      Object lock = new Object();
+      try {
+        synchronized (lock) {
+          lock.wait();
         }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
       }
     });
 
@@ -317,17 +292,11 @@ public class RxHttpTest {
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     rxHttp.get(uri("/relativeRedirect")).subscribe(
         Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            latch.countDown();
-            throwable.set(t);
-          }
+        t -> {
+          latch.countDown();
+          throwable.set(t);
         },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
-        }
+        () -> latch.countDown()
     );
 
     latch.await();
@@ -353,17 +322,11 @@ public class RxHttpTest {
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     rxHttp.get(uri("/absoluteRedirect")).subscribe(
         Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            throwable.set(t);
-            latch.countDown();
-          }
+        t -> {
+          throwable.set(t);
+          latch.countDown();
         },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
-        }
+        () -> latch.countDown()
     );
 
     latch.await();
@@ -389,17 +352,11 @@ public class RxHttpTest {
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     rxHttp.get(uri("/notModified")).subscribe(
         Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            latch.countDown();
-            throwable.set(t);
-          }
+        t -> {
+          latch.countDown();
+          throwable.set(t);
         },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
-        }
+        () -> latch.countDown()
     );
 
     latch.await();
@@ -419,17 +376,11 @@ public class RxHttpTest {
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     rxHttp.get(uri("/redirectNoLocation")).subscribe(
         Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            latch.countDown();
-            throwable.set(t);
-          }
+        t -> {
+          latch.countDown();
+          throwable.set(t);
         },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
-        }
+        () -> latch.countDown()
     );
 
     latch.await();
@@ -449,17 +400,11 @@ public class RxHttpTest {
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     rxHttp.get(uri("/readTimeout")).subscribe(
         Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            throwable.set(t);
-            latch.countDown();
-          }
+        t -> {
+          throwable.set(t);
+          latch.countDown();
         },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
-        }
+        () -> latch.countDown()
     );
 
     latch.await();
@@ -480,17 +425,11 @@ public class RxHttpTest {
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     rxHttp.get(uri("/readTimeout")).subscribe(
         Actions.empty(),
-        new Action1<Throwable>() {
-          @Override public void call(Throwable t) {
-            throwable.set(t);
-            latch.countDown();
-          }
+        t -> {
+          throwable.set(t);
+          latch.countDown();
         },
-        new Action0() {
-          @Override public void call() {
-            latch.countDown();
-          }
-        }
+        () -> latch.countDown()
     );
 
     latch.await();
@@ -513,19 +452,11 @@ public class RxHttpTest {
     final AtomicReference<Throwable> throwable = new AtomicReference<>();
     rxHttp.get("niws://test/http://localhost:" + serverPort + "/empty").subscribe(
         Actions.empty(),
-        new Action1<Throwable>() {
-          @Override
-          public void call(Throwable t) {
-            throwable.set(t);
-            latch.countDown();
-          }
+        t -> {
+          throwable.set(t);
+          latch.countDown();
         },
-        new Action0() {
-          @Override
-          public void call() {
-            latch.countDown();
-          }
-        }
+        () -> latch.countDown()
     );
 
     latch.await();
@@ -541,20 +472,12 @@ public class RxHttpTest {
 
     final StringBuilder builder = new StringBuilder();
     rxHttp.post(uri("/echo"), "text/plain", "foo bar".getBytes())
-        .flatMap(new Func1<HttpClientResponse<ByteBuf>, Observable<ByteBuf>>() {
-          @Override
-          public Observable<ByteBuf> call(HttpClientResponse<ByteBuf> res) {
-            Assert.assertEquals(200, res.getStatus().code());
-            return res.getContent();
-          }
+        .flatMap(res -> {
+          Assert.assertEquals(200, res.getStatus().code());
+          return res.getContent();
         })
         .toBlocking()
-        .forEach(new Action1<ByteBuf>() {
-          @Override
-          public void call(ByteBuf byteBuf) {
-            builder.append(byteBuf.toString(Charset.defaultCharset()));
-          }
-        });
+        .forEach(byteBuf -> builder.append(byteBuf.toString(Charset.defaultCharset())));
 
     Assert.assertEquals("foo bar", builder.toString());
 
@@ -577,20 +500,12 @@ public class RxHttpTest {
 
     final StringBuilder builder = new StringBuilder();
     rxHttp.post(uri("/echo"), "text/plain", body.getBytes())
-        .flatMap(new Func1<HttpClientResponse<ByteBuf>, Observable<ByteBuf>>() {
-          @Override
-          public Observable<ByteBuf> call(HttpClientResponse<ByteBuf> res) {
-            Assert.assertEquals(200, res.getStatus().code());
-            return res.getContent();
-          }
+        .flatMap(res -> {
+          Assert.assertEquals(200, res.getStatus().code());
+          return res.getContent();
         })
         .toBlocking()
-        .forEach(new Action1<ByteBuf>() {
-          @Override
-          public void call(ByteBuf byteBuf) {
-            builder.append(byteBuf.toString(Charset.defaultCharset()));
-          }
-        });
+        .forEach(byteBuf -> builder.append(byteBuf.toString(Charset.defaultCharset())));
 
     Assert.assertEquals(body, builder.toString());
 
@@ -616,20 +531,12 @@ public class RxHttpTest {
 
     final StringBuilder builder = new StringBuilder();
     rxHttp.postForm(uri("/echo?foo=bar&name=John+Doe&pct=%2042%25"))
-        .flatMap(new Func1<HttpClientResponse<ByteBuf>, Observable<ByteBuf>>() {
-          @Override
-          public Observable<ByteBuf> call(HttpClientResponse<ByteBuf> res) {
-            Assert.assertEquals(200, res.getStatus().code());
-            return res.getContent();
-          }
+        .flatMap(res -> {
+          Assert.assertEquals(200, res.getStatus().code());
+          return res.getContent();
         })
         .toBlocking()
-        .forEach(new Action1<ByteBuf>() {
-          @Override
-          public void call(ByteBuf byteBuf) {
-            builder.append(byteBuf.toString(Charset.defaultCharset()));
-          }
-        });
+        .forEach(byteBuf -> builder.append(byteBuf.toString(Charset.defaultCharset())));
 
     assertEquals(expected, statusCounts);
     Assert.assertEquals("foo=bar&name=John+Doe&pct=%2042%25", builder.toString());
