@@ -98,6 +98,29 @@ public class ByteBufsTest {
   }
 
   @Test
+  public void jsonEmpty() throws Exception {
+    ByteBuf[] bufs = new ByteBuf[1];
+    byte[] data = "[     ]".getBytes("UTF-8");
+    bufs[0] = Unpooled.wrappedBuffer(data);
+    Observable.just(bufs[0])
+    .compose(ByteBufs.json()).toBlocking().forEach(new Action1<ByteBuf>() {
+      private int i = 0;
+      @Override
+      public void call(ByteBuf byteBuf) {
+        String obj = byteBuf.toString(Charset.forName("UTF-8"));
+        byteBuf.release();
+        System.err.println("bytesBuf: '" + obj + "'");
+        Assert.assertEquals(String.format("{\"a\":%d}", ++i), obj);
+        bufs[1 + i] = byteBuf;
+      }
+    });
+    for (int i = 0; i < bufs.length; i++) {
+      //System.err.println("bufs[" + i + "]: " + bufs[i].refCnt());
+      Assert.assertEquals(0, bufs[i].refCnt());
+    }
+  }
+
+  @Test
   public void sse() throws Exception {
     byte[] data = "event:\ndata: foo\ndata:bar\n\ndata:  baz\n".getBytes("UTF-8");
     List<ServerSentEvent> events = obs(data)

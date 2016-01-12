@@ -121,6 +121,10 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
                     break;
                 }
             } else if (state == ST_DECODING_ARRAY_STREAM) {
+                if (len == 0 && Character.isWhitespace(c)) {
+                    in.skipBytes(1);
+                    len--;
+                }
                 decodeByte(c, in, in.readerIndex() + len);
                 if (!insideString && (openBraces == 1 && c == ',' || openBraces == 0 && c == ']')) {
                     ByteBuf json = extractObject(ctx, in, in.readerIndex(), len);
@@ -164,6 +168,7 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
      */
     @SuppressWarnings("UnusedParameters")
     protected ByteBuf extractObject(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {
+        if (length == 0) return null;
         return buffer.slice(index, length).retain();
     }
 
