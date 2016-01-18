@@ -22,7 +22,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.Spectator;
-import com.netflix.spectator.aws.SpectatorMetricsCollector;
+import com.netflix.spectator.aws.SpectatorMetricCollector;
 
 import javax.inject.Singleton;
 
@@ -35,7 +35,7 @@ public final class AwsMetricsModule extends AbstractModule {
   @Provides
   @Singleton
   private MetricCollector provideMetricCollector(OptionalInjections opts) {
-    return new SpectatorMetricsCollector(opts.getRegistry());
+    return new SpectatorMetricCollector(opts.getRegistry());
   }
 
   @Override public boolean equals(Object obj) {

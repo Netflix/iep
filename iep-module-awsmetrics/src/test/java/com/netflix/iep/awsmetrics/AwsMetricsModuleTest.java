@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Registry;
-import com.netflix.spectator.aws.SpectatorMetricsCollector;
+import com.netflix.spectator.aws.SpectatorMetricCollector;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,22 +32,22 @@ public class AwsMetricsModuleTest {
   @Test
   public void withRegistryBinding() {
     AwsSdkMetrics.setMetricCollector(null);
-    Assert.assertFalse(AwsSdkMetrics.getMetricCollector() instanceof SpectatorMetricsCollector);
+    Assert.assertFalse(AwsSdkMetrics.getMetricCollector() instanceof SpectatorMetricCollector);
     final Registry registry = new DefaultRegistry();
     Guice.createInjector(new AwsMetricsModule(), new AbstractModule() {
       @Override protected void configure() {
         bind(Registry.class).toInstance(registry);
       }
     });
-    Assert.assertTrue(AwsSdkMetrics.getMetricCollector() instanceof SpectatorMetricsCollector);
+    Assert.assertTrue(AwsSdkMetrics.getMetricCollector() instanceof SpectatorMetricCollector);
   }
 
   @Test
   public void withoutRegistryBinding() {
     AwsSdkMetrics.setMetricCollector(null);
-    Assert.assertFalse(AwsSdkMetrics.getMetricCollector() instanceof SpectatorMetricsCollector);
+    Assert.assertFalse(AwsSdkMetrics.getMetricCollector() instanceof SpectatorMetricCollector);
     Guice.createInjector(new AwsMetricsModule());
-    Assert.assertTrue(AwsSdkMetrics.getMetricCollector() instanceof SpectatorMetricsCollector);
+    Assert.assertTrue(AwsSdkMetrics.getMetricCollector() instanceof SpectatorMetricCollector);
   }
 
 }
