@@ -9,7 +9,7 @@ object Dependencies {
     val rxnetty    = "0.4.15"
     val scala      = "2.11.7"
     val slf4j      = "1.7.13"
-    val spectator  = "0.34.1"
+    val spectator  = "0.35.0"
   }
 
   import Versions._
@@ -17,10 +17,10 @@ object Dependencies {
   val archaiusBridge  = "com.netflix.archaius" % "archaius2-archaius1-bridge" % archaius
   val archaiusCore    = "com.netflix.archaius" % "archaius2-core" % archaius
   val archaiusGuice   = "com.netflix.archaius" % "archaius2-guice" % archaius
-  val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.7.2"
+  val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.7.3"
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
-  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.5"
+  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.7"
   val eurekaClient    = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
@@ -35,7 +35,7 @@ object Dependencies {
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava          = "io.reactivex" % "rxjava" % "1.0.17"
+  val rxjava          = "io.reactivex" % "rxjava" % "1.1.0"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
