@@ -207,7 +207,7 @@ class ClientConfig {
    * default is to use the ip address and avoid the dns lookup.
    */
   boolean useIpAddress() {
-    return getBoolean("UseIpAddress", false);
+    return getBoolean("UseIpAddress", true);
   }
 
   /**
