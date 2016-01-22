@@ -17,6 +17,8 @@ package com.netflix.iep.http;
 
 import io.netty.handler.logging.LogLevel;
 import org.apache.commons.configuration.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.regex.Matcher;
@@ -24,6 +26,8 @@ import java.util.regex.Pattern;
 
 /** Configuration settings to use for making the request. */
 class ClientConfig {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ClientConfig.class);
 
   private static final Pattern NIWS_URI = Pattern.compile("niws://([^/]+).*");
 
@@ -75,6 +79,7 @@ class ClientConfig {
         cfg = new ClientConfig(config, "default", null, uri, uri);
         break;
     }
+    LOGGER.trace(cfg.toString());
     return cfg;
   }
 
@@ -255,5 +260,33 @@ class ClientConfig {
     return (vipAddress == null)
         ? getString("DeploymentContextBasedVipAddresses", null)
         : vipAddress;
+  }
+
+  @Override public String toString() {
+    StringBuilder builder = new StringBuilder();
+    return builder.append("ClientConfig")
+        .append("(Name=").append(name)
+        .append(",URI=").append(uri)
+        .append(",Port=").append(port(-1))
+        .append(",ConnectTimeout=").append(connectTimeout())
+        .append(",ReadTimeout=").append(readTimeout())
+        .append(",ConnectionActiveLifeAge=").append(connectionActiveLifeAge())
+        .append(",ContentAutoRelease=").append(contentAutoRelease())
+        .append(",ContentSubscribeTimeout=").append(contentSubscribeTimeout())
+        .append(",FollowRedirects=").append(followRedirects())
+        .append(",MaxConnectionsPerHost=").append(maxConnectionsPerHost())
+        .append(",MaxConnectionsTotal=").append(maxConnectionsTotal())
+        .append(",ConnectionPoolIdleEvictTimeMilliseconds=").append(idleConnectionsTimeoutMillis())
+        .append(",UseIpAddress=").append(useIpAddress())
+        .append(",GzipEnabled=").append(gzipEnabled())
+        .append(",WireLoggingEnabled=").append(wireLoggingEnabled())
+        .append(",WireLoggingLevel=").append(wireLoggingLevel())
+        .append(",MaxAutoRetriesNextServer=").append(numRetries())
+        .append(",RetryDelay=").append(retryDelay())
+        .append(",RetryReadTimeouts=").append(retryReadTimeouts())
+        .append(",UserAgent=").append(userAgent())
+        .append(",DeploymentContextBasedVipAddresses=").append(vip())
+        .append(")")
+        .toString();
   }
 }
