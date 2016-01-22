@@ -51,19 +51,19 @@ public class ClientConfigTest {
 
   @Test
   public void useIpAddressNoProp() {
-    Assert.assertEquals(cfg.useIpAddress(), false);
+    Assert.assertEquals(cfg.useIpAddress(), true);
   }
 
   @Test
   public void useIpAddressDefaultProp() {
-    set("niws.client.UseIpAddress", "true");
-    Assert.assertEquals(cfg.useIpAddress(), true);
+    set("niws.client.UseIpAddress", "false");
+    Assert.assertEquals(cfg.useIpAddress(), false);
   }
 
   @Test
   public void useIpAddressNamedProp() {
-    set("foo.niws.client.UseIpAddress", "true");
-    Assert.assertEquals(cfg.useIpAddress(), true);
+    set("foo.niws.client.UseIpAddress", "false");
+    Assert.assertEquals(cfg.useIpAddress(), false);
   }
 
   @Test
