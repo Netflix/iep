@@ -16,7 +16,7 @@
 package com.netflix.iep.http;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.reactivex.netty.protocol.http.client.HttpClientResponse;
 import rx.Observable;
 import rx.functions.Func1;
@@ -54,9 +54,9 @@ class StatusRetryHandler implements
 
   private static long getRetryDelay(HttpClientResponse<ByteBuf> res, long dflt) {
     try {
-      if (res.getHeaders().contains(HttpHeaders.Names.RETRY_AFTER)) {
+      if (res.getHeaders().contains(HttpHeaderNames.RETRY_AFTER)) {
         // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.37
-        int delaySeconds = res.getHeaders().getIntHeader(HttpHeaders.Names.RETRY_AFTER);
+        int delaySeconds = res.getHeaders().getIntHeader(HttpHeaderNames.RETRY_AFTER);
         return TimeUnit.MILLISECONDS.convert(delaySeconds, TimeUnit.SECONDS);
       }
     } catch (NumberFormatException e) {

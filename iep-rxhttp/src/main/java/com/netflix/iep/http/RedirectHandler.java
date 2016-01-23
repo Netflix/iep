@@ -16,7 +16,7 @@
 package com.netflix.iep.http;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.reactivex.netty.protocol.http.client.HttpClientRequest;
 import io.reactivex.netty.protocol.http.client.HttpClientResponse;
 import rx.Observable;
@@ -51,7 +51,7 @@ class RedirectHandler implements
     if (code > 300 && code <= 307 && code != 304) {
       final HttpClientRequest<ByteBuf> req = context.request();
       res.getContent().subscribe();
-      final URI loc = URI.create(res.getHeaders().get(HttpHeaders.Names.LOCATION));
+      final URI loc = URI.create(res.getHeaders().get(HttpHeaderNames.LOCATION));
       context.entry().withRedirect(loc);
       if (loc.isAbsolute()) {
         // Should we allow redirect from https to http?
