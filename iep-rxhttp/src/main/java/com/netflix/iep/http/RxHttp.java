@@ -152,7 +152,7 @@ public final class RxHttp {
   public void stop() {
     LOGGER.info("shutting down backround cleanup threads");
     executor.shutdown();
-    clients.values().forEach(HttpClient<ByteBuf, ByteBuf>::shutdown);
+    clients.values().forEach(HttpClient::shutdown);
   }
 
   private static HttpClientRequest<ByteBuf> compress(
