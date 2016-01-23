@@ -85,12 +85,18 @@ public final class Main {
 
   private static void delete(File file) {
     if (file.isDirectory()) {
-      for (File f : file.listFiles()) {
-        delete(f);
+      final File[] fs = file.listFiles();
+      if (fs != null) {
+        for (File f : fs) {
+          delete(f);
+        }
       }
     }
-    log("deleting file: " + file);
-    file.delete();
+    if (file.delete()) {
+      log("deleted file: " + file);
+    } else {
+      log("failed to delete file: " + file);
+    }
   }
 
   private static File extract(File loc) throws Exception {
