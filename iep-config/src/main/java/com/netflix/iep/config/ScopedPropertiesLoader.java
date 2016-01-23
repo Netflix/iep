@@ -53,7 +53,7 @@ public class ScopedPropertiesLoader {
 
     StringBuilder debug = new StringBuilder("# Generated properties\n");
 
-    Properties finalProps = new Properties();;
+    Properties finalProps = new Properties();
 
     for (URL propUrl : propUrls) {
       LOGGER.debug("loading properties from " + propUrl);
