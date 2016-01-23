@@ -17,7 +17,6 @@ package com.netflix.iep.launcher;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
@@ -123,11 +122,7 @@ public final class Main {
 
     File loc = extract(getLocation());
 
-    File[] files = loc.listFiles(new FilenameFilter() {
-      @Override public boolean accept(File dir, String name) {
-        return name.endsWith(".jar");
-      }
-    });
+    File[] files = loc.listFiles((dir, name) -> name.endsWith(".jar"));
 
     URL[] urls = new URL[files.length];
     for (int i = 0; i < files.length; ++i) {

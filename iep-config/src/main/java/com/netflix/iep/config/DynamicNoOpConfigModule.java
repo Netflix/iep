@@ -33,7 +33,6 @@ import com.typesafe.config.ConfigFactory;
 
 import javax.inject.Singleton;
 import java.util.Properties;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 public class DynamicNoOpConfigModule extends AbstractModule {
@@ -89,14 +88,8 @@ public class DynamicNoOpConfigModule extends AbstractModule {
     @RemoteLayer
     private com.netflix.archaius.Config providesOverrideConfig(Config cfg) throws Exception {
       return new PollingDynamicConfig(
-        new Callable<PollingResponse>() {
-          @Override
-          public PollingResponse call() {
-            return PollingResponse.noop();
-          }
-        },
-        new FixedPollingStrategy(60000, TimeUnit.MILLISECONDS)
-      );
+          PollingResponse::noop,
+          new FixedPollingStrategy(60000, TimeUnit.MILLISECONDS));
     }
 
     @Provides

@@ -61,7 +61,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.GZIPOutputStream;
@@ -119,30 +118,26 @@ public final class RxHttp {
   @PostConstruct
   public void start() {
     LOGGER.info("starting up backround cleanup threads");
-    executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-      @Override public Thread newThread(Runnable r) {
-        Thread t = new Thread(r, "spectator-rxhttp-" + NEXT_THREAD_ID.getAndIncrement());
-        t.setDaemon(true);
-        return t;
-      }
+    executor = Executors.newSingleThreadScheduledExecutor(r -> {
+      Thread t = new Thread(r, "spectator-rxhttp-" + NEXT_THREAD_ID.getAndIncrement());
+      t.setDaemon(true);
+      return t;
     });
 
-    Runnable task = new Runnable() {
-      @Override public void run() {
-        try {
-          LOGGER.debug("executing cleanup for {} clients", clients.size());
-          for (Map.Entry<Server, HttpClient<ByteBuf, ByteBuf>> entry : clients.entrySet()) {
-            final Server s = entry.getKey();
-            if (s.isRegistered() && !serverRegistry.isStillAvailable(s)) {
-              LOGGER.debug("cleaning up client for {}", s);
-              clients.remove(s);
-              entry.getValue().shutdown();
-            }
+    Runnable task = () -> {
+      try {
+        LOGGER.debug("executing cleanup for {} clients", clients.size());
+        for (Map.Entry<Server, HttpClient<ByteBuf, ByteBuf>> entry : clients.entrySet()) {
+          final Server s = entry.getKey();
+          if (s.isRegistered() && !serverRegistry.isStillAvailable(s)) {
+            LOGGER.debug("cleaning up client for {}", s);
+            clients.remove(s);
+            entry.getValue().shutdown();
           }
-          LOGGER.debug("cleanup complete with {} clients remaining", clients.size());
-        } catch (Exception e) {
-          LOGGER.warn("connection cleanup task failed", e);
         }
+        LOGGER.debug("cleanup complete with {} clients remaining", clients.size());
+      } catch (Exception e) {
+        LOGGER.warn("connection cleanup task failed", e);
       }
     };
 
@@ -157,9 +152,7 @@ public final class RxHttp {
   public void stop() {
     LOGGER.info("shutting down backround cleanup threads");
     executor.shutdown();
-    for (HttpClient<ByteBuf, ByteBuf> client : clients.values()) {
-      client.shutdown();
-    }
+    clients.values().forEach(HttpClient<ByteBuf, ByteBuf>::shutdown);
   }
 
   private static HttpClientRequest<ByteBuf> compress(

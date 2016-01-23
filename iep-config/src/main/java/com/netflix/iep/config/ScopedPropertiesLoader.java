@@ -40,7 +40,7 @@ public class ScopedPropertiesLoader {
   }
 
   public static Properties load(String[] propFiles) {
-    List<URL> propUrls = new ArrayList<URL>();
+    List<URL> propUrls = new ArrayList<>();
     for (int i = 0; i < propFiles.length; i++) {
       String propFile = propFiles[i];
       try {

@@ -32,11 +32,11 @@ public class TestResourceConfiguration {
   private TestResourceConfiguration() {}
 
   public static Config load(String propFile) throws Exception {
-    return load(propFile, new HashMap<String,String>());
+    return load(propFile, new HashMap<>());
   }
 
   public static Config load(String propFile, Map<String,String> subs) throws Exception {
-    return load(propFile, subs, new HashMap<String,String>());
+    return load(propFile, subs, new HashMap<>());
   }
 
   public static Config load(

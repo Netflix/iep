@@ -38,9 +38,7 @@ public class BasicServerRegistry implements ServerRegistry {
   public BasicServerRegistry(Map<String, List<Server>> serversByVip) {
     this.serversByVip = serversByVip;
     allServers = new HashSet<>();
-    for (List<Server> servers : serversByVip.values()) {
-      allServers.addAll(servers);
-    }
+    serversByVip.values().forEach(allServers::addAll);
   }
 
   @Override

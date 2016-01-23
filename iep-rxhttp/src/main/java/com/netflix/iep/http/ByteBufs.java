@@ -49,7 +49,7 @@ public final class ByteBufs {
   private static <T> Observable<T> decode(final Observable<ByteBuf> input, final EmbeddedChannel channel) {
     return Observable.create(new Observable.OnSubscribe<T>() {
       @Override public void call(final Subscriber<? super T> subscriber) {
-        input.subscribe(new DecoderSubscriber<T>(subscriber, channel));
+        input.subscribe(new DecoderSubscriber<>(subscriber, channel));
       }
     });
   }

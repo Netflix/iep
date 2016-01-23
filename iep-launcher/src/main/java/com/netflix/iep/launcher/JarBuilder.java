@@ -18,7 +18,6 @@ package com.netflix.iep.launcher;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -108,11 +107,7 @@ public class JarBuilder {
     File loc = getLocation();
     if (loc.isDirectory()) {
       File pkg = new File(loc, "com/netflix/iep/launcher");
-      File[] classes = pkg.listFiles(new FilenameFilter() {
-        @Override public boolean accept(File dir, String name) {
-          return name.endsWith(".class");
-        }
-      });
+      File[] classes = pkg.listFiles((dir, name) -> name.endsWith(".class"));
       for (File cls : classes) {
         try (FileInputStream in = new FileInputStream(cls)) {
           addEntry(out, "com/netflix/iep/launcher/" + cls.getName(), in);

@@ -289,7 +289,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -319,7 +319,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -349,7 +349,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -373,7 +373,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -397,7 +397,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -422,7 +422,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -449,7 +449,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
