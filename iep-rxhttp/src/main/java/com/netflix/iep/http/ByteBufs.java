@@ -19,13 +19,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.compression.JdkZlibDecoder;
 import io.netty.handler.codec.compression.JdkZlibEncoder;
 import io.netty.handler.codec.compression.ZlibWrapper;
-//import io.netty.handler.codec.json.JsonObjectDecoder;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -52,7 +49,7 @@ public final class ByteBufs {
   private static <T> Observable<T> decode(final Observable<ByteBuf> input, final EmbeddedChannel channel) {
     return Observable.create(new Observable.OnSubscribe<T>() {
       @Override public void call(final Subscriber<? super T> subscriber) {
-        input.subscribe(new DecoderSubscriber<T>(subscriber, channel));
+        input.subscribe(new DecoderSubscriber<>(subscriber, channel));
       }
     });
   }

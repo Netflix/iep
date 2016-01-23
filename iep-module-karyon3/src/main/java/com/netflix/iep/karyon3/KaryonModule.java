@@ -56,8 +56,7 @@ public final class KaryonModule extends AbstractAdminModule {
     bind(PortIdFactory.class).to(PortIdFactoryImpl.class);
     bindAdminResource("di-graph").to(DIGraphResource.class);
 
-    Multibinder<Service> serviceBinder =
-        Multibinder.newSetBinder(binder(), Service.class);
+    Multibinder.newSetBinder(binder(), Service.class);
     bindAdminResource("services").to(ServicesResource.class);
   }
 

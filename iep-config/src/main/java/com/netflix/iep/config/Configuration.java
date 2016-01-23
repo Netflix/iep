@@ -16,7 +16,6 @@
 package com.netflix.iep.config;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import org.slf4j.Logger;
@@ -25,10 +24,8 @@ import org.slf4j.LoggerFactory;
 public final class Configuration {
   private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
-  private static volatile IConfiguration iConfiguration = new IConfiguration() {
-    @Override public String get(String key) {
-      throw new IllegalStateException("configuration has not been set");
-    }
+  private static volatile IConfiguration iConfiguration = key -> {
+    throw new IllegalStateException("configuration has not been set");
   };
 
   static void setConfiguration(IConfiguration config) {
@@ -46,31 +43,28 @@ public final class Configuration {
     final Class<T> ctype,
     final String prefix
    ) {
-    InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (method.getName().equals("get")) {
-          return iConfiguration.get((args[0] == null) ? null : args[0].toString());
+    InvocationHandler handler = (proxy, method, args) -> {
+      if (method.getName().equals("get")) {
+        return iConfiguration.get((args[0] == null) ? null : args[0].toString());
+      }
+      else {
+        Class rt = method.getReturnType();
+        String key = (prefix == null) ? method.getName() : prefix + "." + method.getName();
+        if (IConfiguration.class.isAssignableFrom(rt)) {
+          return newProxy(rt, key);
         }
         else {
-          Class rt = method.getReturnType();
-          String key = (prefix == null) ? method.getName() : prefix + "." + method.getName();
-          if (IConfiguration.class.isAssignableFrom(rt)) {
-            return newProxy(rt, key);
+          String value = iConfiguration.get(key);
+          if (value == null) {
+            DefaultValue anno = method.getAnnotation(DefaultValue.class);
+            value = (anno == null) ? null : anno.value();
           }
-          else {
-            String value = iConfiguration.get(key);
-            if (value == null) {
-              DefaultValue anno = method.getAnnotation(DefaultValue.class);
-              value = (anno == null) ? null : anno.value();
-            }
-            if (value == null) {
-              if (rt.isPrimitive())
-                throw new IllegalStateException("no value for property " + method.getName());
-               return null;
-            }
-            return Strings.cast(rt, value);
+          if (value == null) {
+            if (rt.isPrimitive())
+              throw new IllegalStateException("no value for property " + method.getName());
+             return null;
           }
+          return Strings.cast(rt, value);
         }
       }
     };

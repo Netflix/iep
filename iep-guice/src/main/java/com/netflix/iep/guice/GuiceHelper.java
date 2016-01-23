@@ -83,13 +83,11 @@ public final class GuiceHelper {
 
   /** Add a shutdown hook for this instance. */
   public void addShutdownHook() {
-    final Runnable r = new Runnable() {
-      @Override public void run() {
-        try {
-          shutdown();
-        } catch (Exception e) {
-          LOGGER.warn("exception during shutdown sequence", e);
-        }
+    final Runnable r = () -> {
+      try {
+        shutdown();
+      } catch (Exception e) {
+        LOGGER.warn("exception during shutdown sequence", e);
       }
     };
     Runtime.getRuntime().addShutdownHook(new Thread(r, "ShutdownHook"));

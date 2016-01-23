@@ -17,7 +17,6 @@ package com.netflix.iep.launcher;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
@@ -86,12 +85,18 @@ public final class Main {
 
   private static void delete(File file) {
     if (file.isDirectory()) {
-      for (File f : file.listFiles()) {
-        delete(f);
+      final File[] fs = file.listFiles();
+      if (fs != null) {
+        for (File f : fs) {
+          delete(f);
+        }
       }
     }
-    log("deleting file: " + file);
-    file.delete();
+    if (file.delete()) {
+      log("deleted file: " + file);
+    } else {
+      log("failed to delete file: " + file);
+    }
   }
 
   private static File extract(File loc) throws Exception {
@@ -123,11 +128,7 @@ public final class Main {
 
     File loc = extract(getLocation());
 
-    File[] files = loc.listFiles(new FilenameFilter() {
-      @Override public boolean accept(File dir, String name) {
-        return name.endsWith(".jar");
-      }
-    });
+    File[] files = loc.listFiles((dir, name) -> name.endsWith(".jar"));
 
     URL[] urls = new URL[files.length];
     for (int i = 0; i < files.length; ++i) {

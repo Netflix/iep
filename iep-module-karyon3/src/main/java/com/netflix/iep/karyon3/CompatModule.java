@@ -34,7 +34,7 @@ public class CompatModule extends AbstractModule {
   @Provides
   @Singleton
   protected AdminConfig getAdminServerConfig(ConfigProxyFactory factory) {
-    return (AdminConfig) factory.newProxy(AdminConfig.class);
+    return factory.newProxy(AdminConfig.class);
   }
 
   @Provides

@@ -15,14 +15,10 @@
  */
 package com.netflix.iep.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -41,11 +37,7 @@ public class ServiceManager {
   public ServiceManager(Set<Service> serviceSet) {
     services = new ArrayList<>();
     services.addAll(serviceSet);
-    Collections.sort(services, new Comparator<Service>() {
-      @Override public int compare(Service o1, Service o2) {
-        return o1.name().compareTo(o2.name());
-      }
-    });
+    Collections.sort(services, (o1, o2) -> o1.name().compareTo(o2.name()));
   }
 
   public List<Service> services() {

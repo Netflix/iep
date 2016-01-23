@@ -63,7 +63,7 @@ public class ConfigFile {
       bindings.put(t.getKey(), t.getValue());
     }
     try {
-      return ((Boolean)engine.eval(str, bindings)).booleanValue();
+      return (Boolean) engine.eval(str, bindings);
     }
     catch (ScriptException e) {
       throw new RuntimeException(e);
@@ -101,7 +101,7 @@ public class ConfigFile {
 
   public static Map<String,String> load(Map<String,String> vars, String str) {
     Properties p = loadProperties(vars, str);
-    Map m = new HashMap();
+    Map<String, String> m = new HashMap<>();
     for (String n : p.stringPropertyNames()) {
       m.put(n, p.getProperty(n));
     }
@@ -120,18 +120,10 @@ public class ConfigFile {
   public static Properties loadProperties(Map<String,String> vars, String str) {
     String propStr = toPropertiesString(vars, str);
     Properties p = new Properties();
-    Reader r = new StringReader(propStr);
-    try {
+    try (Reader r = new StringReader(propStr)) {
       p.load(r);
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new RuntimeException(e);
-    }
-    finally {
-      if (r != null) {
-        try { r.close(); }
-        catch (IOException e) {}
-      }
     }
     return p;
   }
@@ -149,13 +141,13 @@ public class ConfigFile {
   public static String toPropertiesString(Map<String,String> vars, String str) {
     List<ConfigLine> lines = parse(vars, str);
     List<ConfigLine> inScope = applyOverrides(filterByScope(lines));
-    List<String> varList = new ArrayList<String>();
-    Set<String> sortedNames = new TreeSet(vars.keySet());
+    List<String> varList = new ArrayList<>();
+    Set<String> sortedNames = new TreeSet<>(vars.keySet());
     for (String k : sortedNames) {
       varList.add(k + " = [" + vars.get(k) + "]");
     }
     String varHeader = mkCommentString(varList, "vars", "\n\n");
-    StringBuffer sb = new StringBuffer(varHeader);
+    StringBuilder sb = new StringBuilder(varHeader);
     for (ConfigLine cl : inScope) {
       sb.append(cl.getLine()).append("\n");
     }
@@ -163,8 +155,8 @@ public class ConfigFile {
   }
 
   private static List<ConfigLine> applyOverrides(List<ConfigLine> lines) {
-    List<PropertyLine> props = new ArrayList<PropertyLine>();
-    List<ConfigLine> others = new ArrayList<ConfigLine>();
+    List<PropertyLine> props = new ArrayList<>();
+    List<ConfigLine> others = new ArrayList<>();
     for (ConfigLine cl : lines) {
       if (cl.isProperty) {
         props.add((PropertyLine)cl);
@@ -172,27 +164,23 @@ public class ConfigFile {
       else others.add(cl);
     }
 
-    Comparator<ConfigLine> clComp = new Comparator<ConfigLine>() {
-      @Override public int compare(ConfigLine p1, ConfigLine p2) {
-        return p1.pos - p2.pos;
-      }
-    };
+    Comparator<ConfigLine> clComp = (p1, p2) -> p1.pos - p2.pos;
 
-    Map<String,TreeSet<PropertyLine>> groupedProps = new HashMap<String,TreeSet<PropertyLine>>();
+    Map<String,TreeSet<PropertyLine>> groupedProps = new HashMap<>();
     for (PropertyLine p : props) {
       TreeSet<PropertyLine> pls = groupedProps.get(p.name);
       if (pls == null) {
-        pls = new TreeSet<PropertyLine>(clComp);
+        pls = new TreeSet<>(clComp);
         groupedProps.put(p.name, pls);
       }
       pls.add(p);
     }
 
-    TreeSet<ConfigLine> finalProps = new TreeSet<ConfigLine>(clComp);
+    TreeSet<ConfigLine> finalProps = new TreeSet<>(clComp);
     for (Map.Entry<String,TreeSet<PropertyLine>> e : groupedProps.entrySet()) {
       NavigableSet<PropertyLine> pls = e.getValue().descendingSet();
       PropertyLine pl = pls.pollFirst();
-      List<String> vs = new ArrayList<String>();
+      List<String> vs = new ArrayList<>();
       for (PropertyLine p : pls) {
         vs.add("[" + p.getScope().expr + "] => [" + p.value + "]");
       }
@@ -202,12 +190,12 @@ public class ConfigFile {
       finalProps.add(cl);
     }
 
-    return new ArrayList(finalProps);
+    return new ArrayList<>(finalProps);
   }
 
   private static List<ConfigLine> filterByScope(List<ConfigLine> lines) {
     boolean acc1 = true;
-    List<ConfigLine> acc2 = new ArrayList<ConfigLine>();
+    List<ConfigLine> acc2 = new ArrayList<>();
     for (ConfigLine cl : lines) {
       if (cl instanceof Scope) {
         acc1 = ((Scope)cl).matches;
@@ -221,7 +209,7 @@ public class ConfigFile {
   }
 
   private static List<ConfigLine> parse(Map<String,String> vars, String str) {
-    List<ConfigLine> config = new ArrayList<ConfigLine>();
+    List<ConfigLine> config = new ArrayList<>();
     String[] lines = str.split("\n");
     Scope scope = new Scope("default", 0, true);
     boolean isContinue = false;
@@ -307,7 +295,7 @@ public class ConfigFile {
       if (overrides == null || overrides.size() == 0)
         return lineString();
       else {
-        List<String> r = new ArrayList<String>();
+        List<String> r = new ArrayList<>();
         for (int i = overrides.size(); i > 0; i--) {
           r.add(overrides.get(i - 1));
         }

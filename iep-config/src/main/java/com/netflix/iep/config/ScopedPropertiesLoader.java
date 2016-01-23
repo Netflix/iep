@@ -15,7 +15,6 @@
  */
 package com.netflix.iep.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -41,7 +40,7 @@ public class ScopedPropertiesLoader {
   }
 
   public static Properties load(String[] propFiles) {
-    List<URL> propUrls = new ArrayList<URL>();
+    List<URL> propUrls = new ArrayList<>();
     for (int i = 0; i < propFiles.length; i++) {
       String propFile = propFiles[i];
       try {
@@ -54,7 +53,7 @@ public class ScopedPropertiesLoader {
 
     StringBuilder debug = new StringBuilder("# Generated properties\n");
 
-    Properties finalProps = new Properties();;
+    Properties finalProps = new Properties();
 
     for (URL propUrl : propUrls) {
       LOGGER.debug("loading properties from " + propUrl);

@@ -5,6 +5,7 @@ object BuildSettings {
   val organization = "com.netflix.iep"
 
   val javaCompilerFlags = Seq(
+    "-Xlint:unchecked",
     "-source", "1.8",
     "-target", "1.8")
 

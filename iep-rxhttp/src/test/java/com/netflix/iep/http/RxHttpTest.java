@@ -18,8 +18,6 @@ package com.netflix.iep.http;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.config.ConfigurationManager;
 import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.HttpMethod;
@@ -34,11 +32,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import rx.Observable;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Actions;
-import rx.functions.Func1;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +46,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicReference;
@@ -296,7 +289,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -326,7 +319,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -356,7 +349,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -380,7 +373,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -404,7 +397,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -429,7 +422,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();
@@ -456,7 +449,7 @@ public class RxHttpTest {
           throwable.set(t);
           latch.countDown();
         },
-        () -> latch.countDown()
+        latch::countDown
     );
 
     latch.await();

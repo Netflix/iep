@@ -68,14 +68,11 @@ public class FixedPollingStrategy implements PollingStrategy {
         }
       }
     }
-    return executor.scheduleWithFixedDelay(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          callback.run();
-        } catch (Exception e) {
-          LOG.warn("failed to load properties", e);
-        }
+    return executor.scheduleWithFixedDelay((Runnable) () -> {
+      try {
+        callback.run();
+      } catch (Exception e) {
+        LOG.warn("failed to load properties", e);
       }
     }, interval, interval, units);
   }
