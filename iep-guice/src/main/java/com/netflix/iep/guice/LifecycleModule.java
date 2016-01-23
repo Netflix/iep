@@ -16,17 +16,10 @@
 package com.netflix.iep.guice;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
-import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.ProvisionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Provider;
-import java.lang.reflect.Method;
 
 /**
  * Helper for listening to injection events and invoking the PostConstruct and PreDestroy

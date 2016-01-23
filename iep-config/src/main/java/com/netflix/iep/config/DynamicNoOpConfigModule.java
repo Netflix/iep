@@ -28,7 +28,6 @@ import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.inject.ApplicationLayer;
 import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.typesafe.TypesafeConfig;
-import com.netflix.iep.platformservice.PlatformServiceModule;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 

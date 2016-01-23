@@ -20,7 +20,6 @@ import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
-import com.netflix.archaius.Config;
 import com.netflix.archaius.DefaultPropertyFactory;
 import com.netflix.archaius.PropertyFactory;
 import com.netflix.archaius.config.MapConfig;

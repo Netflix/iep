@@ -43,7 +43,6 @@ import io.reactivex.netty.protocol.http.client.HttpClientPipelineConfigurator;
 import io.reactivex.netty.protocol.http.client.HttpClientRequest;
 import io.reactivex.netty.protocol.http.client.HttpClientResponse;
 import rx.Observable;
-import rx.functions.Action1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
