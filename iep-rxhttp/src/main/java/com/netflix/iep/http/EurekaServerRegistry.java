@@ -45,8 +45,10 @@ public class EurekaServerRegistry implements ServerRegistry {
     this.client = client;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public boolean isStillAvailable(Server server) {
+    // Why is this flagged as unchecked?
     List<InstanceInfo> instances = client.getInstancesById(server.id());
     for (InstanceInfo info : instances) {
       if (info.getStatus() == InstanceInfo.InstanceStatus.UP) {

@@ -30,6 +30,7 @@ public abstract class BaseModule extends AbstractModule {
    * for creating a quick constructor binding on a class that doesn't have an explicit
    * Inject annotation.
    */
+  @SuppressWarnings("unchecked")
   protected <T> Constructor<T> getConstructor(Class<? extends T> cls) {
     Constructor<?>[] constructors = cls.getDeclaredConstructors();
     if (constructors.length != 1) {

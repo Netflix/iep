@@ -101,7 +101,7 @@ public class ConfigFile {
 
   public static Map<String,String> load(Map<String,String> vars, String str) {
     Properties p = loadProperties(vars, str);
-    Map m = new HashMap();
+    Map<String, String> m = new HashMap<>();
     for (String n : p.stringPropertyNames()) {
       m.put(n, p.getProperty(n));
     }
@@ -150,7 +150,7 @@ public class ConfigFile {
     List<ConfigLine> lines = parse(vars, str);
     List<ConfigLine> inScope = applyOverrides(filterByScope(lines));
     List<String> varList = new ArrayList<String>();
-    Set<String> sortedNames = new TreeSet(vars.keySet());
+    Set<String> sortedNames = new TreeSet<>(vars.keySet());
     for (String k : sortedNames) {
       varList.add(k + " = [" + vars.get(k) + "]");
     }
@@ -202,7 +202,7 @@ public class ConfigFile {
       finalProps.add(cl);
     }
 
-    return new ArrayList(finalProps);
+    return new ArrayList<>(finalProps);
   }
 
   private static List<ConfigLine> filterByScope(List<ConfigLine> lines) {

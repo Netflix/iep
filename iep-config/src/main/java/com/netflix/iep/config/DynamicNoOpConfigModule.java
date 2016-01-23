@@ -89,7 +89,7 @@ public class DynamicNoOpConfigModule extends AbstractModule {
     @RemoteLayer
     private com.netflix.archaius.Config providesOverrideConfig(Config cfg) throws Exception {
       return new PollingDynamicConfig(
-        new Callable() {
+        new Callable<PollingResponse>() {
           @Override
           public PollingResponse call() {
             return PollingResponse.noop();
