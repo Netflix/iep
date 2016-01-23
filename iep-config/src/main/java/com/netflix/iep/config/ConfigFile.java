@@ -120,18 +120,10 @@ public class ConfigFile {
   public static Properties loadProperties(Map<String,String> vars, String str) {
     String propStr = toPropertiesString(vars, str);
     Properties p = new Properties();
-    Reader r = new StringReader(propStr);
-    try {
+    try (Reader r = new StringReader(propStr)) {
       p.load(r);
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       throw new RuntimeException(e);
-    }
-    finally {
-      if (r != null) {
-        try { r.close(); }
-        catch (IOException e) {}
-      }
     }
     return p;
   }
