@@ -22,6 +22,7 @@ import rx.functions.Func1;
 import io.netty.handler.timeout.ReadTimeoutException;
 
 import java.net.ConnectException;
+import java.net.UnknownHostException;
 
 /**
  * Helper for handling retries.
@@ -48,8 +49,12 @@ class ErrorRetryHandler implements
 
   @Override
   public Observable<? extends HttpClientResponse<ByteBuf>> call(Throwable throwable) {
+    // Retry for certain exceptions. Connect and read timeout exceptions could be due
+    // to transient conditions or a problem with a single server. Unknown host may be a single
+    // bad server in the set.
     final boolean retryReadTimeouts = context.config().retryReadTimeouts();
-    if (throwable instanceof ConnectException || throwable instanceof ReadTimeoutException && retryReadTimeouts) {
+    final boolean readRetry = throwable instanceof ReadTimeoutException && retryReadTimeouts;
+    if (throwable instanceof ConnectException || throwable instanceof UnknownHostException || readRetry) {
       context.entry().withAttempt(attempt);
       return context.rxHttp().execute(context);
     }

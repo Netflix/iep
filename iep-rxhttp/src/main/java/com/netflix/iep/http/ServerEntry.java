@@ -54,9 +54,10 @@ final class ServerEntry {
     if (servers.isEmpty()) {
       return Collections.emptyList();
     }
-    List<Server> out = new ArrayList<>(n);
-    int size = servers.size();
-    for (int i = 0, j = nextPos.getAndIncrement(); i < n; ++i, ++j) {
+    final List<Server> out = new ArrayList<>(n);
+    final int size = servers.size();
+    final int start = Integer.remainderUnsigned(nextPos.getAndIncrement(), size);
+    for (int i = 0, j = start; i < n; ++i, ++j) {
       out.add(servers.get(j % size));
     }
     return out;
