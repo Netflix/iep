@@ -20,7 +20,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.StreamSupport;
 
 @RunWith(JUnit4.class)
 public class ServerEntryTest {
@@ -29,5 +34,22 @@ public class ServerEntryTest {
   public void emptyList() {
     ServerEntry entry = new ServerEntry(Collections.<Server>emptyList(), 0L);
     Assert.assertTrue(entry.next(1).isEmpty());
+  }
+
+  @Test
+  public void overflow() throws Exception {
+    // Need at least 2 entries to get negative results from mod
+    List<Server> servers = new ArrayList<>();
+    servers.add(new Server("foo", 7001, false));
+    servers.add(new Server("bar", 7001, false));
+    ServerEntry entry = new ServerEntry(servers, 0L);
+
+    // Set iteration to just before int max value
+    Field f = ServerEntry.class.getDeclaredField("nextPos");
+    f.setAccessible(true);
+    ((AtomicInteger) f.get(entry)).set(Integer.MAX_VALUE - 2);
+
+    List<Server> results = entry.next(5);
+    Assert.assertEquals(5, results.size());
   }
 }
