@@ -73,7 +73,18 @@ public final class ByteBufs {
    * will be a single ByteBuf in the output.
    */
   public static Observable.Transformer<ByteBuf, ByteBuf> json() {
-    return input -> decode(input, new EmbeddedChannel(new NetflixJsonObjectDecoder(true)));
+    return input -> decode(autoReleaseCopy(input), new EmbeddedChannel(new NetflixJsonObjectDecoder(true)));
+  }
+
+  /**
+   * Create copy of bytebuf to prevent underlying creator from mucking with contents.
+   */
+  public static Observable<ByteBuf> autoReleaseCopy(Observable<ByteBuf> stream) {
+    return stream.map(in -> {
+      ByteBuf buf = io.netty.buffer.ByteBufAllocator.DEFAULT.buffer(in.readableBytes());
+      buf.writeBytes(in);
+      return buf;
+    });
   }
 
   /**

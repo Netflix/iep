@@ -91,6 +91,8 @@ public class ByteBufsTest {
         Assert.assertEquals(String.format("{\"a\":%d}", ++i), obj);
       }
     });
+    bufs[0].release();
+    bufs[1].release();
     for (int i = 0; i < bufs.length; i++) {
       //System.err.println("bufs[" + i + "]: " + bufs[i].refCnt());
       Assert.assertEquals(0, bufs[i].refCnt());
@@ -114,6 +116,7 @@ public class ByteBufsTest {
         bufs[1 + i] = byteBuf;
       }
     });
+    bufs[0].release();
     for (int i = 0; i < bufs.length; i++) {
       //System.err.println("bufs[" + i + "]: " + bufs[i].refCnt());
       Assert.assertEquals(0, bufs[i].refCnt());
