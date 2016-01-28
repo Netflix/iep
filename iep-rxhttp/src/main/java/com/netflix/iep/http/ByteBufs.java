@@ -73,7 +73,10 @@ public final class ByteBufs {
    * will be a single ByteBuf in the output.
    */
   public static Observable.Transformer<ByteBuf, ByteBuf> json() {
-    return input -> decode(autoReleaseCopy(input), new EmbeddedChannel(new NetflixJsonObjectDecoder(true)));
+    return json(1024 * 1024);
+  }
+  public static Observable.Transformer<ByteBuf, ByteBuf> json(int maxLength) {
+    return input -> decode(autoReleaseCopy(input), new EmbeddedChannel(new NetflixJsonObjectDecoder(maxLength, true)));
   }
 
   /**
