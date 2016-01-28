@@ -24,6 +24,9 @@ import io.netty.handler.codec.CorruptedFrameException;
 import io.netty.handler.codec.TooLongFrameException;
 import io.netty.channel.ChannelPipeline;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 /**
@@ -35,6 +38,8 @@ import java.util.List;
  * {@link ChannelHandler} to parse the JSON text into a more usable form i.e. a POJO.
  */
 public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
+
+    protected static Logger LOGGER = LoggerFactory.getLogger(NetflixJsonObjectDecoder.class);
 
     private static final int ST_CORRUPTED = -1;
     private static final int ST_INIT = 0;
@@ -85,6 +90,12 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
         if (state == ST_CORRUPTED) {
             in.skipBytes(in.readableBytes());
             return;
+        }
+
+        if (LOGGER.isTraceEnabled()) {
+          byte[] bytes = new byte[in.readableBytes()];
+          in.getBytes(in.readerIndex(), bytes, 0, in.readableBytes());
+          LOGGER.trace("starting [" + in.readerIndex() + ":" + in.readableBytes() + "]:" + new String(bytes));
         }
 
         // index of next byte to process.
@@ -161,6 +172,12 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
         }
 
         this.len = len;
+
+        if (LOGGER.isTraceEnabled()) {
+            byte[] bytes = new byte[in.readableBytes()];
+            in.getBytes(in.readerIndex(), bytes, 0, in.readableBytes());
+            LOGGER.trace("remainder [" + in.readerIndex() + ":" + in.readableBytes() + "]:" + new String(bytes));
+        }
     }
 
     /**
@@ -169,7 +186,15 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
     @SuppressWarnings("UnusedParameters")
     protected ByteBuf extractObject(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {
         if (length == 0) return null;
-        return buffer.slice(index, length).retain();
+        ByteBuf buf = buffer.slice(index, length).retain();
+
+        if (LOGGER.isTraceEnabled()) {
+            byte[] bytes = new byte[buf.readableBytes()];
+            buf.getBytes(buf.readerIndex(), bytes, 0, buf.readableBytes());
+            LOGGER.trace("extracted [" + buf.readerIndex() + ":" + buf.readableBytes() + "]:" + new String(bytes));
+        }
+
+        return buf;
     }
 
     private void decodeByte(byte c, ByteBuf in, int idx) {
