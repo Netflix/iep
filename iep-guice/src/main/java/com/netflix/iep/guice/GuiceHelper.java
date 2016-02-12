@@ -73,6 +73,7 @@ public final class GuiceHelper {
       ms.add(m);
     }
     injector = Guice.createInjector(ms);
+    LOGGER.info("guice injector created successfully");
   }
 
   /** Shutdown classes with {@link javax.annotation.PreDestroy}. */
@@ -86,6 +87,7 @@ public final class GuiceHelper {
     final Runnable r = () -> {
       try {
         shutdown();
+        LOGGER.info("shutdown completed successfully");
       } catch (Exception e) {
         LOGGER.warn("exception during shutdown sequence", e);
       }
