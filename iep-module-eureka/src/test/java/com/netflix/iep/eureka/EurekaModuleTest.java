@@ -19,13 +19,32 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClient;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 @RunWith(JUnit4.class)
 public class EurekaModuleTest {
+
+  private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+
+  @Before
+  public void before() {
+    executor.scheduleWithFixedDelay(() -> dumpStack(), 5, 30, TimeUnit.SECONDS);
+  }
+
+  @After
+  public void after() {
+    executor.shutdownNow();
+  }
 
   @Test
   public void getClient() {
@@ -39,6 +58,17 @@ public class EurekaModuleTest {
     Injector injector = Guice.createInjector(new EurekaModule());
     EurekaClient client = injector.getInstance(EurekaClient.class);
     Assert.assertNotNull(client);
+  }
+
+  private static void dumpStack() {
+    for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+      Thread t = entry.getKey();
+      StackTraceElement[] trace = entry.getValue();
+      System.err.println(t.getName());
+      for (StackTraceElement element : trace) {
+        System.err.printf("  at %s%n", element.toString());
+      }
+    }
   }
 
 }
