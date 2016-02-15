@@ -64,9 +64,9 @@ public class EurekaModuleTest {
     for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
       Thread t = entry.getKey();
       StackTraceElement[] trace = entry.getValue();
-      System.err.println(t.getName());
+      System.out.println(t.getName());
       for (StackTraceElement element : trace) {
-        System.err.printf("  at %s%n", element.toString());
+        System.out.printf("  at %s%n", element.toString());
       }
     }
   }
