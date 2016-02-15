@@ -16,6 +16,7 @@ object MainBuild extends Build {
            scalacOptions ++= BuildSettings.compilerFlags,
             javacOptions ++= BuildSettings.javaCompilerFlags,
      javacOptions in doc := BuildSettings.javadocFlags,
+             testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a"),
               crossPaths := false,
            sourcesInBase := false,
             fork in Test := true,
@@ -204,8 +205,7 @@ object MainBuild extends Build {
     ))
 
   lazy val commonDeps = Seq(
-    Dependencies.junitInterface % "test",
-    Dependencies.scalatest % "test"
+    Dependencies.junitInterface % "test"
   )
 
   lazy val checkLicenseHeaders = taskKey[Unit]("Check the license headers for all source files.")
