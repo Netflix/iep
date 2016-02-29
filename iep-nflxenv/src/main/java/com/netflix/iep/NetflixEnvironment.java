@@ -15,186 +15,73 @@
  */
 package com.netflix.iep;
 
-import java.net.InetAddress;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 public class NetflixEnvironment {
   private NetflixEnvironment() {}
 
-  private static String LOCAL_APP = "local";
+  private static final String NAMESPACE = "netflix.iep.env.";
 
-  private static volatile boolean bitmap$0 = false;
-  private static String ami;
-
-  private static volatile boolean bitmap$1 = false;
-  private static String vmtype;
-
-  private static volatile boolean bitmap$2 = false;
-  private static String vpcid;
-
-  private static volatile boolean bitmap$3 = false;
-  private static String region;
-
-  private static volatile boolean bitmap$4 = false;
-  private static String zone;
-
-  private static volatile boolean bitmap$5 = false;
-  private static String instanceId;
-
-  private static volatile boolean bitmap$6 = false;
-  private static String app;
-
-  private static volatile boolean bitmap$7 = false;
-  private static String cluster;
-
-  private static volatile boolean bitmap$8 = false;
-  private static String asg;
-
-  private static volatile boolean bitmap$9 = false;
-  private static String stack;
-
-  private static volatile boolean bitmap$10 = false;
-  private static String env;
+  private static final Config CONFIG = ConfigFactory.load();
 
   public static String ami() {
-    if (!bitmap$0) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$0) {
-          ami = System.getenv("EC2_AMI_ID");
-          bitmap$0 = true;
-        }
-      }
-    }
-    return ami;
+    return CONFIG.getString(NAMESPACE + "ami");
   }
 
   public static String vmtype() {
-    if (!bitmap$1) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$1) {
-          vmtype = System.getenv("EC2_INSTANCE_TYPE");
-          bitmap$1 = true;
-        }
-      }
-    }
-    return vmtype;
+    return CONFIG.getString(NAMESPACE + "vmtype");
   }
 
   public static String vpcId() {
-    if (!bitmap$2) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$2) {
-          vpcid = System.getenv("EC2_VPC_ID");
-          bitmap$2 = true;
-        }
-      }
-    }
-    return vpcid;
+    return CONFIG.getString(NAMESPACE + "vpc-id");
   }
 
   public static String region() {
-    if (!bitmap$3) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$3) {
-          region = System.getenv("EC2_REGION");
-          if (region == null) region = "us-nflx-1";
-          bitmap$3 = true;
-        }
-      }
-    }
-    return region;
+    return CONFIG.getString(NAMESPACE + "region");
   }
 
   public static String zone() {
-    if (!bitmap$4) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$4) {
-          zone = System.getenv("EC2_AVAILABILITY_ZONE");
-          if (zone == null) zone = "us-nflx-1a";
-          bitmap$4 = true;
-        }
-      }
-    }
-    return zone;
+    return CONFIG.getString(NAMESPACE + "zone");
   }
 
   public static String instanceId() {
-    if (!bitmap$5) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$5) {
-          instanceId = System.getenv("EC2_INSTANCE_ID");
-          if (instanceId == null) {
-            try { instanceId = InetAddress.getLocalHost().getHostName(); }
-            catch (Exception e) { instanceId = "localhost"; }
-          }
-          bitmap$5 = true;
-        }
-      }
-    }
-    return instanceId;
+    return CONFIG.getString(NAMESPACE + "instance-id");
   }
 
   public static String app() {
-    if (!bitmap$6) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$6) {
-          app = System.getenv("NETFLIX_APP");
-          if (app == null) app = LOCAL_APP;
-          bitmap$6 = true;
-        }
-      }
-    }
-    return app;
+    return CONFIG.getString(NAMESPACE + "app");
   }
 
   public static String cluster() {
-    if (!bitmap$7) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$7) {
-          cluster = System.getenv("NETFLIX_CLUSTER");
-          if (cluster == null) cluster = LOCAL_APP;
-          bitmap$7 = true;
-        }
-      }
-    }
-    return cluster;
+    return CONFIG.getString(NAMESPACE + "cluster");
   }
 
   public static String asg() {
-    if (!bitmap$8) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$8) {
-          asg = System.getenv("NETFLIX_AUTO_SCALE_GROUP");
-          if (asg == null) asg = LOCAL_APP;
-          bitmap$8 = true;
-        }
-      }
-    }
-    return asg;
+    return CONFIG.getString(NAMESPACE + "asg");
   }
 
   public static String stack() {
-    if (!bitmap$9) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$9) {
-          stack = System.getenv("NETFLIX_STACK");
-          if (stack == null) stack = "none";
-          bitmap$9 = true;
-        }
-      }
-    }
-    return stack;
+    return CONFIG.getString(NAMESPACE + "stack");
   }
 
   public static String env() {
-    if (!bitmap$10) {
-      synchronized(NetflixEnvironment.class) {
-        if (!bitmap$10) {
-          env = System.getenv("NETFLIX_ENVIRONMENT");
-          if (env == null) env = "dev";
-          bitmap$10 = true;
-        }
-      }
-    }
-    return env;
+    return CONFIG.getString(NAMESPACE + "environment");
+  }
+
+  public static String accountId() {
+    return CONFIG.getString(NAMESPACE + "account-id");
+  }
+
+  public static String accountName() {
+    return CONFIG.getString(NAMESPACE + "account");
+  }
+
+  public static String accountType() {
+    return CONFIG.getString(NAMESPACE + "account-type");
+  }
+
+  public static String accountEnv() {
+    return CONFIG.getString(NAMESPACE + "account-env");
   }
 }
