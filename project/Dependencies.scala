@@ -3,12 +3,12 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.0.0-rc.33"
-    val eureka     = "1.4.1"
+    val eureka     = "1.4.2"
     val guice      = "4.0"
     val karyon3    = "3.0.1-rc.20"
     val rxnetty    = "0.4.15"
     val scala      = "2.11.7"
-    val slf4j      = "1.7.16"
+    val slf4j      = "1.7.18"
     val spectator  = "0.35.1"
   }
 
@@ -20,7 +20,7 @@ object Dependencies {
   val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.7.3"
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
-  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.7"
+  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "1.7.8"
   val eurekaClient    = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
