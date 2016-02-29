@@ -164,8 +164,12 @@ object MainBuild extends Build {
   lazy val `iep-nflxenv` = project
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.typesafeConfig
+    ))
 
   lazy val `iep-platformservice` = project
+    .dependsOn(`iep-nflxenv`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
