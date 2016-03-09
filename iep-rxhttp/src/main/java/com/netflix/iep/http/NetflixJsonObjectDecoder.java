@@ -51,6 +51,7 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
 
     private int state;
     private boolean insideString;
+    private boolean escapeString;
 
     private final int maxObjectLength;
     private final boolean streamArrayElements;
@@ -208,9 +209,16 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
             if (!insideString) {
                 insideString = true;
             // If the double quote wasn't escaped then this is the end of a string.
-            } else if (in.getByte(idx - 1) != '\\') {
+            } else if (!escapeString) {
                 insideString = false;
             }
+        }
+
+        if (insideString && c == '\\' && !escapeString) {
+          escapeString = true;
+        }
+        else {
+          escapeString = false;
         }
     }
 
@@ -225,6 +233,7 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
 
     private void reset() {
         insideString = false;
+        escapeString = false;
         state = ST_INIT;
         openBraces = 0;
     }
