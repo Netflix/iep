@@ -63,6 +63,7 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
 
   lazy val `iep-guice` = project
+    .dependsOn(`iep-service`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
