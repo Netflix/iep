@@ -18,6 +18,7 @@ package com.netflix.iep.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.ProvisionListener;
+import com.netflix.iep.service.ClassFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +47,7 @@ public class LifecycleModule extends AbstractModule {
     PreDestroyList list = new PreDestroyList();
     bindListener(Matchers.any(), new BindingListener(list));
     bind(PreDestroyList.class).toInstance(list);
+    bind(ClassFactory.class).toProvider(ClassFactoryProvider.class);
   }
 
   @Override public boolean equals(Object obj) {
