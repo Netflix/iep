@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +63,22 @@ public class GuiceClassFactoryTest {
     helper.shutdown();
   }
 
+  @Test
+  public void provider() throws Exception {
+    Module module = new AbstractModule() {
+      @Override protected void configure() {
+        bind(String.class).toInstance("foo");
+      }
+    };
+    GuiceHelper helper = new GuiceHelper();
+    helper.start(module);
+
+    WithProvider obj = helper.getInjector().getInstance(WithProvider.class);
+    Assert.assertEquals("foo", obj.configClass.v.get());
+
+    helper.shutdown();
+  }
+
   public static class Normal {
     final TestClass configClass;
 
@@ -86,11 +103,31 @@ public class GuiceClassFactoryTest {
     }
   }
 
+  public static class WithProvider {
+    final ProviderClass configClass;
+
+    @Inject
+    public WithProvider(ClassFactory factory) throws Exception {
+      // Class name from configuration settings
+      final String cname = ProviderClass.class.getName();
+      configClass = factory.newInstance(cname);
+    }
+  }
+
   public static class TestClass {
     final String v;
 
     @Inject
     public TestClass(String v) {
+      this.v = v;
+    }
+  }
+
+  public static class ProviderClass {
+    final Provider<String> v;
+
+    @Inject
+    public ProviderClass(Provider<String> v) {
       this.v = v;
     }
   }

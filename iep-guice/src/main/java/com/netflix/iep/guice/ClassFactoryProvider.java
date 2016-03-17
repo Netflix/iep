@@ -17,6 +17,8 @@ package com.netflix.iep.guice;
 
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 import com.netflix.iep.service.ClassFactory;
 import com.netflix.iep.service.DefaultClassFactory;
 
@@ -36,9 +38,9 @@ class ClassFactoryProvider implements Provider<ClassFactory> {
 
   @Override
   public ClassFactory get() {
-    return new DefaultClassFactory(cls -> {
+    return new DefaultClassFactory(type -> {
       try {
-        return injector.getInstance(cls);
+        return injector.getInstance(Key.get(type));
       } catch (ConfigurationException e) {
         return null;
       }
