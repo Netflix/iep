@@ -20,6 +20,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import javax.inject.Provider;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +58,15 @@ public class DefaultClassFactoryTest {
     bindings.put(Integer.TYPE, 1);
     ClassFactory factory = new DefaultClassFactory(bindings::get);
     SinglePrivateConstructor obj = factory.newInstance(SinglePrivateConstructor.class);
+    Assert.assertEquals(1, obj.getValue());
+  }
+
+  @Test
+  public void providerConstructor() {
+    Map<Type, Object> bindings = new HashMap<>();
+    bindings.put(ProviderConstructor.getProviderType(), (Provider<Integer>) () -> 1);
+    ClassFactory factory = new DefaultClassFactory(bindings::get);
+    ProviderConstructor obj = factory.newInstance(ProviderConstructor.class);
     Assert.assertEquals(1, obj.getValue());
   }
 
@@ -96,6 +108,22 @@ public class DefaultClassFactoryTest {
 
     public int getValue() {
       return value;
+    }
+  }
+
+  public static class ProviderConstructor {
+    static Type getProviderType() {
+      return ProviderConstructor.class.getDeclaredConstructors()[0].getGenericParameterTypes()[0];
+    }
+
+    private Provider<Integer> value = null;
+
+    private ProviderConstructor(Provider<Integer> value) {
+      this.value = value;
+    }
+
+    public int getValue() {
+      return value.get();
     }
   }
 }

@@ -16,6 +16,7 @@
 package com.netflix.iep.service;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
@@ -24,41 +25,42 @@ import java.util.function.Function;
  */
 public class DefaultClassFactory implements ClassFactory {
 
-  private final Function<Class<?>, Object> bindings;
+  private final Function<Type, Object> bindings;
 
   public DefaultClassFactory() {
     this(c -> null);
   }
 
-  public DefaultClassFactory(Function<Class<?>, Object> bindings) {
+  public DefaultClassFactory(Function<Type, Object> bindings) {
     this.bindings = bindings;
   }
 
   @SuppressWarnings("unchecked")
-  @Override public <T> T newInstance(Class<T> cls, Function<Class<?>, Object> overrides)
+  @Override public <T> T newInstance(Type type, Function<Type, Object> overrides)
       throws CreationException {
-      Constructor<?>[] constructors = cls.getDeclaredConstructors();
-      if (constructors.length == 1) {
-        Constructor<?> c = constructors[0];
-        return newInstance(cls, c, c.getParameterTypes(), overrides);
-      } else {
-        for (Constructor<?> c : constructors) {
-          Class<?>[] ptypes = c.getParameterTypes();
-          if (ptypes.length == 0) {
-            return newInstance(cls, c, ptypes, overrides);
-          }
+    Class<?> cls = (Class<?>) type;
+    Constructor<?>[] constructors = cls.getDeclaredConstructors();
+    if (constructors.length == 1) {
+      Constructor<?> c = constructors[0];
+      return newInstance(cls, c, c.getGenericParameterTypes(), overrides);
+    } else {
+      for (Constructor<?> c : constructors) {
+        Type[] ptypes = c.getGenericParameterTypes();
+        if (ptypes.length == 0) {
+          return newInstance(cls, c, ptypes, overrides);
         }
-        throw new CreationException("class " + cls.getCanonicalName() +
-            " has more than one constructor and does not have a no-argument constructor");
       }
+      throw new CreationException("class " + cls.getCanonicalName() +
+          " has more than one constructor and does not have a no-argument constructor");
+    }
   }
 
   @SuppressWarnings("unchecked")
   private <T> T newInstance(
-      Class<?> cls,
+      Type type,
       Constructor<?> c,
-      Class<?>[] ptypes,
-      Function<Class<?>, Object> overrides) throws CreationException {
+      Type[] ptypes,
+      Function<Type, Object> overrides) throws CreationException {
     try {
       c.setAccessible(true);
       if (ptypes.length == 0) {
@@ -75,7 +77,7 @@ public class DefaultClassFactory implements ClassFactory {
         return (T) c.newInstance(pvalues);
       }
     } catch (Exception e) {
-      throw new CreationException(cls, e);
+      throw new CreationException(type, e);
     }
   }
 }

@@ -15,6 +15,7 @@
  */
 package com.netflix.iep.service;
 
+import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
@@ -48,7 +49,7 @@ public interface ClassFactory {
    *     New instance of the class. Note, a new instance will be created for every call.
    */
   @SuppressWarnings("unchecked")
-  default <T> T newInstance(String name, Function<Class<?>, Object> overrides)
+  default <T> T newInstance(String name, Function<Type, Object> overrides)
       throws ClassNotFoundException {
     final Class<T> cls = (Class<T>) Class.forName(name);
     return newInstance(cls, overrides);
@@ -62,7 +63,7 @@ public interface ClassFactory {
    * @return
    *     New instance of the class. Note, a new instance will be created for every call.
    */
-  default <T> T newInstance(Class<T> cls) {
+  default <T> T newInstance(Type cls) {
     return newInstance(cls, c -> null);
   }
 
@@ -116,5 +117,5 @@ public interface ClassFactory {
    * @return
    *     New instance of the class. Note, a new instance will be created for every call.
    */
-  <T> T newInstance(Class<T> cls, Function<Class<?>, Object> overrides);
+  <T> T newInstance(Type cls, Function<Type, Object> overrides);
 }

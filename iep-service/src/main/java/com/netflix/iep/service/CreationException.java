@@ -15,14 +15,16 @@
  */
 package com.netflix.iep.service;
 
+import java.lang.reflect.Type;
+
 public class CreationException extends RuntimeException {
 
-  public CreationException(Class<?> cls) {
-    super(toMsg(cls));
+  public CreationException(Type type) {
+    super(toMsg(type));
   }
 
-  public CreationException(Class<?> cls, Throwable t) {
-    super(toMsg(cls), t);
+  public CreationException(Type type, Throwable t) {
+    super(toMsg(type), t);
   }
 
   public CreationException(String msg) {
@@ -33,7 +35,7 @@ public class CreationException extends RuntimeException {
     super(msg, t);
   }
 
-  private static String toMsg(Class<?> cls) {
-    return "failed to create new instance of " + cls.getName();
+  private static String toMsg(Type type) {
+    return "failed to create new instance of " + type;
   }
 }
