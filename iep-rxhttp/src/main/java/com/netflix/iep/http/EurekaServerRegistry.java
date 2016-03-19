@@ -16,6 +16,7 @@
 package com.netflix.iep.http;
 
 import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.CacheRefreshedEvent;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.spectator.impl.Preconditions;
 
@@ -24,16 +25,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Registry that gets the server list from eureka. Servers that have a status of UP and are
  * registered with the requested vip will get used.
  */
 public class EurekaServerRegistry implements ServerRegistry {
-
-  // If the list is over 15s old, refresh from discovery
-  private static final long EXPIRATION_TIME = TimeUnit.SECONDS.toMillis(15);
 
   private final ConcurrentHashMap<String, ServerEntry> serversByVip = new ConcurrentHashMap<>();
 
@@ -43,6 +40,11 @@ public class EurekaServerRegistry implements ServerRegistry {
   @Inject
   public EurekaServerRegistry(EurekaClient client) {
     this.client = client;
+    client.registerEventListener(event -> {
+      if (event instanceof CacheRefreshedEvent) {
+        serversByVip.clear();
+      }
+    });
   }
 
   @SuppressWarnings("unchecked")
@@ -61,12 +63,8 @@ public class EurekaServerRegistry implements ServerRegistry {
   @Override
   public List<Server> getServers(String vip, ClientConfig clientCfg) {
     Preconditions.checkNotNull(vip, "vipAddress");
-    long now = System.currentTimeMillis();
-    ServerEntry entry = serversByVip.get(vip);
-    if (entry == null || now - entry.ctime() > EXPIRATION_TIME) {
-      entry = new ServerEntry(getServersImpl(vip, clientCfg), now);
-      serversByVip.put(vip, entry);
-    }
+    ServerEntry entry = serversByVip.computeIfAbsent(vip,
+        k -> new ServerEntry(getServersImpl(k, clientCfg), 0L));
     return next(vip, entry, clientCfg);
   }
 
