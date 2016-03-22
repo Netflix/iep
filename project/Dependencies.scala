@@ -17,7 +17,7 @@ object Dependencies {
   val archaiusBridge  = "com.netflix.archaius" % "archaius2-archaius1-bridge" % archaius
   val archaiusCore    = "com.netflix.archaius" % "archaius2-core" % archaius
   val archaiusGuice   = "com.netflix.archaius" % "archaius2-guice" % archaius
-  val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.7.3"
+  val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.7.4"
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "2.0.1"
@@ -28,14 +28,14 @@ object Dependencies {
   val guiceMulti      = "com.google.inject.extensions" % "guice-multibindings" % guice
   val guiceServlet    = "com.google.inject.extensions" % "guice-servlet" % guice
   val inject          = "javax.inject" % "javax.inject" % "1"
-  val jodaTime        = "joda-time" % "joda-time" % "2.9.1"
+  val jodaTime        = "joda-time" % "joda-time" % "2.9.2"
   val karyon3Admin    = "com.netflix.karyon" % "karyon3-admin-simple" % karyon3
   val karyon3Archaius = "com.netflix.karyon" % "karyon3-archaius2" % karyon3
   val karyon3Eureka   = "com.netflix.karyon" % "karyon3-eureka" % karyon3
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava          = "io.reactivex" % "rxjava" % "1.1.1"
+  val rxjava          = "io.reactivex" % "rxjava" % "1.1.2"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
