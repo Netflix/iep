@@ -75,9 +75,11 @@ public class ConfigModule extends AbstractModule {
     @Provides
     @Singleton
     Config providesTypesafeConfig() {
+      final String prop = "netflix.iep.env.account-type";
       final Config baseConfig = ConfigFactory.load();
-      final String envConfigName = "iep-" + baseConfig.getString("netflix.iep.env.account-type");
-      return ConfigFactory.load(envConfigName).withFallback(baseConfig);
+      final String envConfigName = "iep-" + baseConfig.getString(prop) + ".conf";
+      final Config envConfig = ConfigFactory.parseResources(envConfigName);
+      return envConfig.withFallback(baseConfig).resolve();
     }
 
     @Provides
