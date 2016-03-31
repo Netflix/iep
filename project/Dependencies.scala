@@ -3,12 +3,12 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.0.0-rc.33"
-    val eureka     = "1.4.5"
+    val eureka     = "1.4.6"
     val guice      = "4.0"
     val karyon3    = "3.0.1-rc.20"
     val rxnetty    = "0.4.15"
     val scala      = "2.11.8"
-    val slf4j      = "1.7.19"
+    val slf4j      = "1.7.20"
     val spectator  = "0.36.0"
   }
 
@@ -28,7 +28,7 @@ object Dependencies {
   val guiceMulti      = "com.google.inject.extensions" % "guice-multibindings" % guice
   val guiceServlet    = "com.google.inject.extensions" % "guice-servlet" % guice
   val inject          = "javax.inject" % "javax.inject" % "1"
-  val jodaTime        = "joda-time" % "joda-time" % "2.9.2"
+  val jodaTime        = "joda-time" % "joda-time" % "2.9.3"
   val karyon3Admin    = "com.netflix.karyon" % "karyon3-admin-simple" % karyon3
   val karyon3Archaius = "com.netflix.karyon" % "karyon3-archaius2" % karyon3
   val karyon3Eureka   = "com.netflix.karyon" % "karyon3-eureka" % karyon3
