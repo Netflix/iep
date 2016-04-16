@@ -8,8 +8,8 @@ object Dependencies {
     val karyon3    = "3.0.1-rc.20"
     val rxnetty    = "0.4.15"
     val scala      = "2.11.8"
-    val slf4j      = "1.7.20"
-    val spectator  = "0.36.0"
+    val slf4j      = "1.7.21"
+    val spectator  = "0.37.0"
   }
 
   import Versions._
@@ -20,7 +20,7 @@ object Dependencies {
   val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.7.4"
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
-  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "2.0.1"
+  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "2.0.2"
   val eurekaClient    = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
@@ -35,16 +35,14 @@ object Dependencies {
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava          = "io.reactivex" % "rxjava" % "1.1.2"
+  val rxjava          = "io.reactivex" % "rxjava" % "1.1.3"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
   val scalaLibrary    = "org.scala-lang" % "scala-library" % scala
   val scalaLibraryAll = "org.scala-lang" % "scala-library-all" % scala
-  val scalaLogging    = "com.typesafe.scala-logging" % "scala-logging_2.11" % "3.1.0"
-  val scalaParsec     = "org.scala-lang.modules" % "scala-parser-combinators_2.11" % "1.0.2"
   val scalaReflect    = "org.scala-lang" % "scala-reflect" % scala
-  val scalatest       = "org.scalatest" % "scalatest_2.11" % "2.2.5"
+  val scalatest       = "org.scalatest" % "scalatest_2.11" % "2.2.6"
   val slf4jApi        = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi    = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorAws    = "com.netflix.spectator" % "spectator-ext-aws" % spectator
