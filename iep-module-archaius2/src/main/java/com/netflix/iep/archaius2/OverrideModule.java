@@ -16,9 +16,12 @@
 package com.netflix.iep.archaius2;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.util.Modules;
 import com.netflix.archaius.guice.ArchaiusModule;
+import com.netflix.iep.admin.AdminServer;
 import com.netflix.iep.platformservice.PlatformServiceModule;
 
 /**
@@ -38,5 +41,12 @@ public final class OverrideModule extends AbstractModule {
 
   @Override public int hashCode() {
     return getClass().hashCode();
+  }
+
+  public static void main(String[] args) {
+    System.setProperty("netflix.iep.archaius.use-dynamic", "false");
+    Injector injector = Guice.createInjector(new OverrideModule());
+    AdminServer server = injector.getInstance(AdminServer.class);
+    server.start();
   }
 }

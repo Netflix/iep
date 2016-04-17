@@ -28,10 +28,12 @@ object MainBuild extends Build {
 
   lazy val root = project.in(file("."))
     .aggregate(
+      `iep-admin`,
       `iep-config`,
       `iep-eureka-testconfig`,
       `iep-guice`,
       `iep-launcher`,
+      `iep-module-admin`,
       `iep-module-archaius1`,
       `iep-module-archaius2`,
       `iep-module-awsmetrics`,
@@ -46,6 +48,18 @@ object MainBuild extends Build {
       `iep-service`)
     .settings(buildSettings: _*)
     .settings(BuildSettings.noPackaging: _*)
+
+  lazy val `iep-admin` = project
+    .dependsOn(`iep-service`)
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.inject,
+      Dependencies.jacksonCore,
+      Dependencies.jacksonMapper,
+      Dependencies.slf4jApi,
+      Dependencies.spectatorSandbox
+    ))
 
   lazy val `iep-config` = project
     .dependsOn(`iep-platformservice`, `iep-nflxenv`)
@@ -74,6 +88,16 @@ object MainBuild extends Build {
   lazy val `iep-launcher` = project
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
+
+  lazy val `iep-module-admin` = project
+    .dependsOn(`iep-admin`)
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.guiceCore,
+      Dependencies.guiceMulti,
+      Dependencies.slf4jApi
+    ))
 
   lazy val `iep-module-archaius1` = project
     .settings(buildSettings: _*)
@@ -113,7 +137,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-module-eureka` = project
-    .dependsOn(`iep-service`, `iep-eureka-testconfig` % "test")
+    .dependsOn(`iep-service`, `iep-module-admin`, `iep-eureka-testconfig` % "test")
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
@@ -170,7 +194,7 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-platformservice` = project
-    .dependsOn(`iep-nflxenv`)
+    .dependsOn(`iep-nflxenv`, `iep-module-admin`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(

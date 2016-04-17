@@ -25,6 +25,7 @@ import com.netflix.archaius.config.polling.PollingResponse;
 import com.netflix.archaius.inject.ApplicationLayer;
 import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.typesafe.TypesafeConfig;
+import com.netflix.iep.admin.AdminModule;
 import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Registry;
 import com.typesafe.config.Config;
@@ -42,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 public final class PlatformServiceModule extends AbstractModule {
 
   @Override protected void configure() {
+    AdminModule.endpointsBinder(binder()).addBinding("/props").to(PropsEndpoint.class);
   }
 
   @Provides
