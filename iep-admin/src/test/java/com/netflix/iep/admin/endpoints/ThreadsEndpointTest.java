@@ -35,7 +35,7 @@ public class ThreadsEndpointTest {
   public void get() {
     List<ThreadsEndpoint.ThreadInfo> infos = (List<ThreadsEndpoint.ThreadInfo>) endpoint.get();
 
-    Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
+    Map<Thread, StackTraceElement[]> threads = ThreadsEndpoint.getAllStackTraces();
     Assert.assertEquals(threads.size(), infos.size());
     for (Map.Entry<Thread, StackTraceElement[]> entry : threads.entrySet()) {
       Thread t = entry.getKey();
@@ -45,11 +45,7 @@ public class ThreadsEndpointTest {
       Assert.assertTrue(match.isPresent());
       Assert.assertEquals(t.getName(), match.get().getName());
       Assert.assertEquals(t.getPriority(), match.get().getPriority());
-      // TODO: group detection seems to be unreliable on travis
-      //Assert.assertEquals(
-      //    (t.getThreadGroup() == null) ? null : t.getThreadGroup().getName(),
-      //    match.get().getGroup());
-      // State and stack trace can change, so they aren't checked here
+      // Group, state, and stack trace can change, so they aren't checked here
     }
   }
 

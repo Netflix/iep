@@ -27,6 +27,21 @@ import java.util.stream.Collectors;
  * Endpoint for providing access to environment variables.
  */
 public class ThreadsEndpoint implements HttpEndpoint {
+
+  /**
+   * Helper to get all the stack traces and remove entries that may be null. The
+   * {@code Thread.getAllStackTraces()} call has race conditions which can lead
+   * to null keys or values in the result map. For some reason these seem to be
+   * more likely to occur on travis.
+   */
+  static Map<Thread, StackTraceElement[]> getAllStackTraces() {
+    Map<Thread, StackTraceElement[]> threads = Thread.getAllStackTraces();
+    return threads.entrySet()
+        .stream()
+        .filter(e -> e.getKey() != null && e.getValue() != null)
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
   @Override public Object get() {
     return threads();
   }
@@ -39,15 +54,10 @@ public class ThreadsEndpoint implements HttpEndpoint {
   }
 
   private List<ThreadInfo> threads() {
-    List<ThreadInfo> threads = new ArrayList<>();
-    for (Map.Entry<Thread, StackTraceElement[]> e : Thread.getAllStackTraces().entrySet()) {
-      // In some cases on travis builds the thread appears to be null. Have not
-      // seen this locally.
-      if (e.getKey() != null && e.getValue() != null) {
-        threads.add(new ThreadInfo(e.getKey(), e.getValue()));
-      }
-    }
-    return threads;
+    return getAllStackTraces().entrySet()
+        .stream()
+        .map(e -> new ThreadInfo(e.getKey(), e.getValue()))
+        .collect(Collectors.toList());
   }
 
   public static class ThreadInfo {
@@ -59,7 +69,9 @@ public class ThreadsEndpoint implements HttpEndpoint {
     private final List<String> stackTrace;
 
     public ThreadInfo(Thread t, StackTraceElement[] stack) {
-      group = (t.getThreadGroup() == null) ? t.getThreadGroup().getName() : "null";
+      // Thread group will be null if the thread has stopped before this line executes
+      ThreadGroup tg = t.getThreadGroup();
+      group = (tg != null) ? tg.getName() : "null";
       name = t.getName();
       state = t.getState().name();
       priority = t.getPriority();
