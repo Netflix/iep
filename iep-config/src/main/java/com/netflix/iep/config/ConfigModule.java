@@ -25,7 +25,9 @@ import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.inject.ApplicationLayer;
 import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.typesafe.TypesafeConfig;
+import com.netflix.iep.admin.AdminModule;
 import com.netflix.iep.platformservice.PlatformServiceModule;
+import com.netflix.iep.platformservice.PropsEndpoint;
 import com.netflix.spectator.api.Spectator;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -69,6 +71,8 @@ public class ConfigModule extends AbstractModule {
     }
 
     @Override protected void configure() {
+      install(new AdminModule());
+      AdminModule.endpointsBinder(binder()).addBinding("/props").to(PropsEndpoint.class);
       bind(DynamicPropertiesConfiguration.class).asEagerSingleton();
     }
 

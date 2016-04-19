@@ -16,7 +16,9 @@
 package com.netflix.iep.eureka;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.Multibinder;
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -28,6 +30,8 @@ import com.netflix.config.ConfigurationManager;
 import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClientConfig;
+import com.netflix.iep.admin.AdminModule;
+import com.netflix.iep.admin.AdminServer;
 import com.netflix.iep.service.Service;
 import org.apache.commons.configuration.Configuration;
 
@@ -76,6 +80,9 @@ public final class EurekaModule extends AbstractModule {
 
     Multibinder<Service> serviceBinder = Multibinder.newSetBinder(binder(), Service.class);
     serviceBinder.addBinding().to(EurekaService.class);
+
+    // Register endpoint to admin to aid in debugging
+    AdminModule.endpointsBinder(binder()).addBinding("/eureka").to(EurekaEndpoint.class);
   }
 
   // Ensure that archaius configuration is setup prior to creating the eureka classes
@@ -91,5 +98,12 @@ public final class EurekaModule extends AbstractModule {
 
   @Override public int hashCode() {
     return getClass().hashCode();
+  }
+
+  public static void main(String[] args) {
+    System.setProperty("netflix.iep.archaius.use-dynamic", "false");
+    Injector injector = Guice.createInjector(new EurekaModule());
+    AdminServer server = injector.getInstance(AdminServer.class);
+    server.start();
   }
 }

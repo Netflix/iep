@@ -19,6 +19,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClient;
+import com.netflix.iep.admin.AdminServer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,7 +39,7 @@ public class EurekaModuleTest {
 
   @Before
   public void before() {
-    executor.scheduleWithFixedDelay(() -> dumpStack(), 5, 30, TimeUnit.SECONDS);
+    executor.scheduleWithFixedDelay(EurekaModuleTest::dumpStack, 5, 30, TimeUnit.SECONDS);
   }
 
   @After
@@ -54,7 +55,7 @@ public class EurekaModuleTest {
   }
 
   @Test
-  public void getEurekaClient() {
+  public void getEurekaClient() throws Exception {
     Injector injector = Guice.createInjector(new EurekaModule());
     EurekaClient client = injector.getInstance(EurekaClient.class);
     Assert.assertNotNull(client);
