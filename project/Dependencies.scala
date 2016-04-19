@@ -6,7 +6,6 @@ object Dependencies {
     val eureka     = "1.4.6"
     val guice      = "4.0"
     val jackson    = "2.7.2"
-    val karyon3    = "3.0.1-rc.20"
     val rxnetty    = "0.4.15"
     val scala      = "2.11.8"
     val slf4j      = "1.7.20"
@@ -32,9 +31,6 @@ object Dependencies {
   val jacksonCore     = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper   = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jodaTime        = "joda-time" % "joda-time" % "2.9.3"
-  val karyon3Admin    = "com.netflix.karyon" % "karyon3-admin-simple" % karyon3
-  val karyon3Archaius = "com.netflix.karyon" % "karyon3-archaius2" % karyon3
-  val karyon3Eureka   = "com.netflix.karyon" % "karyon3-eureka" % karyon3
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
