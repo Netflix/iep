@@ -24,6 +24,7 @@ import com.netflix.archaius.config.EmptyConfig;
 import com.netflix.archaius.config.polling.PollingResponse;
 import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.typesafe.TypesafeConfig;
+import com.netflix.iep.admin.AdminConfig;
 import com.netflix.iep.admin.AdminModule;
 import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Registry;
@@ -33,6 +34,7 @@ import com.typesafe.config.ConfigFactory;
 import javax.inject.Singleton;
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -70,6 +72,30 @@ public final class PlatformServiceModule extends ArchaiusModule {
   @ApplicationLayer
   private com.netflix.archaius.api.Config providesAppConfig(final Config application) throws Exception {
     return new TypesafeConfig(application);
+  }
+
+  @Provides
+  @Singleton
+  private AdminConfig providesAdminConfig(Config cfg) {
+    return new AdminConfig() {
+      @Override public int port() {
+        return cfg.getInt("netflix.iep.admin.port");
+      }
+
+      @Override public int backlog() {
+        return cfg.getInt("netflix.iep.admin.backlog");
+      }
+
+      @Override public Duration shutdownDelay() {
+        long nanos = cfg.getDuration("netflix.iep.admin.shutdown-delay", TimeUnit.NANOSECONDS);
+        return Duration.ofNanos(nanos);
+      }
+
+      @Override public String uiLocation() {
+        final String k = "netflix.iep.admin.ui-location";
+        return cfg.hasPath(k) ? cfg.getString(k) : "/ui";
+      }
+    };
   }
 
   @Override public boolean equals(Object obj) {
