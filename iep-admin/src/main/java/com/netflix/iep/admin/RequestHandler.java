@@ -18,6 +18,8 @@ package com.netflix.iep.admin;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,6 +32,8 @@ import java.util.logging.ErrorManager;
  * the server.
  */
 class RequestHandler implements HttpHandler {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(RequestHandler.class);
 
   private final String path;
   private final HttpEndpoint endpoint;
@@ -58,11 +62,13 @@ class RequestHandler implements HttpHandler {
         else
           handleImpl(exchange, id, obj);
       } catch (HttpException e) {
+        LOGGER.debug("request failed: " + reqPath, e);
         sendResponse(exchange, new ErrorMessage(e.getStatus(), e.getCause()));
       } catch (IllegalArgumentException | IllegalStateException e) {
+        LOGGER.debug("request failed: " + reqPath, e);
         sendResponse(exchange, new ErrorMessage(400, e));
       } catch (Exception e) {
-        e.printStackTrace();
+        LOGGER.debug("request failed: " + reqPath, e);
         sendResponse(exchange, new ErrorMessage(500, e));
       }
     }
