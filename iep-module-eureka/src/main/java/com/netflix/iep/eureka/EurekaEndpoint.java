@@ -112,6 +112,7 @@ public class EurekaEndpoint implements HttpEndpoint {
         .getRegisteredApplications()
         .stream()
         .flatMap(app -> app.getInstances().stream().map(InstanceInfo::getVIPAddress))
+        .filter(v -> v != null)
         .collect(Collectors.toSet());
     return new TreeSet<>(vips);
   }
@@ -125,6 +126,7 @@ public class EurekaEndpoint implements HttpEndpoint {
         .getRegisteredApplications()
         .stream()
         .flatMap(app -> app.getInstances().stream().map(InstanceInfo::getInstanceId))
+        .filter(v -> v != null)
         .collect(Collectors.toSet());
     return new TreeSet<>(instances);
   }
