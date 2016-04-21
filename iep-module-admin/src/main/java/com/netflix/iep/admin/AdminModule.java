@@ -18,10 +18,10 @@ package com.netflix.iep.admin;
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.MapBinder;
 import com.google.inject.multibindings.Multibinder;
-import com.google.inject.multibindings.OptionalBinder;
 import com.netflix.iep.admin.endpoints.BaseServerEndpoint;
 import com.netflix.iep.admin.endpoints.EnvEndpoint;
 import com.netflix.iep.admin.endpoints.JarsEndpoint;
@@ -35,9 +35,10 @@ import com.netflix.iep.service.Service;
 import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Registry;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Configure {@link AdminServer} via Guice. The server will be setup as an eager
@@ -75,18 +76,32 @@ public class AdminModule extends AbstractModule {
     endpoints.addBinding("/v1/platform/base").to(BaseServerEndpoint.class);
     endpoints.addBinding("/debug").toProvider(DebugProvider.class);
 
-    // Setup default binding for the registry, user should specify a more useful binding
-    OptionalBinder.newOptionalBinder(binder(), Registry.class)
-        .setDefault().toProvider(RegistryProvider.class);
-
-    // Set default binding for the admin config
-    OptionalBinder.newOptionalBinder(binder(), AdminConfig.class)
-        .setDefault().toInstance(AdminConfig.DEFAULT);
-
     // Init set of services to an empty set
     Multibinder.newSetBinder(binder(), Service.class);
 
-    bind(AdminServer.class).asEagerSingleton();
+    bind(AdminServer.class).toProvider(AdminServerProvider.class).asEagerSingleton();
+  }
+
+  private static class OptionalInjections {
+    @Inject(optional = true)
+    private Registry registry;
+
+    @Inject(optional = true)
+    private AdminConfig config;
+
+    Registry getRegistry() {
+      if (registry == null) {
+        registry = new DefaultRegistry();
+      }
+      return registry;
+    }
+
+    AdminConfig getConfig() {
+      if (config == null) {
+        config = AdminConfig.DEFAULT;
+      }
+      return config;
+    }
   }
 
   @Singleton
@@ -110,12 +125,28 @@ public class AdminModule extends AbstractModule {
     private final Registry registry;
 
     @Inject
-    RegistryProvider() {
-      this.registry = new DefaultRegistry();
+    RegistryProvider(OptionalInjections opts) {
+      this.registry = opts.getRegistry();
     }
 
     @Override public Registry get() {
       return registry;
+    }
+  }
+
+  @Singleton
+  private static class AdminServerProvider implements Provider<AdminServer> {
+
+    private final AdminServer server;
+
+    @Inject
+    AdminServerProvider(OptionalInjections opts, @AdminEndpoint Map<String, Object> endpoints)
+        throws IOException {
+      this.server = new AdminServer(opts.getConfig(), endpoints);
+    }
+
+    @Override public AdminServer get() {
+      return server;
     }
   }
 
