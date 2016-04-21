@@ -18,7 +18,7 @@ package com.netflix.iep.archaius1;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.util.Modules;
-import com.netflix.archaius.Config;
+import com.netflix.archaius.api.Config;
 import com.netflix.archaius.bridge.StaticArchaiusBridgeModule;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.config.DeploymentContext;

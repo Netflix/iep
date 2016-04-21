@@ -15,6 +15,9 @@
  */
 package com.netflix.iep.config;
 
+import com.netflix.archaius.api.Property;
+import com.netflix.archaius.api.PropertyFactory;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,8 +25,6 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.netflix.archaius.Property;
-import com.netflix.archaius.PropertyFactory;
 
 @Singleton
 public class DynamicPropertiesConfiguration {

@@ -15,7 +15,7 @@
  */
 package com.netflix.iep.platformservice;
 
-import com.netflix.archaius.Config;
+import com.netflix.archaius.api.Config;
 import com.netflix.iep.admin.HttpEndpoint;
 
 import javax.inject.Inject;

@@ -19,14 +19,13 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.util.Modules;
+import com.netflix.archaius.api.inject.RemoteLayer;
 import com.netflix.archaius.config.PollingDynamicConfig;
 import com.netflix.archaius.config.polling.FixedPollingStrategy;
 import com.netflix.archaius.config.polling.PollingResponse;
 import com.netflix.archaius.config.CompositeConfig;
 import com.netflix.archaius.config.MapConfig;
 import com.netflix.archaius.guice.ArchaiusModule;
-import com.netflix.archaius.inject.ApplicationLayer;
-import com.netflix.archaius.inject.RemoteLayer;
 import com.netflix.archaius.typesafe.TypesafeConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -86,7 +85,7 @@ public class DynamicNoOpConfigModule extends AbstractModule {
     @Provides
     @Singleton
     @RemoteLayer
-    private com.netflix.archaius.Config providesOverrideConfig(Config cfg) throws Exception {
+    private com.netflix.archaius.api.Config providesOverrideConfig(Config cfg) throws Exception {
       return new PollingDynamicConfig(
           PollingResponse::noop,
           new FixedPollingStrategy(60000, TimeUnit.MILLISECONDS));
@@ -94,7 +93,7 @@ public class DynamicNoOpConfigModule extends AbstractModule {
 
     @Provides
     @Singleton
-    @ApplicationLayer
+    // TODO @ApplicationLayer
     private CompositeConfig providesAppConfig(Config cfg) throws Exception {
       final Properties props = (propFiles == null)
           ? ScopedPropertiesLoader.load()

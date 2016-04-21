@@ -15,15 +15,14 @@
  */
 package com.netflix.iep.platformservice;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
+import com.google.inject.Key;
 import com.google.inject.Provides;
-import com.netflix.archaius.config.CompositeConfig;
+import com.netflix.archaius.api.config.PollingStrategy;
+import com.netflix.archaius.api.inject.RemoteLayer;
 import com.netflix.archaius.config.EmptyConfig;
-import com.netflix.archaius.config.PollingStrategy;
 import com.netflix.archaius.config.polling.PollingResponse;
-import com.netflix.archaius.inject.ApplicationLayer;
-import com.netflix.archaius.inject.RemoteLayer;
+import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.typesafe.TypesafeConfig;
 import com.netflix.iep.admin.AdminModule;
 import com.netflix.spectator.api.DefaultRegistry;
@@ -40,9 +39,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * Helper for configuring archaius with the Netflix dynamic property source.
  */
-public final class PlatformServiceModule extends AbstractModule {
+public final class PlatformServiceModule extends ArchaiusModule {
 
-  @Override protected void configure() {
+  @Override protected void configureArchaius() {
+    bindApplicationConfigurationOverride()
+      .to(Key.get(com.netflix.archaius.api.Config.class, ApplicationLayer.class));
     AdminModule.endpointsBinder(binder()).addBinding("/props").to(PropsEndpoint.class);
   }
 
@@ -59,7 +60,7 @@ public final class PlatformServiceModule extends AbstractModule {
   @Provides
   @Singleton
   @RemoteLayer
-  private com.netflix.archaius.Config providesOverrideConfig(OptionalInjections opts, Config cfg)
+  private com.netflix.archaius.api.Config providesOverrideConfig(OptionalInjections opts, Config cfg)
       throws Exception {
     return getDynamicConfig(opts.getRegistry(), cfg);
   }
@@ -67,10 +68,8 @@ public final class PlatformServiceModule extends AbstractModule {
   @Provides
   @Singleton
   @ApplicationLayer
-  private CompositeConfig providesAppConfig(final Config application) throws Exception {
-    CompositeConfig app = new CompositeConfig();
-    app.addConfig("TYPESAFE", new TypesafeConfig(application));
-    return app;
+  private com.netflix.archaius.api.Config providesAppConfig(final Config application) throws Exception {
+    return new TypesafeConfig(application);
   }
 
   @Override public boolean equals(Object obj) {
@@ -95,7 +94,7 @@ public final class PlatformServiceModule extends AbstractModule {
     return new FixedPollingStrategy(interval, TimeUnit.MILLISECONDS, cfg.getBoolean(propSyncInit));
   }
 
-  public static com.netflix.archaius.Config getDynamicConfig(Registry registry, Config cfg)
+  public static com.netflix.archaius.api.Config getDynamicConfig(Registry registry, Config cfg)
       throws Exception {
     final String propUseDynamic = "netflix.iep.archaius.use-dynamic";
     return (cfg.getBoolean(propUseDynamic))

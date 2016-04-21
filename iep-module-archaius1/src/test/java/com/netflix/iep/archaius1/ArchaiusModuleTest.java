@@ -22,17 +22,16 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
 import com.google.inject.util.Modules;
-import com.netflix.archaius.Config;
+import com.netflix.archaius.api.Config;
+import com.netflix.archaius.api.config.SettableConfig;
+import com.netflix.archaius.api.inject.RemoteLayer;
+import com.netflix.archaius.api.inject.RuntimeLayer;
 import com.netflix.archaius.bridge.StaticAbstractConfiguration;
 import com.netflix.archaius.bridge.StaticDeploymentContext;
 import com.netflix.archaius.config.CompositeConfig;
 import com.netflix.archaius.config.DefaultSettableConfig;
 import com.netflix.archaius.config.MapConfig;
-import com.netflix.archaius.config.SettableConfig;
 import com.netflix.archaius.guice.ArchaiusModule;
-import com.netflix.archaius.inject.ApplicationLayer;
-import com.netflix.archaius.inject.RemoteLayer;
-import com.netflix.archaius.inject.RuntimeLayer;
 import org.apache.commons.configuration.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,8 +46,8 @@ public class ArchaiusModuleTest {
 
   private static final Key<Configuration> IEP_CONFIG = Key.get(Configuration.class, Names.named("IEP"));
 
-  private Module overrideModule = new AbstractModule() {
-    @Override protected void configure() {
+  private Module overrideModule = new ArchaiusModule() {
+    @Override protected void configureArchaius() {
       try {
         MapConfig cfg = MapConfig.builder()
             .put("netflix.iep.archaius.scope.environment", "test")
@@ -63,9 +62,7 @@ public class ArchaiusModuleTest {
             .put("a", "b")
             .put("c", "d")
             .build();
-        CompositeConfig app = new CompositeConfig();
-        app.addConfig("MAP", cfg);
-        bind(CompositeConfig.class).annotatedWith(ApplicationLayer.class).toInstance(app);
+        bindApplicationConfigurationOverride().toInstance(cfg);
 
         DefaultSettableConfig dynamic = new DefaultSettableConfig();
         dynamic.setProperty("c", "dynamic");
