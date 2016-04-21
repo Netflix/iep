@@ -48,7 +48,10 @@ public class PropsEndpoint implements HttpEndpoint {
     Map<String, String> props = new TreeMap<>();
     while (keys.hasNext()) {
       String k = keys.next();
-      props.put(k, config.getString(k));
+      String v = config.getString(k, null);
+      if (v != null) {
+        props.put(k, v);
+      }
     }
     return props;
   }
