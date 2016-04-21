@@ -24,8 +24,8 @@ import java.util.Properties;
 import com.google.common.io.Resources;
 import com.google.common.base.Charsets;
 
+import com.netflix.archaius.api.Config;
 import com.netflix.config.ConfigurationManager;
-import com.netflix.archaius.Config;
 import com.netflix.archaius.config.MapConfig;
 
 public class TestResourceConfiguration {
