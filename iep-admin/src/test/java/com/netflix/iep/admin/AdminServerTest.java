@@ -267,9 +267,9 @@ public class AdminServerTest {
   }
 
   static class Response {
-    int status;
-    Map<String, List<String>> headers;
-    String content;
+    final int status;
+    final Map<String, List<String>> headers;
+    final String content;
 
     Response(int status, Map<String, List<String>> headers, String content) {
       this.status = status;

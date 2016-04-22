@@ -44,7 +44,7 @@ object License {
     val badFiles = findFiles(srcDir).filterNot(checkLicenseHeader)
     if (badFiles.nonEmpty) {
       badFiles.foreach { f => log.error(s"bad license header: $f") }
-      error(s"${badFiles.size} files with incorrect header, run formatLicenseHeaders to fix")
+      sys.error(s"${badFiles.size} files with incorrect header, run formatLicenseHeaders to fix")
     } else {
       log.info("all files have correct license header")
     }

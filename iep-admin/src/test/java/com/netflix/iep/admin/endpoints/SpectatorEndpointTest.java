@@ -29,8 +29,8 @@ import java.util.concurrent.TimeUnit;
 @RunWith(JUnit4.class)
 public class SpectatorEndpointTest {
 
-  private Registry registry = new DefaultRegistry();
-  private SpectatorEndpoint endpoint = new SpectatorEndpoint(registry);
+  private final Registry registry = new DefaultRegistry();
+  private final SpectatorEndpoint endpoint = new SpectatorEndpoint(registry);
 
   public SpectatorEndpointTest() {
     registry.counter("counter1", "a", "1", "b", "2").increment();

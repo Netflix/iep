@@ -16,5 +16,5 @@
 package com.netflix.iep.config;
 
 public interface IConfiguration {
-  public String get(String key);
+  String get(String key);
 }

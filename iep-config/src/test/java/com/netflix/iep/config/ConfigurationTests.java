@@ -31,31 +31,31 @@ import org.joda.time.Duration;
 public class ConfigurationTests {
   interface TestConfig extends IConfiguration {
     @DefaultValue("string")
-    public String getString();
+    String getString();
 
     @DefaultValue("true")
-    public boolean getBooleanPrimitive();
+    boolean getBooleanPrimitive();
 
     @DefaultValue("true")
-    public Boolean getBooleanObject();
+    Boolean getBooleanObject();
 
     @DefaultValue("1")
-    public int getIntegerPrimitive();
+    int getIntegerPrimitive();
 
     @DefaultValue("1")
-    public Integer getIntegerObject();
+    Integer getIntegerObject();
 
     @DefaultValue("1.1")
-    public double getDoublePrimitive();
+    double getDoublePrimitive();
 
     @DefaultValue("1.1")
-    public Double getDoubleObject();
+    Double getDoubleObject();
 
     @DefaultValue("2014-08-01T00:00:00")
-    public DateTime getDateTime();
+    DateTime getDateTime();
 
     @DefaultValue("PT5M")
-    public Duration getDuration();
+    Duration getDuration();
   }
 
   private TestConfig mkConfig() { return mkConfig(new HashMap<>()); }

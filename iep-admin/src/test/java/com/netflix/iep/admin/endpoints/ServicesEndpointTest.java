@@ -66,7 +66,7 @@ public class ServicesEndpointTest {
     return ss;
   }
 
-  private ServicesEndpoint endpoint = new ServicesEndpoint(new ServiceManager(services()));
+  private final ServicesEndpoint endpoint = new ServicesEndpoint(new ServiceManager(services()));
 
   @Test @SuppressWarnings("unchecked")
   public void get() {

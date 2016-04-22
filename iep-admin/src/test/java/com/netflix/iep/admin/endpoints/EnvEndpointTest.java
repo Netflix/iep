@@ -27,7 +27,7 @@ import java.util.Map;
 @RunWith(JUnit4.class)
 public class EnvEndpointTest {
 
-  private EnvEndpoint endpoint = new EnvEndpoint();
+  private final EnvEndpoint endpoint = new EnvEndpoint();
 
   @Test @SuppressWarnings("unchecked")
   public void get() {

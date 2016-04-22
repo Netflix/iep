@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
 
-    protected static Logger LOGGER = LoggerFactory.getLogger(NetflixJsonObjectDecoder.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(NetflixJsonObjectDecoder.class);
 
     private static final int ST_CORRUPTED = -1;
     private static final int ST_INIT = 0;
@@ -214,12 +214,7 @@ public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
             }
         }
 
-        if (insideString && c == '\\' && !escapeString) {
-          escapeString = true;
-        }
-        else {
-          escapeString = false;
-        }
+        escapeString = insideString && c == '\\' && !escapeString;
     }
 
     private void initDecoding(byte openingBrace) {

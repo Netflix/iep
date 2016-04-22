@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 @RunWith(JUnit4.class)
 public class BaseServerEndpointTest {
 
-  private BaseServerEndpoint endpoint = new BaseServerEndpoint();
+  private final BaseServerEndpoint endpoint = new BaseServerEndpoint();
 
   @Test
   public void get() {

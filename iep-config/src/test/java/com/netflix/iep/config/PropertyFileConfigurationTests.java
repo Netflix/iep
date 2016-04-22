@@ -33,22 +33,22 @@ public class PropertyFileConfigurationTests {
 
   interface TestConfig extends IConfiguration {
     @DefaultValue("string")
-    public String getString();
+    String getString();
 
     @DefaultValue("true")
-    public boolean getBoolean();
+    boolean getBoolean();
 
     @DefaultValue("1")
-    public int getInteger();
+    int getInteger();
 
     @DefaultValue("1.1")
-    public double getDouble();
+    double getDouble();
 
     @DefaultValue("2014-08-01T00:00:00")
-    public DateTime getDateTime();
+    DateTime getDateTime();
 
     @DefaultValue("PT5M")
-    public Duration getDuration();
+    Duration getDuration();
   }
 
   @BeforeClass

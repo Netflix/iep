@@ -26,7 +26,7 @@ import java.util.Map;
 @RunWith(JUnit4.class)
 public class SystemPropsEndpointTest {
 
-  private SystemPropsEndpoint endpoint = new SystemPropsEndpoint();
+  private final SystemPropsEndpoint endpoint = new SystemPropsEndpoint();
 
   @Test @SuppressWarnings("unchecked")
   public void get() {

@@ -19,7 +19,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClient;
-import com.netflix.iep.admin.AdminServer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

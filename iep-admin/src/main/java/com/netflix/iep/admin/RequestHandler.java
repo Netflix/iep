@@ -23,9 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.ErrorManager;
 
 /**
  * Request handler to map {@link HttpEndpoint} implemenations to a request/response on
@@ -60,7 +58,7 @@ class RequestHandler implements HttpHandler {
         if (obj == null)
           sendResponse(exchange, new ErrorMessage(404, reqPath));
         else
-          handleImpl(exchange, id, obj);
+          handleImpl(exchange, obj);
       } catch (HttpException e) {
         LOGGER.debug("request failed: " + reqPath, e);
         sendResponse(exchange, new ErrorMessage(e.getStatus(), e.getCause()));
@@ -74,7 +72,7 @@ class RequestHandler implements HttpHandler {
     }
   }
 
-  private void handleImpl(HttpExchange exchange, String id, Object obj) throws IOException {
+  private void handleImpl(HttpExchange exchange, Object obj) throws IOException {
     addCorsHeaders(exchange);
     switch (exchange.getRequestMethod()) {
       case "OPTIONS":

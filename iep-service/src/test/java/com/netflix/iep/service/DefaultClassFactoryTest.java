@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import javax.inject.Provider;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;

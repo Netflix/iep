@@ -24,7 +24,7 @@ import javax.annotation.PreDestroy;
  */
 public abstract class AbstractService implements Service {
 
-  private String name;
+  private final String name;
   private volatile State state;
 
   public AbstractService() {
