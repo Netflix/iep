@@ -70,7 +70,7 @@ public final class PlatformServiceModule extends ArchaiusModule {
   @Provides
   @Singleton
   @ApplicationLayer
-  private com.netflix.archaius.api.Config providesAppConfig(final Config application) throws Exception {
+  protected com.netflix.archaius.api.Config providesAppConfig(final Config application) throws Exception {
     return new TypesafeConfig(application);
   }
 

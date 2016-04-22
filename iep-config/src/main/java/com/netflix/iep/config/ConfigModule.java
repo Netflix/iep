@@ -15,26 +15,22 @@
  */
 package com.netflix.iep.config;
 
-import com.google.inject.Key;
+import com.google.inject.AbstractModule;
+import com.google.inject.Module;
 import com.google.inject.Provides;
+import com.google.inject.util.Modules;
 import com.netflix.archaius.api.config.CompositeConfig;
-import com.netflix.archaius.api.inject.RemoteLayer;
 import com.netflix.archaius.config.DefaultCompositeConfig;
 import com.netflix.archaius.config.MapConfig;
-import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.typesafe.TypesafeConfig;
-import com.netflix.iep.admin.AdminModule;
 import com.netflix.iep.platformservice.ApplicationLayer;
 import com.netflix.iep.platformservice.PlatformServiceModule;
-import com.netflix.iep.platformservice.PropsEndpoint;
-import com.netflix.spectator.api.Spectator;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 import javax.inject.Singleton;
 import java.util.Properties;
 
-public class ConfigModule extends ArchaiusModule {
+public class ConfigModule extends AbstractModule {
 
   private final String[] propFiles;
 
@@ -46,49 +42,39 @@ public class ConfigModule extends ArchaiusModule {
     this.propFiles = propFiles;
   }
 
-  @Override protected void configureArchaius() {
-    install(new AdminModule());
-    AdminModule.endpointsBinder(binder()).addBinding("/props").to(PropsEndpoint.class);
-    bindApplicationConfigurationOverride()
-        .to(Key.get(com.netflix.archaius.api.Config.class, ApplicationLayer.class));
+  @Override protected void configure() {
     bind(DynamicPropertiesConfiguration.class).asEagerSingleton();
+    Module m = Modules.override(new PlatformServiceModule()).with(new OverrideModule());
+    install(m);
   }
 
-  @Override public boolean equals(Object obj) {
-    return obj != null && getClass().equals(obj.getClass());
-  }
+  private class OverrideModule extends AbstractModule {
 
-  @Override public int hashCode() {
-    return getClass().hashCode();
-  }
+    @Override
+    protected void configure() {
+    }
 
-  @Provides
-  @Singleton
-  Config providesTypesafeConfig() {
-    final String prop = "netflix.iep.env.account-type";
-    final Config baseConfig = ConfigFactory.load();
-    final String envConfigName = "iep-" + baseConfig.getString(prop) + ".conf";
-    final Config envConfig = ConfigFactory.parseResources(envConfigName);
-    return envConfig.withFallback(baseConfig).resolve();
-  }
+    @Override
+    public boolean equals(Object obj) {
+      return obj != null && getClass().equals(obj.getClass());
+    }
 
-  @Provides
-  @Singleton
-  @RemoteLayer
-  private com.netflix.archaius.api.Config providesOverrideConfig(Config cfg) throws Exception {
-    return PlatformServiceModule.getDynamicConfig(Spectator.globalRegistry(), cfg);
-  }
+    @Override
+    public int hashCode() {
+      return getClass().hashCode();
+    }
 
-  @Provides
-  @Singleton
-  @ApplicationLayer
-  private com.netflix.archaius.api.Config providesAppConfig(Config cfg) throws Exception {
-    final Properties props = (propFiles == null)
-        ? ScopedPropertiesLoader.load()
-        : ScopedPropertiesLoader.load(propFiles);
-    final CompositeConfig app = new DefaultCompositeConfig();
-    app.addConfig("scoped", new MapConfig(props));
-    app.addConfig("typesafe", new TypesafeConfig(cfg));
-    return app;
+    @Provides
+    @Singleton
+    @ApplicationLayer
+    protected com.netflix.archaius.api.Config providesAppConfig(final Config cfg) throws Exception {
+      final Properties props = (propFiles == null)
+          ? ScopedPropertiesLoader.load()
+          : ScopedPropertiesLoader.load(propFiles);
+      final CompositeConfig app = new DefaultCompositeConfig();
+      app.addConfig("scoped", new MapConfig(props));
+      app.addConfig("typesafe", new TypesafeConfig(cfg));
+      return app;
+    }
   }
 }
