@@ -74,7 +74,8 @@ public class AdminModule extends AbstractModule {
     endpoints.addBinding("/spectator").to(SpectatorEndpoint.class);
     endpoints.addBinding("/services").to(ServicesEndpoint.class);
     endpoints.addBinding("/v1/platform/base").to(BaseServerEndpoint.class);
-    endpoints.addBinding("/debug").toProvider(DebugProvider.class);
+    endpoints.addBinding("/debug").to(GuiceDebugEndpoint.class);
+    endpoints.addBinding("/guice").to(GuiceEndpoint.class);
 
     // Init set of services to an empty set
     Multibinder.newSetBinder(binder(), Service.class);
@@ -155,7 +156,11 @@ public class AdminModule extends AbstractModule {
    * quick local testing of the module and common endpoints.
    */
   public static void main(String[] args) {
-    Injector injector = Guice.createInjector(new AdminModule());
+    Injector injector = Guice.createInjector(new AdminModule(), new AbstractModule() {
+      @Override protected void configure() {
+        bind(Registry.class).toInstance(new DefaultRegistry());
+      }
+    });
     AdminServer server = injector.getInstance(AdminServer.class);
     server.start();
   }
