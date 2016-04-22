@@ -29,8 +29,8 @@ import java.util.Map;
 @RunWith(JUnit4.class)
 public class PropsEndpointTest {
 
-  private Config config = new MapConfig(props());
-  private PropsEndpoint endpoint = new PropsEndpoint(config);
+  private final Config config = new MapConfig(props());
+  private final PropsEndpoint endpoint = new PropsEndpoint(config);
 
   private Map<String, String> props() {
     Map<String, String> map = new HashMap<>();

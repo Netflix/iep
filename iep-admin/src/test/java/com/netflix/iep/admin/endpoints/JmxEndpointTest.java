@@ -27,7 +27,7 @@ import java.util.Map;
 @RunWith(JUnit4.class)
 public class JmxEndpointTest {
 
-  private JmxEndpoint endpoint = new JmxEndpoint();
+  private final JmxEndpoint endpoint = new JmxEndpoint();
 
   @Test @SuppressWarnings("unchecked")
   public void getWithPath() {

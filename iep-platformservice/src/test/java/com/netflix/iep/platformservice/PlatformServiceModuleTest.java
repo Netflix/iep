@@ -37,7 +37,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class PlatformServiceModuleTest {
 
-  private Module overrideModule = new AbstractModule() {
+  private final Module overrideModule = new AbstractModule() {
     @Override protected void configure() {
       bind(com.typesafe.config.Config.class).toInstance(ConfigFactory.parseString("a=b\nc=d"));
 
@@ -49,8 +49,8 @@ public class PlatformServiceModuleTest {
     }
   };
 
-  private Module baseModule = Modules.override(new ArchaiusModule()).with(new PlatformServiceModule());
-  private Module testModule = Modules.override(baseModule).with(overrideModule);
+  private final Module baseModule = Modules.override(new ArchaiusModule()).with(new PlatformServiceModule());
+  private final Module testModule = Modules.override(baseModule).with(overrideModule);
 
   @Test
   public void loadConfig() {

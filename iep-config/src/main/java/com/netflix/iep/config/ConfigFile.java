@@ -305,8 +305,8 @@ public class ConfigFile {
   }
 
   private static class Scope extends ConfigLine {
-    String expr;
-    boolean matches;
+    final String expr;
+    final boolean matches;
 
     Scope(String expr, int pos, boolean matches) {
       super();

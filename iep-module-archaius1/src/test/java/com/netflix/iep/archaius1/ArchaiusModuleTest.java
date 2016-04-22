@@ -15,7 +15,6 @@
  */
 package com.netflix.iep.archaius1;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -28,7 +27,6 @@ import com.netflix.archaius.api.inject.RemoteLayer;
 import com.netflix.archaius.api.inject.RuntimeLayer;
 import com.netflix.archaius.bridge.StaticAbstractConfiguration;
 import com.netflix.archaius.bridge.StaticDeploymentContext;
-import com.netflix.archaius.config.CompositeConfig;
 import com.netflix.archaius.config.DefaultSettableConfig;
 import com.netflix.archaius.config.MapConfig;
 import com.netflix.archaius.guice.ArchaiusModule;
@@ -46,7 +44,7 @@ public class ArchaiusModuleTest {
 
   private static final Key<Configuration> IEP_CONFIG = Key.get(Configuration.class, Names.named("IEP"));
 
-  private Module overrideModule = new ArchaiusModule() {
+  private final Module overrideModule = new ArchaiusModule() {
     @Override protected void configureArchaius() {
       try {
         MapConfig cfg = MapConfig.builder()

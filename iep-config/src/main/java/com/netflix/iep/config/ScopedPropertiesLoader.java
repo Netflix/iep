@@ -28,7 +28,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
 public class ScopedPropertiesLoader {
-  private static Logger LOGGER = LoggerFactory.getLogger(ScopedPropertiesLoader.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ScopedPropertiesLoader.class);
 
   private static final String PROP_PROPERTIES_FILE = "netflix.iep.config.propertiesFile";
   private static final String DEF_PROPERTIES_FILE = "application.scoped.properties";

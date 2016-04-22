@@ -59,10 +59,10 @@ public class RxHttpTest {
   private static HttpServer server;
   private static int port;
 
-  private static AtomicInteger statusCode = new AtomicInteger(200);
-  private static AtomicIntegerArray statusCounts = new AtomicIntegerArray(600);
+  private static final AtomicInteger statusCode = new AtomicInteger(200);
+  private static final AtomicIntegerArray statusCounts = new AtomicIntegerArray(600);
 
-  private static AtomicInteger redirects = new AtomicInteger(0);
+  private static final AtomicInteger redirects = new AtomicInteger(0);
 
   private static final Configuration archaius = ConfigurationManager.getConfigInstance();
   private static final RxHttp rxHttp = new RxHttp(archaius, null);

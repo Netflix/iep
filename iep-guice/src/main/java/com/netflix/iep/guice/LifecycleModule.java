@@ -31,7 +31,7 @@ public class LifecycleModule extends AbstractModule {
   private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleModule.class);
 
   private static class BindingListener implements ProvisionListener {
-    private PreDestroyList preDestroyList;
+    private final PreDestroyList preDestroyList;
 
     BindingListener(PreDestroyList preDestroyList) {
       this.preDestroyList = preDestroyList;

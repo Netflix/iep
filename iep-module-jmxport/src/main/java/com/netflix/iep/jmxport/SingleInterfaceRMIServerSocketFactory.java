@@ -23,7 +23,7 @@ import java.rmi.server.RMIServerSocketFactory;
 import javax.net.ServerSocketFactory;
 
 public class SingleInterfaceRMIServerSocketFactory implements RMIServerSocketFactory {
-  private InetAddress address;
+  private final InetAddress address;
 
   public SingleInterfaceRMIServerSocketFactory(InetAddress address) {
     this.address = address;

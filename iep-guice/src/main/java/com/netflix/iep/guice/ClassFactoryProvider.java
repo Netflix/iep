@@ -18,7 +18,6 @@ package com.netflix.iep.guice;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
 import com.netflix.iep.service.ClassFactory;
 import com.netflix.iep.service.DefaultClassFactory;
 

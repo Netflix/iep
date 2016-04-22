@@ -168,7 +168,7 @@ public class ReflectEndpoint implements HttpEndpoint {
 
     public static FieldInfo create(Object obj, Field field) {
       field.setAccessible(true);
-      String value = null;
+      String value;
       try {
         Object o = field.get(obj);
         value = (o == null) ? "null" : o.toString();

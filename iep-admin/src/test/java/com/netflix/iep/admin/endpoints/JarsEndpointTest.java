@@ -28,7 +28,7 @@ import java.util.Optional;
 @RunWith(JUnit4.class)
 public class JarsEndpointTest {
 
-  private JarsEndpoint endpoint = new JarsEndpoint();
+  private final JarsEndpoint endpoint = new JarsEndpoint();
 
   @Test
   public void get() {

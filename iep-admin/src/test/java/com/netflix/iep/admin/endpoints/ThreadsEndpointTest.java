@@ -29,7 +29,7 @@ import java.util.regex.PatternSyntaxException;
 @RunWith(JUnit4.class)
 public class ThreadsEndpointTest {
 
-  private ThreadsEndpoint endpoint = new ThreadsEndpoint();
+  private final ThreadsEndpoint endpoint = new ThreadsEndpoint();
 
   @Test @SuppressWarnings("unchecked")
   public void get() {
