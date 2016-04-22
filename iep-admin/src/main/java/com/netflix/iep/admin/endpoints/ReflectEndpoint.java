@@ -83,16 +83,28 @@ public class ReflectEndpoint implements HttpEndpoint {
             return objs;
           }
         } else {
-          Field f = cls.getDeclaredField(p);
-          f.setAccessible(true);
+          Field f = getField(cls, p);
           o = f.get(o);
         }
-      } catch (Exception e) {
-        e.printStackTrace();
-        return null;
+      } catch (IllegalAccessException e) {
+        throw new IllegalStateException("failed to access field", e);
       }
     }
     return o;
+  }
+
+  private Field getField(Class<?> cls, String name) {
+    if (cls == null) {
+      throw new IllegalArgumentException("unknown field name: " + name);
+    } else {
+      try {
+        Field f = cls.getDeclaredField(name);
+        f.setAccessible(true);
+        return f;
+      } catch (NoSuchFieldException e) {
+        return getField(cls.getSuperclass(), name);
+      }
+    }
   }
 
   public static class ObjectInfo {
@@ -103,28 +115,41 @@ public class ReflectEndpoint implements HttpEndpoint {
       if (obj == null) {
         return NULL;
       }
-      Class<?> cls = obj.getClass();
       List<FieldInfo> fields = new ArrayList<>();
-      for (Field f : cls.getDeclaredFields()) {
-        fields.add(FieldInfo.create(obj, f));
+      Class<?> cls = obj.getClass();
+      while (cls != null) {
+        getFields(fields, obj, cls);
+        cls = cls.getSuperclass();
       }
-      return new ObjectInfo(cls.toGenericString(), fields);
+      return new ObjectInfo(obj.getClass().toGenericString(), fields);
     }
 
-    private final String cls;
+    private static void getFields(List<FieldInfo> acc, Object obj, Class<?> cls) {
+      for (Field f : cls.getDeclaredFields()) {
+        acc.add(FieldInfo.create(obj, f));
+      }
+    }
+
+    private final String className;
     private final List<FieldInfo> fields;
 
-    public ObjectInfo(String cls, List<FieldInfo> fields) {
-      this.cls = cls;
+    public ObjectInfo(String className, List<FieldInfo> fields) {
+      this.className = className;
       this.fields = fields;
     }
 
-    public String getCls() {
-      return cls;
+    public String getClassName() {
+      return className;
     }
 
     public List<FieldInfo> getFields() {
       return fields;
+    }
+
+    @Override public String toString() {
+      return "ObjectInfo("
+          + className + ", "
+          + fields + ')';
     }
   }
 
@@ -162,6 +187,13 @@ public class ReflectEndpoint implements HttpEndpoint {
     public List<ObjectInfo> getItems() {
       return items;
     }
+
+    @Override public String toString() {
+      return "ArrayInfo("
+          + className + ", "
+          + length + ", "
+          + items + ')';
+    }
   }
 
   public static class FieldInfo {
@@ -192,26 +224,31 @@ public class ReflectEndpoint implements HttpEndpoint {
           value);
     }
 
-    private final String cls;
-    private final String clsSignature;
+    private final String className;
+    private final String classSignature;
     private final Set<String> modifiers;
     private final String name;
     private final String value;
 
-    public FieldInfo(String cls, String clsSignature, Set<String> modifiers, String name, String value) {
-      this.cls = cls;
-      this.clsSignature = clsSignature;
+    public FieldInfo(
+        String className,
+        String classSignature,
+        Set<String> modifiers,
+        String name,
+        String value) {
+      this.className = className;
+      this.classSignature = classSignature;
       this.modifiers = modifiers;
       this.name = name;
       this.value = value;
     }
 
-    public String getCls() {
-      return cls;
+    public String getClassName() {
+      return className;
     }
 
-    public String getClsSignature() {
-      return clsSignature;
+    public String getClassSignature() {
+      return classSignature;
     }
 
     public Set<String> getModifiers() {
@@ -224,6 +261,13 @@ public class ReflectEndpoint implements HttpEndpoint {
 
     public String getValue() {
       return value;
+    }
+
+    @Override public String toString() {
+      return "FieldInfo("
+          + className + ", "
+          + name + ", "
+          + value + ')';
     }
   }
 }
