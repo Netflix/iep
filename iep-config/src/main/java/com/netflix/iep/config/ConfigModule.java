@@ -82,7 +82,7 @@ public class ConfigModule extends ArchaiusModule {
   @Provides
   @Singleton
   @ApplicationLayer
-  private CompositeConfig providesAppConfig(Config cfg) throws Exception {
+  private com.netflix.archaius.api.Config providesAppConfig(Config cfg) throws Exception {
     final Properties props = (propFiles == null)
         ? ScopedPropertiesLoader.load()
         : ScopedPropertiesLoader.load(propFiles);
