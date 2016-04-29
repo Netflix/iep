@@ -73,7 +73,7 @@ public class ArchaiusModuleTest {
     }
   };
 
-  private Module testModule = Modules
+  private final Module testModule = Modules
       .override(new ArchaiusModule(), new Archaius1Module())
       .with(overrideModule);
 

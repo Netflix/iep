@@ -87,7 +87,7 @@ public class DynamicNoOpConfigModule extends AbstractModule {
     @Provides
     @Singleton
     @RemoteLayer
-    private com.netflix.archaius.api.Config providesOverrideConfig() throws Exception {
+    private com.netflix.archaius.api.Config providesOverrideConfig() {
       return new PollingDynamicConfig(
           PollingResponse::noop,
           new FixedPollingStrategy(60000, TimeUnit.MILLISECONDS));

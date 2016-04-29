@@ -124,7 +124,6 @@ object MainBuild extends Build {
     ))
 
   lazy val `iep-module-awsmetrics` = project
-    .dependsOn(`iep-platformservice`)
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(

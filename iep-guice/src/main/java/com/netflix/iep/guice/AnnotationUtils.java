@@ -42,8 +42,7 @@ class AnnotationUtils {
     return getAnnotatedMethod(cls, PreDestroy.class);
   }
 
-  static Method getAnnotatedMethod(Class<?> cls, Class<? extends Annotation> anno)
-      throws Exception {
+  static Method getAnnotatedMethod(Class<?> cls, Class<? extends Annotation> anno) {
     for (Method m : cls.getDeclaredMethods()) {
       if (m.getAnnotation(anno) != null) {
         return m;
