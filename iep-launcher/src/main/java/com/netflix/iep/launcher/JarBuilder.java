@@ -35,7 +35,7 @@ public class JarBuilder {
   private String mainClass = null;
   private boolean cleanWorkingDir = true;
   private File outputFile = null;
-  private List<File> jars = new ArrayList<>();
+  private final List<File> jars = new ArrayList<>();
 
   public JarBuilder withMainClass(String mainClass) {
     this.mainClass = mainClass;

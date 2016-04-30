@@ -31,7 +31,7 @@ import java.util.Map;
 @RunWith(JUnit4.class)
 public class GuiceEndpointTest {
 
-  Injector injector = Guice.createInjector(new AbstractModule() {
+  final Injector injector = Guice.createInjector(new AbstractModule() {
     @Override protected void configure() {
       bind(String.class).toInstance("foo");
       bind(BigInteger.class).toInstance(BigInteger.TEN);
