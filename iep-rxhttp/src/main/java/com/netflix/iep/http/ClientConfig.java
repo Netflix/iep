@@ -15,8 +15,8 @@
  */
 package com.netflix.iep.http;
 
+import com.netflix.archaius.api.Config;
 import io.netty.handler.logging.LogLevel;
-import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ class ClientConfig {
   }
 
   /** Create a client config instance based on a URI. */
-  static ClientConfig fromUri(Configuration config, URI uri) {
+  static ClientConfig fromUri(Config config, URI uri) {
     Matcher m;
     ClientConfig cfg;
     switch (uri.getScheme()) {
@@ -83,14 +83,14 @@ class ClientConfig {
     return cfg;
   }
 
-  private final Configuration config;
+  private final Config config;
   private final String name;
   private final String vipAddress;
   private final URI originalUri;
   private final URI uri;
 
   /** Create a new instance. */
-  ClientConfig(Configuration config, String name, String vipAddress, URI originalUri, URI uri) {
+  ClientConfig(Config config, String name, String vipAddress, URI originalUri, URI uri) {
     this.config = config;
     this.name = name;
     this.vipAddress = vipAddress;
@@ -107,7 +107,7 @@ class ClientConfig {
   }
 
   private String getString(String k, String dflt) {
-    String v = config.getString(prop(k));
+    String v = config.getString(prop(k), null);
     return (v == null) ? config.getString(dfltProp(k), dflt) : v;
   }
 

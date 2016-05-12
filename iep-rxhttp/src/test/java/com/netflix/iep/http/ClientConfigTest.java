@@ -15,9 +15,9 @@
  */
 package com.netflix.iep.http;
 
-import com.netflix.config.ConfigurationManager;
+import com.netflix.archaius.api.config.SettableConfig;
+import com.netflix.archaius.config.DefaultSettableConfig;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import org.apache.commons.configuration.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -30,14 +30,14 @@ import java.net.URI;
 @RunWith(JUnit4.class)
 public class ClientConfigTest {
 
-  private final Configuration archaius = ConfigurationManager.getConfigInstance();
+  private final SettableConfig archaius = new DefaultSettableConfig();
 
-  private static void clear(String k) {
-    ConfigurationManager.getConfigInstance().clearProperty(k);
+  private void clear(String k) {
+    archaius.clearProperty(k);
   }
 
-  private static void set(String k, String v) {
-    ConfigurationManager.getConfigInstance().setProperty(k, v);
+  private void set(String k, String v) {
+    archaius.setProperty(k, v);
   }
 
   private ClientConfig cfg;

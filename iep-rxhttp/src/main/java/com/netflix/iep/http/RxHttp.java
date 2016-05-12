@@ -15,14 +15,13 @@
  */
 package com.netflix.iep.http;
 
-import com.netflix.config.ConfigurationManager;
+import com.netflix.archaius.api.Config;
 import com.netflix.spectator.impl.Preconditions;
 import com.netflix.spectator.sandbox.HttpLogEntry;
 import io.reactivex.netty.client.CompositePoolLimitDeterminationStrategy;
 import io.reactivex.netty.client.MaxConnectionsBasedStrategy;
 import io.reactivex.netty.client.PooledConnectionReleasedEvent;
 import io.reactivex.netty.client.PoolLimitDeterminationStrategy;
-import org.apache.commons.configuration.Configuration;
 import rx.functions.Actions;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelDuplexHandler;
@@ -84,20 +83,8 @@ public final class RxHttp {
   private final ConcurrentHashMap<Server, HttpClient<ByteBuf, ByteBuf>> clients = new ConcurrentHashMap<>();
   private ScheduledExecutorService executor;
 
-  private final Configuration config;
+  private final Config config;
   private final ServerRegistry serverRegistry;
-
-  /**
-   * Create a new instance using the specified server registry. Calls using client side
-   * load-balancing (niws:// or vip:// URIs) need a server registry to lookup the set of servers
-   * to balance over.
-   *
-   * @deprecated Use {@link RxHttp#RxHttp(Configuration, ServerRegistry)} instead.
-   */
-  @Deprecated
-  public RxHttp(ServerRegistry serverRegistry) {
-    this(ConfigurationManager.getConfigInstance(), serverRegistry);
-  }
 
   /**
    * Create a new instance using the specified server registry. Calls using client side
@@ -105,7 +92,7 @@ public final class RxHttp {
    * to balance over.
    */
   @Inject
-  public RxHttp(Configuration config, ServerRegistry serverRegistry) {
+  public RxHttp(Config config, ServerRegistry serverRegistry) {
     this.config = config;
     this.serverRegistry = serverRegistry;
   }
@@ -141,7 +128,7 @@ public final class RxHttp {
       }
     };
 
-    final long cleanupFreq = config.getLong("netflix.iep.http.cleanupFrequency", 60);
+    final long cleanupFreq = config.getLong("netflix.iep.http.cleanupFrequency", 60L);
     executor.scheduleWithFixedDelay(task, 0L, cleanupFreq, TimeUnit.SECONDS);
   }
 
