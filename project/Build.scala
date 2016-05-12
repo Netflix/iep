@@ -191,7 +191,7 @@ object MainBuild extends Build {
     .settings(buildSettings: _*)
     .settings(libraryDependencies ++= commonDeps)
     .settings(libraryDependencies ++= Seq(
-      Dependencies.archaiusLegacy,
+      Dependencies.archaiusCore,
       Dependencies.eurekaClient,
       Dependencies.jzlib,
       Dependencies.rxjava,

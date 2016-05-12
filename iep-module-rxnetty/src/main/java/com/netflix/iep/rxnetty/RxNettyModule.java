@@ -19,7 +19,8 @@ package com.netflix.iep.rxnetty;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.netflix.config.ConfigurationManager;
+import com.netflix.archaius.api.Config;
+import com.netflix.archaius.config.SystemConfig;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.iep.http.BasicServerRegistry;
 import com.netflix.iep.http.EurekaServerRegistry;
@@ -27,9 +28,7 @@ import com.netflix.iep.http.RxHttp;
 import com.netflix.iep.http.ServerRegistry;
 import io.reactivex.netty.RxNetty;
 import io.reactivex.netty.spectator.SpectatorEventsListenerFactory;
-import org.apache.commons.configuration.Configuration;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 
@@ -37,8 +36,7 @@ public final class RxNettyModule extends AbstractModule {
 
   private static class OptionalInjections {
     @Inject(optional = true)
-    @Named("IEP")
-    Configuration configuration;
+    Config config;
 
     @Inject(optional = true)
     EurekaClient discovery;
@@ -46,8 +44,10 @@ public final class RxNettyModule extends AbstractModule {
     OptionalInjections() {
     }
 
-    Configuration getConfig() {
-      return (configuration == null) ? ConfigurationManager.getConfigInstance() : configuration;
+    Config getConfig() {
+      return (config == null)
+          ? SystemConfig.INSTANCE
+          : config;
     }
 
     ServerRegistry getServerRegistry() {

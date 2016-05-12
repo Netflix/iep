@@ -16,7 +16,8 @@
 package com.netflix.iep.http;
 
 import com.netflix.appinfo.InstanceInfo;
-import com.netflix.config.ConfigurationManager;
+import com.netflix.archaius.api.config.SettableConfig;
+import com.netflix.archaius.config.DefaultSettableConfig;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
 import io.netty.buffer.ByteBuf;
@@ -24,7 +25,6 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.reactivex.netty.protocol.http.client.HttpClientRequest;
 import io.reactivex.netty.protocol.http.client.HttpClientResponse;
-import org.apache.commons.configuration.Configuration;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,11 +64,11 @@ public class RxHttpTest {
 
   private static final AtomicInteger redirects = new AtomicInteger(0);
 
-  private static final Configuration archaius = ConfigurationManager.getConfigInstance();
+  private static final SettableConfig archaius = new DefaultSettableConfig();
   private static final RxHttp rxHttp = new RxHttp(archaius, null);
 
   private static void set(String k, String v) {
-    ConfigurationManager.getConfigInstance().setProperty(k, v);
+    archaius.setProperty(k, v);
   }
 
   private static void ignore(InputStream input) throws IOException {
