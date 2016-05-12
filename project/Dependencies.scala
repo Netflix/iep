@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.0.5"
-    val eureka     = "1.4.6"
+    val eureka     = "1.4.7"
     val guice      = "4.0"
     val jackson    = "2.7.2"
     val rxnetty    = "0.4.16"
@@ -34,7 +34,7 @@ object Dependencies {
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava          = "io.reactivex" % "rxjava" % "1.1.3"
+  val rxjava          = "io.reactivex" % "rxjava" % "1.1.5"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
