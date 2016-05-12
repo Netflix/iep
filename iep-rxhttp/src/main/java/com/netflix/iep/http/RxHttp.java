@@ -617,14 +617,8 @@ public final class RxHttp {
   }
 
   private PoolLimitDeterminationStrategy getPoolLimitStrategy(ClientConfig clientCfg) {
-    PoolLimitDeterminationStrategy totalStrategy = poolLimits.get(clientCfg.name());
-    if (totalStrategy == null) {
-      totalStrategy = new MaxConnectionsBasedStrategy(clientCfg.maxConnectionsTotal());
-      PoolLimitDeterminationStrategy tmp = poolLimits.putIfAbsent(clientCfg.name(), totalStrategy);
-      if (tmp != null) {
-        totalStrategy = tmp;
-      }
-    }
+    PoolLimitDeterminationStrategy totalStrategy = poolLimits.computeIfAbsent(clientCfg.name(),
+        name -> new MaxConnectionsBasedStrategy(clientCfg.maxConnectionsTotal()));
     return new CompositePoolLimitDeterminationStrategy(
         new MaxConnectionsBasedStrategy(clientCfg.maxConnectionsPerHost()),
         totalStrategy);
