@@ -2,14 +2,14 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.0.5"
-    val eureka     = "1.4.7"
-    val guice      = "4.0"
-    val jackson    = "2.7.2"
+    val archaius   = "2.0.6"
+    val eureka     = "1.4.8"
+    val guice      = "4.1.0"
+    val jackson    = "2.7.4"
     val rxnetty    = "0.4.16"
     val scala      = "2.11.8"
     val slf4j      = "1.7.21"
-    val spectator  = "0.38.1"
+    val spectator  = "0.40.0"
   }
 
   import Versions._
@@ -20,7 +20,7 @@ object Dependencies {
   val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.7.4"
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
-  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "2.0.2"
+  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "2.1.1"
   val eurekaClient    = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
@@ -30,11 +30,11 @@ object Dependencies {
   val inject          = "javax.inject" % "javax.inject" % "1"
   val jacksonCore     = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper   = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
-  val jodaTime        = "joda-time" % "joda-time" % "2.9.3"
+  val jodaTime        = "joda-time" % "joda-time" % "2.9.4"
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava          = "io.reactivex" % "rxjava" % "1.1.5"
+  val rxjava          = "io.reactivex" % "rxjava" % "1.1.6"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
