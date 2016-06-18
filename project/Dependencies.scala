@@ -30,7 +30,7 @@ object Dependencies {
   val inject          = "javax.inject" % "javax.inject" % "1"
   val jacksonCore     = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper   = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
-  val jodaTime        = "joda-time" % "joda-time" % "2.9.3"
+  val jodaTime        = "joda-time" % "joda-time" % "2.9.4"
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
