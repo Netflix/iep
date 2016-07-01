@@ -15,7 +15,9 @@
  */
 package com.netflix.iep.guice;
 
+import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +39,12 @@ public class Args implements Iterable<String> {
 
   private Args(List<String> argv) {
     this.argv = argv;
+  }
+
+  // Needed to all just-in-time binding to work if no explicit argument binding is set.
+  @Inject
+  private Args() {
+    this(Collections.emptyList());
   }
 
   /** Return the argument at the specified position. */
