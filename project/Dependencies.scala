@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.0.6"
-    val eureka     = "1.4.9"
+    val eureka     = "1.4.10"
     val guice      = "4.1.0"
     val jackson    = "2.7.4"
     val rxnetty    = "0.4.16"
