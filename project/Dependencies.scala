@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.0.6"
-    val eureka     = "1.4.9"
+    val eureka     = "1.4.10"
     val guice      = "4.1.0"
     val jackson    = "2.7.4"
     val rxnetty    = "0.4.16"
@@ -20,7 +20,7 @@ object Dependencies {
   val archaiusLegacy  = "com.netflix.archaius" % "archaius-core" % "0.7.4"
   val archaiusPersist = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe= "com.netflix.archaius" % "archaius2-typesafe" % archaius
-  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "2.1.2"
+  val equalsVerifier  = "nl.jqno.equalsverifier" % "equalsverifier" % "2.1.3"
   val eurekaClient    = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist     = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore       = "com.google.inject" % "guice" % guice
@@ -34,7 +34,7 @@ object Dependencies {
   val junit           = "junit" % "junit" % "4.12"
   val junitInterface  = "com.novocode" % "junit-interface" % "0.11"
   val jzlib           = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava          = "io.reactivex" % "rxjava" % "1.1.6"
+  val rxjava          = "io.reactivex" % "rxjava" % "1.1.7"
   val rxnettyCore     = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts    = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator= "io.reactivex" % "rxnetty-spectator" % rxnetty
