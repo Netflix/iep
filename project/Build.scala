@@ -36,6 +36,7 @@ object MainBuild extends Build {
       `iep-module-admin`,
       `iep-module-archaius1`,
       `iep-module-archaius2`,
+      `iep-module-aws`,
       `iep-module-awsmetrics`,
       `iep-module-eureka`,
       `iep-module-jmxport`,
@@ -122,6 +123,19 @@ object MainBuild extends Build {
       Dependencies.archaiusTypesafe,
       Dependencies.guiceCore,
       Dependencies.slf4jApi
+    ))
+
+  lazy val `iep-module-aws` = project
+    .dependsOn(`iep-nflxenv`)
+    .settings(buildSettings: _*)
+    .settings(libraryDependencies ++= commonDeps)
+    .settings(libraryDependencies ++= Seq(
+      Dependencies.awsCore,
+      Dependencies.awsEC2 % "test",
+      Dependencies.awsSTS,
+      Dependencies.guiceCore,
+      Dependencies.slf4jApi,
+      Dependencies.typesafeConfig
     ))
 
   lazy val `iep-module-awsmetrics` = project
