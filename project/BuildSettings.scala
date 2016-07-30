@@ -2,6 +2,7 @@ import sbt._
 import sbt.Keys._
 
 object BuildSettings {
+
   val organization = "com.netflix.iep"
 
   val javaCompilerFlags = Seq(
@@ -31,4 +32,22 @@ object BuildSettings {
     packageBin in Global :=  file(""),
     packagedArtifacts :=  Map()
   )
+
+  def profile: Project => Project = p => {
+    bintrayProfile(p)
+  }
+
+  // Disable bintray plugin when not running under CI. Avoids a bunch of warnings like:
+  //
+  // ```
+  // Missing bintray credentials /Users/brharrington/.bintray/.credentials. Some bintray features depend on this.
+  // [warn] Credentials file /Users/brharrington/.bintray/.credentials does not exist
+  // ```
+  def bintrayProfile(p: Project): Project = {
+    val credsPath = Path.userHome / ".bintray" / ".credentials"
+    if (credsPath.exists)
+      p.settings(Bintray.settings)
+    else
+      p.disablePlugins(bintray.BintrayPlugin)
+  }
 }

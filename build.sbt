@@ -1,8 +1,7 @@
 
 lazy val baseSettings =
   sbtrelease.ReleasePlugin.releaseSettings ++
-  GitVersion.settings ++
-  Bintray.settings
+  GitVersion.settings
 
 lazy val buildSettings = baseSettings ++ Seq(
           organization := BuildSettings.organization,
@@ -21,6 +20,7 @@ lazy val buildSettings = baseSettings ++ Seq(
 )
 
 lazy val root = project.in(file("."))
+  .configure(BuildSettings.profile)
   .aggregate(
     `iep-admin`,
     `iep-config`,
@@ -43,6 +43,7 @@ lazy val root = project.in(file("."))
   .settings(BuildSettings.noPackaging: _*)
 
 lazy val `iep-admin` = project
+  .configure(BuildSettings.profile)
   .dependsOn(`iep-service`)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
@@ -55,6 +56,7 @@ lazy val `iep-admin` = project
   ))
 
 lazy val `iep-config` = project
+  .configure(BuildSettings.profile)
   .dependsOn(`iep-platformservice`, `iep-nflxenv`)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
@@ -67,9 +69,11 @@ lazy val `iep-config` = project
   ))
 
 lazy val `iep-eureka-testconfig` = project
+  .configure(BuildSettings.profile)
   .settings(buildSettings: _*)
 
 lazy val `iep-guice` = project
+  .configure(BuildSettings.profile)
   .dependsOn(`iep-service`)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
@@ -80,10 +84,12 @@ lazy val `iep-guice` = project
   ))
 
 lazy val `iep-launcher` = project
+  .configure(BuildSettings.profile)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
 
 lazy val `iep-module-admin` = project
+  .configure(BuildSettings.profile)
   .dependsOn(`iep-admin`)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
@@ -94,6 +100,7 @@ lazy val `iep-module-admin` = project
   ))
 
 lazy val `iep-module-archaius1` = project
+  .configure(BuildSettings.profile)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
@@ -107,6 +114,7 @@ lazy val `iep-module-archaius1` = project
   ))
 
 lazy val `iep-module-archaius2` = project
+  .configure(BuildSettings.profile)
   .dependsOn(`iep-platformservice`)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
@@ -120,6 +128,7 @@ lazy val `iep-module-archaius2` = project
   ))
 
 lazy val `iep-module-aws` = project
+  .configure(BuildSettings.profile)
   .dependsOn(`iep-nflxenv`)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
@@ -133,6 +142,7 @@ lazy val `iep-module-aws` = project
   ))
 
 lazy val `iep-module-awsmetrics` = project
+  .configure(BuildSettings.profile)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
@@ -143,6 +153,7 @@ lazy val `iep-module-awsmetrics` = project
   ))
 
 lazy val `iep-module-eureka` = project
+  .configure(BuildSettings.profile)
   .dependsOn(`iep-service`, `iep-module-admin`, `iep-eureka-testconfig` % "test")
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
@@ -154,6 +165,7 @@ lazy val `iep-module-eureka` = project
   ))
 
 lazy val `iep-module-jmxport` = project
+  .configure(BuildSettings.profile)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
@@ -162,6 +174,7 @@ lazy val `iep-module-jmxport` = project
   ))
 
 lazy val `iep-module-rxnetty` = project
+  .configure(BuildSettings.profile)
   .dependsOn(`iep-rxhttp`, `iep-module-eureka` % "test", `iep-eureka-testconfig` % "test")
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
@@ -174,6 +187,7 @@ lazy val `iep-module-rxnetty` = project
   ))
 
 lazy val `iep-nflxenv` = project
+  .configure(BuildSettings.profile)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
@@ -181,6 +195,7 @@ lazy val `iep-nflxenv` = project
   ))
 
 lazy val `iep-platformservice` = project
+  .configure(BuildSettings.profile)
   .dependsOn(`iep-nflxenv`, `iep-module-admin`)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
@@ -197,6 +212,7 @@ lazy val `iep-platformservice` = project
   ))
 
 lazy val `iep-rxhttp` = project
+  .configure(BuildSettings.profile)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
@@ -213,6 +229,7 @@ lazy val `iep-rxhttp` = project
   ))
 
 lazy val `iep-service` = project
+  .configure(BuildSettings.profile)
   .settings(buildSettings: _*)
   .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
