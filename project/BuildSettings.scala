@@ -21,6 +21,9 @@ object BuildSettings {
   lazy val checkLicenseHeaders = taskKey[Unit]("Check the license headers for all source files.")
   lazy val formatLicenseHeaders = taskKey[Unit]("Fix the license headers for all source files.")
 
+  lazy val storeBintrayCredentials = taskKey[Unit]("Store bintray credentials.")
+  lazy val credentialsFile = Path.userHome / ".bintray" / ".credentials"
+
   lazy val baseSettings =
     sbtrelease.ReleasePlugin.releaseSettings ++
       GitVersion.settings
@@ -37,8 +40,15 @@ object BuildSettings {
     fork in Test := true,
     autoScalaLibrary := false,
     externalResolvers := BuildSettings.resolvers,
+
     checkLicenseHeaders := License.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
-    formatLicenseHeaders := License.formatLicenseHeaders(streams.value.log, sourceDirectory.value)
+    formatLicenseHeaders := License.formatLicenseHeaders(streams.value.log, sourceDirectory.value),
+
+    storeBintrayCredentials := {
+      IO.write(
+        credentialsFile,
+        bintray.BintrayCredentials.api.template(Bintray.user, Bintray.pass))
+    }
   )
 
   lazy val commonDeps = Seq(
@@ -71,8 +81,7 @@ object BuildSettings {
   // [warn] Credentials file /Users/brharrington/.bintray/.credentials does not exist
   // ```
   def bintrayProfile(p: Project): Project = {
-    val credsPath = Path.userHome / ".bintray" / ".credentials"
-    if (credsPath.exists)
+    if (credentialsFile.exists)
       p.settings(Bintray.settings)
     else
       p.disablePlugins(bintray.BintrayPlugin)
