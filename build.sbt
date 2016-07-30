@@ -1,24 +1,4 @@
 
-lazy val baseSettings =
-  sbtrelease.ReleasePlugin.releaseSettings ++
-  GitVersion.settings
-
-lazy val buildSettings = baseSettings ++ Seq(
-          organization := BuildSettings.organization,
-          scalaVersion := Dependencies.Versions.scala,
-         scalacOptions ++= BuildSettings.compilerFlags,
-          javacOptions ++= BuildSettings.javaCompilerFlags,
-   javacOptions in doc := BuildSettings.javadocFlags,
-           testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a"),
-            crossPaths := false,
-         sourcesInBase := false,
-          fork in Test := true,
-      autoScalaLibrary := false,
-     externalResolvers := BuildSettings.resolvers,
-   checkLicenseHeaders := License.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
-  formatLicenseHeaders := License.formatLicenseHeaders(streams.value.log, sourceDirectory.value)
-)
-
 lazy val root = project.in(file("."))
   .configure(BuildSettings.profile)
   .aggregate(
@@ -39,14 +19,11 @@ lazy val root = project.in(file("."))
     `iep-platformservice`,
     `iep-rxhttp`,
     `iep-service`)
-  .settings(buildSettings: _*)
   .settings(BuildSettings.noPackaging: _*)
 
 lazy val `iep-admin` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-service`)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.inject,
     Dependencies.jacksonCore,
@@ -58,8 +35,6 @@ lazy val `iep-admin` = project
 lazy val `iep-config` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-platformservice`, `iep-nflxenv`)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.archaiusBridge,
     Dependencies.archaiusCore,
@@ -70,13 +45,10 @@ lazy val `iep-config` = project
 
 lazy val `iep-eureka-testconfig` = project
   .configure(BuildSettings.profile)
-  .settings(buildSettings: _*)
 
 lazy val `iep-guice` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-service`)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
     Dependencies.guiceMulti,
@@ -85,14 +57,10 @@ lazy val `iep-guice` = project
 
 lazy val `iep-launcher` = project
   .configure(BuildSettings.profile)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
 
 lazy val `iep-module-admin` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-admin`)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
     Dependencies.guiceMulti,
@@ -101,8 +69,6 @@ lazy val `iep-module-admin` = project
 
 lazy val `iep-module-archaius1` = project
   .configure(BuildSettings.profile)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.archaiusBridge,
     Dependencies.archaiusCore,
@@ -116,8 +82,6 @@ lazy val `iep-module-archaius1` = project
 lazy val `iep-module-archaius2` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-platformservice`)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.archaiusCore,
     Dependencies.archaiusGuice,
@@ -130,8 +94,6 @@ lazy val `iep-module-archaius2` = project
 lazy val `iep-module-aws` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-nflxenv`)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.awsCore,
     Dependencies.awsEC2 % "test",
@@ -143,8 +105,6 @@ lazy val `iep-module-aws` = project
 
 lazy val `iep-module-awsmetrics` = project
   .configure(BuildSettings.profile)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.spectatorApi,
     Dependencies.spectatorAws,
@@ -155,8 +115,6 @@ lazy val `iep-module-awsmetrics` = project
 lazy val `iep-module-eureka` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-service`, `iep-module-admin`, `iep-eureka-testconfig` % "test")
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.eurekaClient,
     Dependencies.guiceCore,
@@ -166,8 +124,6 @@ lazy val `iep-module-eureka` = project
 
 lazy val `iep-module-jmxport` = project
   .configure(BuildSettings.profile)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
     Dependencies.slf4jApi
@@ -176,8 +132,6 @@ lazy val `iep-module-jmxport` = project
 lazy val `iep-module-rxnetty` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-rxhttp`, `iep-module-eureka` % "test", `iep-eureka-testconfig` % "test")
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
     Dependencies.rxnettyCore,
@@ -188,8 +142,6 @@ lazy val `iep-module-rxnetty` = project
 
 lazy val `iep-nflxenv` = project
   .configure(BuildSettings.profile)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.typesafeConfig
   ))
@@ -197,8 +149,6 @@ lazy val `iep-nflxenv` = project
 lazy val `iep-platformservice` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-nflxenv`, `iep-module-admin`)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.archaiusCore,
     Dependencies.archaiusGuice,
@@ -213,8 +163,6 @@ lazy val `iep-platformservice` = project
 
 lazy val `iep-rxhttp` = project
   .configure(BuildSettings.profile)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.archaiusCore,
     Dependencies.eurekaClient,
@@ -230,16 +178,7 @@ lazy val `iep-rxhttp` = project
 
 lazy val `iep-service` = project
   .configure(BuildSettings.profile)
-  .settings(buildSettings: _*)
-  .settings(libraryDependencies ++= commonDeps)
   .settings(libraryDependencies ++= Seq(
     Dependencies.inject,
     Dependencies.slf4jApi
   ))
-
-lazy val commonDeps = Seq(
-  Dependencies.junitInterface % "test"
-)
-
-lazy val checkLicenseHeaders = taskKey[Unit]("Check the license headers for all source files.")
-lazy val formatLicenseHeaders = taskKey[Unit]("Fix the license headers for all source files.")

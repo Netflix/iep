@@ -3,8 +3,6 @@ import sbt.Keys._
 
 object BuildSettings {
 
-  val organization = "com.netflix.iep"
-
   val javaCompilerFlags = Seq(
     "-Xlint:unchecked",
     "-source", "1.8",
@@ -19,6 +17,33 @@ object BuildSettings {
     "-Xlint:_,-infer-any",
     "-feature",
     "-target:jvm-1.8")
+
+  lazy val checkLicenseHeaders = taskKey[Unit]("Check the license headers for all source files.")
+  lazy val formatLicenseHeaders = taskKey[Unit]("Fix the license headers for all source files.")
+
+  lazy val baseSettings =
+    sbtrelease.ReleasePlugin.releaseSettings ++
+      GitVersion.settings
+
+  lazy val buildSettings = baseSettings ++ Seq(
+    organization := "com.netflix.iep",
+    scalaVersion := Dependencies.Versions.scala,
+    scalacOptions ++= BuildSettings.compilerFlags,
+    javacOptions ++= BuildSettings.javaCompilerFlags,
+    javacOptions in doc := BuildSettings.javadocFlags,
+    testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a"),
+    crossPaths := false,
+    sourcesInBase := false,
+    fork in Test := true,
+    autoScalaLibrary := false,
+    externalResolvers := BuildSettings.resolvers,
+    checkLicenseHeaders := License.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
+    formatLicenseHeaders := License.formatLicenseHeaders(streams.value.log, sourceDirectory.value)
+  )
+
+  lazy val commonDeps = Seq(
+    Dependencies.junitInterface % "test"
+  )
 
   val resolvers = Seq(
     Resolver.mavenLocal,
@@ -35,6 +60,8 @@ object BuildSettings {
 
   def profile: Project => Project = p => {
     bintrayProfile(p)
+      .settings(buildSettings: _*)
+      .settings(libraryDependencies ++= commonDeps)
   }
 
   // Disable bintray plugin when not running under CI. Avoids a bunch of warnings like:
