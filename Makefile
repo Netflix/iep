@@ -11,7 +11,8 @@ build:
 snapshot:
 	echo "Starting snapshot build"
 	git fetch --unshallow
-	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish
+	$(SBT) storeBintrayCredentials
+	$(SBT) clean test checkLicenseHeaders publish
 
 release:
 	# Storing the bintray credentials needs to be done as a separate command so they will
