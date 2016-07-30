@@ -6,8 +6,7 @@ object MainBuild extends Build {
   lazy val baseSettings =
     sbtrelease.ReleasePlugin.releaseSettings ++
     GitVersion.settings ++
-    Bintray.settings ++
-    scoverage.ScoverageSbtPlugin.projectSettings
+    Bintray.settings
 
   lazy val buildSettings = baseSettings ++ Seq(
             organization := BuildSettings.organization,
