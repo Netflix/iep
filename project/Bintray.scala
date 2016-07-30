@@ -25,12 +25,12 @@ object Bintray {
 
     publishTo := {
       if (isSnapshot.value)
-        Some("OJO" at s"https://oss.jfrog.org/oss-snapshot-local;build.timestamp=${now}/")
+        Some("OJO" at s"https://oss.jfrog.org/oss-snapshot-local;build.timestamp=$now/")
       else
         publishTo in bintray value
     },
 
-    pomExtra := (
+    pomExtra :=
       <url>https://github.com/netflix/iep/wiki</url>
       <scm>
         <url>git@github.com:netflix/iep.git</url>
@@ -43,6 +43,5 @@ object Bintray {
           <email>brharrington@netflix.com</email>
         </developer>
       </developers>
-    )
   )
 }
