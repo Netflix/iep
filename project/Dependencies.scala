@@ -24,7 +24,7 @@ object Dependencies {
   val awsCore          = "com.amazonaws" % "aws-java-sdk-core" % aws
   val awsEC2           = "com.amazonaws" % "aws-java-sdk-ec2" % aws
   val awsSTS           = "com.amazonaws" % "aws-java-sdk-sts" % aws
-  val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.1.3"
+  val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.1.5"
   val eurekaClient     = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist      = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore        = "com.google.inject" % "guice" % guice
