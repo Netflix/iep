@@ -23,6 +23,7 @@ object Dependencies {
   val archaiusTypesafe = "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val awsCore          = "com.amazonaws" % "aws-java-sdk-core" % aws
   val awsEC2           = "com.amazonaws" % "aws-java-sdk-ec2" % aws
+  val awsSES           = "com.amazonaws" % "aws-java-sdk-ses" % aws
   val awsSTS           = "com.amazonaws" % "aws-java-sdk-sts" % aws
   val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.1.5"
   val eurekaClient     = "com.netflix.eureka" % "eureka-client" % eureka

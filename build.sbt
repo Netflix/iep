@@ -18,7 +18,8 @@ lazy val root = project.in(file("."))
     `iep-nflxenv`,
     `iep-platformservice`,
     `iep-rxhttp`,
-    `iep-service`)
+    `iep-service`,
+    `iep-ses`)
   .settings(BuildSettings.noPackaging: _*)
 
 lazy val `iep-admin` = project
@@ -181,4 +182,11 @@ lazy val `iep-service` = project
   .settings(libraryDependencies ++= Seq(
     Dependencies.inject,
     Dependencies.slf4jApi
+  ))
+
+lazy val `iep-ses` = project
+  .configure(BuildSettings.profile)
+  .settings(libraryDependencies ++= Seq(
+    Dependencies.awsCore,
+    Dependencies.awsSES
   ))
