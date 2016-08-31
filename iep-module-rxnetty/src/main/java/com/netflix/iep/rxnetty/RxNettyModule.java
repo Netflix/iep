@@ -26,8 +26,6 @@ import com.netflix.iep.http.BasicServerRegistry;
 import com.netflix.iep.http.EurekaServerRegistry;
 import com.netflix.iep.http.RxHttp;
 import com.netflix.iep.http.ServerRegistry;
-import io.reactivex.netty.RxNetty;
-import io.reactivex.netty.spectator.SpectatorEventsListenerFactory;
 
 import javax.inject.Singleton;
 
@@ -58,7 +56,6 @@ public final class RxNettyModule extends AbstractModule {
   }
 
   @Override protected void configure() {
-    RxNetty.useMetricListenersFactory(new SpectatorEventsListenerFactory());
   }
 
   @Provides
