@@ -137,7 +137,6 @@ lazy val `iep-module-rxnetty` = project
     Dependencies.guiceCore,
     Dependencies.rxnettyCore,
     Dependencies.rxnettyCtxts,
-    Dependencies.rxnettySpectator,
     Dependencies.slf4jApi
   ))
 
