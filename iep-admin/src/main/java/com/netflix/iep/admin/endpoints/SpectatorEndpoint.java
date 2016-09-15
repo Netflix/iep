@@ -119,6 +119,24 @@ public class SpectatorEndpoint implements HttpEndpoint {
     public long getCount() {
       return count;
     }
+
+    @Override public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      CounterInfo that = (CounterInfo) o;
+      return count == that.count && tags.equals(that.tags);
+    }
+
+    @Override public int hashCode() {
+      int result = tags.hashCode();
+      result = 31 * result + (int) (count ^ (count >>> 32));
+      return result;
+    }
+
+    @Override public String toString() {
+      return "CounterInfo(" + tags + ", " + count + ")";
+    }
   }
 
   public static class TimerInfo {
@@ -147,6 +165,27 @@ public class SpectatorEndpoint implements HttpEndpoint {
 
     public long getCount() {
       return count;
+    }
+
+    @Override public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      TimerInfo timerInfo = (TimerInfo) o;
+      return totalTime == timerInfo.totalTime
+          && count == timerInfo.count
+          && tags.equals(timerInfo.tags);
+    }
+
+    @Override public int hashCode() {
+      int result = tags.hashCode();
+      result = 31 * result + (int) (totalTime ^ (totalTime >>> 32));
+      result = 31 * result + (int) (count ^ (count >>> 32));
+      return result;
+    }
+
+    @Override public String toString() {
+      return "TimerInfo(" + tags + ", " + count + ", " + totalTime + ")";
     }
   }
 
@@ -177,6 +216,27 @@ public class SpectatorEndpoint implements HttpEndpoint {
     public long getCount() {
       return count;
     }
+
+    @Override public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      DistInfo distInfo = (DistInfo) o;
+      return totalAmount == distInfo.totalAmount
+          && count == distInfo.count
+          && tags.equals(distInfo.tags);
+    }
+
+    @Override public int hashCode() {
+      int result = tags.hashCode();
+      result = 31 * result + (int) (totalAmount ^ (totalAmount >>> 32));
+      result = 31 * result + (int) (count ^ (count >>> 32));
+      return result;
+    }
+
+    @Override public String toString() {
+      return "DistInfo(" + tags + ", " + count + ", " + totalAmount + ")";
+    }
   }
 
   public static class GaugeInfo {
@@ -200,9 +260,30 @@ public class SpectatorEndpoint implements HttpEndpoint {
     public double getValue() {
       return value;
     }
+
+    @Override public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      GaugeInfo gaugeInfo = (GaugeInfo) o;
+      return Double.compare(gaugeInfo.value, value) == 0 && tags.equals(gaugeInfo.tags);
+    }
+
+    @Override public int hashCode() {
+      int result;
+      long temp;
+      result = tags.hashCode();
+      temp = Double.doubleToLongBits(value);
+      result = 31 * result + (int) (temp ^ (temp >>> 32));
+      return result;
+    }
+
+    @Override public String toString() {
+      return "GaugeInfo(" + tags + ", " + value + ")";
+    }
   }
 
-  private interface Query {
+  interface Query {
 
     Query TRUE = new Query() {
       @Override public boolean matches(Map<String, String> tags) {
@@ -371,7 +452,7 @@ public class SpectatorEndpoint implements HttpEndpoint {
     }
 
     @Override public String toString() {
-      return q1 + "," + q2 + ",:pr";
+      return q1 + "," + q2 + ",:or";
     }
   }
 
