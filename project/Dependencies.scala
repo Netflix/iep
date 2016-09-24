@@ -39,7 +39,7 @@ object Dependencies {
   val junit            = "junit" % "junit" % "4.12"
   val junitInterface   = "com.novocode" % "junit-interface" % "0.11"
   val jzlib            = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava           = "io.reactivex" % "rxjava" % "1.1.10"
+  val rxjava           = "io.reactivex" % "rxjava" % "1.2.0"
   val rxnettyCore      = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts     = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator = "io.reactivex" % "rxnetty-spectator" % rxnetty
