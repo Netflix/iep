@@ -2,9 +2,9 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.1.5"
-    val aws        = "1.11.33"
-    val eureka     = "1.4.11"
+    val archaius   = "2.1.7"
+    val aws        = "1.11.37"
+    val eureka     = "1.5.5"
     val guice      = "4.1.0"
     val jackson    = "2.8.2"
     val rxnetty    = "0.4.19"
@@ -39,7 +39,7 @@ object Dependencies {
   val junit            = "junit" % "junit" % "4.12"
   val junitInterface   = "com.novocode" % "junit-interface" % "0.11"
   val jzlib            = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava           = "io.reactivex" % "rxjava" % "1.1.10"
+  val rxjava           = "io.reactivex" % "rxjava" % "1.2.0"
   val rxnettyCore      = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts     = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator = "io.reactivex" % "rxnetty-spectator" % rxnetty
@@ -51,5 +51,5 @@ object Dependencies {
   val spectatorApi     = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorAws     = "com.netflix.spectator" % "spectator-ext-aws" % spectator
   val spectatorSandbox = "com.netflix.spectator" % "spectator-ext-sandbox" % spectator
-  val typesafeConfig   = "com.typesafe" % "config" % "1.3.0"
+  val typesafeConfig   = "com.typesafe" % "config" % "1.3.1"
 }
