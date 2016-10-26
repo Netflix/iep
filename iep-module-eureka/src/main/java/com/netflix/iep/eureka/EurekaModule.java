@@ -27,9 +27,11 @@ import com.netflix.appinfo.EurekaInstanceConfig;
 import com.netflix.appinfo.HealthCheckHandler;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.config.ConfigurationManager;
+import com.netflix.discovery.AbstractDiscoveryClientOptionalArgs;
 import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClientConfig;
+import com.netflix.discovery.shared.transport.jersey.Jersey1DiscoveryClientOptionalArgs;
 import com.netflix.iep.admin.AdminModule;
 import com.netflix.iep.admin.AdminServer;
 import com.netflix.iep.service.Service;
@@ -66,7 +68,10 @@ public final class EurekaModule extends AbstractModule {
     // EurekaClientConfig
     bind(EurekaClientConfig.class).to(DefaultEurekaClientConfig.class).asEagerSingleton();
 
-    // DiscoveryClientOptionalArgs, automatic via field injection
+    // DiscoveryClientOptionalArgs, as of 1.6.0 we need to have an explicit binding. Using
+    // Jersey1 as it is recommended by runtime team.
+    bind(AbstractDiscoveryClientOptionalArgs.class)
+        .to(Jersey1DiscoveryClientOptionalArgs.class).asEagerSingleton();
 
     // BackupRegistry, automatic via ImplementedBy annotation
 
