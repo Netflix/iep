@@ -49,7 +49,10 @@ object Dependencies {
   val scalatest        = "org.scalatest" % "scalatest_2.11" % "2.2.6"
   val slf4jApi         = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi     = "com.netflix.spectator" % "spectator-api" % spectator
+  val spectatorAtlas   = "com.netflix.spectator" % "spectator-reg-atlas" % spectator
   val spectatorAws     = "com.netflix.spectator" % "spectator-ext-aws" % spectator
+  val spectatorGc      = "com.netflix.spectator" % "spectator-ext-gc" % spectator
+  val spectatorJvm     = "com.netflix.spectator" % "spectator-ext-jvm" % spectator
   val spectatorSandbox = "com.netflix.spectator" % "spectator-ext-sandbox" % spectator
   val typesafeConfig   = "com.typesafe" % "config" % "1.3.1"
 }
