@@ -16,6 +16,7 @@ lazy val root = project.in(file("."))
     `iep-module-eureka`,
     `iep-module-jmxport`,
     `iep-module-rxnetty`,
+    `iep-module-userservice`,
     `iep-nflxenv`,
     `iep-platformservice`,
     `iep-rxhttp`,
@@ -153,6 +154,19 @@ lazy val `iep-module-rxnetty` = project
     Dependencies.rxnettyCore,
     Dependencies.rxnettyCtxts,
     Dependencies.slf4jApi
+  ))
+
+lazy val `iep-module-userservice` = project
+  .configure(BuildSettings.profile)
+  .dependsOn(`iep-service`)
+  .settings(libraryDependencies ++= Seq(
+    Dependencies.guiceCore,
+    Dependencies.guiceMulti,
+    Dependencies.jacksonMapper,
+    Dependencies.slf4jApi,
+    Dependencies.spectatorApi,
+    Dependencies.spectatorSandbox,
+    Dependencies.typesafeConfig
   ))
 
 lazy val `iep-nflxenv` = project
