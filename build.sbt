@@ -158,7 +158,7 @@ lazy val `iep-module-rxnetty` = project
 
 lazy val `iep-module-userservice` = project
   .configure(BuildSettings.profile)
-  .dependsOn(`iep-service`)
+  .dependsOn(`iep-module-admin`, `iep-service`)
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
     Dependencies.guiceMulti,

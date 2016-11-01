@@ -18,6 +18,7 @@ package com.netflix.iep.userservice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.multibindings.Multibinder;
+import com.netflix.iep.admin.AdminModule;
 import com.netflix.iep.service.Service;
 import com.netflix.spectator.api.NoopRegistry;
 import com.netflix.spectator.api.Registry;
@@ -36,18 +37,23 @@ public class UserServiceModule extends AbstractModule {
     bind(Context.class).toProvider(ContextProvider.class);
     bind(UserService.class).to(CompositeUserService.class);
 
+    // Set used for composite
     Multibinder<UserService> userBinder = Multibinder.newSetBinder(binder(), UserService.class);
     userBinder.addBinding().to(DepartedUserService.class);
     userBinder.addBinding().to(EmployeeUserService.class);
     userBinder.addBinding().to(SimpleUserService.class);
     userBinder.addBinding().to(WhitelistUserService.class);
 
+    // Show individual startup as part of servicemanager for improved debugging
     Multibinder<Service> serviceBinder = Multibinder.newSetBinder(binder(), Service.class);
     serviceBinder.addBinding().to(DepartedUserService.class);
     serviceBinder.addBinding().to(EmployeeUserService.class);
     serviceBinder.addBinding().to(SimpleUserService.class);
     serviceBinder.addBinding().to(WhitelistUserService.class);
     serviceBinder.addBinding().to(CompositeUserService.class);
+
+    // Register endpoint to admin to aid in debugging
+    AdminModule.endpointsBinder(binder()).addBinding("/userservice").to(UserServiceEndpoint.class);
   }
 
   private static Config defaultConfig() {
