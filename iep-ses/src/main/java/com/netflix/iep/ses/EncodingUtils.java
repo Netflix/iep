@@ -100,20 +100,23 @@ class EncodingUtils {
   static String wrapBase64(String s, int offset, int maxLength) {
     String prefix = "=?UTF-8?B?";
     String suffix = "?=";
-    String wrapped = wrap(s, offset, maxLength - prefix.length() - suffix.length());
-    String[] lines = wrapped.split("[\r\n]+");
+
+    int length = maxLength - prefix.length() - suffix.length() - 1;
+    int start = 0;
+    int end = length - offset;
     StringBuilder builder = new StringBuilder();
-    builder.append(prefix)
-        .append(base64(lines[0].getBytes(StandardCharsets.UTF_8)))
-        .append(suffix);
-    for (int i = 1; i < lines.length; ++i) {
+    do {
+      String part = s.substring(start, Math.min(end, s.length()));
       builder.append(EncodingUtils.CRLF)
           .append(' ')
           .append(prefix)
-          .append(base64(lines[i].getBytes(StandardCharsets.UTF_8)))
+          .append(base64(part.getBytes(StandardCharsets.UTF_8)))
           .append(suffix);
-    }
-    return builder.toString();
+      start = end;
+      end += length;
+    } while (start < s.length());
+
+    return builder.toString().trim();
   }
 
   /** Base64 encode the input data. */

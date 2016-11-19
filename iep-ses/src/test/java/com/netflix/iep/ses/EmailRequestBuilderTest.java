@@ -200,6 +200,21 @@ public class EmailRequestBuilderTest {
   }
 
   @Test
+  public void tooLongSubjectNoSpace() throws IOException {
+    // https://tools.ietf.org/html/rfc5322#section-2.1.1
+    String base = "Too_long_subject_no_space__";
+    String subject = base;
+    while (subject.length() < 256) {
+      subject += base;
+    }
+    checkMessage("tooLongSubjectNoSpace", new EmailRequestBuilder()
+        .withSource(FROM)
+        .withToAddresses(TO)
+        .withSubject(subject)
+        .withTextBody("Body of the email message."));
+  }
+
+  @Test
   public void subjectWithUtf8() throws IOException {
     String subject = "警报";
     checkMessage("subjectWithUtf8", new EmailRequestBuilder()
