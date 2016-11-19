@@ -3,16 +3,15 @@ Content-Type: multipart/mixed;
   boundary="331239ab-8a31-4cc6-84d6-5557f96ebc3a"
 From: bob@example.com
 To: andrew@example.com
-Subject: =?UTF-8?B?VGVzdCBtZXNzYWdlIHdpdGggYSBsb25n?=
- =?UTF-8?B?IHJlcGVhdGVkIHN1YmplY3QuIFRlc3QgbWVzc2FnZSB3aXRo?=
- =?UTF-8?B?IGEgbG9uZyByZXBlYXRlZCBzdWJqZWN0LiBUZXN0?=
- =?UTF-8?B?IG1lc3NhZ2Ugd2l0aCBhIGxvbmcgcmVwZWF0ZWQ=?=
- =?UTF-8?B?IHN1YmplY3QuIFRlc3QgbWVzc2FnZSB3aXRoIGEgbG9uZw==?=
- =?UTF-8?B?IHJlcGVhdGVkIHN1YmplY3QuIFRlc3QgbWVzc2FnZSB3aXRo?=
- =?UTF-8?B?IGEgbG9uZyByZXBlYXRlZCBzdWJqZWN0LiBUZXN0?=
- =?UTF-8?B?IG1lc3NhZ2Ugd2l0aCBhIGxvbmcgcmVwZWF0ZWQ=?=
- =?UTF-8?B?IHN1YmplY3QuIFRlc3QgbWVzc2FnZSB3aXRoIGEgbG9uZw==?=
- =?UTF-8?B?IHJlcGVhdGVkIHN1YmplY3Qu?=
+Subject: =?UTF-8?B?VGVzdCBtZXNzYWdlIHdpdGggYSBsb25nIHJlcA==?=
+ =?UTF-8?B?ZWF0ZWQgc3ViamVjdC4gVGVzdCBtZXNzYWdlIHdpdGggYSBsbw==?=
+ =?UTF-8?B?bmcgcmVwZWF0ZWQgc3ViamVjdC4gVGVzdCBtZXNzYWdlIHdpdA==?=
+ =?UTF-8?B?aCBhIGxvbmcgcmVwZWF0ZWQgc3ViamVjdC4gVGVzdCBtZXNzYQ==?=
+ =?UTF-8?B?Z2Ugd2l0aCBhIGxvbmcgcmVwZWF0ZWQgc3ViamVjdC4gVGVzdA==?=
+ =?UTF-8?B?IG1lc3NhZ2Ugd2l0aCBhIGxvbmcgcmVwZWF0ZWQgc3ViamVjdA==?=
+ =?UTF-8?B?LiBUZXN0IG1lc3NhZ2Ugd2l0aCBhIGxvbmcgcmVwZWF0ZWQgcw==?=
+ =?UTF-8?B?dWJqZWN0LiBUZXN0IG1lc3NhZ2Ugd2l0aCBhIGxvbmcgcmVwZQ==?=
+ =?UTF-8?B?YXRlZCBzdWJqZWN0LiA=?=
 
 --331239ab-8a31-4cc6-84d6-5557f96ebc3a
 Content-Type: text/plain; charset=UTF-8

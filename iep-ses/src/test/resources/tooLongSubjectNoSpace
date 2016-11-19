@@ -1,0 +1,20 @@
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+  boundary="331239ab-8a31-4cc6-84d6-5557f96ebc3a"
+From: bob@example.com
+To: andrew@example.com
+Subject: =?UTF-8?B?VG9vX2xvbmdfc3ViamVjdF9ub19zcGFjZV9fVA==?=
+ =?UTF-8?B?b29fbG9uZ19zdWJqZWN0X25vX3NwYWNlX19Ub29fbG9uZ19zdQ==?=
+ =?UTF-8?B?YmplY3Rfbm9fc3BhY2VfX1Rvb19sb25nX3N1YmplY3Rfbm9fcw==?=
+ =?UTF-8?B?cGFjZV9fVG9vX2xvbmdfc3ViamVjdF9ub19zcGFjZV9fVG9vXw==?=
+ =?UTF-8?B?bG9uZ19zdWJqZWN0X25vX3NwYWNlX19Ub29fbG9uZ19zdWJqZQ==?=
+ =?UTF-8?B?Y3Rfbm9fc3BhY2VfX1Rvb19sb25nX3N1YmplY3Rfbm9fc3BhYw==?=
+ =?UTF-8?B?ZV9fVG9vX2xvbmdfc3ViamVjdF9ub19zcGFjZV9fVG9vX2xvbg==?=
+ =?UTF-8?B?Z19zdWJqZWN0X25vX3NwYWNlX18=?=
+
+--331239ab-8a31-4cc6-84d6-5557f96ebc3a
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+
+Qm9keSBvZiB0aGUgZW1haWwgbWVzc2FnZS4=
+--331239ab-8a31-4cc6-84d6-5557f96ebc3a--
