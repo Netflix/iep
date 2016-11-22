@@ -37,6 +37,7 @@ import static java.util.stream.Collectors.toSet;
 
 /**
  * Base class for user services that fetch a JSON payload from an HTTP endpoint.
+ *
  */
 abstract class AbstractUserService extends AbstractService implements UserService {
 
