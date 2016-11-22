@@ -56,10 +56,12 @@ class CompositeUserService extends AbstractService implements UserService {
   }
 
   @Override public String toValidEmail(String email) {
-    for (UserService service : services) {
-      String v = service.toValidEmail(email);
-      if (v != null) {
-        return v;
+    if(email != null) {
+      for (UserService service : services) {
+        String v = service.toValidEmail(email.toLowerCase());
+        if (v != null) {
+          return v;
+        }
       }
     }
     return null;
