@@ -26,78 +26,90 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Base class for user services that fetch a JSON payload from an HTTP endpoint.
  */
 abstract class AbstractUserService extends AbstractService implements UserService {
 
-  protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private final String name = getClass().getSimpleName();
+    private final String name = getClass().getSimpleName();
 
-  protected final Context context;
-  protected final String uri;
-  protected final boolean enabled;
+    protected final Context context;
+    protected final String uri;
+    protected final boolean enabled;
 
-  private final AtomicLong lastUpdateTime;
+    private final AtomicLong lastUpdateTime;
+    protected final AtomicReference<Set<String>> emails =
+            new AtomicReference<>(Collections.emptySet());
 
-  AbstractUserService(Context context, String service) {
-    this.context = context;
-    Config config = context.config().getConfig(service);
-    this.uri = config.getString("uri");
-    this.enabled = config.getBoolean("enabled");
+    AbstractUserService(Context context, String service) {
+        this.context = context;
+        Config config = context.config().getConfig(service);
+        this.uri = config.getString("uri");
+        this.enabled = config.getBoolean("enabled");
 
-    Registry registry = context.registry();
-    Clock clock = registry.clock();
-    Id cacheAge = registry.createId("iep.users.cacheAge", "id", name);
-    lastUpdateTime = enabled
-        ? registry.gauge(cacheAge, new AtomicLong(clock.wallTime()), Functions.age(clock))
-        : new AtomicLong(0L);
-  }
-
-  protected abstract void handleResponse(byte[] data) throws IOException;
-
-  @Override
-  protected void startImpl() throws Exception {
-    if (enabled) {
-      // Block until we are able to get list at least once
-      while (!refresh()) {
-        Thread.sleep(context.frequency());
-      }
-
-      // Startup background task to regularly refresh
-      context.executor().scheduleWithFixedDelay(this::refresh,
-          0L, context.frequency(), TimeUnit.MILLISECONDS);
-    } else {
-      logger.debug("service not enabled");
+        Registry registry = context.registry();
+        Clock clock = registry.clock();
+        Id cacheAge = registry.createId("iep.users.cacheAge", "id", name);
+        lastUpdateTime = enabled
+                ? registry.gauge(cacheAge, new AtomicLong(clock.wallTime()), Functions.age(clock))
+                : new AtomicLong(0L);
     }
-  }
 
-  @Override
-  protected void stopImpl() throws Exception {
-  }
+    protected abstract Set<String> parseResponse(byte[] data) throws IOException;
 
-  private boolean refresh() {
-    try {
-      refreshData();
-      lastUpdateTime.set(context.registry().clock().wallTime());
-      return true;
-    } catch (Exception e) {
-      e.printStackTrace();
-      logger.warn("failed to refresh users list", e);
-      return false;
+    @Override public Set<String> emailAddresses() {
+        return emails.get();
     }
-  }
 
-  private void refreshData() throws IOException {
-    HttpResponse res = context.get(name, uri);
-    if (res.status() == 200) {
-      handleResponse(res.entity());
-    } else {
-      throw new IOException("request to " + uri + " failed with status " + res.status());
+    @Override
+    protected void startImpl() throws Exception {
+        if (enabled) {
+            // Block until we are able to get list at least once
+            while (!refresh()) {
+                Thread.sleep(context.frequency());
+            }
+
+            // Startup background task to regularly refresh
+            context.executor().scheduleWithFixedDelay(this::refresh,
+                    0L, context.frequency(), TimeUnit.MILLISECONDS);
+        } else {
+            logger.debug("service not enabled");
+        }
     }
-  }
+
+    @Override
+    protected void stopImpl() throws Exception {
+    }
+
+    private boolean refresh() {
+        try {
+            refreshData();
+            lastUpdateTime.set(context.registry().clock().wallTime());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.warn("failed to refresh users list", e);
+            return false;
+        }
+    }
+
+    private void refreshData() throws IOException {
+        HttpResponse res = context.get(name, uri);
+        if (res.status() == 200) {
+            this.emails.set(parseResponse(res.entity()).stream().map(email -> email.toLowerCase(Locale.US)).collect(toSet()));
+        } else {
+            throw new IOException("request to " + uri + " failed with status " + res.status());
+        }
+    }
 }
