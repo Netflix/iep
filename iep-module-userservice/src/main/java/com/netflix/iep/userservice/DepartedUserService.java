@@ -20,10 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -36,9 +33,6 @@ final class DepartedUserService extends AbstractUserService {
   private static final TypeReference<Map<String, String>> MAP_TYPE =
       new TypeReference<Map<String, String>>() {};
 
-  private final AtomicReference<Set<String>> emails =
-      new AtomicReference<>(Collections.emptySet());
-
   private final AtomicReference<Map<String, String>> mapping =
       new AtomicReference<>(Collections.emptyMap());
 
@@ -47,14 +41,10 @@ final class DepartedUserService extends AbstractUserService {
     super(context, "departed");
   }
 
-  @Override public Set<String> emailAddresses() {
-    return emails.get();
-  }
-
-  @Override protected void handleResponse(byte[] data) throws IOException {
+  @Override protected Set<String> parseResponse(byte[] data) throws IOException {
     Map<String, String> vs = context.objectMapper().readValue(data, MAP_TYPE);
-    emails.set(Collections.unmodifiableSet(new TreeSet<>(vs.values())));
     mapping.set(vs);
+    return Collections.unmodifiableSet(new TreeSet<>(vs.values()));
   }
 
   @Override public String toValidEmail(String email) {

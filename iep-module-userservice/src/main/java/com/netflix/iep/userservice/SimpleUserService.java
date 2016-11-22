@@ -34,19 +34,13 @@ final class SimpleUserService extends AbstractUserService {
 
   private static final TypeReference<Set<String>> SET_TYPE = new TypeReference<Set<String>>() {};
 
-  private final AtomicReference<Set<String>> emails = new AtomicReference<>(Collections.emptySet());
-
   @Inject
   SimpleUserService(Context context) {
     super(context, "simple");
   }
 
-  @Override public Set<String> emailAddresses() {
-    return emails.get();
-  }
-
-  @Override protected void handleResponse(byte[] data) throws IOException {
+  @Override protected Set<String> parseResponse(byte[] data) throws IOException {
     Set<String> vs = context.objectMapper().readValue(data, SET_TYPE);
-    emails.set(Collections.unmodifiableSet(new TreeSet<>(vs)));
+    return Collections.unmodifiableSet(new TreeSet<>(vs));
   }
 }

@@ -20,6 +20,7 @@ import com.netflix.iep.service.AbstractService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -30,38 +31,43 @@ import java.util.TreeSet;
 @Singleton
 class CompositeUserService extends AbstractService implements UserService {
 
-  private final Set<UserService> services;
+    private final Set<UserService> services;
 
-  @Inject
-  CompositeUserService(Set<UserService> services) {
-    this.services = services;
-  }
-
-  @Override protected void startImpl() throws Exception {
-  }
-
-  @Override protected void stopImpl() throws Exception {
-  }
-
-  @Override public Set<String> emailAddresses() {
-    Set<String> vs = new TreeSet<>();
-    for (UserService service : services) {
-      vs.addAll(service.emailAddresses());
+    @Inject
+    CompositeUserService(Set<UserService> services) {
+        this.services = services;
     }
-    return Collections.unmodifiableSet(vs);
-  }
 
-  @Override public boolean isValidEmail(String email) {
-    return services.stream().anyMatch(s -> s.isValidEmail(email));
-  }
-
-  @Override public String toValidEmail(String email) {
-    for (UserService service : services) {
-      String v = service.toValidEmail(email);
-      if (v != null) {
-        return v;
-      }
+    @Override
+    protected void startImpl() throws Exception {
     }
-    return null;
-  }
+
+    @Override
+    protected void stopImpl() throws Exception {
+    }
+
+    @Override
+    public Set<String> emailAddresses() {
+        Set<String> vs = new TreeSet<>();
+        for (UserService service : services) {
+            vs.addAll(service.emailAddresses());
+        }
+        return Collections.unmodifiableSet(vs);
+    }
+
+    @Override
+    public boolean isValidEmail(String email) {
+        return services.stream().anyMatch(s -> s.isValidEmail(email));
+    }
+
+    @Override
+    public String toValidEmail(String email) {
+        for (UserService service : services) {
+            String v = service.toValidEmail(email.toLowerCase(Locale.US));
+            if (v != null) {
+                return v;
+            }
+        }
+        return null;
+    }
 }
