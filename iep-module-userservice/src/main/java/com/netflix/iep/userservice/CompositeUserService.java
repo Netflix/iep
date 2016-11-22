@@ -24,8 +24,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static java.util.stream.Collectors.toSet;
-
 /**
  * Combines a set of other user services into a combined view. It is assumed
  * that there is no overlap in the data sets.
