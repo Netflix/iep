@@ -52,7 +52,7 @@ class CompositeUserService extends AbstractService implements UserService {
     public Set<String> emailAddresses() {
         Set<String> vs = new TreeSet<>();
         for (UserService service : services) {
-            vs.addAll(service.emailAddresses().stream().map(String::toLowerCase).collect(toSet()));
+            vs.addAll(service.emailAddresses());
         }
         return Collections.unmodifiableSet(vs);
     }
