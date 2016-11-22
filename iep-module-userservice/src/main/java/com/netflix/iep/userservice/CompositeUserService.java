@@ -22,6 +22,9 @@ import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Combines a set of other user services into a combined view. It is assumed
@@ -46,7 +49,7 @@ class CompositeUserService extends AbstractService implements UserService {
   @Override public Set<String> emailAddresses() {
     Set<String> vs = new TreeSet<>();
     for (UserService service : services) {
-      vs.addAll(service.emailAddresses());
+      vs.addAll(service.emailAddresses().stream().map(String::toLowerCase).collect(toSet()));
     }
     return Collections.unmodifiableSet(vs);
   }
@@ -60,7 +63,7 @@ class CompositeUserService extends AbstractService implements UserService {
       for (UserService service : services) {
         String v = service.toValidEmail(email.toLowerCase());
         if (v != null) {
-          return v.toLowerCase();
+          return v;
         }
       }
     }
