@@ -26,11 +26,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Base class for user services that fetch a JSON payload from an HTTP endpoint.
+ *
  */
 abstract class AbstractUserService extends AbstractService implements UserService {
 
@@ -43,6 +50,8 @@ abstract class AbstractUserService extends AbstractService implements UserServic
   protected final boolean enabled;
 
   private final AtomicLong lastUpdateTime;
+    protected final AtomicReference<Set<String>> emails =
+            new AtomicReference<>(Collections.emptySet());
 
   AbstractUserService(Context context, String service) {
     this.context = context;
@@ -58,7 +67,11 @@ abstract class AbstractUserService extends AbstractService implements UserServic
         : new AtomicLong(0L);
   }
 
-  protected abstract void handleResponse(byte[] data) throws IOException;
+    protected abstract Set<String> parseResponse(byte[] data) throws IOException;
+
+    @Override public Set<String> emailAddresses() {
+        return emails.get();
+    }
 
   @Override
   protected void startImpl() throws Exception {
@@ -95,7 +108,7 @@ abstract class AbstractUserService extends AbstractService implements UserServic
   private void refreshData() throws IOException {
     HttpResponse res = context.get(name, uri);
     if (res.status() == 200) {
-      handleResponse(res.entity());
+            this.emails.set(parseResponse(res.entity()).stream().map(email -> email.toLowerCase(Locale.US)).collect(toSet()));
     } else {
       throw new IOException("request to " + uri + " failed with status " + res.status());
     }

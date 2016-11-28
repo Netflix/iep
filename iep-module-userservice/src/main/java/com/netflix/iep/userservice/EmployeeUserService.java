@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -37,24 +36,19 @@ final class EmployeeUserService extends AbstractUserService {
 
   private static final TypeReference<List<User>> LIST_TYPE = new TypeReference<List<User>>() {};
 
-  private final AtomicReference<Set<String>> emails = new AtomicReference<>(Collections.emptySet());
-
   @Inject
   EmployeeUserService(Context context) {
     super(context, "employee");
   }
 
-  @Override public Set<String> emailAddresses() {
-    return emails.get();
-  }
 
-  @Override protected void handleResponse(byte[] data) throws IOException {
+  @Override protected Set<String> parseResponse(byte[] data) throws IOException {
     List<User> vs = context.objectMapper().readValue(data, LIST_TYPE);
     Set<String> es = vs.stream()
         .filter(User::isValid)
         .map(User::getEmail)
         .collect(Collectors.toSet());
-    emails.set(Collections.unmodifiableSet(new TreeSet<>(es)));
+    return Collections.unmodifiableSet(new TreeSet<>(es));
   }
 
   @JsonIgnoreProperties(ignoreUnknown = true)
