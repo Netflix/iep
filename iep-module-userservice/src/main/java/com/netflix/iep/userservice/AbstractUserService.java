@@ -37,7 +37,6 @@ import static java.util.stream.Collectors.toSet;
 
 /**
  * Base class for user services that fetch a JSON payload from an HTTP endpoint.
- *
  */
 abstract class AbstractUserService extends AbstractService implements UserService {
 
@@ -50,8 +49,8 @@ abstract class AbstractUserService extends AbstractService implements UserServic
   protected final boolean enabled;
 
   private final AtomicLong lastUpdateTime;
-    protected final AtomicReference<Set<String>> emails =
-            new AtomicReference<>(Collections.emptySet());
+  protected final AtomicReference<Set<String>> emails =
+    new AtomicReference<>(Collections.emptySet());
 
   AbstractUserService(Context context, String service) {
     this.context = context;
@@ -108,7 +107,9 @@ abstract class AbstractUserService extends AbstractService implements UserServic
   private void refreshData() throws IOException {
     HttpResponse res = context.get(name, uri);
     if (res.status() == 200) {
-            this.emails.set(parseResponse(res.entity()).stream().map(email -> email.toLowerCase(Locale.US)).collect(toSet()));
+      emails.set(parseResponse(res.entity()).stream()
+          .map(email -> email.toLowerCase(Locale.US))
+          .collect(toSet()));
     } else {
       throw new IOException("request to " + uri + " failed with status " + res.status());
     }
