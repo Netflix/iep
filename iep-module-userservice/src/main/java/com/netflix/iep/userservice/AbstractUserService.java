@@ -66,11 +66,11 @@ abstract class AbstractUserService extends AbstractService implements UserServic
         : new AtomicLong(0L);
   }
 
-    protected abstract Set<String> parseResponse(byte[] data) throws IOException;
+  protected abstract Set<String> parseResponse(byte[] data) throws IOException;
 
-    @Override public Set<String> emailAddresses() {
-        return emails.get();
-    }
+  @Override public Set<String> emailAddresses() {
+    return emails.get();
+  }
 
   @Override
   protected void startImpl() throws Exception {
