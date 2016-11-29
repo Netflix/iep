@@ -29,6 +29,7 @@ import org.junit.runners.JUnit4;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Set;
 
 @RunWith(JUnit4.class)
 public class DepartedUserServiceTest {
@@ -59,5 +60,18 @@ public class DepartedUserServiceTest {
     Assert.assertEquals("foo@example.com", service.toValidEmail("bar+alert@example.com"));
 
     service.stop();
+  }
+
+
+  @Test
+  public void testCaseInsensitivity() throws Exception {
+    Context ctxt = newContext(new TestClient(() -> ok("{\"email\":\"fooBar@example.com\"}")));
+    DepartedUserService service = new DepartedUserService(ctxt);
+    service.start();
+
+    Set<String> emails = service.emailAddresses();
+    Assert.assertEquals(1, emails.size());
+    Assert.assertTrue(service.isValidEmail("foobar@example.com"));
+    Assert.assertTrue(service.isValidEmail("FooBar@example.com"));
   }
 }

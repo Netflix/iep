@@ -20,6 +20,7 @@ import com.netflix.iep.service.AbstractService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -37,13 +38,16 @@ class CompositeUserService extends AbstractService implements UserService {
     this.services = services;
   }
 
-  @Override protected void startImpl() throws Exception {
+    @Override
+    protected void startImpl() throws Exception {
   }
 
-  @Override protected void stopImpl() throws Exception {
+    @Override
+    protected void stopImpl() throws Exception {
   }
 
-  @Override public Set<String> emailAddresses() {
+    @Override
+    public Set<String> emailAddresses() {
     Set<String> vs = new TreeSet<>();
     for (UserService service : services) {
       vs.addAll(service.emailAddresses());
@@ -51,13 +55,15 @@ class CompositeUserService extends AbstractService implements UserService {
     return Collections.unmodifiableSet(vs);
   }
 
-  @Override public boolean isValidEmail(String email) {
+    @Override
+    public boolean isValidEmail(String email) {
     return services.stream().anyMatch(s -> s.isValidEmail(email));
   }
 
-  @Override public String toValidEmail(String email) {
+    @Override
+    public String toValidEmail(String email) {
     for (UserService service : services) {
-      String v = service.toValidEmail(email);
+      String v = service.toValidEmail(email.toLowerCase(Locale.US));
       if (v != null) {
         return v;
       }

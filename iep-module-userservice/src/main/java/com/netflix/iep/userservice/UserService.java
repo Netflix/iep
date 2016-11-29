@@ -15,6 +15,7 @@
  */
 package com.netflix.iep.userservice;
 
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -40,7 +41,7 @@ public interface UserService {
    *     service.
    */
   default boolean isValidEmail(String email) {
-    return emailAddresses().contains(UserUtils.baseAddress(email));
+    return emailAddresses().contains(UserUtils.baseAddress(email.toLowerCase(Locale.US)));
   }
 
   /**
