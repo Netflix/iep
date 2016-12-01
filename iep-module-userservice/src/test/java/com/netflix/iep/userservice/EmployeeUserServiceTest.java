@@ -70,6 +70,11 @@ public class EmployeeUserServiceTest {
 
   @Test
   public void termDate() throws Exception {
-    test("[{\"email\":\"foo@example.com\"},{\"email\":\"bar@example.com\",\"term_date\":\"1234-12-01\"}]");
+    test("[{\"email\":\"foo@example.com\",\"term_date\":\"1234-12-01\"}]");
+  }
+
+  @Test
+  public void inactive() throws Exception {
+    test("[{\"email\":\"foo@example.com\",\"active_status\":\"1\"},{\"email\":\"bar@example.com\",\"active_status\":\"0\"}]");
   }
 }

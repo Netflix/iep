@@ -54,7 +54,7 @@ final class EmployeeUserService extends AbstractUserService {
   @JsonIgnoreProperties(ignoreUnknown = true)
   private static class User {
     private String email;
-    private String termDate;
+    private boolean active = true;
 
     User() {
     }
@@ -67,13 +67,13 @@ final class EmployeeUserService extends AbstractUserService {
       return email;
     }
 
-    @JsonSetter("term_date")
-    public void setTermDate(String date) {
-      this.termDate = date;
+    @JsonSetter("active_status")
+    public void setActiveStatus(String active) {
+      this.active = "1".equals(active);
     }
 
     public boolean isValid() {
-      return email != null && termDate == null;
+      return email != null && active;
     }
   }
 }
