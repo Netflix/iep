@@ -6,6 +6,7 @@ lazy val root = project.in(file("."))
     `iep-config`,
     `iep-eureka-testconfig`,
     `iep-guice`,
+    `iep-json`,
     `iep-launcher`,
     `iep-module-admin`,
     `iep-module-archaius1`,
@@ -56,6 +57,18 @@ lazy val `iep-guice` = project
     Dependencies.guiceCore,
     Dependencies.guiceMulti,
     Dependencies.slf4jApi
+  ))
+
+lazy val `iep-json` = project
+  .configure(BuildSettings.profile)
+  .settings(libraryDependencies ++= Seq(
+    Dependencies.jacksonCore,
+    Dependencies.jacksonJoda,
+    Dependencies.jacksonMapper,
+    Dependencies.jacksonScala,
+    Dependencies.jacksonSmile,
+    Dependencies.jodaConvert,
+    Dependencies.scalatest
   ))
 
 lazy val `iep-launcher` = project
