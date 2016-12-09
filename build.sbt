@@ -8,6 +8,7 @@ lazy val root = project.in(file("."))
     `iep-guice`,
     `iep-json`,
     `iep-launcher`,
+    `iep-lwcapi`,
     `iep-module-admin`,
     `iep-module-archaius1`,
     `iep-module-archaius2`,
@@ -73,6 +74,16 @@ lazy val `iep-json` = project
 
 lazy val `iep-launcher` = project
   .configure(BuildSettings.profile)
+
+lazy val `iep-lwcapi` = project
+  .configure(BuildSettings.profile)
+  .dependsOn( `iep-guice`, `iep-json`)
+  .settings(libraryDependencies ++= Seq(
+    Dependencies.rxScala,
+    Dependencies.eurekaClient,
+    Dependencies.rxnettyCore,
+    Dependencies.rxnettyCtxts
+  ))
 
 lazy val `iep-module-admin` = project
   .configure(BuildSettings.profile)

@@ -8,6 +8,7 @@ object Dependencies {
     val guice      = "4.1.0"
     val jackson    = "2.8.4"
     val rxnetty    = "0.4.19"
+    val rxscala    = "0.26.4"
     val scala      = "2.11.8"
     val slf4j      = "1.7.21"
     val spectator  = "0.44.0"
@@ -43,7 +44,8 @@ object Dependencies {
   val junit            = "junit" % "junit" % "4.12"
   val junitInterface   = "com.novocode" % "junit-interface" % "0.11"
   val jzlib            = "com.jcraft" % "jzlib" % "1.1.3"
-  val rxjava           = "io.reactivex" % "rxjava" % "1.2.1"
+  val rxjava           = "io.reactivex" % "rxjava" % "1.2.2"
+  val rxScala          = "io.reactivex" %% "rxscala" % rxscala
   val rxnettyCore      = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts     = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator = "io.reactivex" % "rxnetty-spectator" % rxnetty
