@@ -2,15 +2,15 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.1.9"
+    val archaius   = "2.1.11"
     val aws        = "1.11.41"
     val eureka     = "1.6.0"
     val guice      = "4.1.0"
-    val jackson    = "2.8.3"
+    val jackson    = "2.8.4"
     val rxnetty    = "0.4.19"
-    val scala      = "2.12.0"
+    val scala      = "2.11.8"
     val slf4j      = "1.7.21"
-    val spectator  = "0.43.0"
+    val spectator  = "0.44.0"
   }
 
   import Versions._
@@ -34,7 +34,11 @@ object Dependencies {
   val guiceServlet     = "com.google.inject.extensions" % "guice-servlet" % guice
   val inject           = "javax.inject" % "javax.inject" % "1"
   val jacksonCore      = "com.fasterxml.jackson.core" % "jackson-core" % jackson
+  val jacksonJoda      = "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % jackson
   val jacksonMapper    = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
+  val jacksonScala     = "com.fasterxml.jackson.module" %% "jackson-module-scala" % jackson
+  val jacksonSmile     = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-smile" % jackson
+  val jodaConvert      = "org.joda" % "joda-convert" % "1.8.1"
   val jodaTime         = "joda-time" % "joda-time" % "2.9.4"
   val junit            = "junit" % "junit" % "4.12"
   val junitInterface   = "com.novocode" % "junit-interface" % "0.11"
