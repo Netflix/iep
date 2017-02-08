@@ -24,27 +24,27 @@ import rx.lang.scala.Observable
 import scala.util.control.NonFatal
 import scalaj.http._
 
-case class EddaAutoScalingGroup(name: String,
-                                start: Long,
-                                slot: Int)
-case class EddaInstance(instanceId: String,
-                        vpcId: String,
-                        publicDnsName: Option[String],
-                        publicIpAddress: Option[String],
-                        privateIpAddress: String,
-                        availabilityZone: String,
-                        subnetId: String,
-                        instanceType: String,
-                        lifecycleState: String,
-                        imageId: String,
-                        launchTime: Long,
-                        platform: Option[String],
-                        start: Long,
-                        slot: Long)
-case class EddaClustersResponse(name: String,
-                                start: Long,
-                                autoScalingGroups: List[EddaAutoScalingGroup],
-                                instances: List[EddaInstance])
+case class EddaAutoScalingGroup(name: String, start: Long, slot: Int)
+case class EddaInstance(
+    instanceId: String,
+    vpcId: String,
+    publicDnsName: Option[String],
+    publicIpAddress: Option[String],
+    privateIpAddress: String,
+    availabilityZone: String,
+    subnetId: String,
+    instanceType: String,
+    lifecycleState: String,
+    imageId: String,
+    launchTime: Long,
+    platform: Option[String],
+    start: Long,
+    slot: Long)
+case class EddaClustersResponse(
+    name: String,
+    start: Long,
+    autoScalingGroups: List[EddaAutoScalingGroup],
+    instances: List[EddaInstance])
 
 /*
  * Return a set of instances we should try connecting to.
