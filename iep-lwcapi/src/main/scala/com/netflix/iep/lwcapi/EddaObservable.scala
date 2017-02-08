@@ -46,12 +46,12 @@ case class EddaClustersResponse(name: String,
                                 autoScalingGroups: List[EddaAutoScalingGroup],
                                 instances: List[EddaInstance])
 
-//
-// Return a set of instances we should try connecting to.
-// As we do not send to these nodes, we only collect data from them,
-// it's important we connect before they are accepting client traffic
-// so we don't drop data.
-//
+/*
+ * Return a set of instances we should try connecting to.
+ * As we do not send to these nodes, we only collect data from them,
+ * it's important we connect before they are accepting client traffic
+ * so we don't drop data.
+ */
 class EddaObservable(uri: URI) extends StrictLogging {
   private def makeRequest() = {
     val headers = Map(
