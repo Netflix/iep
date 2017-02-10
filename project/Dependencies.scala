@@ -52,6 +52,8 @@ object Dependencies {
   val scalaLibrary     = "org.scala-lang" % "scala-library" % scala
   val scalaLibraryAll  = "org.scala-lang" % "scala-library-all" % scala
   val scalaReflect     = "org.scala-lang" % "scala-reflect" % scala
+  val scalaj           = "org.scalaj" %% "scalaj-http" % "2.3.0"
+  val scalaLogging     = "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"
   val scalatest        = "org.scalatest" % "scalatest_2.11" % "2.2.6"
   val slf4jApi         = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi     = "com.netflix.spectator" % "spectator-api" % spectator

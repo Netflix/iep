@@ -16,24 +16,20 @@
 package com.netflix.iep.lwcapi
 
 import java.net.URI
-
-import com.netflix.appinfo.InstanceInfo
-import com.netflix.discovery.EurekaClient
-import com.netflix.iep.guice.GuiceHelper
 import com.netflix.iep.json.Json
 import rx.lang.scala.{Observer, Subject, Subscription}
+import com.typesafe.scalalogging.StrictLogging
 
 import scala.collection.mutable
 
-
 sealed trait ServerMessage
 
-case class Server(instanceId: String, asg: String, hostname: String, port: Integer, status: InstanceInfo.InstanceStatus)
+case class Server(instanceId: String, privateIpAddress: String, port: Integer)
 case class ServerSet(servers: Set[Server]) extends ServerMessage
 
 case class ExpressionSubscription(expression: String, frequency: Option[Long] = None)
 
-class Stream {
+class Stream(eddaUri: URI) extends StrictLogging {
   import Stream._
 
   case class TrackedServer(instanceId: String,
@@ -45,8 +41,8 @@ class Stream {
 
   case class JsonSubscribe(expressions: List[ExpressionSubscription])
 
-  case class EurekaObserver(streamId: String,
-                            expressions: List[ExpressionSubscription]) extends Observer[ServerMessage] {
+  case class EddaObserver(streamId: String,
+                          expressions: List[ExpressionSubscription]) extends Observer[ServerMessage] {
     private var state = mutable.Map[String, TrackedServer]()
 
     override def onNext(msg: ServerMessage): Unit = {
@@ -60,14 +56,14 @@ class Stream {
             val deadInstanceIds = currentInstanceIds &~ announcedInstanceIds
 
             servers.filter(s => newInstanceIds.contains(s.instanceId)).foreach(server => {
-              val uri = s"http://${server.hostname}:${server.port}/lwc/api/v1/stream/$streamId"
+              val uri = s"http://${server.privateIpAddress}:${server.port}/lwc/api/v1/stream/$streamId"
               val tracker = TrackedServer(server.instanceId, uri, expressions, None, 'newserver, 0)
               state(server.instanceId) = tracker
             })
 
             deadInstanceIds.foreach(instanceId => {
               if (state.contains(instanceId)) {
-                println(s"Stopping subscription for $instanceId")
+                logger.info(s"Stopping subscription for $instanceId")
                 var info = state(instanceId)
                 var sub = info.subscription
                 if (sub.isDefined) sub.get.unsubscribe()
@@ -87,7 +83,6 @@ class Stream {
               if (sub.isDefined) sub.get.unsubscribe()
               val uri = URI.create(info.uri)
               val json = Json.encode(JsonSubscribe(expressions))
-              println(json)
               val post = HttpClient.post(uri, List(), Some(json.getBytes))
               state(instanceId) = info.copy(subscription = Some(post.flatMap(s => s.getContentAsString).subscribe(SSEObserver(instanceId, state))), state = 'connected, nextEvent = 0)
             }
@@ -99,10 +94,10 @@ class Stream {
 
   private val subject = Subject[Message]()
 
-  case class SSEObserver(instanceId: String, state: mutable.Map[String, TrackedServer]) extends Observer[String] {
+  case class SSEObserver(instanceId: String, state: mutable.Map[String, TrackedServer]) extends Observer[String] with StrictLogging {
     var remainder = ""
 
-    println(s"Subscribing to $instanceId")
+    logger.info(s"Subscribing to $instanceId")
 
     private def mapSSEType(line: String) = {
       val Array(sseType, jsonType, json) = line.split(" ", 3)
@@ -135,7 +130,7 @@ class Stream {
           state(instanceId) = oldstate.copy(state = 'error, nextEvent = System.currentTimeMillis() + 1000)
         }
       }
-      println(s"Got an onError() for $instanceId: $error")
+      logger.debug(s"Got an onError() for $instanceId: $error")
       super.onError(error)
     }
 
@@ -147,16 +142,16 @@ class Stream {
           state(instanceId) = oldstate.copy(state = 'error, nextEvent = System.currentTimeMillis() + 1000)
         }
       }
-      println(s"Got an onCompleted() for $instanceId")
+      logger.debug(s"Got an onCompleted() for $instanceId")
       super.onCompleted()
     }
   }
 
-  def sseStream(client: EurekaClient,
-                cluster: String,
-                sseId: String,
+  private val eddaObservable = EddaObservable(eddaUri)
+
+  def sseStream(sseId: String,
                 expressions: List[ExpressionSubscription]): Subject[Message] = {
-    EurekaObservable(client, cluster + ":7001").subscribe(EurekaObserver(sseId, expressions))
+    eddaObservable.start().subscribe(EddaObserver(sseId, expressions))
     subject
   }
 }
@@ -173,16 +168,8 @@ object Stream {
   case class InfoMessage(instanceId: String, jsonType: String, json: String)
     extends Message(instanceId, jsonType, json)
 
-  def start(client: EurekaClient, cluster: String, sseId: String, expressions: List[ExpressionSubscription]): Subject[Message] = {
-    val lwcapi = new Stream
-    lwcapi.sseStream(client, cluster, sseId, expressions)
+  def start(eddaUri: URI, sseId: String, expressions: List[ExpressionSubscription]): Subject[Message] = {
+    val lwcapi = new Stream(eddaUri: URI)
+    lwcapi.sseStream(sseId, expressions)
   }
-
-  private var modules = GuiceHelper.getModulesUsingServiceLoader
-  private var helper = new GuiceHelper()
-  helper.start(modules)
-  helper.start(new EurekaModule())
-  helper.addShutdownHook()
-
-  def getEurekaClient: EurekaClient = helper.getInjector.getInstance(classOf[EurekaClient])
 }

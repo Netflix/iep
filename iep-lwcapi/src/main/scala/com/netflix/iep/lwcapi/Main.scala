@@ -15,14 +15,13 @@
  */
 package com.netflix.iep.lwcapi
 
-import com.netflix.discovery.EurekaClient
-import com.netflix.iep.guice.GuiceHelper
+import java.net.URI
 
 object Main extends App {
-  val expressions = List(ExpressionSubscription("nf.app,atlas_lwcapi,:eq,name,systemCpuLoad,:eq,:and", Some(0)))
-  val cluster = "atlas_lwcapi-iep"
+  val expressions = List(ExpressionSubscription(":true,(,name,nf.node,nf.cluster,),:by", Some(0)))
   val streamName = "foobar"
 
-  val client = Stream.getEurekaClient
-  val stream = Stream.start(client, cluster, streamName, expressions).subscribe(s => println(s))
+  val eddaUri = new URI(sys.env.getOrElse("LWCAPI_EDDA_URL", "http://localhost:7001"))
+
+  val stream = Stream.start(eddaUri, streamName, expressions).subscribe(s => println(s))
 }

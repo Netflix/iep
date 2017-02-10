@@ -17,11 +17,10 @@ package com.netflix.iep.lwcapi
 
 import java.net.URI
 import java.nio.charset.Charset
-
 import io.netty.buffer.ByteBuf
 import io.reactivex.netty.client.{MaxConnectionsBasedStrategy, RxClient}
 import io.reactivex.netty.pipeline.ssl.DefaultFactories
-import io.reactivex.netty.protocol.http.client.{CompositeHttpClientBuilder, HttpClientPipelineConfigurator, HttpClientRequest, HttpClientResponse => JavaHttpClientResponse, HttpResponseHeaders => JavaHttpResponseHeaders}
+import io.reactivex.netty.protocol.http.client.{CompositeHttpClient, CompositeHttpClientBuilder, HttpClientPipelineConfigurator, HttpClientRequest, HttpClientResponse => JavaHttpClientResponse, HttpResponseHeaders => JavaHttpResponseHeaders}
 import rx.lang.scala.JavaConversions._
 import rx.lang.scala.Observable
 import rx.{Observable => JavaObservable}
@@ -29,7 +28,6 @@ import rx.{Observable => JavaObservable}
 import scala.collection.JavaConverters._
 
 trait HttpClient {
-
   def get(path: String,
           headers: Seq[(String, String)] = List(),
           body: Option[Array[Byte]] = None): Observable[HttpClientResponse]
@@ -40,7 +38,6 @@ trait HttpClient {
 }
 
 final case class HttpClientImpl(serverInfo: ServerInfo) extends HttpClient {
-
   def get(path: String,
           headers: Seq[(String, String)] = List(),
           body: Option[Array[Byte]] = None): Observable[HttpClientResponse] =
@@ -67,7 +64,6 @@ final case class HttpClientImpl(serverInfo: ServerInfo) extends HttpClient {
 
   private def convertResponse(response: JavaObservable[JavaHttpClientResponse[ByteBuf]]): Observable[HttpClientResponse] = {
     toScalaObservable(response).map(r => {
-      println(r.getStatus)
       HttpClientResponse(
         response = r,
         headers  = HttpResponseHeaders(r.getHeaders),
@@ -79,15 +75,14 @@ final case class HttpClientImpl(serverInfo: ServerInfo) extends HttpClient {
 }
 
 object HttpClient {
+  private var factory: URI => HttpClient = (uri) => HttpClientImpl(ServerInfo(uri))
 
-  var factory: URI => HttpClient = (uri) => HttpClientImpl(ServerInfo(uri))
-
-  val globalClient = new CompositeHttpClientBuilder[ByteBuf, ByteBuf]()
+  val globalClient: CompositeHttpClient[ByteBuf, ByteBuf] = new CompositeHttpClientBuilder[ByteBuf, ByteBuf]()
     .withMaxConnections(MaxConnectionsBasedStrategy.DEFAULT_MAX_CONNECTIONS)
     .pipelineConfigurator(new HttpClientPipelineConfigurator())
     .build()
 
-  val secureGlobalClient = new CompositeHttpClientBuilder[ByteBuf, ByteBuf]()
+  val secureGlobalClient: CompositeHttpClient[ByteBuf, ByteBuf] = new CompositeHttpClientBuilder[ByteBuf, ByteBuf]()
     .withMaxConnections(MaxConnectionsBasedStrategy.DEFAULT_MAX_CONNECTIONS)
     .withSslEngineFactory(DefaultFactories.trustAll())
     .build()
@@ -112,7 +107,6 @@ object HttpClient {
 }
 
 final case class ServerInfo(uri: URI) {
-
   def getNettyServerInfo: RxClient.ServerInfo = {
     lazy val defaultPort: Int = if (isSecure) 443 else 80
     val port = if (uri.getPort <= 0) defaultPort else uri.getPort
@@ -123,7 +117,6 @@ final case class ServerInfo(uri: URI) {
 }
 
 final case class HttpResponseHeaders(headers: JavaHttpResponseHeaders) {
-
   def contains(key: String): Boolean = {
     headers.contains(key)
   }
@@ -146,7 +139,6 @@ final case class HttpClientResponse(response: JavaHttpClientResponse[ByteBuf],
                                     headers: HttpResponseHeaders,
                                     status: Int)
 {
-
   def getContent: Observable[ByteBuf] = {
     toScalaObservable(response.getContent)
   }

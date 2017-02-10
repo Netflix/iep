@@ -77,12 +77,14 @@ lazy val `iep-launcher` = project
 
 lazy val `iep-lwcapi` = project
   .configure(BuildSettings.profile)
-  .dependsOn( `iep-guice`, `iep-json`)
+  .dependsOn(`iep-json`)
   .settings(libraryDependencies ++= Seq(
     Dependencies.rxScala,
-    Dependencies.eurekaClient,
     Dependencies.rxnettyCore,
-    Dependencies.rxnettyCtxts
+    Dependencies.rxnettyCtxts,
+    Dependencies.slf4jApi,
+    Dependencies.scalaLogging,
+    Dependencies.scalaj
   ))
 
 lazy val `iep-module-admin` = project
