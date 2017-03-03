@@ -15,17 +15,19 @@
  */
 package com.netflix.iep.aws;
 
-import com.amazonaws.AmazonWebServiceClient;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.securitytoken.AWSSecurityTokenService;
+import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClient;
 import com.typesafe.config.Config;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -96,7 +98,8 @@ public class AwsClientFactory {
     setIfPresent(cfg, "connection-timeout",   getTimeout,      settings::setConnectionTimeout);
     setIfPresent(cfg, "socket-timeout",       getTimeout,      settings::setSocketTimeout);
     setIfPresent(cfg, "client-execution-timeout", getTimeout,      settings::setClientExecutionTimeout);
-    setIfPresent(cfg, "user-agent",           cfg::getString,  settings::setUserAgent);
+    setIfPresent(cfg, "user-agent-prefix",    cfg::getString,  settings::setUserAgentPrefix);
+    setIfPresent(cfg, "user-agent-suffix",    cfg::getString,  settings::setUserAgentSuffix);
     setIfPresent(cfg, "proxy-port",           cfg::getInt,     settings::setProxyPort);
     setIfPresent(cfg, "proxy-host",           cfg::getString,  settings::setProxyHost);
     setIfPresent(cfg, "proxy-domain",         cfg::getString,  settings::setProxyDomain);
@@ -109,7 +112,13 @@ public class AwsClientFactory {
   private AWSCredentialsProvider createAssumeRoleProvider(Config cfg, AWSCredentialsProvider p) {
     final String arn = cfg.getString("role-arn");
     final String name = cfg.getString("role-session-name");
-    return new STSAssumeRoleSessionCredentialsProvider(p, arn, name);
+    final AWSSecurityTokenService stsClient = AWSSecurityTokenServiceClient.builder()
+        .withCredentials(p)
+        .withRegion(region)
+        .build();
+    return new STSAssumeRoleSessionCredentialsProvider.Builder(arn, name)
+        .withStsClient(stsClient)
+        .build();
   }
 
   AWSCredentialsProvider createCredentialsProvider(String name) {
@@ -130,16 +139,17 @@ public class AwsClientFactory {
     }
   }
 
-  private <T> T configure(String name, T client) {
-    final String nameProp = "netflix.iep.aws." + name + ".endpoint";
-    String service = getDefaultName(client.getClass());
-    String endpoint = config.getString("netflix.iep.aws.endpoint." + service + "." + region);
+  private String chooseRegion(String name, Class<?> cls) {
+    final String nameProp = "netflix.iep.aws." + name + ".region";
+    final String service = getDefaultName(cls);
+    final String dfltProp = "netflix.iep.aws.endpoint." + service + "." + region;
+    String endpointRegion = region;
     if (config.hasPath(nameProp)) {
-      endpoint = config.getString(nameProp);
+      endpointRegion = config.getString(nameProp);
+    } else if (config.hasPath(dfltProp)) {
+      endpointRegion = config.getString(dfltProp);
     }
-    AmazonWebServiceClient c = (AmazonWebServiceClient) client;
-    c.setEndpoint(endpoint);
-    return client;
+    return endpointRegion;
   }
 
   public <T> T newInstance(Class<T> cls) {
@@ -150,14 +160,12 @@ public class AwsClientFactory {
   public <T> T newInstance(String name, Class<T> cls) {
     try {
       final Class<?> clientCls = getClientClass(cls);
-      try {
-        Constructor<?> ctor = clientCls.getConstructor(CTOR_PARAMS);
-        final AWSCredentialsProvider provider = createCredentialsProvider(name);
-        final ClientConfiguration settings = createClientConfig(name);
-        return configure(name, (T) ctor.newInstance(provider, settings));
-      } catch (NoSuchMethodException nsme) {
-        return configure(name, (T) clientCls.newInstance());
-      }
+      Method builderMethod = clientCls.getMethod("builder");
+      return (T) ((AwsClientBuilder) builderMethod.invoke(null))
+          .withCredentials(createCredentialsProvider(name))
+          .withClientConfiguration(createClientConfig(name))
+          .withRegion(chooseRegion(name, cls))
+          .build();
     } catch (Exception e) {
       throw new RuntimeException("failed to create instance of " + cls.getName(), e);
     }
