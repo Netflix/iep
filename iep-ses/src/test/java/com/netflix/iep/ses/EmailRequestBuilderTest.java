@@ -81,8 +81,10 @@ public class EmailRequestBuilderTest {
       String message = builder.toString();
       writeResource(name, message.getBytes(StandardCharsets.US_ASCII));
     } else if (SEND) {
-      AmazonSimpleEmailService client = new AmazonSimpleEmailServiceClient(
-          new DefaultAWSCredentialsProviderChain());
+      AmazonSimpleEmailService client = AmazonSimpleEmailServiceClient.builder()
+          .withCredentials(new DefaultAWSCredentialsProviderChain())
+          .withRegion("us-east-1")
+          .build();
       client.sendRawEmail(builder.build());
     } else {
       String message = builder.toString();

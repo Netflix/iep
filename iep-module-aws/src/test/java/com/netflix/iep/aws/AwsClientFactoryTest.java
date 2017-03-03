@@ -48,7 +48,8 @@ public class AwsClientFactoryTest {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientConfiguration settings = factory.createClientConfig(null);
     Assert.assertEquals(true, settings.useGzip());
-    Assert.assertEquals("default", settings.getUserAgent());
+    Assert.assertEquals("abc", settings.getUserAgentPrefix());
+    Assert.assertEquals("xyz", settings.getUserAgentSuffix());
   }
 
   @Test
@@ -56,7 +57,6 @@ public class AwsClientFactoryTest {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientConfiguration settings = factory.createClientConfig("ec2-test");
     Assert.assertEquals(false, settings.useGzip());
-    Assert.assertNotEquals("default", settings.getUserAgent()); // should be default
   }
 
   @Test
@@ -64,7 +64,8 @@ public class AwsClientFactoryTest {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientConfiguration settings = factory.createClientConfig("ec2-test-default");
     Assert.assertEquals(false, settings.useGzip());
-    Assert.assertEquals("default", settings.getUserAgent());
+    Assert.assertEquals("abc", settings.getUserAgentPrefix());
+    Assert.assertEquals("xyz", settings.getUserAgentSuffix());
   }
 
   @Test
