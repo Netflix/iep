@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -129,6 +130,23 @@ class AtlasRegistryService extends AbstractService {
         }
       }
       return tags;
+    }
+
+    @Override public String validTagCharacters() {
+      String pattern = get("atlas.validTagCharacters");
+      return (pattern == null) ? "-._A-Za-z0-9" : pattern;
+    }
+
+    @Override public Map<String, String> validTagValueCharacters() {
+      if (config.hasPath("atlas.validTagValueCharacters")) {
+        Map<String, String> tags = new HashMap<>();
+        for (Config cfg : config.getConfigList("atlas.validTagValueCharacters")) {
+          tags.put(cfg.getString("key"), cfg.getString("value"));
+        }
+        return tags;
+      } else {
+        return Collections.emptyMap();
+      }
     }
   }
 }
