@@ -2,15 +2,15 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.1.11"
-    val aws        = "1.11.93"
-    val eureka     = "1.6.1"
+    val archaius   = "2.1.12"
+    val aws        = "1.11.105"
+    val eureka     = "1.6.2"
     val guice      = "4.1.0"
     val jackson    = "2.8.6"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.4"
     val scala      = "2.11.8"
-    val slf4j      = "1.7.23"
+    val slf4j      = "1.7.25"
     val spectator  = "0.53.0"
   }
 
