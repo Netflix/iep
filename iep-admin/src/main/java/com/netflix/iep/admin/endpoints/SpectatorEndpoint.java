@@ -18,6 +18,7 @@ package com.netflix.iep.admin.endpoints;
 import com.netflix.iep.admin.HttpEndpoint;
 import com.netflix.spectator.api.Counter;
 import com.netflix.spectator.api.DistributionSummary;
+import com.netflix.spectator.api.Gauge;
 import com.netflix.spectator.api.Id;
 import com.netflix.spectator.api.Measurement;
 import com.netflix.spectator.api.Registry;
@@ -72,11 +73,9 @@ public class SpectatorEndpoint implements HttpEndpoint {
           } else if (m instanceof DistributionSummary) {
             DistributionSummary t = (DistributionSummary) m;
             add(q, tags, ms, new DistInfo(tags, t.totalAmount(), t.count()));
-          } else {
-            for (Measurement measurement : m.measure()) {
-              tags = toMap(measurement.id());
-              add(q, tags, ms, new GaugeInfo(tags, measurement.value()));
-            }
+          } else if (m instanceof Gauge) {
+            Gauge g = (Gauge) m;
+            add(q, tags, ms, new GaugeInfo(tags, g.value()));
           }
           return ms.stream();
         })
