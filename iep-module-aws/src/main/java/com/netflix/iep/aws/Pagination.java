@@ -21,6 +21,7 @@ import org.reactivestreams.Publisher;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -32,6 +33,8 @@ import java.util.function.Function;
  */
 public final class Pagination {
 
+  private Pagination() {
+  }
 
   private static final Executor DEFAULT_POOL = Executors.newCachedThreadPool(new ThreadFactory() {
     private final AtomicInteger nextId = new AtomicInteger();
@@ -41,11 +44,11 @@ public final class Pagination {
   });
 
   private static final String[] GET_NEXT = {
-    "getNextToken", "getNextMarker", "getMarker"
+    "getNextToken", "getNextMarker", "getMarker", "getLastEvaluatedKey"
   };
 
   private static final String[] SET_NEXT = {
-    "setNextToken", "setMarker", "setMarker"
+    "setNextToken", "setMarker", "setMarker", "setExclusiveStartKey"
   };
 
   /**
@@ -183,10 +186,10 @@ public final class Pagination {
         for (Method getter : result.getClass().getMethods()) {
           if (getter.getName().equals(GET_NEXT[i])) {
             Object next = getter.invoke(result);
-            if (next == null) {
+            if (isNullOrEmpty(next)) {
               return null;
             } else {
-              Method setter = request.getClass().getMethod(SET_NEXT[i], String.class);
+              Method setter = request.getClass().getMethod(SET_NEXT[i], getter.getReturnType());
               setter.invoke(request, next);
               return request;
             }
@@ -199,4 +202,7 @@ public final class Pagination {
     }
   }
 
+  private static boolean isNullOrEmpty(Object next) {
+    return (next == null) || (next instanceof Map && ((Map) next).isEmpty());
+  }
 }

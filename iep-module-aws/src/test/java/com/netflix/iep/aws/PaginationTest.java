@@ -21,6 +21,9 @@ import com.amazonaws.services.cloudwatch.model.ListMetricsRequest;
 import com.amazonaws.services.cloudwatch.model.ListMetricsResult;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataResult;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ScanRequest;
+import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesResult;
 import com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersRequest;
@@ -38,7 +41,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.reactivestreams.Publisher;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -120,6 +125,32 @@ public class PaginationTest {
 
     Assert.assertEquals(pages, results);
     Assert.assertFalse(reqIt.hasNext());
+  }
+
+  @Test
+  public void dynamoDB() throws Exception {
+    Map<String, AttributeValue> nextPage = new HashMap<>();
+    nextPage.put("abc", new AttributeValue());
+    Map<String, AttributeValue> donePage = new HashMap<>();
+
+    Function<ScanRequest, ScanResult> f = r -> {
+      if (r.getExclusiveStartKey() != null) {
+        Assert.assertTrue(r.getExclusiveStartKey().containsKey("abc"));
+      }
+      return new ScanResult()
+          .withLastEvaluatedKey((r.getExclusiveStartKey() == null) ? nextPage : donePage);
+    };
+
+    Publisher<ScanResult> publisher = Pagination.createPublisher(new ScanRequest(), f);
+    Iterable<ScanResult> iter = Flowable.fromPublisher(publisher)
+        .blockingIterable();
+
+    int count = 0;
+    for (ScanResult r : iter) {
+      ++count;
+    }
+
+    Assert.assertEquals(2, count);
   }
 
   @Test

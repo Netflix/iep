@@ -141,6 +141,7 @@ lazy val `iep-module-aws` = project
     Dependencies.awsCore,
     Dependencies.awsAutoScaling % "test",
     Dependencies.awsCloudWatch % "test",
+    Dependencies.awsDynamoDB % "test",
     Dependencies.awsEC2 % "test",
     Dependencies.awsELB % "test",
     Dependencies.awsELBv2 % "test",
