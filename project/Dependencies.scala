@@ -25,6 +25,7 @@ object Dependencies {
   val awsAutoScaling   = "com.amazonaws" % "aws-java-sdk-autoscaling" % aws
   val awsCore          = "com.amazonaws" % "aws-java-sdk-core" % aws
   val awsCloudWatch    = "com.amazonaws" % "aws-java-sdk-cloudwatch" % aws
+  val awsDynamoDB      = "com.amazonaws" % "aws-java-sdk-dynamodb" % aws
   val awsEC2           = "com.amazonaws" % "aws-java-sdk-ec2" % aws
   val awsELB           = "com.amazonaws" % "aws-java-sdk-elasticloadbalancing" % aws
   val awsELBv2         = "com.amazonaws" % "aws-java-sdk-elasticloadbalancingv2" % aws
