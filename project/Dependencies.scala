@@ -22,8 +22,14 @@ object Dependencies {
   val archaiusLegacy   = "com.netflix.archaius" % "archaius-core" % "0.7.4"
   val archaiusPersist  = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe = "com.netflix.archaius" % "archaius2-typesafe" % archaius
+  val awsAutoScaling   = "com.amazonaws" % "aws-java-sdk-autoscaling" % aws
   val awsCore          = "com.amazonaws" % "aws-java-sdk-core" % aws
+  val awsCloudWatch    = "com.amazonaws" % "aws-java-sdk-cloudwatch" % aws
   val awsEC2           = "com.amazonaws" % "aws-java-sdk-ec2" % aws
+  val awsELB           = "com.amazonaws" % "aws-java-sdk-elasticloadbalancing" % aws
+  val awsELBv2         = "com.amazonaws" % "aws-java-sdk-elasticloadbalancingv2" % aws
+  val awsEMR           = "com.amazonaws" % "aws-java-sdk-emr" % aws
+  val awsRoute53       = "com.amazonaws" % "aws-java-sdk-route53" % aws
   val awsSES           = "com.amazonaws" % "aws-java-sdk-ses" % aws
   val awsSTS           = "com.amazonaws" % "aws-java-sdk-sts" % aws
   val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.2.1"
@@ -44,7 +50,9 @@ object Dependencies {
   val junit            = "junit" % "junit" % "4.12"
   val junitInterface   = "com.novocode" % "junit-interface" % "0.11"
   val jzlib            = "com.jcraft" % "jzlib" % "1.1.3"
+  val reactiveStreams  = "org.reactivestreams" % "reactive-streams" % "1.0.0"
   val rxjava           = "io.reactivex" % "rxjava" % "1.2.6"
+  val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.0.8"
   val rxScala          = "io.reactivex" %% "rxscala" % rxscala
   val rxnettyCore      = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettyCtxts     = "io.reactivex" % "rxnetty-contexts" % rxnetty
