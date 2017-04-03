@@ -139,9 +139,17 @@ lazy val `iep-module-aws` = project
   .dependsOn(`iep-nflxenv`)
   .settings(libraryDependencies ++= Seq(
     Dependencies.awsCore,
+    Dependencies.awsAutoScaling % "test",
+    Dependencies.awsCloudWatch % "test",
     Dependencies.awsEC2 % "test",
+    Dependencies.awsELB % "test",
+    Dependencies.awsELBv2 % "test",
+    Dependencies.awsEMR % "test",
+    Dependencies.awsRoute53 % "test",
     Dependencies.awsSTS,
     Dependencies.guiceCore,
+    Dependencies.reactiveStreams,
+    Dependencies.rxjava2,
     Dependencies.slf4jApi,
     Dependencies.typesafeConfig
   ))
