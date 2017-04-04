@@ -43,12 +43,30 @@ public final class Pagination {
     }
   });
 
+  // This is a positional list with corresponding entries in SET_NEXT. All entries will be
+  // attempted as some request types like ListResourceRecordSets have multiple keys.
+  //
+  // Note: getMarker must come before getNextMarker because sometimes both are present on the
+  // result and getMarker in that case represents the marker for the request that was already
+  // made.
   private static final String[] GET_NEXT = {
-    "getNextToken", "getNextMarker", "getMarker", "getLastEvaluatedKey"
+      "getNextToken",
+      "getMarker",
+      "getNextMarker",
+      "getLastEvaluatedKey",
+      "getNextRecordName",
+      "getNextRecordType",
+      "getNextRecordIdentifier"
   };
 
   private static final String[] SET_NEXT = {
-    "setNextToken", "setMarker", "setMarker", "setExclusiveStartKey"
+      "setNextToken",
+      "setMarker",
+      "setMarker",
+      "setExclusiveStartKey",
+      "setStartRecordName",
+      "setStartRecordType",
+      "setStartRecordIdentifier"
   };
 
   /**
@@ -182,21 +200,20 @@ public final class Pagination {
 
   private static <R, T> R getNextRequest(R request, T result) {
     try {
+      boolean hasNext = false;
       for (int i = 0; i < GET_NEXT.length; ++i) {
         for (Method getter : result.getClass().getMethods()) {
           if (getter.getName().equals(GET_NEXT[i])) {
             Object next = getter.invoke(result);
-            if (isNullOrEmpty(next)) {
-              return null;
-            } else {
-              Method setter = request.getClass().getMethod(SET_NEXT[i], getter.getReturnType());
-              setter.invoke(request, next);
-              return request;
+            if (!isNullOrEmpty(next)) {
+              hasNext = true;
             }
+            Method setter = request.getClass().getMethod(SET_NEXT[i], getter.getReturnType());
+            setter.invoke(request, next);
           }
         }
       }
-      return null;
+      return hasNext ? request : null;
     } catch (Exception e) {
       throw new IllegalStateException("failed to set next token", e);
     }
