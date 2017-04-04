@@ -34,6 +34,8 @@ import com.amazonaws.services.elasticmapreduce.model.ListClustersRequest;
 import com.amazonaws.services.elasticmapreduce.model.ListClustersResult;
 import com.amazonaws.services.route53.model.ListHostedZonesRequest;
 import com.amazonaws.services.route53.model.ListHostedZonesResult;
+import com.amazonaws.services.route53.model.ListResourceRecordSetsRequest;
+import com.amazonaws.services.route53.model.ListResourceRecordSetsResult;
 import io.reactivex.Flowable;
 import org.junit.Assert;
 import org.junit.Test;
@@ -292,7 +294,7 @@ public class PaginationTest {
   }
 
   @Test
-  public void route53() throws Exception {
+  public void route53HostedZones() throws Exception {
     SortedSet<String> pages = newPageSet(5);
     final Iterator<String> reqIt = pages.iterator();
     final Iterator<String> resIt = pages.iterator();
@@ -314,6 +316,42 @@ public class PaginationTest {
     SortedSet<String> results = new TreeSet<>();
     for (String s : iter) {
       results.add(s);
+    }
+
+    Assert.assertEquals(pages, results);
+    Assert.assertFalse(reqIt.hasNext());
+  }
+
+  @Test
+  public void route53ResourceRecordSets() throws Exception {
+    SortedSet<String> pages = newPageSet(5);
+    final Iterator<String> reqIt = pages.iterator();
+    final Iterator<String> resIt = pages.iterator();
+    Function<ListResourceRecordSetsRequest, ListResourceRecordSetsResult> f = r -> {
+      if (r.getStartRecordName() != null) {
+        String expected = reqIt.next();
+        Assert.assertEquals(expected + "-id", r.getStartRecordIdentifier());
+        Assert.assertEquals(expected + "-name", r.getStartRecordName());
+        Assert.assertEquals(expected + "-type", r.getStartRecordType());
+      }
+
+      String next = resIt.hasNext() ? resIt.next() : null;
+      return new ListResourceRecordSetsResult()
+          .withNextRecordIdentifier((next != null) ? next + "-id" : null)
+          .withNextRecordName((next != null) ? next + "-name" : null)
+          .withNextRecordType((next != null) ? next + "-type" : null);
+    };
+
+    Publisher<ListResourceRecordSetsResult> publisher =
+        Pagination.createPublisher(new ListResourceRecordSetsRequest(), f);
+    Iterable<String> iter = Flowable.fromPublisher(publisher)
+        .filter(r -> r.getNextRecordName() != null)
+        .map(ListResourceRecordSetsResult::getNextRecordName)
+        .blockingIterable();
+
+    SortedSet<String> results = new TreeSet<>();
+    for (String s : iter) {
+      results.add(s.substring(0, 5));
     }
 
     Assert.assertEquals(pages, results);
