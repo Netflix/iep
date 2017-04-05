@@ -56,7 +56,6 @@ object Dependencies {
   val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.0.8"
   val rxScala          = "io.reactivex" %% "rxscala" % rxscala
   val rxnettyCore      = "io.reactivex" % "rxnetty" % rxnetty
-  val rxnettyCtxts     = "io.reactivex" % "rxnetty-contexts" % rxnetty
   val rxnettySpectator = "io.reactivex" % "rxnetty-spectator" % rxnetty
   val scalaLibrary     = "org.scala-lang" % "scala-library" % scala
   val scalaLibraryAll  = "org.scala-lang" % "scala-library-all" % scala

@@ -81,7 +81,6 @@ lazy val `iep-lwcapi` = project
   .settings(libraryDependencies ++= Seq(
     Dependencies.rxScala,
     Dependencies.rxnettyCore,
-    Dependencies.rxnettyCtxts,
     Dependencies.slf4jApi,
     Dependencies.scalaLogging,
     Dependencies.scalaj
@@ -187,7 +186,6 @@ lazy val `iep-module-rxnetty` = project
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
     Dependencies.rxnettyCore,
-    Dependencies.rxnettyCtxts,
     Dependencies.slf4jApi
   ))
 
@@ -233,7 +231,6 @@ lazy val `iep-rxhttp` = project
     Dependencies.jzlib,
     Dependencies.rxjava,
     Dependencies.rxnettyCore,
-    Dependencies.rxnettyCtxts,
     Dependencies.spectatorApi,
     Dependencies.spectatorSandbox,
     Dependencies.slf4jApi,
