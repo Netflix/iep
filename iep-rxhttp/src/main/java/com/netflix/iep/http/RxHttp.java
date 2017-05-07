@@ -565,7 +565,8 @@ public final class RxHttp {
 
     HttpClient.HttpClientConfig.Builder configBuilder = new HttpClient.HttpClientConfig.Builder()
         .readTimeout(clientCfg.readTimeout(), TimeUnit.MILLISECONDS)
-        .userAgent(clientCfg.userAgent());
+        .userAgent(clientCfg.userAgent())
+        .setFollowRedirect(false);
 
     int subscribeTimeout = clientCfg.contentSubscribeTimeout();
     if (subscribeTimeout > 0)

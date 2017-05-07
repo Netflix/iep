@@ -274,6 +274,7 @@ public class RxHttpTest {
 
   @Test
   public void relativeRedirect() throws Exception {
+    set(client + ".niws.client.FollowRedirects", "3");
     int code = 200;
     statusCode.set(code);
     redirects.set(2);
@@ -293,6 +294,7 @@ public class RxHttpTest {
     );
 
     latch.await();
+    Assert.assertNull(throwable.get());
     assertEquals(expected, statusCounts);
   }
 
@@ -303,7 +305,35 @@ public class RxHttpTest {
   }
 
   @Test
+  public void disablingRedirects() throws Exception {
+    set(client + ".niws.client.FollowRedirects", "0");
+    set(client + ".niws.client.MaxAutoRetriesNextServer", "1");
+    int code = 302;
+    statusCode.set(code);
+    redirects.set(2);
+    AtomicIntegerArray expected = copy(statusCounts);
+    expected.addAndGet(code, 1);
+
+    final CountDownLatch latch = new CountDownLatch(1);
+    final AtomicReference<Throwable> throwable = new AtomicReference<>();
+    rxHttp.get(uri("/relativeRedirect")).subscribe(
+        Actions.empty(),
+        t -> {
+          throwable.set(t);
+          t.printStackTrace();
+          latch.countDown();
+        },
+        latch::countDown
+    );
+
+    latch.await();
+    Assert.assertNull(throwable.get());
+    assertEquals(expected, statusCounts);
+  }
+
+  @Test
   public void absoluteRedirect() throws Exception {
+    set(client + ".niws.client.FollowRedirects", "3");
     int code = 200;
     statusCode.set(code);
     redirects.set(2);

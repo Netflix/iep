@@ -48,25 +48,29 @@ class RedirectHandler implements
   public Observable<HttpClientResponse<ByteBuf>> call(HttpClientResponse<ByteBuf> res) {
     final int code = res.getStatus().code();
     Observable<HttpClientResponse<ByteBuf>> resObs;
-    if (code > 300 && code <= 307 && code != 304) {
-      final HttpClientRequest<ByteBuf> req = context.request();
-      res.getContent().subscribe();
-      final URI loc = URI.create(res.getHeaders().get(HttpHeaderNames.LOCATION));
-      context.entry().withRedirect(loc);
-      if (loc.isAbsolute()) {
-        // Should we allow redirect from https to http?
-        final boolean secure = context.server().isSecure() || "https".equals(loc.getScheme());
-        final Server s = new Server(loc.getHost(), RxHttp.getPort(loc), secure);
-        final HttpClientRequest<ByteBuf> redirReq = RxHttp.copy(req, ClientConfig.relative(loc));
-        resObs = context.rxHttp().execute(context.withRequest(redirReq).withServer(s));
-      } else {
-        final HttpClientRequest<ByteBuf> redirReq = RxHttp.copy(req, ClientConfig.relative(loc));
-        resObs = context.rxHttp().execute(context.withRequest(redirReq));
-      }
+    if (redirect < context.config().followRedirects()) {
+      if (code > 300 && code <= 307 && code != 304) {
+        final HttpClientRequest<ByteBuf> req = context.request();
+        res.getContent().subscribe();
+        final URI loc = URI.create(res.getHeaders().get(HttpHeaderNames.LOCATION));
+        context.entry().withRedirect(loc);
+        if (loc.isAbsolute()) {
+          // Should we allow redirect from https to http?
+          final boolean secure = context.server().isSecure() || "https".equals(loc.getScheme());
+          final Server s = new Server(loc.getHost(), RxHttp.getPort(loc), secure);
+          final HttpClientRequest<ByteBuf> redirReq = RxHttp.copy(req, ClientConfig.relative(loc));
+          resObs = context.rxHttp().execute(context.withRequest(redirReq).withServer(s));
+        } else {
+          final HttpClientRequest<ByteBuf> redirReq = RxHttp.copy(req, ClientConfig.relative(loc));
+          resObs = context.rxHttp().execute(context.withRequest(redirReq));
+        }
 
-      ++redirect;
-      if (redirect < context.config().followRedirects()) {
-        resObs = resObs.flatMap(this);
+        ++redirect;
+        if (redirect < context.config().followRedirects()) {
+          resObs = resObs.flatMap(this);
+        }
+      } else {
+        resObs = Observable.just(res);
       }
     } else {
       resObs = Observable.just(res);
