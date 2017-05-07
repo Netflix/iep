@@ -6,12 +6,12 @@ object Dependencies {
     val aws        = "1.11.105"
     val eureka     = "1.6.2"
     val guice      = "4.1.0"
-    val jackson    = "2.8.6"
+    val jackson    = "2.8.7"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.4"
-    val scala      = "2.11.8"
+    val scala      = "2.11.11"
     val slf4j      = "1.7.25"
-    val spectator  = "0.53.0"
+    val spectator  = "0.55.0"
   }
 
   import Versions._
