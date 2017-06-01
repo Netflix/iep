@@ -7,7 +7,7 @@ applications that need to run internally and externally.
 
 ## Overview
 
-Historically and still today in many apps Netflix had a large monolithic platform library.
+Historically Netflix had a large monolithic platform library.
 While unwieldy it provided many useful capabilities for services that made them integrate
 well at Netflix. For example, providing common ways to:
 
