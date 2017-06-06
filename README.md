@@ -7,43 +7,31 @@ applications that need to run internally and externally.
 
 ## Overview
 
-Historically Netflix had a large monolithic platform library.
-While unwieldy it provided many useful capabilities for services that made them integrate
-well at Netflix. For example, providing common ways to:
+The internal platform libraries used at Netflix, provide many useful capabilities
+that help make the applications more consistent, easier to debug, and generally
+integrate well into the internal environment. For example it is straightforward
+to:
 
 * Examine the properties and jars being used on running instance.
-* Consistent logging and ability to adjust log levels dynamically for debugging.
+* Get consistent logging and ability to adjust log levels dynamically for debugging.
 * Configuring JMX so common JVM tooling can be used through the firewall.
-* Registering with and communicating with other services using [Eureka][eureka].
+* Register with [Eureak][eureka] and use it to communicate with other services.
 
-Over time the core parts of some of these were extracted into standalone libraries, many of
+Over time some of this functionality was extracted into standalone libraries, many of
 which have been open sourced as [NetflixOSS Common Runtime Services and Libraries][netflixoss].
 Examples are [Archaius][archaius] (configuration), [Eureka][eureka] (discovery service),
 [Karyon][karyon] (base server), [Ribbon][ribbon] (Eureka aware HTTP client),
 [Governator][governator] (dependency injection), and [blitz4j][blitz4j] (logging).
 
-However, for most of these there was an internal wrapper to maintain compatibility.
-To run well internally your app had to be coded to use the internal wrapper. Originally the
-intent was for the internal wrappers to get deprecated and phased out, but that turned out
-to be harder than expected and never actually happened. The net result is using the
-common runtime services libraries directly at Netlix comes with a lot of sacrifices. For
-example, to communicate with other internal services you can use [Ribbon][ribbon] directly,
-but:
-
-* The integration into the base-server admin doesn't work so they are harder to debug.
-* Property names are potentially different due to making the namespacing configurable with
-  a different default used for OSS.
-* Many of the add-ons like [failure injection testing][fit] are not supported.
-* The standard metrics reported into [Atlas][atlas] are not present.
-
-To get those things working well the internal `platform-ipc` wrapper library would need to
-be used. The IEP libraries were created as part of the work to open source [Atlas][atlas]
-to allow us to:
+However, there are still some gaps and for many of the libraries mentioned above an internal
+wrapper library needs to be used to work well internally. Originally the intent was for the
+internal wrappers to get deprecated and phased out, but that turned out to be harder than
+expected and never actually happened. Further some of these libraries like [Ribbon][ribbon]
+and [blitz4j] are no longer receiving much investment. The IEP libraries were created as
+part of the work to open source [Atlas][atlas] to allow us to:
 
 * Have our open source applications be able to work the same way internally and externally.
-* Ensure that the core debugging capabilities and key internal integrations work. There are
-  still some gaps, e.g., [FIT][fit] will not work, but the aspects most import for the Insight
-  team work.
+* Ensure that the core debugging capabilities and key internal integrations work.
 * Opt-in instead of opt-out. The internal platform provides a lot by default and you typically
   have to explicitly opt-out to turn off stuff you do not need. To make our apps lighter weight
   we wanted to explicitly opt-in instead. This has improved with some of the newer internal
@@ -220,8 +208,8 @@ Services). Similar to the story with [Karyon](#karyon), Insight was an early ado
 developed the [iep-rxhttp] library to guinea pig RxNetty internally. It is still heavily
 used by the Insight team for interacting with services that require middle tier load
 balancing. However, the Runtime team has since de-prioritized [RxNetty] and is focusing
-on [gRPC] for new use-cases. [Ribbon][ribbon] is not used and we'll likely phase out
-[iep-rxhttp] over time.
+on [gRPC] for new use-cases. [Ribbon][ribbon] is not used by Insight and we'll likely phase
+out [iep-rxhttp] over time.
 
 Another trend is that since all Netflix services are now in the VPC, the AWS ELBs can
 have proper security groups. That was not true in classic and was a big reason for initially
