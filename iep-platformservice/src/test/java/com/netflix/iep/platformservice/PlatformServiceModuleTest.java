@@ -101,4 +101,18 @@ public class PlatformServiceModuleTest {
     Assert.assertEquals("b", root.getString("a"));
     Assert.assertEquals("runtime", root.getString("c"));
   }
+
+  @Test
+  public void includesAreLoaded() {
+    PlatformServiceModule m = new PlatformServiceModule();
+    com.typesafe.config.Config c = m.providesTypesafeConfig();
+    Assert.assertEquals("abc", c.getString("includes.a"));
+  }
+
+  @Test
+  public void includesLaterFilesOverride() {
+    PlatformServiceModule m = new PlatformServiceModule();
+    com.typesafe.config.Config c = m.providesTypesafeConfig();
+    Assert.assertEquals("def:main", c.getString("includes.b"));
+  }
 }
