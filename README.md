@@ -15,7 +15,7 @@ to:
 * Examine the properties and jars being used on running instance.
 * Get consistent logging and ability to adjust log levels dynamically for debugging.
 * Configuring JMX so common JVM tooling can be used through the firewall.
-* Register with [Eureak][eureka] and use it to communicate with other services.
+* Register with [Eureka][eureka] and use it to communicate with other services.
 
 Over time some of this functionality was extracted into standalone libraries, many of
 which have been open sourced as [NetflixOSS Common Runtime Services and Libraries][netflixoss].
