@@ -30,8 +30,11 @@ import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Registry;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
@@ -43,10 +46,32 @@ import java.util.concurrent.TimeUnit;
  */
 public final class PlatformServiceModule extends ArchaiusModule {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(PlatformServiceModule.class);
+
   @Override protected void configureArchaius() {
     bindApplicationConfigurationOverride()
       .to(Key.get(com.netflix.archaius.api.Config.class, ApplicationLayer.class));
     AdminModule.endpointsBinder(binder()).addBinding("/props").to(PropsEndpoint.class);
+  }
+
+  private Config loadConfigByName(String name) {
+    LOGGER.debug("loading config {}", name);
+    if (name.startsWith("file:")) {
+      File f = new File(name.substring("file:".length()));
+      return ConfigFactory.parseFile(f);
+    } else {
+      return ConfigFactory.parseResources(name);
+    }
+  }
+
+  private Config loadIncludes(Config baseConfig) {
+    final String prop = "netflix.iep.include";
+    Config acc = baseConfig;
+    for (String name : baseConfig.getStringList(prop)) {
+      Config cfg = loadConfigByName(name);
+      acc = cfg.withFallback(acc);
+    }
+    return acc.resolve();
   }
 
   @Provides
@@ -55,8 +80,8 @@ public final class PlatformServiceModule extends ArchaiusModule {
     final String prop = "netflix.iep.env.account-type";
     final Config baseConfig = ConfigFactory.load();
     final String envConfigName = "iep-" + baseConfig.getString(prop) + ".conf";
-    final Config envConfig = ConfigFactory.parseResources(envConfigName);
-    return envConfig.withFallback(baseConfig).resolve();
+    final Config envConfig = loadConfigByName(envConfigName);
+    return loadIncludes(envConfig.withFallback(baseConfig).resolve());
   }
 
   @Provides
