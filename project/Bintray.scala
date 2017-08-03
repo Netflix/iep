@@ -32,10 +32,6 @@ object Bintray {
 
     pomExtra :=
       <url>https://github.com/netflix/iep/wiki</url>
-      <scm>
-        <url>git@github.com:netflix/iep.git</url>
-        <connection>scm:git:git@github.com:netflix/iep.git</connection>
-      </scm>
       <developers>
         <developer>
           <id>brharrington</id>
