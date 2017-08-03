@@ -2,8 +2,8 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.1.13"
-    val aws        = "1.11.158"
+    val archaius   = "2.2.2"
+    val aws        = "1.11.172"
     val eureka     = "1.7.0"
     val guice      = "4.1.0"
     val jackson    = "2.8.7"
@@ -11,7 +11,7 @@ object Dependencies {
     val rxscala    = "0.26.5"
     val scala      = "2.11.11"
     val slf4j      = "1.7.25"
-    val spectator  = "0.55.0"
+    val spectator  = "0.57.1"
   }
 
   import Versions._
@@ -53,7 +53,7 @@ object Dependencies {
   val jzlib            = "com.jcraft" % "jzlib" % "1.1.3"
   val reactiveStreams  = "org.reactivestreams" % "reactive-streams" % "1.0.0"
   val rxjava           = "io.reactivex" % "rxjava" % "1.3.0"
-  val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.1.1"
+  val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.1.2"
   val rxScala          = "io.reactivex" %% "rxscala" % rxscala
   val rxnettyCore      = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettySpectator = "io.reactivex" % "rxnetty-spectator" % rxnetty

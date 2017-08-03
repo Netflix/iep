@@ -24,9 +24,7 @@ object BuildSettings {
   lazy val storeBintrayCredentials = taskKey[Unit]("Store bintray credentials.")
   lazy val credentialsFile = Path.userHome / ".bintray" / ".credentials"
 
-  lazy val baseSettings =
-    sbtrelease.ReleasePlugin.releaseSettings ++
-      GitVersion.settings
+  lazy val baseSettings = GitVersion.settings
 
   lazy val buildSettings = baseSettings ++ Seq(
     organization := "com.netflix.iep",
