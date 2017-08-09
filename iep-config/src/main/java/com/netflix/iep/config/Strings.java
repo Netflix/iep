@@ -15,12 +15,15 @@
  */
 package com.netflix.iep.config;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-//import org.joda.time.DateTimeZone.UTC;
 import org.joda.time.Duration;
 import org.joda.time.Period;
 import org.joda.time.format.ISODateTimeFormat;
@@ -96,32 +99,33 @@ public class Strings {
   }
 
   public static boolean conversionExists(Class c) {
-    return c == String.class ||
-    c == boolean.class ||
-    c == byte.class ||
-    c == short.class ||
-    c == int.class ||
-    c == long.class ||
-    c == float.class ||
-    c == double.class ||
-    //c == Number.class ||
-    c == Boolean.class ||
-    c == Byte.class ||
-    c == Short.class ||
-    c == Integer.class ||
-    c == Long.class ||
-    c == Float.class ||
-    c == Double.class ||
-    c == DateTime.class ||
-    c == DateTimeZone.class ||
-    c == Duration.class ||
-    c == Period.class ||
-    c == Pattern.class;
+    return c == String.class
+        || c == boolean.class
+        || c == byte.class
+        || c == short.class
+        || c == int.class
+        || c == long.class
+        || c == float.class
+        || c == double.class
+        || c == Boolean.class
+        || c == Byte.class
+        || c == Short.class
+        || c == Integer.class
+        || c == Long.class
+        || c == Float.class
+        || c == Double.class
+        || c == DateTime.class
+        || c == DateTimeZone.class
+        || c == Duration.class
+        || c == Period.class
+        || c == ZonedDateTime.class
+        || c == ZoneId.class
+        || c == java.time.Duration.class
+        || c == Pattern.class;
   }
 
   @SuppressWarnings("unchecked")
   public static <T> T cast(Class<T> c, String v) {
-    //if (c.isEnum()) return (T) enumValue(c, v);
     if (c == String.class) return (T) v;
     if (c == boolean.class) return (T) java.lang.Boolean.valueOf(v);
     if (c == byte.class) return (T) java.lang.Byte.valueOf(v);
@@ -130,7 +134,6 @@ public class Strings {
     if (c == long.class) return (T) java.lang.Long.valueOf(v);
     if (c == float.class) return (T) java.lang.Float.valueOf(v);
     if (c == double.class) return (T) java.lang.Double.valueOf(v);
-    //if (c == Number.class) return (T) java.lang.Number.valueOf(v);
     if (c == Boolean.class) return (T) java.lang.Boolean.valueOf(v);
     if (c == Byte.class) return (T) java.lang.Byte.valueOf(v);
     if (c == Short.class) return (T) java.lang.Short.valueOf(v);
@@ -142,8 +145,17 @@ public class Strings {
     if (c == DateTimeZone.class) return (T) DateTimeZone.forID(v);
     if (c == Duration.class) return (T) parseDuration(v);
     if (c == Period.class) return (T) parsePeriod(v);
+    if (c == ZonedDateTime.class) return (T) parseJavaDate(v);
+    if (c == ZoneId.class) return (T) ZoneId.of(v);
+    if (c == java.time.Duration.class) return (T) parseJavaDuration(v);
     if (c == Pattern.class) return (T) Pattern.compile(v);
     throw new IllegalArgumentException("unsupported property type " + c.getName());
+  }
+
+  private static ZonedDateTime parseJavaDate(String v) {
+    DateTime dt = parseDate(v);
+    long time = dt.toDate().getTime();
+    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneOffset.UTC);
   }
 
   public static DateTime parseDate(String v) {
@@ -177,6 +189,11 @@ public class Strings {
     if (v.equals("now")) return new DateTime();
     else if (v.equals("epoch")) return epoch;
     else return ref;
+  }
+
+  private static java.time.Duration parseJavaDuration(String v) {
+    Duration d = parseDuration(v);
+    return java.time.Duration.ofMillis(d.getMillis());
   }
 
   public static Duration parseDuration(String v) {
