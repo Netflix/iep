@@ -15,6 +15,8 @@
  */
 package com.netflix.iep.config;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -56,6 +58,18 @@ public class ConfigurationTests {
 
     @DefaultValue("PT5M")
     Duration getDuration();
+
+    @DefaultValue("2014-08-01T00:00:00")
+    ZonedDateTime getJavaDateTime();
+
+    @DefaultValue("UTC")
+    ZoneId getZoneUTC();
+
+    @DefaultValue("US/Pacific")
+    ZoneId getZonePacific();
+
+    @DefaultValue("PT5M")
+    java.time.Duration getJavaDuration();
   }
 
   private TestConfig mkConfig() { return mkConfig(new HashMap<>()); }
@@ -171,5 +185,33 @@ public class ConfigurationTests {
     TestConfig config = mkConfig();
     Duration v = config.getDuration();
     assertEquals("getDuration", v.getMillis(), 300000L);
+  }
+
+  @Test
+  public void defaultJavaDateTime() {
+    TestConfig config = mkConfig();
+    ZonedDateTime v = config.getJavaDateTime();
+    assertEquals("getDateTime", v.toEpochSecond(), 1406851200L);
+  }
+
+  @Test
+  public void defaultJavaDuration() {
+    TestConfig config = mkConfig();
+    java.time.Duration v = config.getJavaDuration();
+    assertEquals("getDuration", v.toMillis(), 300000L);
+  }
+
+  @Test
+  public void zoneUTC() {
+    TestConfig config = mkConfig();
+    ZoneId v = config.getZoneUTC();
+    assertEquals("zoneUTC", v, ZoneId.of("UTC"));
+  }
+
+  @Test
+  public void zonePacific() {
+    TestConfig config = mkConfig();
+    ZoneId v = config.getZonePacific();
+    assertEquals("zonePacific", v, ZoneId.of("US/Pacific"));
   }
 }
