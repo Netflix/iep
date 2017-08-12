@@ -18,6 +18,7 @@ package com.netflix.iep.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import com.google.inject.Scopes;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +39,7 @@ public class LifecycleTest {
     helper.start();
     Injector injector = helper.getInjector();
 
-    StateObject obj = injector.getInstance(StateObject.class);
+    AutoStateObject obj = injector.getInstance(AutoStateObject.class);
     Assert.assertEquals(State.STARTED, obj.getState());
 
     helper.shutdown();
@@ -46,11 +47,27 @@ public class LifecycleTest {
   }
 
   @Test
+  public void justInTimeNotSingletonBinding() throws Exception {
+    GuiceHelper helper = new GuiceHelper();
+    helper.start();
+    Injector injector = helper.getInjector();
+
+    StateObject obj = injector.getInstance(StateObject.class);
+    Assert.assertEquals(State.STARTED, obj.getState());
+
+    helper.shutdown();
+
+    // Since it is not a singleton, caller is responsible for the object to avoid
+    // a leak due to keeping track objects that could be frequently created
+    Assert.assertEquals(State.STARTED, obj.getState());
+  }
+
+  @Test
   public void explicitBinding() throws Exception {
     GuiceHelper helper = new GuiceHelper();
     helper.start(new AbstractModule() {
       @Override protected void configure() {
-        bind(StateObject.class);
+        bind(StateObject.class).asEagerSingleton();
       }
     });
     Injector injector = helper.getInjector();
@@ -67,7 +84,7 @@ public class LifecycleTest {
     GuiceHelper helper = new GuiceHelper();
     helper.start(new AbstractModule() {
       @Override protected void configure() {
-        bind(AutoStateObject.class);
+        bind(AutoStateObject.class).asEagerSingleton();
       }
     });
     Injector injector = helper.getInjector();
@@ -106,7 +123,7 @@ public class LifecycleTest {
     GuiceHelper helper = new GuiceHelper();
     helper.start(new AbstractModule() {
       @Override protected void configure() {
-        bind(StateObject.class).toProvider(StateObjectProvider.class);
+        bind(StateObject.class).toProvider(StateObjectProvider.class).in(Scopes.SINGLETON);
       }
     });
     Injector injector = helper.getInjector();
@@ -152,6 +169,7 @@ public class LifecycleTest {
     }
   }
 
+  @Singleton
   private static class AutoStateObject implements AutoCloseable {
 
     private State state;
