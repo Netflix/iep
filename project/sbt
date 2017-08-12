@@ -19,7 +19,3 @@ java \
   $OPTIONS \
   -jar `dirname $0`/sbt-launch-1.0.0.jar "$@"
 
-# sbt 1.0.0 seems to leave the tty settings in a bad state,
-# this is a hacky work around until I have more time to
-# debug
-if [ -t 0 ] && [ -e /bin/stty ]; then stty sane; fi
