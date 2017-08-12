@@ -48,7 +48,7 @@ public class GuiceDebugEndpointTest {
   @Test
   public void getString() {
     String response = endpoint.get("java.lang.String/value").toString();
-    Assert.assertTrue(response.startsWith("ArrayInfo([C, 3,"));
+    Assert.assertTrue(response, response.startsWith("ArrayInfo("));
   }
 
 }

@@ -21,8 +21,6 @@ import com.sun.net.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -37,7 +35,7 @@ import java.util.stream.Collectors;
  * Simple side server used to provide debugging information for the main application.
  */
 @Singleton
-public class AdminServer {
+public class AdminServer implements AutoCloseable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AdminServer.class);
 
@@ -75,20 +73,36 @@ public class AdminServer {
     createContext("/ui", staticHandler);
 
     createContext("/", new DefaultHandler(config));
+
+    server.start();
+    LOGGER.info("started on port {}", config.port());
   }
 
   private void createContext(String path, HttpHandler handler) {
     server.createContext(path, new AccessLogHandler(handler));
   }
 
-  @PostConstruct
+  /**
+   * @deprecated This is a no-op, the server will be automatically started when it
+   * is constructed.
+   */
+  @Deprecated
   public void start() {
-    server.start();
-    LOGGER.info("started on port {}", config.port());
   }
 
-  @PreDestroy
+  /**
+   * @deprecated Use {@link #close()} instead.
+   */
+  @Deprecated
   public void stop() {
+    try {
+      close();
+    } catch (Exception e) {
+      throw new RuntimeException("failed to stop AdminServer", e);
+    }
+  }
+
+  @Override public void close() throws Exception {
     LOGGER.info("shutting down admin on port {}", config.port());
     server.stop((int) config.shutdownDelay().toMillis());
   }

@@ -63,6 +63,23 @@ public class LifecycleTest {
   }
 
   @Test
+  public void autoCloseable() throws Exception {
+    GuiceHelper helper = new GuiceHelper();
+    helper.start(new AbstractModule() {
+      @Override protected void configure() {
+        bind(AutoStateObject.class);
+      }
+    });
+    Injector injector = helper.getInjector();
+
+    AutoStateObject obj = injector.getInstance(AutoStateObject.class);
+    Assert.assertEquals(State.STARTED, obj.getState());
+
+    helper.shutdown();
+    Assert.assertEquals(State.STOPPED, obj.getState());
+  }
+
+  @Test
   public void provides() throws Exception {
     GuiceHelper helper = new GuiceHelper();
     helper.start(new AbstractModule() {
@@ -132,6 +149,24 @@ public class LifecycleTest {
   private static class StateObjectProvider implements Provider<StateObject> {
     @Override public StateObject get() {
       return new StateObject();
+    }
+  }
+
+  private static class AutoStateObject implements AutoCloseable {
+
+    private State state;
+
+    @Inject
+    AutoStateObject() {
+      state = State.STARTED;
+    }
+
+    @Override public void close() throws Exception {
+      state = State.STOPPED;
+    }
+
+    State getState() {
+      return state;
     }
   }
 }

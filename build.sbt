@@ -55,7 +55,8 @@ lazy val `iep-guice` = project
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
     Dependencies.guiceMulti,
-    Dependencies.slf4jApi
+    Dependencies.slf4jApi,
+    Dependencies.jsr250 % "test"
   ))
 
 lazy val `iep-launcher` = project
