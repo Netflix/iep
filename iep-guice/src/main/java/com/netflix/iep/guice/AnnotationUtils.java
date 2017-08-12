@@ -71,6 +71,7 @@ class AnnotationUtils {
 
   static void invokePostConstruct(Logger logger, Object injectee, PreDestroyList preDestroyList) {
     try {
+      // Invoke initialization callback if present
       Method postConstruct = AnnotationUtils.getPostConstruct(injectee.getClass());
       if (postConstruct != null) {
         logger.debug("invoking @PostConstruct for {}", injectee.getClass().getName());
@@ -84,12 +85,17 @@ class AnnotationUtils {
         logger.debug("completed @PostConstruct ({})", postConstruct);
       }
 
-      if (injectee instanceof AutoCloseable) {
-        preDestroyList.add(injectee);
-      } else {
-        Method preDestroy = AnnotationUtils.getPreDestroy(injectee.getClass());
-        if (preDestroy != null) {
+      // Add object to list to destroy if there is a shutdown callback. If the pre destroy
+      // list is null that means the injectee is not a singleton and thus the lifecycle should
+      // be managed by the user not tied to the injector.
+      if (preDestroyList != null) {
+        if (injectee instanceof AutoCloseable) {
           preDestroyList.add(injectee);
+        } else {
+          Method preDestroy = AnnotationUtils.getPreDestroy(injectee.getClass());
+          if (preDestroy != null) {
+            preDestroyList.add(injectee);
+          }
         }
       }
     } catch (Exception e) {
