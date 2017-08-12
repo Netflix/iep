@@ -48,6 +48,7 @@ object Dependencies {
   val jacksonSmile     = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-smile" % jackson
   val jodaConvert      = "org.joda" % "joda-convert" % "1.8.1"
   val jodaTime         = "joda-time" % "joda-time" % "2.9.7"
+  val jsr250           = "javax.annotation" % "jsr250-api" % "1.0"
   val junit            = "junit" % "junit" % "4.12"
   val junitInterface   = "com.novocode" % "junit-interface" % "0.11"
   val jzlib            = "com.jcraft" % "jzlib" % "1.1.3"

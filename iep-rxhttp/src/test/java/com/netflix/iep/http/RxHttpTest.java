@@ -80,7 +80,6 @@ public class RxHttpTest {
 
   @BeforeClass
   public static void startServer() throws Exception {
-    rxHttp.start();
 
     server = HttpServer.create(new InetSocketAddress(0), 100);
     server.setExecutor(Executors.newFixedThreadPool(10, r -> new Thread(r, "HttpServer")));
@@ -189,8 +188,8 @@ public class RxHttpTest {
   }
 
   @AfterClass
-  public static void stopServer() {
-    rxHttp.stop();
+  public static void stopServer() throws Exception {
+    rxHttp.close();
     server.stop(0);
   }
 

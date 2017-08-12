@@ -20,10 +20,7 @@ import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.sandbox.HttpClient;
 import com.netflix.spectator.sandbox.HttpResponse;
 import com.typesafe.config.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -34,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 /** Common settings used across all services. */
 @Singleton
-public final class Context {
+public final class Context implements AutoCloseable {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
@@ -68,8 +65,19 @@ public final class Context {
     });
   }
 
-  @PreDestroy
+  /**
+   * @deprecated Use {@link #close()} instead.
+   */
+  @Deprecated
   public void stop() {
+    try {
+      close();
+    } catch (Exception e) {
+      throw new RuntimeException("failed to stop user service Context", e);
+    }
+  }
+
+  @Override public void close() throws Exception {
     executor.shutdown();
   }
 
