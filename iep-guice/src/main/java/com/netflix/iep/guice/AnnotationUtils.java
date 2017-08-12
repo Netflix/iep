@@ -17,8 +17,6 @@ package com.netflix.iep.guice;
 
 import org.slf4j.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
@@ -30,19 +28,38 @@ class AnnotationUtils {
   private AnnotationUtils() {
   }
 
+  // On JDK9 and later these annotations may not be available, so we do not want to
+  // reference the annotation classes directly
+  private static final Class<? extends Annotation> POST_CONSTRUCT =
+      getAnnotationClass("javax.annotation.PostConstruct");
+  private static final Class<? extends Annotation> PRE_DESTROY =
+      getAnnotationClass("javax.annotation.PreDestroy");
+
+  @SuppressWarnings("unchecked")
+  private static Class<? extends Annotation> getAnnotationClass(String name) {
+    try {
+      return (Class<? extends Annotation>) Class.forName(name);
+    } catch (ClassNotFoundException e) {
+      return null;
+    }
+  }
+
   static boolean hasLifecycleAnnotations(Class<?> cls) throws Exception {
     return getPostConstruct(cls) != null || getPreDestroy(cls) != null;
   }
 
   static Method getPostConstruct(Class<?> cls) throws Exception {
-    return getAnnotatedMethod(cls, PostConstruct.class);
+    return getAnnotatedMethod(cls, POST_CONSTRUCT);
   }
 
   static Method getPreDestroy(Class<?> cls) throws Exception {
-    return getAnnotatedMethod(cls, PreDestroy.class);
+    return getAnnotatedMethod(cls, PRE_DESTROY);
   }
 
   static Method getAnnotatedMethod(Class<?> cls, Class<? extends Annotation> anno) {
+    if (anno == null) {
+      return null;
+    }
     for (Method m : cls.getDeclaredMethods()) {
       if (m.getAnnotation(anno) != null) {
         return m;
@@ -54,6 +71,7 @@ class AnnotationUtils {
 
   static void invokePostConstruct(Logger logger, Object injectee, PreDestroyList preDestroyList) {
     try {
+      // Invoke initialization callback if present
       Method postConstruct = AnnotationUtils.getPostConstruct(injectee.getClass());
       if (postConstruct != null) {
         logger.debug("invoking @PostConstruct for {}", injectee.getClass().getName());
@@ -67,9 +85,18 @@ class AnnotationUtils {
         logger.debug("completed @PostConstruct ({})", postConstruct);
       }
 
-      Method preDestroy = AnnotationUtils.getPreDestroy(injectee.getClass());
-      if (preDestroy != null) {
-        preDestroyList.add(injectee);
+      // Add object to list to destroy if there is a shutdown callback. If the pre destroy
+      // list is null that means the injectee is not a singleton and thus the lifecycle should
+      // be managed by the user not tied to the injector.
+      if (preDestroyList != null) {
+        if (injectee instanceof AutoCloseable) {
+          preDestroyList.add(injectee);
+        } else {
+          Method preDestroy = AnnotationUtils.getPreDestroy(injectee.getClass());
+          if (preDestroy != null) {
+            preDestroyList.add(injectee);
+          }
+        }
       }
     } catch (Exception e) {
       throw new IllegalStateException(e);

@@ -46,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.ByteArrayOutputStream;
@@ -69,7 +68,7 @@ import java.util.zip.GZIPOutputStream;
  * plugin.
  */
 @Singleton
-public final class RxHttp {
+public final class RxHttp implements AutoCloseable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RxHttp.class);
 
@@ -95,18 +94,16 @@ public final class RxHttp {
   public RxHttp(Config config, ServerRegistry serverRegistry) {
     this.config = config;
     this.serverRegistry = serverRegistry;
+    init();
   }
-
-
 
   /**
    * Setup the background tasks for cleaning up connections.
    */
-  @PostConstruct
-  public void start() {
+  private void init() {
     LOGGER.info("starting up backround cleanup threads");
     executor = Executors.newSingleThreadScheduledExecutor(r -> {
-      Thread t = new Thread(r, "spectator-rxhttp-" + NEXT_THREAD_ID.getAndIncrement());
+      Thread t = new Thread(r, "iep-rxhttp-" + NEXT_THREAD_ID.getAndIncrement());
       t.setDaemon(true);
       return t;
     });
@@ -133,10 +130,31 @@ public final class RxHttp {
   }
 
   /**
+   * @deprecated This is a no-op, the client will be automatically started when it
+   * is constructed.
+   */
+  @Deprecated
+  public void start() {
+  }
+
+  /**
+   * Shutdown all connections that are currently open.
+   *
+   * @deprecated Use {@link #close()} instead.
+   */
+  @Deprecated
+  public void stop() {
+    try {
+      close();
+    } catch (Exception e) {
+      throw new RuntimeException("failed to stop user service Context", e);
+    }
+  }
+
+  /**
    * Shutdown all connections that are currently open.
    */
-  @PreDestroy
-  public void stop() {
+  @Override public void close() throws Exception {
     LOGGER.info("shutting down backround cleanup threads");
     executor.shutdown();
     clients.values().forEach(HttpClient::shutdown);
