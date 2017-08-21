@@ -4,6 +4,7 @@ object Dependencies {
   object Versions {
     val archaius   = "2.2.2"
     val aws        = "1.11.172"
+    val aws2       = "2.0.0-preview-2"
     val eureka     = "1.7.0"
     val guice      = "4.1.0"
     val jackson    = "2.8.7"
@@ -33,6 +34,17 @@ object Dependencies {
   val awsRoute53       = "com.amazonaws" % "aws-java-sdk-route53" % aws
   val awsSES           = "com.amazonaws" % "aws-java-sdk-ses" % aws
   val awsSTS           = "com.amazonaws" % "aws-java-sdk-sts" % aws
+  val aws2AutoScaling  = "software.amazon.awssdk" % "autoscaling" % aws2
+  val aws2Core         = "software.amazon.awssdk" % "core" % aws2
+  val aws2CloudWatch   = "software.amazon.awssdk" % "cloudwatch" % aws2
+  val aws2DynamoDB     = "software.amazon.awssdk" % "dynamodb" % aws2
+  val aws2EC2          = "software.amazon.awssdk" % "ec2" % aws2
+  val aws2ELB          = "software.amazon.awssdk" % "elasticloadbalancing" % aws2
+  val aws2ELBv2        = "software.amazon.awssdk" % "elasticloadbalancingv2" % aws2
+  val aws2EMR          = "software.amazon.awssdk" % "emr" % aws2
+  val aws2Route53      = "software.amazon.awssdk" % "route53" % aws2
+  val aws2SES          = "software.amazon.awssdk" % "ses" % aws2
+  val aws2STS          = "software.amazon.awssdk" % "sts" % aws2
   val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.3.1"
   val eurekaClient     = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist      = "com.google.inject.extensions" % "guice-assistedinject" % guice
