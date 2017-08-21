@@ -12,6 +12,7 @@ lazy val root = project.in(file("."))
     `iep-module-archaius2`,
     `iep-module-atlas`,
     `iep-module-aws`,
+    `iep-module-aws2`,
     `iep-module-awsmetrics`,
     `iep-module-eureka`,
     `iep-module-jmxport`,
@@ -123,6 +124,27 @@ lazy val `iep-module-aws` = project
     Dependencies.awsEMR % "test",
     Dependencies.awsRoute53 % "test",
     Dependencies.awsSTS,
+    Dependencies.guiceCore,
+    Dependencies.reactiveStreams,
+    Dependencies.rxjava2,
+    Dependencies.slf4jApi,
+    Dependencies.typesafeConfig
+  ))
+
+lazy val `iep-module-aws2` = project
+  .configure(BuildSettings.profile)
+  .dependsOn(`iep-nflxenv`)
+  .settings(libraryDependencies ++= Seq(
+    Dependencies.aws2Core,
+    Dependencies.aws2AutoScaling % "test",
+    Dependencies.aws2CloudWatch % "test",
+    Dependencies.aws2DynamoDB % "test",
+    Dependencies.aws2EC2 % "test",
+    Dependencies.aws2ELB % "test",
+    Dependencies.aws2ELBv2 % "test",
+    Dependencies.aws2EMR % "test",
+    Dependencies.aws2Route53 % "test",
+    Dependencies.aws2STS,
     Dependencies.guiceCore,
     Dependencies.reactiveStreams,
     Dependencies.rxjava2,
