@@ -16,7 +16,17 @@
 package com.netflix.iep.admin.endpoints;
 
 import com.netflix.iep.admin.HttpEndpoint;
+import com.netflix.spectator.api.Id;
+import com.netflix.spectator.api.Measurement;
+import com.netflix.spectator.api.Meter;
+import com.netflix.spectator.api.Registry;
+import com.netflix.spectator.api.Tag;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -26,6 +36,12 @@ import java.util.TreeMap;
 public class BaseServerEndpoint implements HttpEndpoint {
 
   private final JarsEndpoint jars = new JarsEndpoint();
+  private final Registry registry;
+
+  @Inject
+  BaseServerEndpoint(Registry registry) {
+    this.registry = registry;
+  }
 
   @Override public Object get() {
     return null;
@@ -37,6 +53,7 @@ public class BaseServerEndpoint implements HttpEndpoint {
       case "appinfo":  obj = getAppInfo(); break;
       case "env":      obj = getEnv();     break;
       case "jars":     obj = getJars();    break;
+      case "metrics":  obj = getMetrics(); break;
       default:         obj = null;         break;
     }
     return obj;
@@ -71,5 +88,30 @@ public class BaseServerEndpoint implements HttpEndpoint {
     Map<String, Object> wrapper = new TreeMap<>();
     wrapper.put("jars", jars.jars());
     return wrapper;
+  }
+
+  private Object getMetrics() {
+    List<Object> metrics = new ArrayList<>();
+    for (Meter meter : registry) {
+      for (Measurement m : meter.measure()) {
+        if (Double.isFinite(m.value())) {
+          Map<String, Object> datapoint = new LinkedHashMap<>();
+          datapoint.put("name", m.id().name());
+          datapoint.put("tags", encodeTags(m.id()));
+          datapoint.put("timestamp", m.timestamp());
+          datapoint.put("value", m.value());
+          metrics.add(datapoint);
+        }
+      }
+    }
+    return metrics;
+  }
+
+  private Object encodeTags(Id id) {
+    Map<String, String> tags = new LinkedHashMap<>();
+    for (Tag t : id.tags()) {
+      tags.put(t.key(), t.value());
+    }
+    return tags;
   }
 }
