@@ -3,7 +3,6 @@ matrix:
   include:
   - jdk: oraclejdk8
     env: BINTRAY_PUBLISH=true
-  allow_failures:
   - jdk: oraclejdk9
     env: BINTRAY_PUBLISH=false
 scala:

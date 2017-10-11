@@ -7,7 +7,7 @@ object Dependencies {
     val aws2       = "2.0.0-preview-2"
     val eureka     = "1.7.0"
     val guice      = "4.1.0"
-    val jackson    = "2.8.7"
+    val jackson    = "2.9.1"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.3"
@@ -54,7 +54,9 @@ object Dependencies {
   val guiceServlet     = "com.google.inject.extensions" % "guice-servlet" % guice
   val inject           = "javax.inject" % "javax.inject" % "1"
   val jacksonCore      = "com.fasterxml.jackson.core" % "jackson-core" % jackson
+  val jacksonCbor      = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % jackson
   val jacksonJoda      = "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % jackson
+  val jacksonJr        = "com.fasterxml.jackson.jr" % "jackson-jr-objects" % jackson
   val jacksonMapper    = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jacksonScala     = "com.fasterxml.jackson.module" %% "jackson-module-scala" % jackson
   val jacksonSmile     = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-smile" % jackson
