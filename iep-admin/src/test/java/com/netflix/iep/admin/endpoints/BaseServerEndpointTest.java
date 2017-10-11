@@ -15,6 +15,9 @@
  */
 package com.netflix.iep.admin.endpoints;
 
+import com.netflix.spectator.api.DefaultRegistry;
+import com.netflix.spectator.api.ManualClock;
+import com.netflix.spectator.api.Registry;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +30,9 @@ import java.util.regex.Pattern;
 @RunWith(JUnit4.class)
 public class BaseServerEndpointTest {
 
-  private final BaseServerEndpoint endpoint = new BaseServerEndpoint();
+  private final ManualClock clock = new ManualClock();
+  private final Registry registry = new DefaultRegistry(clock);
+  private final BaseServerEndpoint endpoint = new BaseServerEndpoint(registry);
 
   @Test
   public void get() {
@@ -52,5 +57,16 @@ public class BaseServerEndpointTest {
     String response = endpoint.get("env").toString();
     String expected = new TreeMap<>(System.getenv()).toString();
     Assert.assertTrue(response.contains(expected));
+  }
+
+  @Test
+  public void getMetrics() {
+    String response = endpoint.get("metrics").toString();
+    Assert.assertEquals(response, "[]");
+
+    registry.gauge("test.gauge", "foo", "bar", "abc", "def").set(42.0);
+    response = endpoint.get("metrics").toString();
+    String expected = "[{name=test.gauge, tags={abc=def, foo=bar}, timestamp=0, value=42.0}]";
+    Assert.assertEquals(response, expected);
   }
 }
