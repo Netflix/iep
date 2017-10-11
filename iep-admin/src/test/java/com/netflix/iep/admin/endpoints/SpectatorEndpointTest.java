@@ -22,8 +22,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 
 @RunWith(JUnit4.class)
@@ -171,7 +174,13 @@ public class SpectatorEndpointTest {
     List<SpectatorEndpoint.CounterInfo> datapoints = get("name,counter,:re,a,1,:eq,a,2,:eq,:or,:and");
     Assert.assertEquals(2, datapoints.size());
     Assert.assertEquals(3, datapoints.get(0).getTags().size());
-    Assert.assertEquals(42, datapoints.get(0).getCount());
+    Set<Long> actual = datapoints.stream()
+        .map(SpectatorEndpoint.CounterInfo::getCount)
+        .collect(Collectors.toSet());
+    Set<Long> expected = new HashSet<>();
+    expected.add(42L);
+    expected.add(1L);
+    Assert.assertEquals(expected, actual);
   }
 
   @Test
