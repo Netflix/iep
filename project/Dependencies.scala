@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.2.2"
+    val archaius   = "2.2.11"
     val aws        = "1.11.227"
     val aws2       = "2.0.0-preview-2"
     val eureka     = "1.8.5"
@@ -20,7 +20,7 @@ object Dependencies {
   val archaiusBridge   = "com.netflix.archaius" % "archaius2-archaius1-bridge" % archaius
   val archaiusCore     = "com.netflix.archaius" % "archaius2-core" % archaius
   val archaiusGuice    = "com.netflix.archaius" % "archaius2-guice" % archaius
-  val archaiusLegacy   = "com.netflix.archaius" % "archaius-core" % "0.7.4"
+  val archaiusLegacy   = "com.netflix.archaius" % "archaius-core" % "0.7.6"
   val archaiusPersist  = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe = "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val awsAutoScaling   = "com.amazonaws" % "aws-java-sdk-autoscaling" % aws
