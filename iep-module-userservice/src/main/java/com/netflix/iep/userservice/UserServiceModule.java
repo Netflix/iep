@@ -18,7 +18,7 @@ package com.netflix.iep.userservice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.multibindings.Multibinder;
-import com.netflix.iep.admin.AdminModule;
+import com.netflix.iep.admin.guice.AdminModule;
 import com.netflix.iep.service.Service;
 import com.netflix.spectator.api.NoopRegistry;
 import com.netflix.spectator.api.Registry;

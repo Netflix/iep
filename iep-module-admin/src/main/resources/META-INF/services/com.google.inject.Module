@@ -1,1 +1,1 @@
-com.netflix.iep.admin.AdminModule
+com.netflix.iep.admin.guice.AdminModule
