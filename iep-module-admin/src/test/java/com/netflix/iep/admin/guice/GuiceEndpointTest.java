@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.admin;
+package com.netflix.iep.admin.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.math.BigInteger;
+import java.util.Map;
 
 
 @RunWith(JUnit4.class)
-public class GuiceDebugEndpointTest {
+public class GuiceEndpointTest {
 
   final Injector injector = Guice.createInjector(new AbstractModule() {
     @Override protected void configure() {
@@ -35,7 +37,7 @@ public class GuiceDebugEndpointTest {
       bind(BigInteger.class).toInstance(BigInteger.TEN);
     }
   });
-  private final GuiceDebugEndpoint endpoint = new GuiceDebugEndpoint(injector);
+  private final GuiceEndpoint endpoint = new GuiceEndpoint(injector);
 
   @Test
   public void get() {
@@ -46,9 +48,19 @@ public class GuiceDebugEndpointTest {
   }
 
   @Test
-  public void getString() {
-    String response = endpoint.get("java.lang.String/value").toString();
-    Assert.assertTrue(response, response.startsWith("ArrayInfo("));
+  public void getWithPath() {
+    String response = endpoint.get("math").toString();
+    Assert.assertFalse(response.contains("com.google.inject.Injector"));
+    Assert.assertFalse(response.contains("java.lang.String"));
+    Assert.assertTrue(response.contains("java.math.BigInteger"));
+    Assert.assertFalse(response.contains("java.math.BigDecimal"));
   }
 
+  @Test
+  public void bindingsMap() {
+    Map<String, Key<?>> bindings = endpoint.getBindingKeys(v -> true);
+    Assert.assertEquals(
+        BigInteger.TEN,
+        injector.getInstance(bindings.get("java.math.BigInteger")));
+  }
 }

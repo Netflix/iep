@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.admin;
+package com.netflix.iep.admin.guice;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.netflix.iep.admin.HttpEndpoint;
 import com.netflix.iep.admin.endpoints.ReflectEndpoint;
 
 import javax.inject.Inject;

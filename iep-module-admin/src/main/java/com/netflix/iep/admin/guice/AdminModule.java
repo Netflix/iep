@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.netflix.iep.admin;
+package com.netflix.iep.admin.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
@@ -22,6 +22,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.multibindings.MapBinder;
 import com.google.inject.multibindings.Multibinder;
+import com.netflix.iep.admin.AdminConfig;
+import com.netflix.iep.admin.AdminEndpoint;
+import com.netflix.iep.admin.AdminServer;
 import com.netflix.iep.admin.endpoints.BaseServerEndpoint;
 import com.netflix.iep.admin.endpoints.EnvEndpoint;
 import com.netflix.iep.admin.endpoints.JarsEndpoint;

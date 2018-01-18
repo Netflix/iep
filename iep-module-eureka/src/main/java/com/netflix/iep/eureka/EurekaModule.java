@@ -32,8 +32,8 @@ import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.discovery.shared.transport.jersey.Jersey1DiscoveryClientOptionalArgs;
-import com.netflix.iep.admin.AdminModule;
 import com.netflix.iep.admin.AdminServer;
+import com.netflix.iep.admin.guice.AdminModule;
 import com.netflix.iep.service.Service;
 import org.apache.commons.configuration.Configuration;
 

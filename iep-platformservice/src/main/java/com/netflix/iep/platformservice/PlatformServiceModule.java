@@ -25,7 +25,7 @@ import com.netflix.archaius.config.polling.PollingResponse;
 import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.typesafe.TypesafeConfig;
 import com.netflix.iep.admin.AdminConfig;
-import com.netflix.iep.admin.AdminModule;
+import com.netflix.iep.admin.guice.AdminModule;
 import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Registry;
 import com.typesafe.config.Config;
