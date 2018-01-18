@@ -73,6 +73,43 @@ Injector injector = Guice.createInjector(module, new AwsModule());
 AmazonEC2 dflt = factory.newInstance(AmazonEC2.class);
 ```
 
+### Multi-Account Usage
+
+When building an application that needs to communicate with many accounts, the factory can be
+used to assume role into a specified account. Use a place holder in the role-arn setting:
+
+```hocon
+netflix.iep.aws {
+  default {
+    credentials {
+      // The account placeholder will get replaced by the requested account id
+      role-arn = "arn:aws:iam::{account}:role/IepTest"
+      role-session-name = "foo"
+    }
+  }
+}
+```
+
+Then when creating a new client pass in the account id, for example:
+
+```java
+AwsClientFactory factory = injector.getInstance(AwsClientFactory.class);
+AmazonEC2 client1 = factory.newInstance(AmazonEC2.class, "12345");
+AmazonEC2 client2 = factory.newInstance(AmazonEC2.class, "54321");
+```
+
+The `newInstance` call will always create a new instance of the client. To reuse a shared client
+for a given account use `getInstance`:
+
+```java
+AwsClientFactory factory = injector.getInstance(AwsClientFactory.class);
+AmazonEC2 client1 = factory.getInstance(AmazonEC2.class, "12345");
+AmazonEC2 client2 = factory.getInstance(AmazonEC2.class, "54321");
+
+// This will be the same instance as client1
+AmazonEC2 client3 = factory.getInstance(AmazonEC2.class, "12345");
+```
+
 ## Gradle
 
 ```
