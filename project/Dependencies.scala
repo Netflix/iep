@@ -2,17 +2,17 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.2.13"
-    val aws        = "1.11.264"
+    val archaius   = "2.2.14"
+    val aws        = "1.11.277"
     val aws2       = "2.0.0-preview-2"
     val eureka     = "1.8.6"
     val guice      = "4.1.0"
-    val jackson    = "2.9.1"
+    val jackson    = "2.9.4"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
-    val scala      = "2.12.3"
+    val scala      = "2.12.4"
     val slf4j      = "1.7.25"
-    val spectator  = "0.60.0"
+    val spectator  = "0.61.0"
   }
 
   import Versions._
@@ -45,7 +45,7 @@ object Dependencies {
   val aws2Route53      = "software.amazon.awssdk" % "route53" % aws2
   val aws2SES          = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS          = "software.amazon.awssdk" % "sts" % aws2
-  val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.4.1"
+  val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.4.3"
   val eurekaClient     = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist      = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore        = "com.google.inject" % "guice" % guice
@@ -67,8 +67,8 @@ object Dependencies {
   val junitInterface   = "com.novocode" % "junit-interface" % "0.11"
   val jzlib            = "com.jcraft" % "jzlib" % "1.1.3"
   val reactiveStreams  = "org.reactivestreams" % "reactive-streams" % "1.0.2"
-  val rxjava           = "io.reactivex" % "rxjava" % "1.3.4"
-  val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.1.8"
+  val rxjava           = "io.reactivex" % "rxjava" % "1.3.6"
+  val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.1.9"
   val rxScala          = "io.reactivex" %% "rxscala" % rxscala
   val rxnettyCore      = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettySpectator = "io.reactivex" % "rxnetty-spectator" % rxnetty
