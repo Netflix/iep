@@ -55,7 +55,6 @@ lazy val `iep-guice` = project
   .dependsOn(`iep-service`)
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.slf4jApi,
     Dependencies.jsr250 % "test"
   ))
@@ -68,7 +67,6 @@ lazy val `iep-module-admin` = project
   .dependsOn(`iep-admin`)
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.slf4jApi
   ))
 
@@ -80,7 +78,6 @@ lazy val `iep-module-archaius1` = project
     Dependencies.archaiusGuice,
     Dependencies.archaiusLegacy,
     Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.slf4jApi
   ))
 
@@ -101,7 +98,6 @@ lazy val `iep-module-atlas` = project
   .dependsOn(`iep-nflxenv`, `iep-service`)
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
     Dependencies.spectatorAtlas,
@@ -170,7 +166,6 @@ lazy val `iep-module-eureka` = project
   .settings(libraryDependencies ++= Seq(
     Dependencies.eurekaClient,
     Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.slf4jApi
   ))
 
@@ -195,7 +190,6 @@ lazy val `iep-module-userservice` = project
   .dependsOn(`iep-module-admin`, `iep-service`)
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.jacksonMapper,
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
@@ -218,7 +212,6 @@ lazy val `iep-platformservice` = project
     Dependencies.archaiusPersist,
     Dependencies.archaiusTypesafe,
     Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
     Dependencies.spectatorSandbox

@@ -6,7 +6,7 @@ object Dependencies {
     val aws        = "1.11.277"
     val aws2       = "2.0.0-preview-2"
     val eureka     = "1.8.6"
-    val guice      = "4.1.0"
+    val guice      = "4.2.0"
     val jackson    = "2.9.4"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
@@ -50,7 +50,6 @@ object Dependencies {
   val guiceAssist      = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore        = "com.google.inject" % "guice" % guice
   val guiceGrapher     = "com.google.inject.extensions" % "guice-grapher" % guice
-  val guiceMulti       = "com.google.inject.extensions" % "guice-multibindings" % guice
   val guiceServlet     = "com.google.inject.extensions" % "guice-servlet" % guice
   val inject           = "javax.inject" % "javax.inject" % "1"
   val jacksonCore      = "com.fasterxml.jackson.core" % "jackson-core" % jackson
