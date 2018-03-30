@@ -67,7 +67,7 @@ object Dependencies {
   val junitInterface   = "com.novocode" % "junit-interface" % "0.11"
   val jzlib            = "com.jcraft" % "jzlib" % "1.1.3"
   val reactiveStreams  = "org.reactivestreams" % "reactive-streams" % "1.0.2"
-  val rxjava           = "io.reactivex" % "rxjava" % "1.3.6"
+  val rxjava           = "io.reactivex" % "rxjava" % "1.3.7"
   val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.1.9"
   val rxScala          = "io.reactivex" %% "rxscala" % rxscala
   val rxnettyCore      = "io.reactivex" % "rxnetty" % rxnetty
