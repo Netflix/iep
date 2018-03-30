@@ -3,16 +3,16 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.2.14"
-    val aws        = "1.11.277"
-    val aws2       = "2.0.0-preview-8"
-    val eureka     = "1.8.6"
+    val aws        = "1.11.299"
+    val aws2       = "2.0.0-preview-9"
+    val eureka     = "1.8.7"
     val guice      = "4.1.0"
-    val jackson    = "2.9.4"
+    val jackson    = "2.9.5"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.4"
     val slf4j      = "1.7.25"
-    val spectator  = "0.61.0"
+    val spectator  = "0.63.0"
   }
 
   import Versions._
@@ -45,7 +45,7 @@ object Dependencies {
   val aws2Route53      = "software.amazon.awssdk" % "route53" % aws2
   val aws2SES          = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS          = "software.amazon.awssdk" % "sts" % aws2
-  val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.4.3"
+  val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.4.5"
   val eurekaClient     = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist      = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore        = "com.google.inject" % "guice" % guice
@@ -67,8 +67,8 @@ object Dependencies {
   val junitInterface   = "com.novocode" % "junit-interface" % "0.11"
   val jzlib            = "com.jcraft" % "jzlib" % "1.1.3"
   val reactiveStreams  = "org.reactivestreams" % "reactive-streams" % "1.0.2"
-  val rxjava           = "io.reactivex" % "rxjava" % "1.3.6"
-  val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.1.9"
+  val rxjava           = "io.reactivex" % "rxjava" % "1.3.7"
+  val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.1.12"
   val rxScala          = "io.reactivex" %% "rxscala" % rxscala
   val rxnettyCore      = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettySpectator = "io.reactivex" % "rxnetty-spectator" % rxnetty
@@ -85,5 +85,5 @@ object Dependencies {
   val spectatorGc      = "com.netflix.spectator" % "spectator-ext-gc" % spectator
   val spectatorJvm     = "com.netflix.spectator" % "spectator-ext-jvm" % spectator
   val spectatorSandbox = "com.netflix.spectator" % "spectator-ext-sandbox" % spectator
-  val typesafeConfig   = "com.typesafe" % "config" % "1.3.2"
+  val typesafeConfig   = "com.typesafe" % "config" % "1.3.3"
 }
