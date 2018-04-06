@@ -206,6 +206,7 @@ lazy val `iep-module-userservice` = project
 lazy val `iep-nflxenv` = project
   .configure(BuildSettings.profile)
   .settings(libraryDependencies ++= Seq(
+    Dependencies.slf4jApi,
     Dependencies.typesafeConfig
   ))
 

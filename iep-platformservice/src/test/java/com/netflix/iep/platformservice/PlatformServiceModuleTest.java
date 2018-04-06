@@ -56,7 +56,7 @@ public class PlatformServiceModuleTest {
   public void loadConfig() {
     PlatformServiceModule m = new PlatformServiceModule();
     com.typesafe.config.Config c = m.providesTypesafeConfig();
-    Assert.assertEquals("main", c.getString("account-specific-prop"));
+    Assert.assertTrue(c.getBoolean("iep.account-config-loaded"));
   }
 
   @Test
@@ -113,6 +113,6 @@ public class PlatformServiceModuleTest {
   public void includesLaterFilesOverride() {
     PlatformServiceModule m = new PlatformServiceModule();
     com.typesafe.config.Config c = m.providesTypesafeConfig();
-    Assert.assertEquals("def:main", c.getString("includes.b"));
+    Assert.assertEquals("def:foo", c.getString("includes.b"));
   }
 }
