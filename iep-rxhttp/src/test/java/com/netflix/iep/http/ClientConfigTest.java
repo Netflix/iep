@@ -47,7 +47,7 @@ public class ClientConfigTest {
     clear("foo.niws.client.UseIpAddress");
     clear("niws.client.UseIpAddress");
     final URI uri = URI.create("/test");
-    cfg = new ClientConfig(archaius, "foo", "foo:7001", uri, uri);
+    cfg = new ClientConfig(archaius, "foo", "foo:7001", uri, uri, null);
   }
 
   @Test
@@ -76,19 +76,19 @@ public class ClientConfigTest {
 
   @Test
   public void fromUriNiws() {
-    ClientConfig config = ClientConfig.fromUri(archaius, URI.create("niws://foo/bar"));
+    ClientConfig config = ClientConfig.fromUri(archaius, URI.create("niws://foo/bar"), null);
     Assert.assertEquals(config.uri().toString(), "/bar");
   }
 
   @Test
   public void fromUriNiwsWithQuery() {
-    ClientConfig config = ClientConfig.fromUri(archaius, URI.create("niws://foo/bar?a=b"));
+    ClientConfig config = ClientConfig.fromUri(archaius, URI.create("niws://foo/bar?a=b"), null);
     Assert.assertEquals(config.uri().toString(), "/bar?a=b");
   }
 
   @Test
   public void fromUriNiwsWithAbsolute() {
-    ClientConfig config = ClientConfig.fromUri(archaius, URI.create("niws://foo/http://foo.com/bar"));
+    ClientConfig config = ClientConfig.fromUri(archaius, URI.create("niws://foo/http://foo.com/bar"), null);
     Assert.assertEquals(config.name(), "foo");
     Assert.assertEquals(config.originalUri().toString(), "niws://foo/http://foo.com/bar");
     Assert.assertEquals(config.uri().toString(), "http://foo.com/bar");
@@ -97,14 +97,14 @@ public class ClientConfigTest {
 
   @Test
   public void fromUriVip() {
-    ClientConfig config = ClientConfig.fromUri(archaius, URI.create("vip://foo:vip:7001/bar"));
+    ClientConfig config = ClientConfig.fromUri(archaius, URI.create("vip://foo:vip:7001/bar"), null);
     Assert.assertEquals(config.uri().toString(), "/bar");
     Assert.assertEquals(config.vip(), "vip:7001");
   }
 
   @Test
   public void fromUriVipWithQuery() {
-    ClientConfig config = ClientConfig.fromUri(archaius, URI.create("vip://foo:vip:7001/bar?a=b"));
+    ClientConfig config = ClientConfig.fromUri(archaius, URI.create("vip://foo:vip:7001/bar?a=b"), null);
     Assert.assertEquals(config.uri().toString(), "/bar?a=b");
     Assert.assertEquals(config.vip(), "vip:7001");
   }
@@ -112,15 +112,15 @@ public class ClientConfigTest {
   @Test
   public void doubleSlash() {
     URI niws = URI.create("niws://some-vip//api/v2/update");
-    ClientConfig cfg = ClientConfig.fromUri(archaius, niws);
+    ClientConfig cfg = ClientConfig.fromUri(archaius, niws, null);
     Assert.assertEquals("/api/v2/update", cfg.relativeUri());
 
     URI query = URI.create("niws://some-vip//api/v2/update?foo=//");
-    ClientConfig cfg1 = ClientConfig.fromUri(archaius, query);
+    ClientConfig cfg1 = ClientConfig.fromUri(archaius, query, null);
     Assert.assertEquals("/api/v2/update?foo=//", cfg1.relativeUri());
 
     URI simple = URI.create("http://some-vip//api/v2/update?foo=//");
-    ClientConfig cfg2 = ClientConfig.fromUri(archaius, simple);
+    ClientConfig cfg2 = ClientConfig.fromUri(archaius, simple, null);
     Assert.assertEquals("/api/v2/update?foo=//", cfg2.relativeUri());
   }
 

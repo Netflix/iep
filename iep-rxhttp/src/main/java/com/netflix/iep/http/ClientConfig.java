@@ -20,6 +20,7 @@ import io.netty.handler.logging.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
 import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +55,7 @@ class ClientConfig {
   }
 
   /** Create a client config instance based on a URI. */
-  static ClientConfig fromUri(Config config, URI uri) {
+  static ClientConfig fromUri(Config config, URI uri, SSLContext context) {
     Matcher m;
     ClientConfig cfg;
     switch (uri.getScheme()) {
@@ -62,7 +63,7 @@ class ClientConfig {
         m = NIWS_URI.matcher(uri.toString());
         if (m.matches()) {
           final URI newUri = URI.create(fixPath(relative(uri)));
-          cfg = new ClientConfig(config, m.group(1), null, uri, newUri);
+          cfg = new ClientConfig(config, m.group(1), null, uri, newUri, context);
         } else {
           throw new IllegalArgumentException("invalid niws uri: " + uri);
         }
@@ -70,13 +71,13 @@ class ClientConfig {
       case "vip":
         m = VIP_URI.matcher(uri.toString());
         if (m.matches()) {
-          cfg = new ClientConfig(config, m.group(1), m.group(2), uri, URI.create(relative(uri)));
+          cfg = new ClientConfig(config, m.group(1), m.group(2), uri, URI.create(relative(uri)), context);
         } else {
           throw new IllegalArgumentException("invalid vip uri: " + uri);
         }
         break;
       default:
-        cfg = new ClientConfig(config, "default", null, uri, uri);
+        cfg = new ClientConfig(config, "default", null, uri, uri, context);
         break;
     }
     LOGGER.trace(cfg.toString());
@@ -88,14 +89,22 @@ class ClientConfig {
   private final String vipAddress;
   private final URI originalUri;
   private final URI uri;
+  private final SSLContext context;
 
   /** Create a new instance. */
-  ClientConfig(Config config, String name, String vipAddress, URI originalUri, URI uri) {
+  ClientConfig(
+      Config config,
+      String name,
+      String vipAddress,
+      URI originalUri,
+      URI uri,
+      SSLContext context) {
     this.config = config;
     this.name = name;
     this.vipAddress = vipAddress;
     this.originalUri = originalUri;
     this.uri = uri;
+    this.context = context;
   }
 
   private String dfltProp(String k) {
@@ -200,6 +209,11 @@ class ClientConfig {
   boolean isSecure() {
     final boolean https = "https".equals(uri.getScheme());
     return https || getBoolean("IsSecure", false);
+  }
+
+  /** SSL context that should be used for the request. */
+  SSLContext sslContext() {
+    return context;
   }
 
   /**
