@@ -611,7 +611,7 @@ public class RxHttpTest {
     set("port-override.niws.client.Port", "2");
     URI origUri = URI.create("niws://port-override/foo");
     URI relUri = URI.create("/foo");
-    ClientConfig cfg = new ClientConfig(archaius, "port-override", "vip", origUri, relUri);
+    ClientConfig cfg = new ClientConfig(archaius, "port-override", "vip", origUri, relUri, null);
     InstanceInfo info = InstanceInfo.Builder.newBuilder()
         .setAppName("foo")
         .setPort(1)
@@ -624,7 +624,7 @@ public class RxHttpTest {
   public void portDefaultSetting() throws Exception {
     URI origUri = URI.create("niws://port-default/foo");
     URI relUri = URI.create("/foo");
-    ClientConfig cfg = new ClientConfig(archaius, "port-default", "vip", origUri, relUri);
+    ClientConfig cfg = new ClientConfig(archaius, "port-default", "vip", origUri, relUri, null);
     InstanceInfo info = InstanceInfo.Builder.newBuilder()
         .setAppName("foo")
         .setPort(1)
