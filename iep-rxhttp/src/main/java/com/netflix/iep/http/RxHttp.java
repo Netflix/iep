@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -481,8 +482,28 @@ public final class RxHttp implements AutoCloseable {
    */
   public Observable<HttpClientResponse<ByteBuf>>
   submit(HttpClientRequest<ByteBuf> req, byte[] entity) {
+    return submit(req, entity, null);
+  }
+
+  /**
+   * Submit an HTTP request.
+   *
+   * @param req
+   *     Request to execute. Note the content should be passed in separately not already passed
+   *     to the request. The RxNetty request object doesn't provide a way to get the content
+   *     out via the public api, so we need to keep it separate in case a new request object must
+   *     be created.
+   * @param entity
+   *     Content data or null if no content is needed for the request body.
+   * @param context
+   *     Custom SSL context to use for the request.
+   * @return
+   *     Observable with the response of the request.
+   */
+  public Observable<HttpClientResponse<ByteBuf>>
+  submit(HttpClientRequest<ByteBuf> req, byte[] entity, SSLContext context) {
     final URI uri = URI.create(req.getUri());
-    final ClientConfig clientCfg = ClientConfig.fromUri(config, uri);
+    final ClientConfig clientCfg = ClientConfig.fromUri(config, uri, context);
     final List<Server> servers = getServers(clientCfg);
     final String reqUri = clientCfg.relativeUri();
     final HttpClientRequest<ByteBuf> newReq = copy(req, reqUri);
@@ -626,7 +647,10 @@ public final class RxHttp implements AutoCloseable {
     }
 
     if (server.isSecure()) {
-      builder.withSslEngineFactory(DefaultFactories.trustAll());
+      if (clientCfg.sslContext() == null)
+        builder.withSslEngineFactory(DefaultFactories.trustAll());
+      else
+        builder.withSslEngineFactory(DefaultFactories.fromSSLContext(clientCfg.sslContext()));
     }
 
     if (!clientCfg.contentAutoRelease())
