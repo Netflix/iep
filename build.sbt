@@ -230,6 +230,7 @@ lazy val `iep-rxhttp` = project
   .settings(libraryDependencies ++= Seq(
     Dependencies.archaiusCore,
     Dependencies.eurekaClient,
+    Dependencies.jsr250,
     Dependencies.jzlib,
     Dependencies.rxjava,
     Dependencies.rxnettyCore,
@@ -243,6 +244,7 @@ lazy val `iep-service` = project
   .configure(BuildSettings.profile)
   .settings(libraryDependencies ++= Seq(
     Dependencies.inject,
+    Dependencies.jsr250,
     Dependencies.slf4jApi
   ))
 
