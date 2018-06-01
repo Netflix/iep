@@ -3,10 +3,12 @@ matrix:
   include:
   - jdk: oraclejdk8
     env: BINTRAY_PUBLISH=true
-  - jdk: oraclejdk9
+  - jdk: openjdk10
+    env: BINTRAY_PUBLISH=false
+  - jdk: openjdk11
     env: BINTRAY_PUBLISH=false
 scala:
-- 2.12.4
+- 2.12.6
 sudo: false
 script:
 - ./buildViaTravis.sh
