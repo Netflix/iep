@@ -17,6 +17,7 @@ package com.netflix.iep.admin.endpoints;
 
 import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Registry;
+import com.netflix.spectator.api.patterns.PolledMeter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,7 @@ public class SpectatorEndpointTest {
     registry.distributionSummary("distSummary1", "a", "1").record(47);
 
     registry.gauge("gauge1", 100.0);
+    PolledMeter.update(registry);
   }
 
   @SuppressWarnings("unchecked")
