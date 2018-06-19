@@ -5,7 +5,7 @@ object Dependencies {
     val archaius   = "2.3.2"
     val aws        = "1.11.339"
     val aws2       = "2.0.0-preview-9"
-    val eureka     = "1.9.0"
+    val eureka     = "1.9.2"
     val guice      = "4.1.0"
     val jackson    = "2.9.6"
     val rxnetty    = "0.4.20"
