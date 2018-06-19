@@ -15,7 +15,6 @@
  */
 package com.netflix.iep.platformservice;
 
-import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.netflix.archaius.api.config.PollingStrategy;
@@ -27,8 +26,8 @@ import com.netflix.archaius.typesafe.TypesafeConfig;
 import com.netflix.iep.admin.AdminConfig;
 import com.netflix.iep.admin.guice.AdminModule;
 import com.netflix.iep.config.ConfigManager;
-import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Registry;
+import com.netflix.spectator.api.Spectator;
 import com.typesafe.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,9 +61,9 @@ public final class PlatformServiceModule extends ArchaiusModule {
   @Provides
   @Singleton
   @RemoteLayer
-  private com.netflix.archaius.api.Config providesOverrideConfig(OptionalInjections opts, Config cfg)
+  private com.netflix.archaius.api.Config providesOverrideConfig(Config cfg)
       throws Exception {
-    return getDynamicConfig(opts.getRegistry(), cfg);
+    return getDynamicConfig(Spectator.globalRegistry(), cfg);
   }
 
   @Provides
@@ -126,18 +125,5 @@ public final class PlatformServiceModule extends ArchaiusModule {
     return (cfg.getBoolean(propUseDynamic))
       ? new PollingDynamicConfig(getCallback(registry, cfg), getPollingStrategy(cfg))
       : EmptyConfig.INSTANCE;
-  }
-
-  @Singleton
-  private static class OptionalInjections {
-    @Inject(optional = true)
-    Registry registry;
-
-    Registry getRegistry() {
-      if (registry == null) {
-        registry = new DefaultRegistry();
-      }
-      return registry;
-    }
   }
 }
