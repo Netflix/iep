@@ -16,11 +16,14 @@
 package com.netflix.iep.aws2;
 
 import com.typesafe.config.Config;
-import software.amazon.awssdk.core.auth.AwsCredentialsProvider;
-import software.amazon.awssdk.core.auth.DefaultCredentialsProvider;
-import software.amazon.awssdk.core.client.builder.ClientBuilder;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.awscore.client.builder.AwsClientBuilder;
+import software.amazon.awssdk.awscore.client.builder.AwsSyncClientBuilder;
+import software.amazon.awssdk.core.client.builder.ClientHttpConfiguration;
 import software.amazon.awssdk.core.config.ClientOverrideConfiguration;
-import software.amazon.awssdk.core.regions.Region;
+import software.amazon.awssdk.http.SdkHttpClient;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sts.STSClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
@@ -81,9 +84,7 @@ public class AwsClientFactory {
     Function<String, Duration> getTimeout = cfg::getDuration;
 
     // Typically use the defaults
-    setIfPresent(cfg, "use-gzip",                 cfg::getBoolean,  settings::gzipEnabled);
-    setIfPresent(cfg, "socket-timeout",           cfg::getDuration, settings::httpRequestTimeout);
-    setIfPresent(cfg, "client-execution-timeout", cfg::getDuration, settings::totalExecutionTimeout);
+    setIfPresent(cfg, "use-gzip", cfg::getBoolean, settings::gzipEnabled);
     return settings.build();
   }
 
@@ -137,10 +138,10 @@ public class AwsClientFactory {
   public <T> T newInstance(String name, Class<T> cls) {
     try {
       Method builderMethod = cls.getMethod("builder");
-      return (T) ((ClientBuilder) builderMethod.invoke(null))
+      return (T) ((AwsClientBuilder) builderMethod.invoke(null))
           .credentialsProvider(createCredentialsProvider(name))
-          .overrideConfiguration(createClientConfig(name))
           .region(chooseRegion(name, cls))
+          .overrideConfiguration(createClientConfig(name))
           .build();
     } catch (Exception e) {
       throw new RuntimeException("failed to create instance of " + cls.getName(), e);
