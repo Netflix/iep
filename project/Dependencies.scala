@@ -3,16 +3,16 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.3.2"
-    val aws        = "1.11.339"
+    val aws        = "1.11.356"
     val aws2       = "2.0.0-preview-10"
-    val eureka     = "1.9.2"
+    val eureka     = "1.9.3"
     val guice      = "4.1.0"
     val jackson    = "2.9.6"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.6"
     val slf4j      = "1.7.25"
-    val spectator  = "0.70.2"
+    val spectator  = "0.72.0"
   }
 
   import Versions._
@@ -45,7 +45,7 @@ object Dependencies {
   val aws2Route53      = "software.amazon.awssdk" % "route53" % aws2
   val aws2SES          = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS          = "software.amazon.awssdk" % "sts" % aws2
-  val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.4.6"
+  val equalsVerifier   = "nl.jqno.equalsverifier" % "equalsverifier" % "2.4.8"
   val eurekaClient     = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist      = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore        = "com.google.inject" % "guice" % guice
@@ -61,14 +61,14 @@ object Dependencies {
   val jacksonScala     = "com.fasterxml.jackson.module" %% "jackson-module-scala" % jackson
   val jacksonSmile     = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-smile" % jackson
   val jodaConvert      = "org.joda" % "joda-convert" % "1.8.1"
-  val jodaTime         = "joda-time" % "joda-time" % "2.9.9"
+  val jodaTime         = "joda-time" % "joda-time" % "2.10"
   val jsr250           = "javax.annotation" % "jsr250-api" % "1.0"
   val junit            = "junit" % "junit" % "4.12"
   val junitInterface   = "com.novocode" % "junit-interface" % "0.11"
   val jzlib            = "com.jcraft" % "jzlib" % "1.1.3"
   val reactiveStreams  = "org.reactivestreams" % "reactive-streams" % "1.0.2"
   val rxjava           = "io.reactivex" % "rxjava" % "1.3.8"
-  val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.1.14"
+  val rxjava2          = "io.reactivex.rxjava2" % "rxjava" % "2.1.16"
   val rxScala          = "io.reactivex" %% "rxscala" % rxscala
   val rxnettyCore      = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettySpectator = "io.reactivex" % "rxnetty-spectator" % rxnetty
