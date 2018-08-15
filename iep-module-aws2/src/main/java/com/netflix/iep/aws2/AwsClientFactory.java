@@ -19,12 +19,9 @@ import com.typesafe.config.Config;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.awscore.client.builder.AwsClientBuilder;
-import software.amazon.awssdk.awscore.client.builder.AwsSyncClientBuilder;
-import software.amazon.awssdk.core.client.builder.ClientHttpConfiguration;
-import software.amazon.awssdk.core.config.ClientOverrideConfiguration;
-import software.amazon.awssdk.http.SdkHttpClient;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.sts.STSClient;
+import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
 
@@ -75,23 +72,10 @@ public class AwsClientFactory {
         : config.getConfig(cfgPrefix + ".default." + suffix);
   }
 
-  ClientOverrideConfiguration createClientConfig(String name) {
-    final Config cfg = getConfig(name, "client");
-    final ClientOverrideConfiguration.Builder settings = ClientOverrideConfiguration.builder();
-
-    // Helpers
-    Function<String, Long> getMillis = k -> cfg.getDuration(k, TimeUnit.MILLISECONDS);
-    Function<String, Duration> getTimeout = cfg::getDuration;
-
-    // Typically use the defaults
-    setIfPresent(cfg, "use-gzip", cfg::getBoolean, settings::gzipEnabled);
-    return settings.build();
-  }
-
   private AwsCredentialsProvider createAssumeRoleProvider(Config cfg, AwsCredentialsProvider p) {
     final String arn = cfg.getString("role-arn");
     final String name = cfg.getString("role-session-name");
-    final STSClient stsClient = STSClient.builder()
+    final StsClient stsClient = StsClient.builder()
         .credentialsProvider(p)
         .region(Region.of(region))
         .build();
@@ -141,7 +125,6 @@ public class AwsClientFactory {
       return (T) ((AwsClientBuilder) builderMethod.invoke(null))
           .credentialsProvider(createCredentialsProvider(name))
           .region(chooseRegion(name, cls))
-          .overrideConfiguration(createClientConfig(name))
           .build();
     } catch (Exception e) {
       throw new RuntimeException("failed to create instance of " + cls.getName(), e);
