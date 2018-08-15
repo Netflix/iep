@@ -24,7 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import software.amazon.awssdk.services.ec2.EC2Client;
+import software.amazon.awssdk.services.ec2.Ec2Client;
 
 @RunWith(JUnit4.class)
 public class AwsModuleTest {
@@ -33,7 +33,7 @@ public class AwsModuleTest {
   public void createClient() {
     Injector injector = Guice.createInjector(new AwsModule());
     AwsClientFactory factory = injector.getInstance(AwsClientFactory.class);
-    EC2Client client = factory.newInstance(EC2Client.class);
+    Ec2Client client = factory.newInstance(Ec2Client.class);
     Assert.assertNotNull(client);
   }
 
@@ -44,12 +44,12 @@ public class AwsModuleTest {
       }
 
       @Provides
-      private EC2Client providesEC2(AwsClientFactory factory) {
-        return factory.newInstance(EC2Client.class);
+      private Ec2Client providesEC2(AwsClientFactory factory) {
+        return factory.newInstance(Ec2Client.class);
       }
     };
     Injector injector = Guice.createInjector(module, new AwsModule());
-    EC2Client client = injector.getInstance(EC2Client.class);
+    Ec2Client client = injector.getInstance(Ec2Client.class);
     Assert.assertNotNull(client);
   }
 }
