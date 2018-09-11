@@ -135,6 +135,23 @@ public class LifecycleTest {
     Assert.assertEquals(State.STOPPED, obj.getState());
   }
 
+  @Test
+  public void providerLifecyle() throws Exception {
+    GuiceHelper helper = new GuiceHelper();
+    helper.start(new AbstractModule() {
+      @Override protected void configure() {
+        bind(NonCIStateObject.class).toProvider(NonCIStateObjectProvider.class).in(Scopes.SINGLETON);
+      }
+    });
+    Injector injector = helper.getInjector();
+
+    NonCIStateObject obj = injector.getInstance(NonCIStateObject.class);
+    Assert.assertEquals(State.STARTED, obj.getState());
+
+    helper.shutdown();
+    Assert.assertEquals(State.STOPPED, obj.getState());
+  }
+
   private enum State {
     INIT, STARTED, STOPPED
   }
@@ -185,6 +202,46 @@ public class LifecycleTest {
 
     State getState() {
       return state;
+    }
+  }
+
+  private static class NonCIStateObject {
+
+    private State state;
+
+    NonCIStateObject() {
+      state = State.INIT;
+    }
+
+    private void start() {
+      state = State.STARTED;
+    }
+
+    private void stop() {
+      state = State.STOPPED;
+    }
+
+    State getState() {
+      return state;
+    }
+  }
+
+  @Singleton
+  private static class NonCIStateObjectProvider implements Provider<NonCIStateObject> {
+    private NonCIStateObject object = new NonCIStateObject();
+
+    @Override public NonCIStateObject get() {
+      return object;
+    }
+
+    @PostConstruct
+    private void start() {
+      object.start();
+    }
+
+    @PreDestroy
+    private void stop() {
+      object.stop();
     }
   }
 }
