@@ -12,7 +12,7 @@ Content-Transfer-Encoding: base64
 PGh0bWw+PGJvZHk+PGgxPkFsZXJ0ITwvaDE+PHA+PGltZyBzcmM9ImNpZDpkZXMtZXhhbXBsZS5w
 bmciIC8+PC9wPjwvYm9keT48L2h0bWw+
 --331239ab-8a31-4cc6-84d6-5557f96ebc3a
-Content-Type: image/png
+Content-Type: image/png; name="des-example.png"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment
 Content-ID: <des-example.png>

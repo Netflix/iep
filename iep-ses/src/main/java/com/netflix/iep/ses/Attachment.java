@@ -85,7 +85,7 @@ public class Attachment {
 
   @Override public String toString() {
     return new StringBuilder()
-        .append(EmailHeader.contentType(contentType).toString())
+        .append(EmailHeader.contentType(contentType, name).toString())
         .append(EmailHeader.contentTransferEncoding("base64").toString())
         .append(EmailHeader.contentDisposition(disposition).toString())
         .append(EmailHeader.contentID(name).toString())

@@ -37,6 +37,11 @@ class EmailHeader {
     return new EmailHeader("Content-Type", type);
   }
 
+  /** Content type header for a part of the message. */
+  static EmailHeader contentType(String type, String name) {
+    return new EmailHeader("Content-Type", type + "; name=\"" + name + "\"");
+  }
+
   /**
    * Disposition of the message. This is typically used to indicate if something is an
    * attachment or indended to be viewed inline.
