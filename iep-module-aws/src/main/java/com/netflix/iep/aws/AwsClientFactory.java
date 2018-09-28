@@ -147,7 +147,7 @@ public class AwsClientFactory implements AutoCloseable {
     if (cfg.hasPath("role-arn")) {
       return createAssumeRoleProvider(cfg, accountId, dflt);
     } else {
-      if (accountId == null) {
+      if (accountId != null) {
         LOGGER.warn("requested account, {}, ignored, no role ARN configured", accountId);
       }
       return dflt;
