@@ -34,18 +34,39 @@ import java.util.stream.Collectors;
  * <p>Helper for building {@link RawMessage} requests for the common case of an HTML or
  * test email message with some attachments. For more details on Amazon's recommendations
  * see <a href="http://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html">sending
- * raw email</a>. With this class the usage is much simpler, e.g.:</p>
+ * raw email</a>. With this class the usage is much simpler, e.g. with the v1 SDK:</p>
  *
  * <pre>
  * AmazonSimpleEmailService client = ...
- * client.sendRawEmail(new EmailRequestBuilder()
- *   .withSource("bob@example.com")
- *   .withToAddresses("andrew@example.com")
- *   .withSubject("Test message")
- *   .withHtmlBody("&lt;html&gt;&lt;body&gt;&lt;h1&gt;Alert!&lt;/h1&gt;&lt;p&gt;&lt;img src=\"cid:my-image.png\"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;")
- *   .addAttachment(Attachment.fromResource("image/png", "my-image.png"))
- *   .build();
+ * RawMessage message = new RawMessage().withData(
+ *   new EmailRequestBuilder()
+ *     .withFromAddress("bob@example.com")
+ *     .withToAddresses("andrew@example.com")
+ *     .withSubject("Test message")
+ *     .withHtmlBody("&lt;html&gt;&lt;body&gt;&lt;h1&gt;Alert!&lt;/h1&gt;&lt;p&gt;&lt;img src=\"cid:my-image.png\"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;")
+ *     .addAttachment(Attachment.fromResource("image/png", "my-image.png"))
+ *     .toByteBuffer()
  * );
+ * client.sendRawEmail(new SendRawEmailRequest().withRawMessage(message));
+ * </pre>
+ *
+ * <p>With the v2 SDK:</p>
+ *
+ * <pre>
+ * SesClient client = SesClient.create();
+ * SdkBytes data = SdkBytes.fromByteBuffer(
+ *   new EmailRequestBuilder()
+ *     .withFromAddress("bob@example.com")
+ *     .withToAddresses("andrew@example.com")
+ *     .withSubject("Test message")
+ *     .withHtmlBody("&lt;html&gt;&lt;body&gt;&lt;h1&gt;Alert!&lt;/h1&gt;&lt;p&gt;&lt;img src=\"cid:my-image.png\"&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;")
+ *     .addAttachment(Attachment.fromResource("image/png", "my-image.png"))
+ *     .toByteBuffer()
+ * );
+ * SendRawEmailRequest request = SendRawEmailRequest.builder()
+ *   .rawMessage(RawMessage.builder().data(data).build())
+ *   .build();
+ * client.sendRawEmail(request);
  * </pre>
  */
 public final class EmailRequestBuilder {
@@ -143,7 +164,15 @@ public final class EmailRequestBuilder {
     return this;
   }
 
-  /** Sets the main message. Note the charset will be ignored and UTF-8 will get used. */
+  /**
+   * Sets the main message. Note the charset will be ignored and UTF-8 will get used.
+   *
+   * @deprecated Use {@link #withSubject(String)} and either {@link #withTextBody(String)}
+   * or {@link #withHtmlBody(String)} instead. This allows the builder to be used with either
+   * v1 or v2 of the AWS SDK for Java. In iep version 2.0 this method and the explicit dependency
+   * on v1 of the AWS SDK will be removed.
+   */
+  @Deprecated
   public EmailRequestBuilder withMessage(Message message) {
     withSubject(message.getSubject().getData());
     Body body = message.getBody();
@@ -188,7 +217,13 @@ public final class EmailRequestBuilder {
   /**
    * Creates the raw email request for use with
    * {@link com.amazonaws.services.simpleemail.AmazonSimpleEmailService#sendRawEmail(SendRawEmailRequest)}.
+   *
+   * @deprecated Use {@link #toByteBuffer()} instead and construct the {@code RawMessage}
+   * object. This allows the builder to be used with either v1 or v2 of the AWS SDK for Java.
+   * In iep version 2.0 this method and the explicit dependency on v1 of the AWS SDK will be
+   * removed.
    */
+  @Deprecated
   public SendRawEmailRequest build() {
     return new SendRawEmailRequest().withRawMessage(toRawMessage());
   }
@@ -196,10 +231,29 @@ public final class EmailRequestBuilder {
   /**
    * Creates the {@link RawMessage}. Can be used if additional modifications to the message
    * are needed before creating the request object.
+   *
+   * @deprecated Use {@link #toByteBuffer()} instead and construct the {@code RawMessage}
+   * object. This allows the builder to be used with either v1 or v2 of the AWS SDK for Java.
+   * In iep version 2.0 this method and the explicit dependency on v1 of the AWS SDK will be
+   * removed.
    */
+  @Deprecated
   public RawMessage toRawMessage() {
-    ByteBuffer buf = ByteBuffer.wrap(toString().getBytes(StandardCharsets.UTF_8));
-    return new RawMessage().withData(buf);
+    return new RawMessage().withData(toByteBuffer());
+  }
+
+  /**
+   * Creates a {@link ByteBuffer} containing the MIME encoded raw message for the email.
+   */
+  public ByteBuffer toByteBuffer() {
+    return ByteBuffer.wrap(toByteArray());
+  }
+
+  /**
+   * Creates a byte array containing the MIME encoded raw message for the email.
+   */
+  public byte[] toByteArray() {
+    return toString().getBytes(StandardCharsets.UTF_8);
   }
 
   /** Generates the MIME encoded string for the message. */
