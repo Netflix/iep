@@ -45,6 +45,8 @@ public class EmailRequestBuilderTest {
   private static String TO = "andrew@example.com";
   private static String CC = "sue@example.com";
 
+  private static String FROM_ARN = "arn:aws:ses:us-east-1:123456789012:identity/example.com";
+
   private static String BOUNDARY = "331239ab-8a31-4cc6-84d6-5557f96ebc3a";
 
   private void writeResource(String name, byte[] data) throws IOException {
@@ -93,7 +95,7 @@ public class EmailRequestBuilderTest {
   }
 
   @Test
-  public void simpleTextMessage() throws IOException {
+  public void simpleTextMessageSource() throws IOException {
     checkMessage("simpleTextMessage", new EmailRequestBuilder()
         .withSource(FROM)
         .withToAddresses(TO)
@@ -102,18 +104,49 @@ public class EmailRequestBuilderTest {
   }
 
   @Test
+  public void simpleTextMessage() throws IOException {
+    checkMessage("simpleTextMessage", new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .withSubject("Test message")
+        .withTextBody("Body of the email message."));
+  }
+
+  @Test
   public void simpleHtmlMessage() throws IOException {
     checkMessage("simpleHtmlMessage", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withSubject("Test message")
         .withHtmlBody("<html><body><h1>Test</h1><p>Body of the email message.</p></body></html>"));
   }
 
   @Test
+  public void sendingAuthorizationFromArn() throws IOException {
+    checkMessage("sendingAuthorizationFromArn", new EmailRequestBuilder()
+        .withFromArn(FROM_ARN)
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .withSubject("Test message")
+        .withTextBody("Body of the email message."));
+  }
+
+  @Test
+  public void sendingAuthorizationRequestParams() throws IOException {
+    // Check that From can be omitted. Must be specified by calling withSource on the
+    // SendRawEmailRequestObject. Otherwise it will fail with:
+    //
+    // AmazonSimpleEmailServiceException: Missing required header 'From'.
+    checkMessage("sendingAuthorizationRequestParams", new EmailRequestBuilder()
+        .withToAddresses(TO)
+        .withSubject("Test message")
+        .withTextBody("Body of the email message."));
+  }
+
+  @Test
   public void withCC() throws IOException {
     checkMessage("withCC", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withCcAddresses(CC)
         .withSubject("Test message")
@@ -123,7 +156,7 @@ public class EmailRequestBuilderTest {
   @Test
   public void withBCC() throws IOException {
     checkMessage("withBCC", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withBccAddresses(CC)
         .withSubject("Test message")
@@ -133,7 +166,7 @@ public class EmailRequestBuilderTest {
   @Test
   public void usingDestination() throws IOException {
     checkMessage("simpleTextMessage", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withDestination(new Destination().withToAddresses(TO))
         .withSubject("Test message")
         .withTextBody("Body of the email message."));
@@ -145,7 +178,7 @@ public class EmailRequestBuilderTest {
         .withSubject(new Content("Test message"))
         .withBody(new Body().withText(new Content("Body of the email message.")));
     checkMessage("simpleTextMessage", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withMessage(message));
   }
@@ -159,7 +192,7 @@ public class EmailRequestBuilderTest {
             .withHtml(new Content("<html><body><h1>Test</h1><p>Body of the email message.</p></body></html>"))
         );
     checkMessage("simpleHtmlMessage", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withMessage(message));
   }
@@ -167,7 +200,7 @@ public class EmailRequestBuilderTest {
   @Test
   public void withReplyTo() throws IOException {
     checkMessage("withReplyTo", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withReplyToAddresses(CC)
         .withSubject("Test message")
@@ -180,7 +213,7 @@ public class EmailRequestBuilderTest {
     String base = "Test message with a long repeated subject. ";
     String subject = base + base + base + base + base + base + base;
     checkMessage("longSubject", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withSubject(subject)
         .withTextBody("Body of the email message."));
@@ -195,7 +228,7 @@ public class EmailRequestBuilderTest {
       subject += " " + base;
     }
     checkMessage("tooLongSubject", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withSubject(subject)
         .withTextBody("Body of the email message."));
@@ -210,7 +243,7 @@ public class EmailRequestBuilderTest {
       subject += base;
     }
     checkMessage("tooLongSubjectNoSpace", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withSubject(subject)
         .withTextBody("Body of the email message."));
@@ -220,7 +253,7 @@ public class EmailRequestBuilderTest {
   public void subjectWithUtf8() throws IOException {
     String subject = "警报";
     checkMessage("subjectWithUtf8", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withSubject(subject)
         .withTextBody("Body of the email message."));
@@ -229,7 +262,7 @@ public class EmailRequestBuilderTest {
   @Test
   public void bodyWithUtf8() throws IOException {
     checkMessage("bodyWithUtf8", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withSubject("Test message")
         .withTextBody("Body of the email message contains UTF-8 chars: 警报."));
@@ -238,7 +271,7 @@ public class EmailRequestBuilderTest {
   @Test
   public void htmlWithInlineImage() throws IOException {
     checkMessage("htmlWithInlineImage", new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withSubject("Test message")
         .withHtmlBody("<html><body><h1>Alert!</h1><p><img src=\"cid:des-example.png\" /></p></body></html>")
@@ -248,16 +281,7 @@ public class EmailRequestBuilderTest {
   @Test(expected = IllegalArgumentException.class)
   public void missingRecipients() {
     EmailRequestBuilder builder = new EmailRequestBuilder()
-        .withSource(FROM)
-        .withSubject("Test message")
-        .withTextBody("Body of the email message.");
-    builder.toString();
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void missingFrom() {
-    EmailRequestBuilder builder = new EmailRequestBuilder()
-        .withToAddresses(TO)
+        .withFromAddress(FROM)
         .withSubject("Test message")
         .withTextBody("Body of the email message.");
     builder.toString();
@@ -266,7 +290,7 @@ public class EmailRequestBuilderTest {
   @Test(expected = IllegalArgumentException.class)
   public void missingSubject() {
     EmailRequestBuilder builder = new EmailRequestBuilder()
-        .withSource(FROM)
+        .withFromAddress(FROM)
         .withToAddresses(TO)
         .withTextBody("Body of the email message.");
     builder.toString();

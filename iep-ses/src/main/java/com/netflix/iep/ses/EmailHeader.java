@@ -73,6 +73,11 @@ class EmailHeader {
     return new EmailHeader("From", address);
   }
 
+  /** Identity associated with the sending authorization policy. */
+  static EmailHeader fromArn(String arn) {
+    return new EmailHeader("X-SES-FROM-ARN", arn);
+  }
+
   /** Addresses of the users who should receive the message. */
   static EmailHeader to(String addresses) {
     return new EmailHeader("To", EncodingUtils.wrap(addresses, "To: ".length(), 78));

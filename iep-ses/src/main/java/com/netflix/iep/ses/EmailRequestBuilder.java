@@ -50,7 +50,8 @@ import java.util.stream.Collectors;
  */
 public final class EmailRequestBuilder {
 
-  private String source;
+  private String fromAddress;
+  private String fromArn;
   private Destination destination;
   private List<String> replyToAddresses;
   private String subject;
@@ -74,9 +75,36 @@ public final class EmailRequestBuilder {
     return this;
   }
 
-  /** Set the source or from address of the message. This field is required. */
+  /**
+   * Set the source or from address of the message. If not specified, then it must be
+   * provided when constructing the {@code SendRawEmailRequest} object.
+   *
+   * @deprecated Use {@link #withFromAddress(String)} instead. Renamed to avoid confusion
+   * as this will set the {@code From} header in the message which behaves differently than
+   * calling {@code SendRawEmailRequest.withSource} when using sending authorization. Will
+   * be removed in 2.0.
+   */
+  @Deprecated
   public EmailRequestBuilder withSource(String source) {
-    this.source = source;
+    return withFromAddress(source);
+  }
+
+  /**
+   * Set the source or from address of the message. If not specified, then it must be
+   * provided when constructing the {@code SendRawEmailRequest} object.
+   */
+  public EmailRequestBuilder withFromAddress(String address) {
+    this.fromAddress = address;
+    return this;
+  }
+
+  /**
+   * Set the ARN of the identity that is associated with the sending authorization policy
+   * that permits you to specify a particular "From" address in the header of the raw email.
+   * The ARN will be encoded in the message with the {@code X-SES-FROM-ARN} header.
+   */
+  public EmailRequestBuilder withFromArn(String fromArn) {
+    this.fromArn = fromArn;
     return this;
   }
 
@@ -183,9 +211,12 @@ public final class EmailRequestBuilder {
       throw new IllegalArgumentException("subject not specified");
     }
 
-    if (source == null || source.isEmpty()) {
-      throw new IllegalArgumentException("no from address specified");
-    }
+    // Can be specified by calling withSource on the SendRawEmailRequest object instead. That
+    // is necessary if you want to use withSourceArn for sending authorization. If the source
+    // is provided here, then withFromArn must be used instead.
+    final String fromHeader = (fromAddress == null || fromAddress.isEmpty())
+        ? ""
+        : EmailHeader.from(fromAddress).toString();
 
     final String to = encodeAddressList(destination.getToAddresses());
     if (to == null || to.isEmpty()) {
@@ -195,7 +226,7 @@ public final class EmailRequestBuilder {
     builder
         .append(EmailHeader.mime())
         .append(EmailHeader.multipart(boundary))
-        .append(EmailHeader.from(source))
+        .append(fromHeader)
         .append(EmailHeader.to(to))
         .append(EmailHeader.subject(subject));
 
@@ -212,6 +243,10 @@ public final class EmailRequestBuilder {
     final String replyTo = encodeAddressList(replyToAddresses);
     if (replyTo != null && !replyTo.isEmpty()) {
       builder.append(EmailHeader.replyTo(replyTo));
+    }
+
+    if (fromArn != null && !fromArn.isEmpty()) {
+      builder.append(EmailHeader.fromArn(fromArn));
     }
 
     builder
