@@ -29,6 +29,7 @@ import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
 
 import java.lang.reflect.Field;
+import java.util.function.Supplier;
 
 @RunWith(JUnit4.class)
 public class AwsClientFactoryTest {
@@ -75,9 +76,9 @@ public class AwsClientFactoryTest {
   // just an additional sanity check so the assertions can be commented out if they break.
   private AssumeRoleRequest getRequest(AwsCredentialsProvider creds) throws Exception {
     Class<?> cls = StsAssumeRoleCredentialsProvider.class;
-    Field f = cls.getDeclaredField("assumeRoleRequest");
+    Field f = cls.getDeclaredField("assumeRoleRequestSupplier");
     f.setAccessible(true);
-    return (AssumeRoleRequest) f.get(creds);
+    return ((Supplier<AssumeRoleRequest>) f.get(creds)).get();
   }
 
   @Test
