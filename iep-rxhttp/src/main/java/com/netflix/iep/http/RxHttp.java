@@ -16,8 +16,10 @@
 package com.netflix.iep.http;
 
 import com.netflix.archaius.api.Config;
+import com.netflix.spectator.api.Spectator;
 import com.netflix.spectator.impl.Preconditions;
-import com.netflix.spectator.sandbox.HttpLogEntry;
+import com.netflix.spectator.ipc.IpcLogEntry;
+import com.netflix.spectator.ipc.IpcLogger;
 import io.reactivex.netty.client.CompositePoolLimitDeterminationStrategy;
 import io.reactivex.netty.client.MaxConnectionsBasedStrategy;
 import io.reactivex.netty.client.PooledConnectionReleasedEvent;
@@ -70,6 +72,8 @@ import java.util.zip.GZIPOutputStream;
  */
 @Singleton
 public final class RxHttp implements AutoCloseable {
+
+  private static final IpcLogger IPC_LOGGER = new IpcLogger(Spectator.globalRegistry());
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RxHttp.class);
 
@@ -180,43 +184,33 @@ public final class RxHttp implements AutoCloseable {
   }
 
   /** Create a log entry for an rxnetty request. */
-  public static HttpLogEntry create(HttpClientRequest<ByteBuf> req) {
-    HttpLogEntry entry = new HttpLogEntry()
-        .withMethod(req.getMethod().name())
-        .withRequestUri(URI.create(req.getUri()))
-        .withRequestContentLength(req.getHeaders().getContentLength(-1));
+  static IpcLogEntry create(HttpClientRequest<ByteBuf> req) {
+    IpcLogEntry entry = IPC_LOGGER.createClientEntry()
+        .withOwner("RxHttp")
+        .withHttpMethod(req.getMethod().name())
+        .withUri(URI.create(req.getUri()));
 
     for (Map.Entry<String, String> h : req.getHeaders().entries()) {
-      entry.withRequestHeader(h.getKey(), h.getValue());
+      entry.addRequestHeader(h.getKey(), h.getValue());
     }
 
     return entry;
   }
 
-  private static HttpLogEntry create(ClientConfig cfg, HttpClientRequest<ByteBuf> req) {
-    return create(req)
-        .withClientName(cfg.name())
-        .withOriginalUri(cfg.originalUri())
-        .withMaxAttempts(cfg.numRetries() + 1);
+  private static IpcLogEntry create(ClientConfig cfg, HttpClientRequest<ByteBuf> req) {
+    return create(req).addTag("id", cfg.name());
   }
 
-  private static void update(HttpLogEntry entry, HttpClientResponse<ByteBuf> res) {
+  private static void update(IpcLogEntry entry, HttpClientResponse<ByteBuf> res) {
     int code = res.getStatus().code();
-    boolean canRetry = (code == 429 || code >= 500);
-    entry.mark("received-response")
-        .withStatusCode(code)
-        .withStatusReason(res.getStatus().reasonPhrase())
-        .withResponseContentLength(res.getHeaders().getContentLength(-1))
-        .withCanRetry(canRetry);
-
+    entry.markEnd().withHttpStatus(code);
     for (Map.Entry<String, String> h : res.getHeaders().entries()) {
-      entry.withResponseHeader(h.getKey(), h.getValue());
+      entry.addResponseHeader(h.getKey(), h.getValue());
     }
   }
 
-  private void update(HttpLogEntry entry, Throwable t) {
-    boolean canRetry = (t instanceof ConnectException || t instanceof ReadTimeoutException);
-    entry.mark("received-error").withException(t).withCanRetry(canRetry);
+  private void update(IpcLogEntry entry, Throwable t) {
+    entry.markEnd().withException(t);
   }
 
   /**
@@ -530,7 +524,7 @@ public final class RxHttp implements AutoCloseable {
    */
   Observable<HttpClientResponse<ByteBuf>>
   execute(final ClientConfig clientCfg, final List<Server> servers, final HttpClientRequest<ByteBuf> req) {
-    final HttpLogEntry entry = create(clientCfg, req);
+    final IpcLogEntry entry = create(clientCfg, req);
 
     if (servers.isEmpty()) {
       final String msg = "empty server list for client " + clientCfg.name();
@@ -549,10 +543,11 @@ public final class RxHttp implements AutoCloseable {
       final RequestContext ctxt = context.withServer(servers.get(i));
       final long delay = backoffMillis << (i - 1);
       final int attempt = i + 1;
+      final boolean isFinal = i == servers.size();
       observable = observable
           .flatMap(new RedirectHandler(ctxt))
-          .flatMap(new StatusRetryHandler(ctxt, attempt, delay))
-          .onErrorResumeNext(new ErrorRetryHandler(ctxt, attempt));
+          .flatMap(new StatusRetryHandler(ctxt, attempt, isFinal, delay))
+          .onErrorResumeNext(new ErrorRetryHandler(ctxt, attempt, isFinal));
     }
 
     return observable;
@@ -567,20 +562,20 @@ public final class RxHttp implements AutoCloseable {
    *     Observable with the response of the request.
    */
   Observable<HttpClientResponse<ByteBuf>> execute(final RequestContext context) {
-    final HttpLogEntry entry = context.entry();
+    final IpcLogEntry entry = context.entry();
 
     final HttpClient<ByteBuf, ByteBuf> client = getClient(context);
-    entry.mark("start");
-    entry.withRemoteAddr(context.server().host());
-    entry.withRemotePort(context.server().port());
+    entry.withRemoteAddress(context.server().host())
+        .withRemotePort(context.server().port())
+        .markStart();
     return client.submit(context.request())
         .doOnNext(res -> {
           update(entry, res);
-          HttpLogEntry.logClientRequest(entry);
+          entry.log();
         })
         .doOnError(throwable -> {
           update(entry, throwable);
-          HttpLogEntry.logClientRequest(entry);
+          entry.log();
         })
         .doOnTerminate(Actions.empty());
   }

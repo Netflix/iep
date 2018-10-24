@@ -33,6 +33,7 @@ class ErrorRetryHandler implements
   private final RequestContext context;
 
   private final int attempt;
+  private final boolean isFinal;
 
   /**
    * Create a new instance.
@@ -41,10 +42,13 @@ class ErrorRetryHandler implements
    *     Context associated with the request.
    * @param attempt
    *     The number of this attempt.
+   * @param isFinal
+   *     True if this represents the final attempt.
    */
-  ErrorRetryHandler(RequestContext context, int attempt) {
+  ErrorRetryHandler(RequestContext context, int attempt, boolean isFinal) {
     this.context = context;
     this.attempt = attempt;
+    this.isFinal = isFinal;
   }
 
   @Override
@@ -55,7 +59,9 @@ class ErrorRetryHandler implements
     final boolean retryReadTimeouts = context.config().retryReadTimeouts();
     final boolean readRetry = throwable instanceof ReadTimeoutException && retryReadTimeouts;
     if (throwable instanceof ConnectException || throwable instanceof UnknownHostException || readRetry) {
-      context.entry().withAttempt(attempt);
+      context.entry()
+          .withAttempt(attempt)
+          .withAttemptFinal(isFinal);
       return context.rxHttp().execute(context);
     }
     return Observable.error(throwable);

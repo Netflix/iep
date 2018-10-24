@@ -15,7 +15,7 @@
  */
 package com.netflix.iep.http;
 
-import com.netflix.spectator.sandbox.HttpLogEntry;
+import com.netflix.spectator.ipc.IpcLogEntry;
 import io.reactivex.netty.protocol.http.client.HttpClientRequest;
 import io.netty.buffer.ByteBuf;
 
@@ -25,7 +25,7 @@ import io.netty.buffer.ByteBuf;
 final class RequestContext {
 
   private final RxHttp rxHttp;
-  private final HttpLogEntry entry;
+  private final IpcLogEntry entry;
   private final HttpClientRequest<ByteBuf> req;
   private final ClientConfig config;
   private final Server server;
@@ -33,7 +33,7 @@ final class RequestContext {
   /** Create a new instance. */
   RequestContext(
       RxHttp rxHttp,
-      HttpLogEntry entry,
+      IpcLogEntry entry,
       HttpClientRequest<ByteBuf> req,
       ClientConfig config,
       Server server) {
@@ -50,7 +50,7 @@ final class RequestContext {
   }
 
   /** Return the log entry for the request. */
-  HttpLogEntry entry() {
+  IpcLogEntry entry() {
     return entry;
   }
 
@@ -71,11 +71,11 @@ final class RequestContext {
 
   /** Return a new context with the specified request. */
   RequestContext withRequest(HttpClientRequest<ByteBuf> r) {
-    return new RequestContext(rxHttp, entry, r, config, server);
+    return new RequestContext(rxHttp, RxHttp.create(r), r, config, server);
   }
 
   /** Return a new context with the specified server. */
   RequestContext withServer(Server s) {
-    return new RequestContext(rxHttp, entry, req, config, s);
+    return new RequestContext(rxHttp, RxHttp.create(req), req, config, s);
   }
 }

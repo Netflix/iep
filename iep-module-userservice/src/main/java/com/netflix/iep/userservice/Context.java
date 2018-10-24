@@ -17,8 +17,9 @@ package com.netflix.iep.userservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spectator.api.Registry;
-import com.netflix.spectator.sandbox.HttpClient;
-import com.netflix.spectator.sandbox.HttpResponse;
+import com.netflix.spectator.ipc.NetflixHeaders;
+import com.netflix.spectator.ipc.http.HttpClient;
+import com.netflix.spectator.ipc.http.HttpResponse;
 import com.typesafe.config.Config;
 
 import javax.inject.Inject;
@@ -94,8 +95,7 @@ public final class Context implements AutoCloseable {
   }
 
   HttpResponse get(String name, String uri) throws IOException {
-    return client.newRequest(name, URI.create(uri))
-        .withMethod("GET")
+    return client.get(URI.create(uri))
         .withConnectTimeout(connectTimeout)
         .withReadTimeout(readTimeout)
         .withRetries(2)

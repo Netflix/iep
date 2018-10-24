@@ -18,7 +18,7 @@ package com.netflix.iep.userservice;
 import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.ManualClock;
 import com.netflix.spectator.api.Registry;
-import com.netflix.spectator.sandbox.HttpClient;
+import com.netflix.spectator.ipc.http.HttpClient;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
@@ -32,7 +32,7 @@ public class WhitelistUserServiceTest {
   private ManualClock clock = new ManualClock();
   private Registry registry = new DefaultRegistry(clock);
   private Config config = ConfigFactory.load();
-  private Context context = new Context(registry, config, HttpClient.DEFAULT);
+  private Context context = new Context(registry, config, HttpClient.DEFAULT_CLIENT);
 
   @Test
   public void start() throws Exception {

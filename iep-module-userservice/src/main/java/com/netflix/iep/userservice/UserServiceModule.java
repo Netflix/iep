@@ -22,7 +22,7 @@ import com.netflix.iep.admin.guice.AdminModule;
 import com.netflix.iep.service.Service;
 import com.netflix.spectator.api.NoopRegistry;
 import com.netflix.spectator.api.Registry;
-import com.netflix.spectator.sandbox.HttpClient;
+import com.netflix.spectator.ipc.http.HttpClient;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -74,7 +74,7 @@ public class UserServiceModule extends AbstractModule {
     private Config config = defaultConfig();
 
     @Inject(optional = true)
-    private HttpClient client = HttpClient.DEFAULT;
+    private HttpClient client = HttpClient.DEFAULT_CLIENT;
 
     @Override public Context get() {
       return new Context(registry, config, client);
