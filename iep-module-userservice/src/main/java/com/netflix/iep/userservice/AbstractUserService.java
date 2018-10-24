@@ -20,7 +20,8 @@ import com.netflix.spectator.api.Clock;
 import com.netflix.spectator.api.Functions;
 import com.netflix.spectator.api.Id;
 import com.netflix.spectator.api.Registry;
-import com.netflix.spectator.sandbox.HttpResponse;
+import com.netflix.spectator.api.patterns.PolledMeter;
+import com.netflix.spectator.ipc.http.HttpResponse;
 import com.typesafe.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,9 +62,12 @@ abstract class AbstractUserService extends AbstractService implements UserServic
     Registry registry = context.registry();
     Clock clock = registry.clock();
     Id cacheAge = registry.createId("iep.users.cacheAge", "id", name);
-    lastUpdateTime = enabled
-        ? registry.gauge(cacheAge, new AtomicLong(clock.wallTime()), Functions.age(clock))
-        : new AtomicLong(0L);
+    lastUpdateTime = new AtomicLong(clock.wallTime());
+    if (enabled) {
+      PolledMeter.using(registry)
+          .withId(cacheAge)
+          .monitorValue(new AtomicLong(clock.wallTime()), Functions.age(clock));
+    }
   }
 
   protected abstract Set<String> parseResponse(byte[] data) throws IOException;

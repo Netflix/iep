@@ -32,6 +32,7 @@ class StatusRetryHandler implements
   private final RequestContext context;
 
   private final int attempt;
+  private final boolean isFinal;
   private final long delay;
 
   /**
@@ -41,14 +42,17 @@ class StatusRetryHandler implements
    *     Context associated with the request.
    * @param attempt
    *     The number of this attempt.
+   * @param isFinal
+   *     True if this represents the final attempt.
    * @param delay
    *     How long to wait before making another attempt. Unit is in milliseconds. If a
    *     {@code Retry-After} header is set on the response it will take precedence over the
    *     default delay.
    */
-  StatusRetryHandler(RequestContext context, int attempt, long delay) {
+  StatusRetryHandler(RequestContext context, int attempt, boolean isFinal, long delay) {
     this.context = context;
     this.attempt = attempt;
+    this.isFinal = isFinal;
     this.delay = delay;
   }
 
@@ -73,14 +77,18 @@ class StatusRetryHandler implements
     if (code == 429 || code == 503) {
       final long retryDelay = getRetryDelay(res, delay);
       res.getContent().subscribe();
-      context.entry().withAttempt(attempt);
+      context.entry()
+          .withAttempt(attempt)
+          .withAttemptFinal(isFinal);
       resObs = context.rxHttp().execute(context);
       if (retryDelay > 0) {
         resObs = resObs.delaySubscription(retryDelay, TimeUnit.MILLISECONDS);
       }
     } else if (code >= 500) {
       res.getContent().subscribe();
-      context.entry().withAttempt(attempt);
+      context.entry()
+          .withAttempt(attempt)
+          .withAttemptFinal(isFinal);
       resObs = context.rxHttp().execute(context);
     } else {
       resObs = Observable.just(res);

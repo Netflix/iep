@@ -18,6 +18,9 @@ package com.netflix.iep.http;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.archaius.api.config.SettableConfig;
 import com.netflix.archaius.config.DefaultSettableConfig;
+import com.netflix.spectator.api.DefaultRegistry;
+import com.netflix.spectator.api.Spectator;
+import com.netflix.spectator.ipc.IpcMetric;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
 import io.netty.buffer.ByteBuf;
@@ -195,6 +198,9 @@ public class RxHttpTest {
 
   @Before
   public void initProps() {
+    Spectator.globalRegistry().removeAll();
+    Spectator.globalRegistry().add(new DefaultRegistry());
+
     set(client + ".niws.client.MaxAutoRetriesNextServer", "" + retries);
     set(client + ".niws.client.RetryDelay", "100");
     set(client + ".niws.client.ConnectTimeout", "1000");
@@ -228,6 +234,7 @@ public class RxHttpTest {
     rxHttp.get(uri("/empty")).toBlocking().toFuture().get();
 
     assertEquals(expected, statusCounts);
+    IpcMetric.validate(Spectator.globalRegistry());
   }
 
   @Test

@@ -15,7 +15,9 @@
  */
 package com.netflix.iep.admin;
 
-import com.netflix.spectator.sandbox.HttpLogEntry;
+import com.netflix.spectator.api.Spectator;
+import com.netflix.spectator.ipc.IpcLogEntry;
+import com.netflix.spectator.ipc.IpcLogger;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
@@ -36,6 +38,8 @@ import java.util.stream.Collectors;
  */
 class AccessLogHandler implements HttpHandler {
 
+  private static final IpcLogger IPC_LOGGER = new IpcLogger(Spectator.globalRegistry());
+
   private final HttpHandler handler;
 
   AccessLogHandler(HttpHandler handler) {
@@ -52,37 +56,25 @@ class AccessLogHandler implements HttpHandler {
 
   private static class Exchange extends HttpExchange implements AutoCloseable {
     private final HttpExchange underlying;
-    private final HttpLogEntry entry;
+    private final IpcLogEntry entry;
 
     Exchange(HttpExchange underlying) {
       this.underlying = underlying;
-      this.entry = new HttpLogEntry();
-
-      //Fill in request attributes
-      entry.mark("start");
-
-      entry.withMethod(underlying.getRequestMethod());
-      entry.withRequestUri(underlying.getRequestURI());
-
-      String originalUri = "http:/"
-          + underlying.getLocalAddress()
-          + underlying.getRequestURI();
-      entry.withOriginalUri(URI.create(originalUri));
 
       InetSocketAddress addr = underlying.getRemoteAddress();
-      entry.withRemoteAddr(addr.getHostName());
-      entry.withRemotePort(addr.getPort());
-
-      String length = underlying.getRequestHeaders().getFirst("Content-Length");
-      if (length != null) {
-        entry.withRequestContentLength(Long.parseLong(length));
-      }
+      this.entry = IPC_LOGGER.createClientEntry()
+          .withOwner("iep-admin")
+          .markStart()
+          .withHttpMethod(underlying.getRequestMethod())
+          .withUri(underlying.getRequestURI())
+          .withRemoteAddress(addr.getHostName())
+          .withRemotePort(addr.getPort());
 
       // Capture request headers
       for (Map.Entry<String, List<String>> header : underlying.getRequestHeaders().entrySet()) {
         String k = header.getKey();
-        String vs = header.getValue().stream().collect(Collectors.joining(","));
-        entry.withRequestHeader(k, vs);
+        String vs = String.join(",", header.getValue());
+        entry.addRequestHeader(k, vs);
       }
     }
 
@@ -113,8 +105,7 @@ class AccessLogHandler implements HttpHandler {
 
     @Override
     public void close() {
-      entry.mark("complete");
-      HttpLogEntry.logServerRequest(entry);
+      entry.markEnd().log();
       underlying.close();
     }
 
@@ -130,19 +121,11 @@ class AccessLogHandler implements HttpHandler {
 
     @Override
     public void sendResponseHeaders(int status, long length) throws IOException {
-      entry.mark("send-headers");
-      entry.withStatusCode(status);
-
-      // Use -1 for chunked and 0 for empty payload, where as length will be -1 for empty
-      // and 0 for chunked.
-      // https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpExchange.html#sendResponseHeaders-int-long-
-      entry.withResponseContentLength((length < 0) ? 0 : -1);
-
-      // Capture response headers
+      entry.withHttpStatus(status);
       for (Map.Entry<String, List<String>> header : underlying.getResponseHeaders().entrySet()) {
         String k = header.getKey();
-        String vs = header.getValue().stream().collect(Collectors.joining(","));
-        entry.withResponseHeader(k, vs);
+        String vs = String.join(",", header.getValue());
+        entry.addResponseHeader(k, vs);
       }
 
       // Forward to underlying to do the actual work

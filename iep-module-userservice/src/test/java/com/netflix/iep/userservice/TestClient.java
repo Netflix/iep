@@ -15,9 +15,9 @@
  */
 package com.netflix.iep.userservice;
 
-import com.netflix.spectator.sandbox.HttpClient;
-import com.netflix.spectator.sandbox.HttpRequestBuilder;
-import com.netflix.spectator.sandbox.HttpResponse;
+import com.netflix.spectator.ipc.http.HttpClient;
+import com.netflix.spectator.ipc.http.HttpRequestBuilder;
+import com.netflix.spectator.ipc.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.URI;
@@ -30,8 +30,8 @@ class TestClient implements HttpClient {
     this.supplier = supplier;
   }
 
-  @Override public HttpRequestBuilder newRequest(String clientName, URI uri) {
-    return new HttpRequestBuilder(clientName, uri) {
+  @Override public HttpRequestBuilder newRequest(URI uri) {
+    return new HttpRequestBuilder(HttpClient.DEFAULT_LOGGER, uri) {
       @Override protected HttpResponse sendImpl() throws IOException {
         return supplier.get();
       }

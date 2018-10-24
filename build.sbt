@@ -33,7 +33,7 @@ lazy val `iep-admin` = project
     Dependencies.jacksonCore,
     Dependencies.jacksonMapper,
     Dependencies.slf4jApi,
-    Dependencies.spectatorSandbox
+    Dependencies.spectatorIpc
   ))
 
 lazy val `iep-config` = project
@@ -199,7 +199,7 @@ lazy val `iep-module-userservice` = project
     Dependencies.jacksonMapper,
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
-    Dependencies.spectatorSandbox,
+    Dependencies.spectatorIpc,
     Dependencies.typesafeConfig
   ))
 
@@ -222,7 +222,7 @@ lazy val `iep-platformservice` = project
     Dependencies.guiceMulti,
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
-    Dependencies.spectatorSandbox
+    Dependencies.spectatorIpc
   ))
 
 lazy val `iep-rxhttp` = project
@@ -235,7 +235,7 @@ lazy val `iep-rxhttp` = project
     Dependencies.rxjava,
     Dependencies.rxnettyCore,
     Dependencies.spectatorApi,
-    Dependencies.spectatorSandbox,
+    Dependencies.spectatorIpc,
     Dependencies.slf4jApi,
     Dependencies.equalsVerifier % "test"
   ))

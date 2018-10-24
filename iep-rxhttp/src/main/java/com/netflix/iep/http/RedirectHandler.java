@@ -53,7 +53,6 @@ class RedirectHandler implements
         final HttpClientRequest<ByteBuf> req = context.request();
         res.getContent().subscribe();
         final URI loc = URI.create(res.getHeaders().get(HttpHeaderNames.LOCATION));
-        context.entry().withRedirect(loc);
         if (loc.isAbsolute()) {
           // Should we allow redirect from https to http?
           final boolean secure = context.server().isSecure() || "https".equals(loc.getScheme());
