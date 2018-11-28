@@ -11,6 +11,7 @@ lazy val root = project.in(file("."))
     `iep-module-archaius1`,
     `iep-module-archaius2`,
     `iep-module-atlas`,
+    `iep-module-atlasaggr`,
     `iep-module-aws`,
     `iep-module-aws2`,
     `iep-module-awsmetrics`,
@@ -105,6 +106,20 @@ lazy val `iep-module-atlas` = project
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
     Dependencies.spectatorAtlas,
+    Dependencies.spectatorGc,
+    Dependencies.spectatorJvm,
+    Dependencies.typesafeConfig
+  ))
+
+lazy val `iep-module-atlasaggr` = project
+  .configure(BuildSettings.profile)
+  .dependsOn(`iep-nflxenv`, `iep-service`)
+  .settings(libraryDependencies ++= Seq(
+    Dependencies.guiceCore,
+    Dependencies.guiceMulti,
+    Dependencies.slf4jApi,
+    Dependencies.spectatorApi,
+    Dependencies.spectatorStateless,
     Dependencies.spectatorGc,
     Dependencies.spectatorJvm,
     Dependencies.typesafeConfig
