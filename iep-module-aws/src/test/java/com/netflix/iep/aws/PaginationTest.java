@@ -26,12 +26,18 @@ import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesResult;
+import com.amazonaws.services.elasticache.model.DescribeCacheClustersRequest;
+import com.amazonaws.services.elasticache.model.DescribeCacheClustersResult;
 import com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersRequest;
 import com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersResult;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetGroupsRequest;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetGroupsResult;
 import com.amazonaws.services.elasticmapreduce.model.ListClustersRequest;
 import com.amazonaws.services.elasticmapreduce.model.ListClustersResult;
+import com.amazonaws.services.lambda.model.ListFunctionsRequest;
+import com.amazonaws.services.lambda.model.ListFunctionsResult;
+import com.amazonaws.services.rds.model.DescribeDBInstancesRequest;
+import com.amazonaws.services.rds.model.DescribeDBInstancesResult;
 import com.amazonaws.services.route53.model.ListHostedZonesRequest;
 import com.amazonaws.services.route53.model.ListHostedZonesResult;
 import com.amazonaws.services.route53.model.ListResourceRecordSetsRequest;
@@ -282,6 +288,93 @@ public class PaginationTest {
     Iterable<String> iter = Flowable.fromPublisher(publisher)
         .filter(r -> r.getMarker() != null)
         .map(ListClustersResult::getMarker)
+        .blockingIterable();
+
+    SortedSet<String> results = new TreeSet<>();
+    for (String s : iter) {
+      results.add(s);
+    }
+
+    Assert.assertEquals(pages, results);
+    Assert.assertFalse(reqIt.hasNext());
+  }
+
+  @Test
+  public void rds() throws Exception {
+    SortedSet<String> pages = newPageSet(5);
+    final Iterator<String> reqIt = pages.iterator();
+    final Iterator<String> resIt = pages.iterator();
+    Function<DescribeDBInstancesRequest, DescribeDBInstancesResult> f = r -> {
+      if (r.getMarker() != null) {
+        Assert.assertEquals(reqIt.next(), r.getMarker());
+      }
+      return new DescribeDBInstancesResult()
+          .withMarker(resIt.hasNext() ? resIt.next() : null);
+    };
+
+    Publisher<DescribeDBInstancesResult> publisher =
+        Pagination.createPublisher(new DescribeDBInstancesRequest(), f);
+    Iterable<String> iter = Flowable.fromPublisher(publisher)
+        .filter(r -> r.getMarker() != null)
+        .map(DescribeDBInstancesResult::getMarker)
+        .blockingIterable();
+
+    SortedSet<String> results = new TreeSet<>();
+    for (String s : iter) {
+      results.add(s);
+    }
+
+    Assert.assertEquals(pages, results);
+    Assert.assertFalse(reqIt.hasNext());
+  }
+
+  @Test
+  public void lambda() throws Exception {
+    SortedSet<String> pages = newPageSet(5);
+    final Iterator<String> reqIt = pages.iterator();
+    final Iterator<String> resIt = pages.iterator();
+    Function<ListFunctionsRequest, ListFunctionsResult> f = r -> {
+      if (r.getMarker() != null) {
+        Assert.assertEquals(reqIt.next(), r.getMarker());
+      }
+      return new ListFunctionsResult()
+          .withNextMarker(resIt.hasNext() ? resIt.next() : null);
+    };
+
+    Publisher<ListFunctionsResult> publisher =
+        Pagination.createPublisher(new ListFunctionsRequest(), f);
+    Iterable<String> iter = Flowable.fromPublisher(publisher)
+        .filter(r -> r.getNextMarker() != null)
+        .map(ListFunctionsResult::getNextMarker)
+        .blockingIterable();
+
+    SortedSet<String> results = new TreeSet<>();
+    for (String s : iter) {
+      results.add(s);
+    }
+
+    Assert.assertEquals(pages, results);
+    Assert.assertFalse(reqIt.hasNext());
+  }
+
+  @Test
+  public void elasticache() throws Exception {
+    SortedSet<String> pages = newPageSet(5);
+    final Iterator<String> reqIt = pages.iterator();
+    final Iterator<String> resIt = pages.iterator();
+    Function<DescribeCacheClustersRequest, DescribeCacheClustersResult> f = r -> {
+      if (r.getMarker() != null) {
+        Assert.assertEquals(reqIt.next(), r.getMarker());
+      }
+      return new DescribeCacheClustersResult()
+          .withMarker(resIt.hasNext() ? resIt.next() : null);
+    };
+
+    Publisher<DescribeCacheClustersResult> publisher =
+        Pagination.createPublisher(new DescribeCacheClustersRequest(), f);
+    Iterable<String> iter = Flowable.fromPublisher(publisher)
+        .filter(r -> r.getMarker() != null)
+        .map(DescribeCacheClustersResult::getMarker)
         .blockingIterable();
 
     SortedSet<String> results = new TreeSet<>();

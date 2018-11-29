@@ -24,6 +24,7 @@ object Dependencies {
   val archaiusPersist    = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe   = "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val awsAutoScaling     = "com.amazonaws" % "aws-java-sdk-autoscaling" % aws
+  val awsCache           = "com.amazonaws" % "aws-java-sdk-elasticache" % aws
   val awsCore            = "com.amazonaws" % "aws-java-sdk-core" % aws
   val awsCloudWatch      = "com.amazonaws" % "aws-java-sdk-cloudwatch" % aws
   val awsDynamoDB        = "com.amazonaws" % "aws-java-sdk-dynamodb" % aws
@@ -31,6 +32,8 @@ object Dependencies {
   val awsELB             = "com.amazonaws" % "aws-java-sdk-elasticloadbalancing" % aws
   val awsELBv2           = "com.amazonaws" % "aws-java-sdk-elasticloadbalancingv2" % aws
   val awsEMR             = "com.amazonaws" % "aws-java-sdk-emr" % aws
+  val awsLambda          = "com.amazonaws" % "aws-java-sdk-lambda" % aws
+  val awsRDS             = "com.amazonaws" % "aws-java-sdk-rds" % aws
   val awsRoute53         = "com.amazonaws" % "aws-java-sdk-route53" % aws
   val awsSES             = "com.amazonaws" % "aws-java-sdk-ses" % aws
   val awsSTS             = "com.amazonaws" % "aws-java-sdk-sts" % aws
