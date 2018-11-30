@@ -205,9 +205,7 @@ public final class Pagination {
         for (Method getter : result.getClass().getMethods()) {
           if (getter.getName().equals(GET_NEXT[i])) {
             Object next = getter.invoke(result);
-            if (!isNullOrEmpty(next)) {
-              hasNext = true;
-            }
+            hasNext = !isNullOrEmpty(next);
             Method setter = request.getClass().getMethod(SET_NEXT[i], getter.getReturnType());
             setter.invoke(request, next);
           }

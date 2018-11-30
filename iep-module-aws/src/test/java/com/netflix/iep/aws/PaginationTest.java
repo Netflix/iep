@@ -395,7 +395,11 @@ public class PaginationTest {
       if (r.getMarker() != null) {
         Assert.assertEquals(reqIt.next(), r.getMarker());
       }
+      // Hosted zones result has both withMarker and withNextMarker. Set withMarker to
+      // ensure it does not get used for pagination. Last issue is it manifested as an
+      // endless loop because the marker would get used if nextMarker was null.
       return new ListHostedZonesResult()
+          .withMarker("test")
           .withNextMarker(resIt.hasNext() ? resIt.next() : null);
     };
 
