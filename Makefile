@@ -2,7 +2,7 @@
 # build script.
 SBT := cat /dev/null | project/sbt
 
-.PHONY: build snapshot release coverage license
+.PHONY: build snapshot release coverage format
 
 build:
 	echo "Starting build"
@@ -29,6 +29,6 @@ coverage:
 	$(SBT) clean coverage test coverageReport
 	$(SBT) coverageAggregate
 
-license:
+format:
 	$(SBT) formatLicenseHeaders
 
