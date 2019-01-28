@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.3.13"
+    val archaius   = "2.3.14"
     val aws        = "1.11.482"
     val aws2       = "2.3.9"
     val eureka     = "1.9.8"
