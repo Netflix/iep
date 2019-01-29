@@ -15,12 +15,6 @@
  */
 package com.netflix.iep.ses;
 
-import com.amazonaws.services.simpleemail.model.Body;
-import com.amazonaws.services.simpleemail.model.Destination;
-import com.amazonaws.services.simpleemail.model.Message;
-import com.amazonaws.services.simpleemail.model.RawMessage;
-import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -31,7 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * <p>Helper for building {@link RawMessage} requests for the common case of an HTML or
+ * <p>Helper for building {@code RawMessage} requests for the common case of an HTML or
  * test email message with some attachments. For more details on Amazon's recommendations
  * see <a href="http://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html">sending
  * raw email</a>. With this class the usage is much simpler, e.g. with the v1 SDK:</p>
@@ -73,7 +67,9 @@ public final class EmailRequestBuilder {
 
   private String fromAddress;
   private String fromArn;
-  private Destination destination;
+  private List<String> toAddresses;
+  private List<String> ccAddresses;
+  private List<String> bccAddresses;
   private List<String> replyToAddresses;
   private String subject;
   private String contentType;
@@ -83,7 +79,9 @@ public final class EmailRequestBuilder {
 
   /** Create a new instance of the builder. */
   public EmailRequestBuilder() {
-    destination = new Destination();
+    toAddresses = Collections.emptyList();
+    ccAddresses = Collections.emptyList();
+    bccAddresses = Collections.emptyList();
     replyToAddresses = Collections.emptyList();
     body = "";
     attachments = new ArrayList<>();
@@ -129,15 +127,9 @@ public final class EmailRequestBuilder {
     return this;
   }
 
-  /** Set the destinations (to, cc, and bcc) for the message. */
-  public EmailRequestBuilder withDestination(Destination destination) {
-    this.destination = destination;
-    return this;
-  }
-
   /** Set the list of recipients for the message. */
   public EmailRequestBuilder withToAddresses(String... addresses) {
-    destination.withToAddresses(addresses);
+    this.toAddresses = Arrays.asList(addresses);
     return this;
   }
 
@@ -149,7 +141,7 @@ public final class EmailRequestBuilder {
 
   /** Set the list of addresses to be copied on the message. */
   public EmailRequestBuilder withCcAddresses(String... addresses) {
-    destination.withCcAddresses(addresses);
+    this.ccAddresses = Arrays.asList(addresses);
     return this;
   }
 
@@ -160,27 +152,7 @@ public final class EmailRequestBuilder {
    * reply all).
    */
   public EmailRequestBuilder withBccAddresses(String... addresses) {
-    destination.withBccAddresses(addresses);
-    return this;
-  }
-
-  /**
-   * Sets the main message. Note the charset will be ignored and UTF-8 will get used.
-   *
-   * @deprecated Use {@link #withSubject(String)} and either {@link #withTextBody(String)}
-   * or {@link #withHtmlBody(String)} instead. This allows the builder to be used with either
-   * v1 or v2 of the AWS SDK for Java. In iep version 2.0 this method and the explicit dependency
-   * on v1 of the AWS SDK will be removed.
-   */
-  @Deprecated
-  public EmailRequestBuilder withMessage(Message message) {
-    withSubject(message.getSubject().getData());
-    Body body = message.getBody();
-    if (body.getHtml() != null) {
-      withHtmlBody(body.getHtml().getData());
-    } else if (body.getText() != null) {
-      withTextBody(body.getText().getData());
-    }
+    this.bccAddresses = Arrays.asList(addresses);
     return this;
   }
 
@@ -215,34 +187,6 @@ public final class EmailRequestBuilder {
   }
 
   /**
-   * Creates the raw email request for use with
-   * {@link com.amazonaws.services.simpleemail.AmazonSimpleEmailService#sendRawEmail(SendRawEmailRequest)}.
-   *
-   * @deprecated Use {@link #toByteBuffer()} instead and construct the {@code RawMessage}
-   * object. This allows the builder to be used with either v1 or v2 of the AWS SDK for Java.
-   * In iep version 2.0 this method and the explicit dependency on v1 of the AWS SDK will be
-   * removed.
-   */
-  @Deprecated
-  public SendRawEmailRequest build() {
-    return new SendRawEmailRequest().withRawMessage(toRawMessage());
-  }
-
-  /**
-   * Creates the {@link RawMessage}. Can be used if additional modifications to the message
-   * are needed before creating the request object.
-   *
-   * @deprecated Use {@link #toByteBuffer()} instead and construct the {@code RawMessage}
-   * object. This allows the builder to be used with either v1 or v2 of the AWS SDK for Java.
-   * In iep version 2.0 this method and the explicit dependency on v1 of the AWS SDK will be
-   * removed.
-   */
-  @Deprecated
-  public RawMessage toRawMessage() {
-    return new RawMessage().withData(toByteBuffer());
-  }
-
-  /**
    * Creates a {@link ByteBuffer} containing the MIME encoded raw message for the email.
    */
   public ByteBuffer toByteBuffer() {
@@ -272,7 +216,7 @@ public final class EmailRequestBuilder {
         ? ""
         : EmailHeader.from(fromAddress).toString();
 
-    final String to = encodeAddressList(destination.getToAddresses());
+    final String to = encodeAddressList(toAddresses);
     if (to == null || to.isEmpty()) {
       throw new IllegalArgumentException("no recipients specified");
     }
@@ -284,12 +228,12 @@ public final class EmailRequestBuilder {
         .append(EmailHeader.to(to))
         .append(EmailHeader.subject(subject));
 
-    final String cc = encodeAddressList(destination.getCcAddresses());
+    final String cc = encodeAddressList(ccAddresses);
     if (cc != null && !cc.isEmpty()) {
       builder.append(EmailHeader.cc(cc));
     }
 
-    final String bcc = encodeAddressList(destination.getBccAddresses());
+    final String bcc = encodeAddressList(bccAddresses);
     if (bcc != null && !bcc.isEmpty()) {
       builder.append(EmailHeader.bcc(bcc));
     }
