@@ -5,6 +5,8 @@ matrix:
     env: BINTRAY_PUBLISH=true
   - jdk: openjdk11
     env: BINTRAY_PUBLISH=false
+  - jdk: openjdk12
+    env: BINTRAY_PUBLISH=false
 scala:
 - 2.12.8
 sudo: false
