@@ -270,6 +270,6 @@ lazy val `iep-ses` = project
   .configure(BuildSettings.profile)
   .settings(libraryDependencies ++= Seq(
     Dependencies.awsCore,
-    Dependencies.awsSES,
+    Dependencies.awsSES % "test",
     Dependencies.aws2SES % "test"
   ))

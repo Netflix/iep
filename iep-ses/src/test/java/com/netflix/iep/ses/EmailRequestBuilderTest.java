@@ -18,10 +18,8 @@ package com.netflix.iep.ses;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
-import com.amazonaws.services.simpleemail.model.Body;
-import com.amazonaws.services.simpleemail.model.Content;
-import com.amazonaws.services.simpleemail.model.Destination;
-import com.amazonaws.services.simpleemail.model.Message;
+import com.amazonaws.services.simpleemail.model.RawMessage;
+import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,7 +85,9 @@ public class EmailRequestBuilderTest {
           .withCredentials(new DefaultAWSCredentialsProviderChain())
           .withRegion("us-east-1")
           .build();
-      client.sendRawEmail(builder.build());
+      SendRawEmailRequest request = new SendRawEmailRequest()
+          .withRawMessage(new RawMessage().withData(builder.toByteBuffer()));
+      client.sendRawEmail(request);
     } else {
       String message = builder.toString();
       Assert.assertEquals(readResource(name), message);
@@ -161,40 +161,6 @@ public class EmailRequestBuilderTest {
         .withBccAddresses(CC)
         .withSubject("Test message")
         .withTextBody("Body of the email message."));
-  }
-
-  @Test
-  public void usingDestination() throws IOException {
-    checkMessage("simpleTextMessage", new EmailRequestBuilder()
-        .withFromAddress(FROM)
-        .withDestination(new Destination().withToAddresses(TO))
-        .withSubject("Test message")
-        .withTextBody("Body of the email message."));
-  }
-
-  @Test
-  public void usingMessageText() throws IOException {
-    Message message = new Message()
-        .withSubject(new Content("Test message"))
-        .withBody(new Body().withText(new Content("Body of the email message.")));
-    checkMessage("simpleTextMessage", new EmailRequestBuilder()
-        .withFromAddress(FROM)
-        .withToAddresses(TO)
-        .withMessage(message));
-  }
-
-  @Test
-  public void usingMessageHtml() throws IOException {
-    Message message = new Message()
-        .withSubject(new Content("Test message"))
-        .withBody(new Body()
-            .withText(new Content("Body of the email message."))
-            .withHtml(new Content("<html><body><h1>Test</h1><p>Body of the email message.</p></body></html>"))
-        );
-    checkMessage("simpleHtmlMessage", new EmailRequestBuilder()
-        .withFromAddress(FROM)
-        .withToAddresses(TO)
-        .withMessage(message));
   }
 
   @Test
