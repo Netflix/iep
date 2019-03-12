@@ -31,6 +31,10 @@ public final class GuiceHelper {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GuiceHelper.class);
 
+  private static boolean isDeprecated(Class<?> cls) {
+    return cls.getAnnotation(Deprecated.class) != null;
+  }
+
   /**
    * Returns a list of all guice modules in the classpath using ServiceLoader. Modules that do
    * not have a corresponding provider config.properties will not get loaded.
@@ -39,6 +43,9 @@ public final class GuiceHelper {
     ServiceLoader<Module> loader = ServiceLoader.load(Module.class);
     List<Module> modules = new ArrayList<>();
     for (Module m : loader) {
+      if (isDeprecated(m.getClass())) {
+        LOGGER.warn("deprecated module loaded from classpath: {}", m.getClass().getName());
+      }
       modules.add(m);
     }
     return modules;
