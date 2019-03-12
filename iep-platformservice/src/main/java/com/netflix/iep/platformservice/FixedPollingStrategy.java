@@ -68,7 +68,7 @@ public class FixedPollingStrategy implements PollingStrategy {
         }
       }
     }
-    return executor.scheduleWithFixedDelay((Runnable) () -> {
+    return executor.scheduleWithFixedDelay(() -> {
       try {
         callback.run();
       } catch (Exception e) {

@@ -15,7 +15,6 @@
  */
 package com.netflix.iep.aws;
 
-import com.amazonaws.AmazonWebServiceClient;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
@@ -48,7 +47,7 @@ public class AwsClientFactoryTest {
   public void createClientConfig() {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientConfiguration settings = factory.createClientConfig(null);
-    Assert.assertEquals(true, settings.useGzip());
+    Assert.assertTrue(settings.useGzip());
     Assert.assertEquals("abc", settings.getUserAgentPrefix());
     Assert.assertEquals("xyz", settings.getUserAgentSuffix());
   }
@@ -57,14 +56,14 @@ public class AwsClientFactoryTest {
   public void createClientConfigOverride() {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientConfiguration settings = factory.createClientConfig("ec2-test");
-    Assert.assertEquals(false, settings.useGzip());
+    Assert.assertFalse(settings.useGzip());
   }
 
   @Test
   public void createClientConfigOverrideWithDefaults() {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientConfiguration settings = factory.createClientConfig("ec2-test-default");
-    Assert.assertEquals(false, settings.useGzip());
+    Assert.assertFalse(settings.useGzip());
     Assert.assertEquals("abc", settings.getUserAgentPrefix());
     Assert.assertEquals("xyz", settings.getUserAgentSuffix());
   }
@@ -189,20 +188,20 @@ public class AwsClientFactoryTest {
   public void settingsBooleanTrue() {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientConfiguration settings = factory.createClientConfig("boolean-true");
-    Assert.assertEquals(true, settings.useReaper());
-    Assert.assertEquals(true, settings.useTcpKeepAlive());
-    Assert.assertEquals(true, settings.useGzip());
-    Assert.assertEquals(true, settings.useThrottledRetries());
+    Assert.assertTrue(settings.useReaper());
+    Assert.assertTrue(settings.useTcpKeepAlive());
+    Assert.assertTrue(settings.useGzip());
+    Assert.assertTrue(settings.useThrottledRetries());
   }
 
   @Test
   public void settingsBooleanFalse() {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientConfiguration settings = factory.createClientConfig("boolean-false");
-    Assert.assertEquals(false, settings.useReaper());
-    Assert.assertEquals(false, settings.useTcpKeepAlive());
-    Assert.assertEquals(false, settings.useGzip());
-    Assert.assertEquals(false, settings.useThrottledRetries());
+    Assert.assertFalse(settings.useReaper());
+    Assert.assertFalse(settings.useTcpKeepAlive());
+    Assert.assertFalse(settings.useGzip());
+    Assert.assertFalse(settings.useThrottledRetries());
   }
 
   @Test

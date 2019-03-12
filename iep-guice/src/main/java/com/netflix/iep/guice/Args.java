@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This class can be injected to access the command line arguments passed to the
@@ -72,6 +71,6 @@ public class Args implements Iterable<String> {
   }
 
   @Override public String toString() {
-    return argv.stream().collect(Collectors.joining(" "));
+    return String.join(" ", argv);
   }
 }

@@ -228,7 +228,7 @@ public class LifecycleTest {
 
   @Singleton
   private static class NonCIStateObjectProvider implements Provider<NonCIStateObject> {
-    private NonCIStateObject object = new NonCIStateObject();
+    private final NonCIStateObject object = new NonCIStateObject();
 
     @Override public NonCIStateObject get() {
       return object;

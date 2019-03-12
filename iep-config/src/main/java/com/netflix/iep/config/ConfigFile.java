@@ -167,15 +167,11 @@ public class ConfigFile {
       else others.add(cl);
     }
 
-    Comparator<ConfigLine> clComp = (p1, p2) -> p1.pos - p2.pos;
+    Comparator<ConfigLine> clComp = Comparator.comparingInt(p1 -> p1.pos);
 
     Map<String,TreeSet<PropertyLine>> groupedProps = new HashMap<>();
     for (PropertyLine p : props) {
-      TreeSet<PropertyLine> pls = groupedProps.get(p.name);
-      if (pls == null) {
-        pls = new TreeSet<>(clComp);
-        groupedProps.put(p.name, pls);
-      }
+      TreeSet<PropertyLine> pls = groupedProps.computeIfAbsent(p.name, k -> new TreeSet<>(clComp));
       pls.add(p);
     }
 
@@ -189,9 +185,7 @@ public class ConfigFile {
       }
       finalProps.add(pl.withOverrides(vs));
     }
-    for (ConfigLine cl : others) {
-      finalProps.add(cl);
-    }
+    finalProps.addAll(others);
 
     return new ArrayList<>(finalProps);
   }

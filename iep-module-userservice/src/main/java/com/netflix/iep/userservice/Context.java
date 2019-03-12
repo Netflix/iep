@@ -17,7 +17,6 @@ package com.netflix.iep.userservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spectator.api.Registry;
-import com.netflix.spectator.ipc.NetflixHeaders;
 import com.netflix.spectator.ipc.http.HttpClient;
 import com.netflix.spectator.ipc.http.HttpResponse;
 import com.typesafe.config.Config;

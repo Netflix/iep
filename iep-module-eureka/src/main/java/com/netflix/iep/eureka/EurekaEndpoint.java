@@ -22,6 +22,7 @@ import com.netflix.iep.admin.HttpEndpoint;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -95,12 +96,11 @@ public class EurekaEndpoint implements HttpEndpoint {
   }
 
   private Set<String> getApps() {
-    Set<String> apps = client.getApplications()
+    return client.getApplications()
         .getRegisteredApplications()
         .stream()
         .map(a -> a.getName().toLowerCase())
-        .collect(Collectors.toSet());
-    return new TreeSet<>(apps);
+        .collect(Collectors.toCollection(TreeSet::new));
   }
 
   private List<InstanceInfo> getApp(String app) {
@@ -108,13 +108,12 @@ public class EurekaEndpoint implements HttpEndpoint {
   }
 
   private Set<String> getVips() {
-    Set<String> vips = client.getApplications()
+    return client.getApplications()
         .getRegisteredApplications()
         .stream()
         .flatMap(app -> app.getInstances().stream().map(InstanceInfo::getVIPAddress))
-        .filter(v -> v != null)
-        .collect(Collectors.toSet());
-    return new TreeSet<>(vips);
+        .filter(Objects::nonNull)
+        .collect(Collectors.toCollection(TreeSet::new));
   }
 
   private List<InstanceInfo> getVip(String vip) {
@@ -122,13 +121,12 @@ public class EurekaEndpoint implements HttpEndpoint {
   }
 
   private Set<String> getInstances() {
-    Set<String> instances = client.getApplications()
+    return client.getApplications()
         .getRegisteredApplications()
         .stream()
         .flatMap(app -> app.getInstances().stream().map(InstanceInfo::getInstanceId))
-        .filter(v -> v != null)
-        .collect(Collectors.toSet());
-    return new TreeSet<>(instances);
+        .filter(Objects::nonNull)
+        .collect(Collectors.toCollection(TreeSet::new));
   }
 
   @SuppressWarnings("unchecked")

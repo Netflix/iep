@@ -38,12 +38,10 @@ public class ScopedPropertiesLoader {
 
   public static Properties load(String[] propFiles) {
     List<URL> propUrls = new ArrayList<>();
-    for (int i = 0; i < propFiles.length; i++) {
-      String propFile = propFiles[i];
+    for (String propFile : propFiles) {
       try {
         propUrls.add((Resources.getResource(propFile)));
-      }
-      catch (IllegalArgumentException e) {
+      } catch (IllegalArgumentException e) {
         LOGGER.debug("ignoring " + propFile + " - does not exist");
       }
     }

@@ -20,7 +20,6 @@ import com.netflix.spectator.api.Counter;
 import com.netflix.spectator.api.DistributionSummary;
 import com.netflix.spectator.api.Gauge;
 import com.netflix.spectator.api.Id;
-import com.netflix.spectator.api.Measurement;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.Tag;
 import com.netflix.spectator.api.Timer;
@@ -520,7 +519,7 @@ public class SpectatorEndpoint implements HttpEndpoint {
     }
 
     @Override public String toString() {
-      String values = vs.stream().collect(Collectors.joining(","));
+      String values = String.join(",", vs);
       return k + ",(," + values + ",),:in";
     }
   }

@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * <p>Helper for building {@code RawMessage} requests for the common case of an HTML or
@@ -169,7 +168,7 @@ public final class EmailRequestBuilder {
   }
 
   private String encodeAddressList(List<String> addresses) {
-    return addresses.stream().collect(Collectors.joining(", "));
+    return String.join(", ", addresses);
   }
 
   /**

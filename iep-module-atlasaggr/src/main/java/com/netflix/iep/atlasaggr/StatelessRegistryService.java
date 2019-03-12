@@ -51,7 +51,7 @@ class StatelessRegistryService extends AbstractService {
     return ConfigFactory.load(cl);
   }
 
-  private static Logger LOGGER = LoggerFactory.getLogger(StatelessRegistryService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(StatelessRegistryService.class);
 
   @Inject(optional = true)
   private Clock clock = Clock.SYSTEM;
