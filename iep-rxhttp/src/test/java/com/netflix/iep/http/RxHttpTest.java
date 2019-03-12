@@ -597,7 +597,7 @@ public class RxHttpTest {
     statusCode.set(code);
     AtomicIntegerArray expected = copy(statusCounts);
     expected.addAndGet(code, 1);
-    rxHttp.submit(HttpClientRequest.<ByteBuf>create(HttpMethod.HEAD, uri("/empty").toString()))
+    rxHttp.submit(HttpClientRequest.create(HttpMethod.HEAD, uri("/empty").toString()))
         .toBlocking().toFuture().get();
     assertEquals(expected, statusCounts);
   }
@@ -650,12 +650,7 @@ public class RxHttpTest {
     Map<Integer, Integer> counts = new HashMap<>();
     for (int i = 0; i < 10; ++i) {
       int p = getPortForReq();
-      Integer c = counts.get(p);
-      if (c == null) {
-        counts.put(p, 1);
-      } else {
-        counts.put(p, c + 1);
-      }
+      counts.merge(p, 1, (a, b) -> a + b);
     }
     Assert.assertTrue("connections not getting reused", counts.size() < 4);
   }

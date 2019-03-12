@@ -29,10 +29,10 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class WhitelistUserServiceTest {
 
-  private ManualClock clock = new ManualClock();
-  private Registry registry = new DefaultRegistry(clock);
-  private Config config = ConfigFactory.load();
-  private Context context = new Context(registry, config, HttpClient.DEFAULT_CLIENT);
+  private final ManualClock clock = new ManualClock();
+  private final Registry registry = new DefaultRegistry(clock);
+  private final Config config = ConfigFactory.load();
+  private final Context context = new Context(registry, config, HttpClient.DEFAULT_CLIENT);
 
   @Test
   public void start() throws Exception {

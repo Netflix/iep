@@ -68,7 +68,7 @@ public final class Server {
   @Override
   public boolean equals(Object obj) {
     if (this == obj) return true;
-    if (obj == null || !(obj instanceof Server)) return false;
+    if (!(obj instanceof Server)) return false;
     Server other = (Server) obj;
     return id.equals(other.id)
         && host.equals(other.host)

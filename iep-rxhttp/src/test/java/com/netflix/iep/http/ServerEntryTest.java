@@ -31,7 +31,7 @@ public class ServerEntryTest {
 
   @Test
   public void emptyList() {
-    ServerEntry entry = new ServerEntry(Collections.<Server>emptyList(), 0L);
+    ServerEntry entry = new ServerEntry(Collections.emptyList(), 0L);
     Assert.assertTrue(entry.next(1).isEmpty());
   }
 

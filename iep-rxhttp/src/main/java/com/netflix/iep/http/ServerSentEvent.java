@@ -18,8 +18,8 @@ package com.netflix.iep.http;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Server sent event message.
@@ -27,11 +27,7 @@ import java.nio.charset.Charset;
 public final class ServerSentEvent {
 
   private static ByteBuf toByteBuf(String s) {
-    try {
-      return Unpooled.wrappedBuffer(s.getBytes("UTF-8"));
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
+    return Unpooled.wrappedBuffer(s.getBytes(StandardCharsets.UTF_8));
   }
 
   /**
@@ -113,7 +109,7 @@ public final class ServerSentEvent {
 
   @Override public boolean equals(Object obj) {
     if (this == obj) return true;
-    if (obj == null || !(obj instanceof ServerSentEvent)) return false;
+    if (!(obj instanceof ServerSentEvent)) return false;
     ServerSentEvent other = (ServerSentEvent) obj;
     return field.equals(other.field) && value.equals(other.value);
   }

@@ -38,10 +38,12 @@ public class ConfigFileTests {
     String s = ConfigFile.toPropertiesString(vars, config);
     StringBuilder buf = new StringBuilder();
     String[] lines = s.split("\n");
-    for (int i = 0; i < lines.length; i++) {
-      String line = lines[i];
-      if (line.length() == 0) buf.append("\n");
-      else buf.append("\n      ").append(line);
+    for (String line : lines) {
+      if (line.length() == 0) {
+        buf.append("\n");
+      } else {
+        buf.append("\n      ").append(line);
+      }
     }
     return buf.append("\n    ").toString();
   }

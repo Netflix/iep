@@ -31,7 +31,6 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Wraps an http handler and provides a common access log and metrics.

@@ -52,26 +52,26 @@ public class ClientConfigTest {
 
   @Test
   public void useIpAddressNoProp() {
-    Assert.assertEquals(cfg.useIpAddress(), true);
+    Assert.assertTrue(cfg.useIpAddress());
   }
 
   @Test
   public void useIpAddressDefaultProp() {
     set("niws.client.UseIpAddress", "false");
-    Assert.assertEquals(cfg.useIpAddress(), false);
+    Assert.assertFalse(cfg.useIpAddress());
   }
 
   @Test
   public void useIpAddressNamedProp() {
     set("foo.niws.client.UseIpAddress", "false");
-    Assert.assertEquals(cfg.useIpAddress(), false);
+    Assert.assertFalse(cfg.useIpAddress());
   }
 
   @Test
   public void useIpAddressNamedOverridesDefaultProp() {
     set("niws.client.UseIpAddress", "true");
     set("foo.niws.client.UseIpAddress", "false");
-    Assert.assertEquals(cfg.useIpAddress(), false);
+    Assert.assertFalse(cfg.useIpAddress());
   }
 
   @Test

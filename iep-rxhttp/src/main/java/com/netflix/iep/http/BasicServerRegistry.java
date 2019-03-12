@@ -31,7 +31,7 @@ public class BasicServerRegistry implements ServerRegistry {
 
   /** Create a new instance with no servers. */
   public BasicServerRegistry() {
-    this(Collections.<String, List<Server>>emptyMap());
+    this(Collections.emptyMap());
   }
 
   /** Create a new instance. */
@@ -49,6 +49,6 @@ public class BasicServerRegistry implements ServerRegistry {
   @Override
   public List<Server> getServers(String vip, ClientConfig clientCfg) {
     List<Server> results = serversByVip.get(vip);
-    return (results != null) ? results : Collections.<Server>emptyList();
+    return (results != null) ? results : Collections.emptyList();
   }
 }

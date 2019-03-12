@@ -74,6 +74,7 @@ public class AwsClientFactoryTest {
 
   // Note: this is potentially fragile as it looks at private fields in the class. It is
   // just an additional sanity check so the assertions can be commented out if they break.
+  @SuppressWarnings("unchecked")
   private AssumeRoleRequest getRequest(AwsCredentialsProvider creds) throws Exception {
     Class<?> cls = StsAssumeRoleCredentialsProvider.class;
     Field f = cls.getDeclaredField("assumeRoleRequestSupplier");

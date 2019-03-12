@@ -63,9 +63,8 @@ class PropertiesReader implements Callable<PollingResponse> {
         props.load(in);
 
         if (LOGGER.isTraceEnabled()) {
-          props.stringPropertyNames().forEach(k -> {
-            LOGGER.trace("received property: [{}] = [{}]", k, props.getProperty(k));
-          });
+          props.stringPropertyNames().forEach(
+              k -> LOGGER.trace("received property: [{}] = [{}]", k, props.getProperty(k)));
         }
 
         Map<String, String> data = props.stringPropertyNames()

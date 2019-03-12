@@ -29,6 +29,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
 
 /**
  * Helper operations for working with {@code Observable<ByteBuf>} objects.
@@ -39,19 +40,11 @@ public final class ByteBufs {
   }
 
   private static Observable<ByteBuf> encode(final Observable<ByteBuf> input, final EmbeddedChannel channel) {
-    return Observable.create(new Observable.OnSubscribe<ByteBuf>() {
-      @Override public void call(final Subscriber<? super ByteBuf> subscriber) {
-        input.subscribe(new EncoderSubscriber(subscriber, channel));
-      }
-    });
+    return Observable.create(subscriber -> input.subscribe(new EncoderSubscriber(subscriber, channel)));
   }
 
   private static <T> Observable<T> decode(final Observable<ByteBuf> input, final EmbeddedChannel channel) {
-    return Observable.create(new Observable.OnSubscribe<T>() {
-      @Override public void call(final Subscriber<? super T> subscriber) {
-        input.subscribe(new DecoderSubscriber<>(subscriber, channel));
-      }
-    });
+    return Observable.create(subscriber -> input.subscribe(new DecoderSubscriber<>(subscriber, channel)));
   }
 
   /**
@@ -120,7 +113,7 @@ public final class ByteBufs {
     return input -> input
         .compose(lines(maxLength))
         .map(ServerSentEvent::parse)
-        .filter(v -> v != null);
+        .filter(Objects::nonNull);
   }
 
   /**

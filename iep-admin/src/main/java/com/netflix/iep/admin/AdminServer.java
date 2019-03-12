@@ -59,9 +59,9 @@ public class AdminServer implements AutoCloseable {
       createContext(path, new RequestHandler(path, endpoint));
     }
 
-    SortedSet<String> resources = new TreeSet<>(paths.stream()
+    SortedSet<String> resources = paths.stream()
         .map(p -> p.substring(1))
-        .collect(Collectors.toSet()));
+        .collect(Collectors.toCollection(TreeSet::new));
     resources.add("resources");
     createContext("/resources",
         new RequestHandler("/resources", new ResourcesEndpoint(resources)));

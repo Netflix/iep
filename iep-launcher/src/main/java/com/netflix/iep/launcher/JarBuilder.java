@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -79,7 +80,7 @@ public class JarBuilder {
   private void addEntry(ZipOutputStream out, String name, String content) throws IOException {
     ZipEntry entry = new ZipEntry(name);
     out.putNextEntry(entry);
-    out.write(content.getBytes("UTF-8"));
+    out.write(content.getBytes(StandardCharsets.UTF_8));
     out.closeEntry();
   }
 

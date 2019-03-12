@@ -54,7 +54,7 @@ public class PollingDynamicConfig extends AbstractConfig {
   public PollingDynamicConfig(Callable<PollingResponse> reader, PollingStrategy strategy) {
     this.reader = reader;
     this.strategy = strategy;
-    strategy.execute((Runnable) this::update);
+    strategy.execute(this::update);
   }
 
   @Override

@@ -28,6 +28,7 @@ import rx.functions.Action1;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -54,7 +55,7 @@ public class ByteBufsTest {
 
   @Test
   public void gzip() throws Exception {
-    byte[] data = "foo".getBytes("UTF-8");
+    byte[] data = "foo".getBytes(StandardCharsets.UTF_8);
     byte[] compressed = obs(data)
         .compose(ByteBufs.gzip())
         .compose(ByteBufs.aggrByteArray())
@@ -64,7 +65,7 @@ public class ByteBufsTest {
 
   @Test
   public void gunzip() throws Exception {
-    byte[] data = "foo".getBytes("UTF-8");
+    byte[] data = "foo".getBytes(StandardCharsets.UTF_8);
     byte[] decompressed = obs(data)
         .compose(ByteBufs.gzip())
         .compose(ByteBufs.gunzip())
@@ -76,8 +77,8 @@ public class ByteBufsTest {
   @Test
   public void json() throws Exception {
     ByteBuf[] bufs = new ByteBuf[7];
-    byte[] data0 = "[{\"a\":1},{\"a\":2},{\"a\":3".getBytes("UTF-8");
-    byte[] data1 = "},{\"a\":4},{\"a\":5}]".getBytes("UTF-8");
+    byte[] data0 = "[{\"a\":1},{\"a\":2},{\"a\":3".getBytes(StandardCharsets.UTF_8);
+    byte[] data1 = "},{\"a\":4},{\"a\":5}]".getBytes(StandardCharsets.UTF_8);
     bufs[0] = Unpooled.wrappedBuffer(data0);
     bufs[1] = Unpooled.wrappedBuffer(data1);
     Observable.just(bufs[0], bufs[1])
@@ -93,16 +94,16 @@ public class ByteBufsTest {
     });
     bufs[0].release();
     bufs[1].release();
-    for (int i = 0; i < bufs.length; i++) {
+    for (ByteBuf buf : bufs) {
       //System.err.println("bufs[" + i + "]: " + bufs[i].refCnt());
-      Assert.assertEquals(0, bufs[i].refCnt());
+      Assert.assertEquals(0, buf.refCnt());
     }
   }
 
   @Test
   public void jsonEmpty() throws Exception {
     ByteBuf[] bufs = new ByteBuf[1];
-    byte[] data = "[     ]".getBytes("UTF-8");
+    byte[] data = "[     ]".getBytes(StandardCharsets.UTF_8);
     bufs[0] = Unpooled.wrappedBuffer(data);
     Observable.just(bufs[0])
     .compose(ByteBufs.json()).toBlocking().forEach(new Action1<ByteBuf>() {
@@ -117,15 +118,15 @@ public class ByteBufsTest {
       }
     });
     bufs[0].release();
-    for (int i = 0; i < bufs.length; i++) {
+    for (ByteBuf buf : bufs) {
       //System.err.println("bufs[" + i + "]: " + bufs[i].refCnt());
-      Assert.assertEquals(0, bufs[i].refCnt());
+      Assert.assertEquals(0, buf.refCnt());
     }
   }
 
   @Test
   public void sse() throws Exception {
-    byte[] data = "event:\ndata: foo\ndata:bar\n\ndata:  baz\n".getBytes("UTF-8");
+    byte[] data = "event:\ndata: foo\ndata:bar\n\ndata:  baz\n".getBytes(StandardCharsets.UTF_8);
     List<ServerSentEvent> events = obs(data)
         .compose(ByteBufs.sse(10))
         .reduce(new ArrayList<ServerSentEvent>(), (acc, v) -> { acc.add(v); return acc; })
@@ -143,7 +144,7 @@ public class ByteBufsTest {
 
   @Test
   public void linesLF() throws Exception {
-    byte[] data = "0\n1\n2\n3\n".getBytes("UTF-8");
+    byte[] data = "0\n1\n2\n3\n".getBytes(StandardCharsets.UTF_8);
     int count = obs(data).compose(ByteBufs.lines(10))
         .reduce(0, (acc, b) -> {
           Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
@@ -156,7 +157,7 @@ public class ByteBufsTest {
 
   @Test
   public void linesCRLF() throws Exception {
-    byte[] data = "0\r\n1\r\n2\r\n3\r\n".getBytes("UTF-8");
+    byte[] data = "0\r\n1\r\n2\r\n3\r\n".getBytes(StandardCharsets.UTF_8);
     int count = obs(data).compose(ByteBufs.lines(10))
         .reduce(0, (acc, b) -> {
           Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
@@ -169,7 +170,7 @@ public class ByteBufsTest {
 
   @Test
   public void linesCR() throws Exception {
-    byte[] data = "0\r1\r2\r3\r".getBytes("UTF-8");
+    byte[] data = "0\r1\r2\r3\r".getBytes(StandardCharsets.UTF_8);
     int count = obs(data).compose(ByteBufs.lines(10))
         .reduce(0, (acc, b) -> {
           Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
@@ -183,7 +184,7 @@ public class ByteBufsTest {
   // Currently ignores the last bit, not sure how to force it to flush
   @Test
   public void linesNoEndingLF() throws Exception {
-    byte[] data = "0\n1\n2\n3".getBytes("UTF-8");
+    byte[] data = "0\n1\n2\n3".getBytes(StandardCharsets.UTF_8);
     int count = obs(data).compose(ByteBufs.lines(10))
         .reduce(0, (acc, b) -> {
           System.out.println(b.toString(Charset.forName("UTF-8")));
@@ -197,7 +198,7 @@ public class ByteBufsTest {
 
   @Test
   public void linesEmpty() throws Exception {
-    byte[] data = "\n\n\n".getBytes("UTF-8");
+    byte[] data = "\n\n\n".getBytes(StandardCharsets.UTF_8);
     int count = obs(data).compose(ByteBufs.lines(10))
         .reduce(0, (acc, b) -> {
           Assert.assertEquals("", b.toString(Charset.forName("UTF-8")));
@@ -210,7 +211,7 @@ public class ByteBufsTest {
 
   @Test(expected = TooLongFrameException.class)
   public void linesFailure() throws Exception {
-    byte[] data = "1\n22\r\n3\r4".getBytes("UTF-8");
+    byte[] data = "1\n22\r\n3\r4".getBytes(StandardCharsets.UTF_8);
     obs(data).compose(ByteBufs.lines(1)).toBlocking().forEach(new Action1<ByteBuf>() {
       private int i = 0;
       @Override
@@ -224,9 +225,9 @@ public class ByteBufsTest {
   @Test
   public void bufToString() throws Exception {
     String result = Observable.merge(
-          obs("foo".getBytes("UTF-8")),
-          obs("bar".getBytes("UTF-8")),
-          obs("baz".getBytes("UTF-8")))
+          obs("foo".getBytes(StandardCharsets.UTF_8)),
+          obs("bar".getBytes(StandardCharsets.UTF_8)),
+          obs("baz".getBytes(StandardCharsets.UTF_8)))
         .compose(ByteBufs.toString("UTF-8"))
         .toBlocking()
         .first();
