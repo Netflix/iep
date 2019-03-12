@@ -23,7 +23,6 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 
 import com.netflix.archaius.DefaultPropertyFactory;
-import com.netflix.archaius.api.PropertyFactory;
 import com.netflix.archaius.config.MapConfig;
 import org.junit.Test;
 
@@ -75,7 +74,7 @@ public class ConfigurationTests {
   private TestConfig mkConfig() { return mkConfig(new HashMap<>()); }
   private TestConfig mkConfig(Map<String,String> props) { return mkConfig(null, props); }
   private TestConfig mkConfig(String prefix, Map<String,String> props) {
-    PropertyFactory factory = new DefaultPropertyFactory(new MapConfig(props));
+    DefaultPropertyFactory factory = new DefaultPropertyFactory(new MapConfig(props));
     Configuration.setConfiguration(new DynamicPropertiesConfiguration(factory).getInstance());
     return Configuration.newProxy(TestConfig.class, prefix);
   }

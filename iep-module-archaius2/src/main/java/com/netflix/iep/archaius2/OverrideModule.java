@@ -17,12 +17,13 @@ package com.netflix.iep.archaius2;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.util.Modules;
 import com.netflix.archaius.guice.ArchaiusModule;
-import com.netflix.iep.admin.AdminServer;
+import com.netflix.iep.admin.guice.AdminModule;
 import com.netflix.iep.platformservice.PlatformServiceModule;
+import com.netflix.spectator.api.DefaultRegistry;
+import com.netflix.spectator.api.Registry;
 
 /**
  * Work around for overriding the AppConfig.
@@ -45,8 +46,10 @@ public final class OverrideModule extends AbstractModule {
 
   public static void main(String[] args) {
     System.setProperty("netflix.iep.archaius.use-dynamic", "false");
-    Injector injector = Guice.createInjector(new OverrideModule());
-    AdminServer server = injector.getInstance(AdminServer.class);
-    server.start();
+    Guice.createInjector(new OverrideModule(), new AdminModule(), new AbstractModule() {
+      @Override protected void configure() {
+        bind(Registry.class).toInstance(new DefaultRegistry());
+      }
+    });
   }
 }

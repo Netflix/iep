@@ -97,20 +97,6 @@ public final class EmailRequestBuilder {
   /**
    * Set the source or from address of the message. If not specified, then it must be
    * provided when constructing the {@code SendRawEmailRequest} object.
-   *
-   * @deprecated Use {@link #withFromAddress(String)} instead. Renamed to avoid confusion
-   * as this will set the {@code From} header in the message which behaves differently than
-   * calling {@code SendRawEmailRequest.withSource} when using sending authorization. Will
-   * be removed in 2.0.
-   */
-  @Deprecated
-  public EmailRequestBuilder withSource(String source) {
-    return withFromAddress(source);
-  }
-
-  /**
-   * Set the source or from address of the message. If not specified, then it must be
-   * provided when constructing the {@code SendRawEmailRequest} object.
    */
   public EmailRequestBuilder withFromAddress(String address) {
     this.fromAddress = address;

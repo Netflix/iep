@@ -36,16 +36,16 @@ import java.nio.charset.StandardCharsets;
 @RunWith(JUnit4.class)
 public class EmailRequestBuilderTest {
 
-  private static boolean BLESS = false;
-  private static boolean SEND = false;
+  private static final boolean BLESS = false;
+  private static final boolean SEND = false;
 
-  private static String FROM = "bob@example.com";
-  private static String TO = "andrew@example.com";
-  private static String CC = "sue@example.com";
+  private static final String FROM = "bob@example.com";
+  private static final String TO = "andrew@example.com";
+  private static final String CC = "sue@example.com";
 
-  private static String FROM_ARN = "arn:aws:ses:us-east-1:123456789012:identity/example.com";
+  private static final String FROM_ARN = "arn:aws:ses:us-east-1:123456789012:identity/example.com";
 
-  private static String BOUNDARY = "331239ab-8a31-4cc6-84d6-5557f96ebc3a";
+  private static final String BOUNDARY = "331239ab-8a31-4cc6-84d6-5557f96ebc3a";
 
   private void writeResource(String name, byte[] data) throws IOException {
     // Path ends with: iep-ses/target/test-classes/des-example.png
@@ -92,15 +92,6 @@ public class EmailRequestBuilderTest {
       String message = builder.toString();
       Assert.assertEquals(readResource(name), message);
     }
-  }
-
-  @Test
-  public void simpleTextMessageSource() throws IOException {
-    checkMessage("simpleTextMessage", new EmailRequestBuilder()
-        .withSource(FROM)
-        .withToAddresses(TO)
-        .withSubject("Test message")
-        .withTextBody("Body of the email message."));
   }
 
   @Test

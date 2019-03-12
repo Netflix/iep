@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 
 import com.netflix.archaius.DefaultPropertyFactory;
 import com.netflix.archaius.api.Config;
-import com.netflix.archaius.api.PropertyFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -59,7 +58,7 @@ public class PropertyFileConfigurationTests {
       put("resources.url", "file://" + userDir + "/src/test/resources");
     }};
     Config config = TestResourceConfiguration.load("config.test.properties", subs);
-    PropertyFactory factory = new DefaultPropertyFactory(config);
+    DefaultPropertyFactory factory = new DefaultPropertyFactory(config);
     Configuration.setConfiguration(new DynamicPropertiesConfiguration(factory).getInstance());
   }
 

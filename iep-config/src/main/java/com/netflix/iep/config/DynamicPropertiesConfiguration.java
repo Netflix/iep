@@ -16,7 +16,7 @@
 package com.netflix.iep.config;
 
 import com.netflix.archaius.api.Property;
-import com.netflix.archaius.api.PropertyFactory;
+import com.netflix.archaius.api.PropertyRepository;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +31,7 @@ public class DynamicPropertiesConfiguration implements AutoCloseable {
   private final IConfiguration instance;
 
   @Inject
-  public DynamicPropertiesConfiguration(PropertyFactory factory) {
+  public DynamicPropertiesConfiguration(PropertyRepository factory) {
     instance = new DynamicPropertiesConfigurationInstance(factory);
     Configuration.setConfiguration(instance);
   }
@@ -41,17 +41,17 @@ public class DynamicPropertiesConfiguration implements AutoCloseable {
   }
 
   protected class DynamicPropertiesConfigurationInstance implements IConfiguration {
-    private final PropertyFactory factory;
+    private final PropertyRepository factory;
     private final Map<String, Property<String>> props = new ConcurrentHashMap<>();
 
-    protected DynamicPropertiesConfigurationInstance(PropertyFactory factory) {
+    protected DynamicPropertiesConfigurationInstance(PropertyRepository factory) {
       this.factory = factory;
     }
 
     public String get(String key) {
       Property<String> prop = props.get(key);
       if (prop == null) {
-        prop = factory.getProperty(key).asString(null);
+        prop = factory.get(key, String.class).orElse(null);
         props.put(key, prop);
       }
       return prop.get();
