@@ -23,12 +23,19 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
+import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
+import software.amazon.awssdk.services.ec2.Ec2AsyncClient;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.DescribeAddressesRequest;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
 
 import java.lang.reflect.Field;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 @RunWith(JUnit4.class)
@@ -43,27 +50,40 @@ public class AwsClientFactoryTest {
     Assert.assertEquals("ec2", factory.getDefaultName(DescribeAddressesRequest.class));
   }
 
-  // TODO: figure out what to do with client config
-  /*@Test
+  @Test
+  public void getDefaultNameAsync() {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    Assert.assertEquals("ec2", factory.getDefaultName(Ec2AsyncClient.class));
+  }
+
+  private String getUserAgentPrefix(ClientOverrideConfiguration settings) {
+    return settings.advancedOption(SdkAdvancedClientOption.USER_AGENT_PREFIX).orElse(null);
+  }
+
+  private String getUserAgentSuffix(ClientOverrideConfiguration settings) {
+    return settings.advancedOption(SdkAdvancedClientOption.USER_AGENT_SUFFIX).orElse(null);
+  }
+
+  @Test
   public void createClientConfig() {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientOverrideConfiguration settings = factory.createClientConfig(null);
-    Assert.assertEquals(true, settings.gzipEnabled());
+    Assert.assertEquals("default", getUserAgentPrefix(settings));
   }
 
   @Test
   public void createClientConfigOverride() {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientOverrideConfiguration settings = factory.createClientConfig("ec2-test");
-    Assert.assertEquals(false, settings.gzipEnabled());
+    Assert.assertEquals("ignored-defaults", getUserAgentPrefix(settings));
   }
 
   @Test
   public void createClientConfigOverrideWithDefaults() {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientOverrideConfiguration settings = factory.createClientConfig("ec2-test-default");
-    Assert.assertEquals(false, settings.gzipEnabled());
-  }*/
+    Assert.assertEquals("override-defaults", getUserAgentPrefix(settings));
+  }
 
   @Test
   public void createCredentialsProvider() {
@@ -99,40 +119,62 @@ public class AwsClientFactoryTest {
   }
 
   @Test
-  public void newInstanceClient() throws Exception {
-    AwsClientFactory factory = new AwsClientFactory(config);
-    Ec2Client ec2 = factory.newInstance(Ec2Client.class);
-    Assert.assertNotNull(ec2);
-  }
-
-  @Test
   public void newInstanceName() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
     Ec2Client ec2 = factory.newInstance("ec2-test", Ec2Client.class);
     Assert.assertNotNull(ec2);
   }
 
-  // TODO: gzip no longer available
-  /*@Test
-  public void settingsBooleanTrue() {
+  @Test
+  public void newInstanceInterfaceAsync() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    ClientOverrideConfiguration settings = factory.createClientConfig("boolean-true");
-    Assert.assertEquals(true, settings.gzipEnabled());
+    Ec2AsyncClient ec2 = factory.newInstance(Ec2AsyncClient.class);
+    Assert.assertNotNull(ec2);
   }
 
   @Test
-  public void settingsBooleanFalse() {
+  public void newInstanceNameAsync() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    ClientOverrideConfiguration settings = factory.createClientConfig("boolean-false");
-    Assert.assertEquals(false, settings.gzipEnabled());
-  }*/
+    Ec2AsyncClient ec2 = factory.newInstance("ec2-test", Ec2AsyncClient.class);
+    Assert.assertNotNull(ec2);
+  }
 
-  // TODO: timeouts are no longer settable on the override configuration
-  /*@Test
+  @Test
+  public void settingsUserAgentPrefix() {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    ClientOverrideConfiguration settings = factory.createClientConfig(null);
+    Assert.assertEquals("default", getUserAgentPrefix(settings));
+  }
+
+  @Test
+  public void settingsUserAgentSuffix() {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    ClientOverrideConfiguration settings = factory.createClientConfig(null);
+    Assert.assertEquals("suffix", getUserAgentSuffix(settings));
+  }
+
+  @Test
+  public void settingsHeaders() {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    ClientOverrideConfiguration settings = factory.createClientConfig("headers");
+    Map<String, List<String>> headers = settings.headers();
+    Assert.assertEquals(1, headers.size());
+    Assert.assertEquals(Collections.singletonList("gzip"), headers.get("Accept-Encoding"));
+  }
+
+  @Test
+  public void settingsHeadersInvalid() {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    ClientOverrideConfiguration settings = factory.createClientConfig("headers-invalid");
+    Map<String, List<String>> headers = settings.headers();
+    Assert.assertTrue(headers.isEmpty());
+  }
+
+  @Test
   public void settingsTimeout() {
     AwsClientFactory factory = new AwsClientFactory(config);
     ClientOverrideConfiguration settings = factory.createClientConfig("timeouts");
-    Assert.assertEquals(Duration.ofMillis(42000), settings.httpRequestTimeout());
-    Assert.assertEquals(Duration.ofMillis(13000), settings.totalExecutionTimeout());
-  }*/
+    Assert.assertEquals(Duration.ofMillis(42000), settings.apiCallAttemptTimeout().get());
+    Assert.assertEquals(Duration.ofMillis(13000), settings.apiCallTimeout().get());
+  }
 }

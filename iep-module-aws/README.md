@@ -70,7 +70,7 @@ Module module = new AbstractModule() {
 Injector injector = Guice.createInjector(module, new AwsModule());
 
 // Get instance
-AmazonEC2 dflt = factory.newInstance(AmazonEC2.class);
+AmazonEC2 dflt = injector.getInstance(AmazonEC2.class);
 ```
 
 ### Multi-Account Usage
