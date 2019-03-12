@@ -21,9 +21,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Properties;
 
-import com.google.common.io.Resources;
-import com.google.common.base.Charsets;
-
 import com.netflix.archaius.api.Config;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.archaius.config.MapConfig;
@@ -42,7 +39,7 @@ public class TestResourceConfiguration {
   public static Config load(
       String propFile, Map<String,String> subs, Map<String,String> overrides) throws Exception {
     URL propUrl = Resources.getResource(propFile);
-    String propData = Resources.toString(propUrl, Charsets.UTF_8);
+    String propData = Resources.toString(propUrl);
     for (Map.Entry e : subs.entrySet()) {
       propData = propData.replaceAll("\\{" + e.getKey() + "\\}", (String) e.getValue());
     }

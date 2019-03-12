@@ -24,9 +24,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-
 public class ScopedPropertiesLoader {
   private static final Logger LOGGER = LoggerFactory.getLogger(ScopedPropertiesLoader.class);
 
@@ -59,7 +56,7 @@ public class ScopedPropertiesLoader {
       LOGGER.debug("loading properties from " + propUrl);
       String propData;
       try {
-        propData = Resources.toString(propUrl, Charsets.UTF_8);
+        propData = Resources.toString(propUrl);
       }
       catch (IOException e) {
         throw new RuntimeException(e);
