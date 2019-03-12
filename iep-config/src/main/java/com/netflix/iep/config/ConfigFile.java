@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Properties;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +34,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
 import javax.script.SimpleBindings;
 import javax.script.ScriptException;
-
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 
 /**
  * Helpers for loading configuration properties with scoped blocks.
@@ -90,9 +89,13 @@ public class ConfigFile {
     return loadProperties(System.getenv(), str);
   }
 
+  private static String toString(File file) throws IOException {
+    return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+  }
+
   public static Map<String,String> load(Map<String,String> vars, File file) {
     try {
-      return load(vars, Files.toString(file, Charsets.UTF_8));
+      return load(vars, toString(file));
     }
     catch (IOException e) {
       throw new RuntimeException(e);
@@ -110,7 +113,7 @@ public class ConfigFile {
 
   public static Properties loadProperties(Map<String,String> vars, File file) {
     try {
-      return loadProperties(vars, Files.toString(file, Charsets.UTF_8));
+      return loadProperties(vars, toString(file));
     }
     catch (IOException e) {
       throw new RuntimeException(e);
@@ -130,7 +133,7 @@ public class ConfigFile {
 
   public static String toPropertiesString(Map<String,String> vars, File file) {
     try {
-      return toPropertiesString(vars, Files.toString(file, Charsets.UTF_8));
+      return toPropertiesString(vars, toString(file));
     }
     catch (IOException e) {
       throw new RuntimeException(e);
