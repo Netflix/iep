@@ -82,26 +82,6 @@ public class AdminServer implements AutoCloseable {
     server.createContext(path, new AccessLogHandler(handler));
   }
 
-  /**
-   * @deprecated This is a no-op, the server will be automatically started when it
-   * is constructed.
-   */
-  @Deprecated
-  public void start() {
-  }
-
-  /**
-   * @deprecated Use {@link #close()} instead.
-   */
-  @Deprecated
-  public void stop() {
-    try {
-      close();
-    } catch (Exception e) {
-      throw new RuntimeException("failed to stop AdminServer", e);
-    }
-  }
-
   @Override public void close() throws Exception {
     LOGGER.info("shutting down admin on port {}", config.port());
     server.stop((int) config.shutdownDelay().toMillis());

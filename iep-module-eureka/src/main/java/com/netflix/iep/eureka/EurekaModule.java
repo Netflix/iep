@@ -18,7 +18,6 @@ package com.netflix.iep.eureka;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.Multibinder;
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -32,7 +31,6 @@ import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.discovery.shared.transport.jersey.Jersey1DiscoveryClientOptionalArgs;
-import com.netflix.iep.admin.AdminServer;
 import com.netflix.iep.admin.guice.AdminModule;
 import com.netflix.iep.service.Service;
 import org.apache.commons.configuration.Configuration;
@@ -107,8 +105,6 @@ public final class EurekaModule extends AbstractModule {
 
   public static void main(String[] args) {
     System.setProperty("netflix.iep.archaius.use-dynamic", "false");
-    Injector injector = Guice.createInjector(new EurekaModule());
-    AdminServer server = injector.getInstance(AdminServer.class);
-    server.start();
+    Guice.createInjector(new EurekaModule());
   }
 }

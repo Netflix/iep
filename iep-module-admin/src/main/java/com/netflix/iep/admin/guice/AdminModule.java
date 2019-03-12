@@ -159,12 +159,10 @@ public class AdminModule extends AbstractModule {
    * quick local testing of the module and common endpoints.
    */
   public static void main(String[] args) {
-    Injector injector = Guice.createInjector(new AdminModule(), new AbstractModule() {
+    Guice.createInjector(new AdminModule(), new AbstractModule() {
       @Override protected void configure() {
         bind(Registry.class).toInstance(new DefaultRegistry());
       }
     });
-    AdminServer server = injector.getInstance(AdminServer.class);
-    server.start();
   }
 }
