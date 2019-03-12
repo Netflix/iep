@@ -1,0 +1,52 @@
+{
+  "applications": {
+    "application": [
+      {
+        "name": "APP",
+        "instance": [
+          {
+            "app": "APP",
+            "appGroupName": "UNKNOWN",
+            "sid": "na",
+            "homePageUrl": "http://10.20.30.40:7101/",
+            "statusPageUrl": "http://10.20.30.40:7101/Status",
+            "healthCheckUrl": "http://10.20.30.40:7101/healthcheck",
+            "vipAddress": "app-main:7001",
+            "countryId": 1,
+            "dataCenterInfo": {
+              "@class": "com.netflix.appinfo.AmazonInfo",
+              "name": "Amazon"
+            },
+            "hostName": "10.20.30.40",
+            "status": "UP",
+            "overriddenStatus": "UNKNOWN",
+            "leaseInfo": {
+              "renewalIntervalInSecs": 30,
+              "durationInSecs": 90,
+              "registrationTimestamp": 1551379716423,
+              "lastRenewalTimestamp": 1551934330011,
+              "evictionTimestamp": 0,
+              "serviceUpTimestamp": 1551379716423
+            },
+            "isCoordinatingDiscoveryServer": false,
+            "lastUpdatedTimestamp": 1551379716423,
+            "lastDirtyTimestamp": 1551379715718,
+            "actionType": "ADDED",
+            "asgName": "app-main-v001",
+            "port": {
+              "$": 7101,
+              "@enabled": "true"
+            },
+            "securePort": {
+              "$": 7102,
+              "@enabled": "false"
+            },
+            "metadata": {
+              "@class": "java.util.Collections$EmptyMap"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

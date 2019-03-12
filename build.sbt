@@ -22,6 +22,7 @@ lazy val root = project.in(file("."))
     `iep-nflxenv`,
     `iep-platformservice`,
     `iep-rxhttp`,
+    `iep-servergroups`,
     `iep-service`,
     `iep-ses`)
   .settings(BuildSettings.noPackaging: _*)
@@ -252,6 +253,17 @@ lazy val `iep-rxhttp` = project
     Dependencies.jzlib,
     Dependencies.rxjava,
     Dependencies.rxnettyCore,
+    Dependencies.spectatorApi,
+    Dependencies.spectatorIpc,
+    Dependencies.slf4jApi,
+    Dependencies.equalsVerifier % "test"
+  ))
+
+lazy val `iep-servergroups` = project
+  .configure(BuildSettings.profile)
+  .dependsOn(`iep-service`)
+  .settings(libraryDependencies ++= Seq(
+    Dependencies.jacksonMapper,
     Dependencies.spectatorApi,
     Dependencies.spectatorIpc,
     Dependencies.slf4jApi,
