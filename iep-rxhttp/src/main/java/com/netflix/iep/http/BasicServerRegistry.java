@@ -23,7 +23,11 @@ import java.util.Set;
 
 /**
  * Registry with a fixed set of servers specified at creation.
+ *
+ * @deprecated This library depends on RxNetty which is unsupported and RxJava 1.x which reached
+ * end of life on March 31, 2018. Move to a supported HTTP client.
  */
+@Deprecated
 public class BasicServerRegistry implements ServerRegistry {
 
   private final Map<String, List<Server>> serversByVip;

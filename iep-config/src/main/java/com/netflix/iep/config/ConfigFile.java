@@ -48,7 +48,10 @@ import javax.script.ScriptException;
  * Properties can be deleted by setting them to null
  * netflix.atlas.foo=null
  * </pre>
+ *
+ * @deprecated Switch to injecting a Config instance.
  */
+@Deprecated
 public class ConfigFile {
 
   public static boolean checkScope(Map<String,String> vars, String str) {

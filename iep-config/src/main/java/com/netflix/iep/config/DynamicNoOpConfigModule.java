@@ -36,6 +36,10 @@ import javax.inject.Singleton;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @deprecated Switch to injecting a Config instance.
+ */
+@Deprecated
 public class DynamicNoOpConfigModule extends AbstractModule {
 
   private final String[] propFiles;

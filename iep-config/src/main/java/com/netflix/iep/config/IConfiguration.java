@@ -15,6 +15,10 @@
  */
 package com.netflix.iep.config;
 
+/**
+ * @deprecated Switch to injecting a Config instance.
+ */
+@Deprecated
 public interface IConfiguration {
   String get(String key);
 }

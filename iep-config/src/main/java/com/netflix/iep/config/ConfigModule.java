@@ -30,6 +30,10 @@ import com.typesafe.config.Config;
 import javax.inject.Singleton;
 import java.util.Properties;
 
+/**
+ * @deprecated Switch to injecting a Config instance.
+ */
+@Deprecated
 public class ConfigModule extends AbstractModule {
 
   private final String[] propFiles;
