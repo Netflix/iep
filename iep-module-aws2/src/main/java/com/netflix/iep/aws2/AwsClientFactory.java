@@ -16,9 +16,13 @@
 package com.netflix.iep.aws2;
 
 import com.typesafe.config.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.awscore.client.builder.AwsClientBuilder;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
+import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
@@ -27,14 +31,16 @@ import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Factory for creating instances of AWS clients.
  */
 @Singleton
 public class AwsClientFactory {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AwsClientFactory.class);
 
   private final Config config;
   private final String region;
@@ -56,10 +62,44 @@ public class AwsClientFactory {
     return pkg.startsWith(prefix) ? firstOnly(pkg.substring(prefix.length())) : null;
   }
 
-  private <T> void setIfPresent(Config cfg, String key, Function<String, T> getter, Consumer<T> setter) {
+  private void setIfPresent(Config cfg, String key, Consumer<Duration> setter) {
     if (cfg.hasPath(key)) {
-      setter.accept(getter.apply(key));
+      setter.accept(cfg.getDuration(key));
     }
+  }
+
+  private void setIfPresent(
+      Config cfg,
+      String key,
+      SdkAdvancedClientOption<String> option,
+      ClientOverrideConfiguration.Builder builder) {
+    if (cfg.hasPath(key)) {
+      builder.putAdvancedOption(option, cfg.getString(key));
+    }
+  }
+
+  ClientOverrideConfiguration createClientConfig(String name) {
+    final Config cfg = getConfig(name, "client");
+    ClientOverrideConfiguration.Builder builder = ClientOverrideConfiguration.builder();
+
+    setIfPresent(cfg, "api-call-timeout", builder::apiCallTimeout);
+    setIfPresent(cfg, "api-call-attempt-timeout", builder::apiCallAttemptTimeout);
+
+    setIfPresent(cfg, "user-agent-prefix", SdkAdvancedClientOption.USER_AGENT_PREFIX, builder);
+    setIfPresent(cfg, "user-agent-suffix", SdkAdvancedClientOption.USER_AGENT_SUFFIX, builder);
+
+    if (cfg.hasPath("headers")) {
+      for (String header : cfg.getStringList("headers")) {
+        String[] parts = header.split(":", 2);
+        if (parts.length == 2) {
+          builder.putHeader(parts[0].trim(), parts[1].trim());
+        } else {
+          LOGGER.warn("ignoring invalid header string: '{}'", header);
+        }
+      }
+    }
+
+    return builder.build();
   }
 
   private Config getConfig(String name, String suffix) {
@@ -122,6 +162,7 @@ public class AwsClientFactory {
       return (T) ((AwsClientBuilder) builderMethod.invoke(null))
           .credentialsProvider(createCredentialsProvider(name))
           .region(chooseRegion(name, cls))
+          .overrideConfiguration(createClientConfig(name))
           .build();
     } catch (Exception e) {
       throw new RuntimeException("failed to create instance of " + cls.getName(), e);
