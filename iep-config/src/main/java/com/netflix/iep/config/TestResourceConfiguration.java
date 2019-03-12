@@ -25,6 +25,10 @@ import com.netflix.archaius.api.Config;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.archaius.config.MapConfig;
 
+/**
+ * @deprecated Switch to injecting a Config instance.
+ */
+@Deprecated
 public class TestResourceConfiguration {
   private TestResourceConfiguration() {}
 

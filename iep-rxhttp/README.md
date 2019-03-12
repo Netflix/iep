@@ -1,6 +1,11 @@
 
 ## Description
 
+> :warning: **Deprecated:** This library depends on RxNetty which is unsupported and
+> RxJava 1.x which reached [end of life] on March 31, 2018. Move to a supported HTTP client.
+
+[end of life]: https://github.com/ReactiveX/RxJava/releases/tag/v1.3.8
+
 Simple wrapper on top of [RxNetty](https://github.com/ReactiveX/RxNetty) that provides
 integration with [Eureka](https://github.com/Netflix/eureka/) and
 [Archaius2](https://github.com/Netflix/archaius/tree/2.x).

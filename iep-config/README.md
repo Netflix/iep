@@ -1,7 +1,7 @@
 
 ## Description
 
-> :warning: Deprecated. For new work prefer [iep-module-archaius2][a2].
+> :warning: **Deprecated:** For new work prefer [iep-module-archaius2][a2].
 
 [a2]: https://github.com/Netflix/iep/tree/master/iep-module-archaius2
 

@@ -31,6 +31,10 @@ import org.joda.time.format.ISOPeriodFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.PeriodFormatter;
 
+/**
+ * @deprecated Switch to injecting a Config instance.
+ */
+@Deprecated
 public class Strings {
   private Strings() {}
 

@@ -20,6 +20,7 @@ import java.lang.annotation.*;
 /**
  * Indicates a default value that will be used if the property is not explicitly set.
  */
+@Deprecated
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})

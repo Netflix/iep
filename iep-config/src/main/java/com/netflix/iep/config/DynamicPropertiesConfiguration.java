@@ -25,6 +25,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 
+/**
+ * @deprecated Switch to injecting a Config instance.
+ */
+@Deprecated
 @Singleton
 public class DynamicPropertiesConfiguration implements AutoCloseable {
 

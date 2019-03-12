@@ -33,7 +33,11 @@ import java.util.Objects;
 
 /**
  * Helper operations for working with {@code Observable<ByteBuf>} objects.
+ *
+ * @deprecated This library depends on RxNetty which is unsupported and RxJava 1.x which reached
+ * end of life on March 31, 2018. Move to a supported HTTP client.
  */
+@Deprecated
 public final class ByteBufs {
 
   private ByteBufs() {

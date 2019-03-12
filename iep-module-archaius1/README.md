@@ -1,6 +1,8 @@
 
 ## Description
 
+> :warning: **Deprecated:** move to Archaius 2 or Typesafe Config.
+
 Guice module to configure [archaius1](https://github.com/Netflix/archaius). This module will
 primarily setup the [archaius2-archaius1-bridge](https://github.com/Netflix/archaius/tree/2.x/archaius2-archaius1-bridge)
 so that archaius1 will be delegating to archaius2.

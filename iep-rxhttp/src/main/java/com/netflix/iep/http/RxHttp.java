@@ -66,7 +66,11 @@ import java.util.zip.GZIPOutputStream;
 /**
  * Helper for some simple uses of rxnetty with eureka. Only intended for use within the spectator
  * plugin.
+ *
+ * @deprecated This library depends on RxNetty which is unsupported and RxJava 1.x which reached
+ * end of life on March 31, 2018. Move to a supported HTTP client.
  */
+@Deprecated
 @Singleton
 public final class RxHttp implements AutoCloseable {
 

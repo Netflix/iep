@@ -29,7 +29,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Registry that gets the server list from eureka. Servers that have a status of UP and are
  * registered with the requested vip will get used.
+ *
+ * @deprecated This library depends on RxNetty which is unsupported and RxJava 1.x which reached
+ * end of life on March 31, 2018. Move to a supported HTTP client.
  */
+@Deprecated
 public class EurekaServerRegistry implements ServerRegistry {
 
   private final ConcurrentHashMap<String, ServerEntry> serversByVip = new ConcurrentHashMap<>();

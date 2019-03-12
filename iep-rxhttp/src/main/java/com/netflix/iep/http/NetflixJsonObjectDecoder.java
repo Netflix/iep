@@ -36,7 +36,11 @@ import java.util.List;
  * This class does not do any real parsing or validation. A sequence of bytes is considered a JSON object/array
  * if it contains a matching number of opening and closing braces/brackets. It's up to a subsequent
  * {@link ChannelHandler} to parse the JSON text into a more usable form i.e. a POJO.
+ *
+ * @deprecated This library depends on RxNetty which is unsupported and RxJava 1.x which reached
+ * end of life on March 31, 2018. Move to a supported HTTP client.
  */
+@Deprecated
 public class NetflixJsonObjectDecoder extends ByteToMessageDecoder {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(NetflixJsonObjectDecoder.class);

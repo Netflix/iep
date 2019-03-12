@@ -24,6 +24,10 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @deprecated Switch to injecting a Config instance.
+ */
+@Deprecated
 public class ScopedPropertiesLoader {
   private static final Logger LOGGER = LoggerFactory.getLogger(ScopedPropertiesLoader.class);
 

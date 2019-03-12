@@ -17,7 +17,11 @@ package com.netflix.iep.http;
 
 /**
  * Represents a server to try and connect to.
+ *
+ * @deprecated This library depends on RxNetty which is unsupported and RxJava 1.x which reached
+ * end of life on March 31, 2018. Move to a supported HTTP client.
  */
+@Deprecated
 public final class Server {
   /** Id for servers that are not created as part of a server registry. */
   public static final String UNREGISTERED_HOST_ID = "UNREGISTERED";
