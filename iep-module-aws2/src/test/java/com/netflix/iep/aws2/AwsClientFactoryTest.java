@@ -25,6 +25,7 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ec2.Ec2AsyncClient;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.DescribeAddressesRequest;
@@ -88,7 +89,7 @@ public class AwsClientFactoryTest {
   @Test
   public void createCredentialsProvider() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider(null);
+    AwsCredentialsProvider creds = factory.createCredentialsProvider(null, null);
     Assert.assertTrue(creds instanceof DefaultCredentialsProvider);
   }
 
@@ -105,7 +106,31 @@ public class AwsClientFactoryTest {
   @Test
   public void createCredentialsProviderOverride() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test");
+    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", null);
+    Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
+    Assert.assertEquals("arn:aws:iam::1234567890:role/IepTest", getRequest(creds).roleArn());
+    Assert.assertEquals("iep", getRequest(creds).roleSessionName());
+  }
+
+  @Test
+  public void createCredentialsProviderForAccount() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-account", "123");
+    Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
+    Assert.assertEquals("arn:aws:iam::123:role/IepTest", getRequest(creds).roleArn());
+    Assert.assertEquals("ieptest", getRequest(creds).roleSessionName());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void createCredentialsProviderForAccountNull() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    factory.createCredentialsProvider("ec2-account", null);
+  }
+
+  @Test
+  public void createCredentialsProviderForAccountIgnored() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", "123");
     Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
     Assert.assertEquals("arn:aws:iam::1234567890:role/IepTest", getRequest(creds).roleArn());
     Assert.assertEquals("iep", getRequest(creds).roleSessionName());
@@ -116,6 +141,12 @@ public class AwsClientFactoryTest {
     AwsClientFactory factory = new AwsClientFactory(config);
     Ec2Client ec2 = factory.newInstance(Ec2Client.class);
     Assert.assertNotNull(ec2);
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void newInstanceBadClass() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    factory.newInstance(AwsClientFactory.class);
   }
 
   @Test
@@ -137,6 +168,46 @@ public class AwsClientFactoryTest {
     AwsClientFactory factory = new AwsClientFactory(config);
     Ec2AsyncClient ec2 = factory.newInstance("ec2-test", Ec2AsyncClient.class);
     Assert.assertNotNull(ec2);
+  }
+
+  @Test
+  public void getInstanceInterface() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    Ec2Client ec2 = factory.getInstance(Ec2Client.class);
+    Assert.assertNotNull(ec2);
+    Assert.assertSame(ec2, factory.getInstance(Ec2Client.class));
+    Assert.assertNotSame(ec2, factory.newInstance(Ec2Client.class));
+  }
+
+  @Test
+  public void getInstanceClient() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    Ec2Client ec2 = factory.getInstance(Ec2Client.class);
+    Assert.assertNotNull(ec2);
+    Assert.assertSame(ec2, factory.getInstance(Ec2Client.class));
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void getInstanceBadClass() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    factory.getInstance(AwsClientFactory.class);
+  }
+
+  @Test
+  public void getInstanceName() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    Ec2Client ec2 = factory.getInstance("ec2-test", Ec2Client.class);
+    Assert.assertNotNull(ec2);
+    Assert.assertSame(ec2, factory.getInstance("ec2-test", Ec2Client.class));
+    Assert.assertNotSame(ec2, factory.getInstance(Ec2Client.class));
+  }
+
+  @Test
+  public void closeClients() throws Exception {
+    // Verifies the close completes without throwing
+    AwsClientFactory factory = new AwsClientFactory(config);
+    factory.getInstance(Ec2Client.class);
+    factory.close();
   }
 
   @Test
