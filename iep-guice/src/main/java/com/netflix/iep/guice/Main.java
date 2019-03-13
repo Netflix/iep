@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,7 +70,7 @@ public class Main {
     return helper;
   }
 
-  void run(String[] args) throws Exception {
+  void runImpl(String[] args, Module... additionalModules) throws Exception {
     try {
       // Setup binding for command line arguments
       Module argsModule = new AbstractModule() {
@@ -83,6 +84,7 @@ public class Main {
       List<Module> modules = useServiceLoader()
           ? GuiceHelper.getModulesUsingServiceLoader()
           : new ArrayList<>();
+      Collections.addAll(modules, additionalModules);
       modules.addAll(loadExplicitModules());
       modules.add(argsModule);
 
@@ -103,7 +105,11 @@ public class Main {
     }
   }
 
+  public static void run(String[] args, Module... additionalModules) throws Exception {
+    (new Main()).runImpl(args, additionalModules);
+  }
+
   public static void main(String[] args) throws Exception {
-    (new Main()).run(args);
+    run(args);
   }
 }
