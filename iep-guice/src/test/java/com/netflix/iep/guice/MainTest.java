@@ -15,6 +15,8 @@
  */
 package com.netflix.iep.guice;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Module;
 import com.google.inject.ProvisionException;
 import com.netflix.iep.service.ServiceManager;
 import org.junit.Assert;
@@ -43,7 +45,7 @@ public class MainTest {
   public void runWithNoModules() throws Exception {
     System.setProperty("netflix.iep.guice.useServiceLoader", "false");
     Main m = new Main();
-    m.run(new String[]{});
+    m.runImpl(new String[]{});
   }
 
   @Test
@@ -53,7 +55,7 @@ public class MainTest {
     Main m = new Main();
     boolean startupFailed = false;
     try {
-      m.run(new String[]{});
+      m.runImpl(new String[]{});
     } catch (ProvisionException e) {
       startupFailed = true;
       Assert.assertEquals("missing required argument", e.getCause().getMessage());
@@ -67,7 +69,7 @@ public class MainTest {
     Main m = new Main();
     boolean startupFailed = false;
     try {
-      m.run(new String[]{});
+      m.runImpl(new String[]{});
     } catch (ProvisionException e) {
       startupFailed = true;
       Assert.assertEquals("missing required argument", e.getCause().getMessage());
@@ -79,14 +81,14 @@ public class MainTest {
   @Test
   public void runWithUp() throws Exception {
     Main m = new Main();
-    m.run(new String[]{"up"});
+    m.runImpl(new String[]{"up"});
     Assert.assertTrue(m.getHelper().getInjector().getInstance(ServiceManager.class).isHealthy());
   }
 
   @Test
   public void runWithDown() throws Exception {
     Main m = new Main();
-    m.run(new String[]{"down"});
+    m.runImpl(new String[]{"down"});
     Assert.assertFalse(m.getHelper().getInjector().getInstance(ServiceManager.class).isHealthy());
   }
 
@@ -95,12 +97,24 @@ public class MainTest {
     Main m = new Main();
     boolean startupFailed = false;
     try {
-      m.run(new String[]{"foo"});
+      m.runImpl(new String[]{"foo"});
     } catch (ProvisionException e) {
       startupFailed = true;
       Assert.assertEquals("unknown mode: foo", e.getCause().getMessage());
     } finally {
       Assert.assertTrue(startupFailed);
     }
+  }
+
+  @Test
+  public void runWithAdditionalModules() throws Exception {
+    Module module = new AbstractModule() {
+      @Override protected void configure() {
+        bind(String.class).toInstance("foo");
+      }
+    };
+    Main m = new Main();
+    m.runImpl(new String[]{"up"}, module);
+    Assert.assertEquals("foo", m.getHelper().getInjector().getInstance(String.class));
   }
 }
