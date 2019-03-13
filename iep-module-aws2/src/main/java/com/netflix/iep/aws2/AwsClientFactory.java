@@ -27,20 +27,24 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
+import software.amazon.awssdk.utils.SdkAutoCloseable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
  * Factory for creating instances of AWS clients.
  */
 @Singleton
-public class AwsClientFactory {
+public class AwsClientFactory implements AutoCloseable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AwsClientFactory.class);
+
+  private final ConcurrentHashMap<String, SdkAutoCloseable> clients = new ConcurrentHashMap<>();
 
   private final Config config;
   private final String region;
@@ -109,8 +113,24 @@ public class AwsClientFactory {
         : config.getConfig(cfgPrefix + ".default." + suffix);
   }
 
-  private AwsCredentialsProvider createAssumeRoleProvider(Config cfg, AwsCredentialsProvider p) {
-    final String arn = cfg.getString("role-arn");
+  private String createRoleArn(String arnPattern, String accountId) {
+    final boolean needsSubstitution = arnPattern.contains("{account}");
+    if (accountId == null) {
+      if (needsSubstitution) {
+        throw new IllegalArgumentException("missing account id for ARN pattern: " + arnPattern);
+      }
+      return arnPattern;
+    } else if (needsSubstitution) {
+      return arnPattern.replace("{account}", accountId);
+    } else {
+      LOGGER.warn("requested account, {}, is not used by ARN pattern: {}", accountId, arnPattern);
+      return arnPattern;
+    }
+  }
+
+  private AwsCredentialsProvider createAssumeRoleProvider(
+      Config cfg, String accountId, AwsCredentialsProvider p) {
+    final String arn = createRoleArn(cfg.getString("role-arn"), accountId);
     final String name = cfg.getString("role-session-name");
     final StsClient stsClient = StsClient.builder()
         .credentialsProvider(p)
@@ -126,14 +146,17 @@ public class AwsClientFactory {
         .build();
   }
 
-  AwsCredentialsProvider createCredentialsProvider(String name) {
+  AwsCredentialsProvider createCredentialsProvider(String name, String accountId) {
     final AwsCredentialsProvider dflt = DefaultCredentialsProvider.builder()
         .asyncCredentialUpdateEnabled(true)
         .build();
     final Config cfg = getConfig(name, "credentials");
     if (cfg.hasPath("role-arn")) {
-      return createAssumeRoleProvider(cfg, dflt);
+      return createAssumeRoleProvider(cfg, accountId, dflt);
     } else {
+      if (accountId != null) {
+        LOGGER.warn("requested account, {}, ignored, no role ARN configured", accountId);
+      }
       return dflt;
     }
   }
@@ -151,21 +174,161 @@ public class AwsClientFactory {
     return Region.of(endpointRegion);
   }
 
+  /**
+   * Create a new instance of an AWS client of the specified type. The name of the config
+   * block will be based on the package for the class name. For example, if requesting an
+   * instance of {@code software.amazon.awssdk.services.ec2.Ec2Client} the config name used
+   * will be {@code ec2}.
+   *
+   * @param cls
+   *     Class for the AWS client type to create, e.g. {@code Ec2Client.class}.
+   * @return
+   *     AWS client instance.
+   */
   public <T> T newInstance(Class<T> cls) {
     return newInstance(getDefaultName(cls), cls);
   }
 
-  @SuppressWarnings("unchecked")
+  /**
+   * Create a new instance of an AWS client of the specified type.
+   *
+   * @param name
+   *     Name of the client. This is used to load config settings specific to the name.
+   * @param cls
+   *     Class for the AWS client type to create, e.g. {@code Ec2Client.class}.
+   * @return
+   *     AWS client instance.
+   */
   public <T> T newInstance(String name, Class<T> cls) {
+    return newInstance(name, cls, null);
+  }
+
+  /**
+   * Create a new instance of an AWS client. The name of the config
+   * block will be based on the package for the class name. For example, if requesting an
+   * instance of {@code software.amazon.awssdk.services.ec2.Ec2Client} the config name used
+   * will be {@code ec2}.
+   *
+   * @param cls
+   *     Class for the AWS client type to create, e.g. {@code Ec2Client.class}.
+   * @param accountId
+   *     The AWS account id to use when assuming to a role. If null, then the account
+   *     id should be specified directly in the role-arn setting or leave out the setting
+   *     to use the default credentials provider.
+   * @return
+   *     AWS client instance.
+   */
+  public <T> T newInstance(Class<T> cls, String accountId) {
+    return newInstance(getDefaultName(cls), cls, accountId);
+  }
+
+  /**
+   * Create a new instance of an AWS client. This method will always create a new instance.
+   * If you want to create or reuse an existing instance, then see
+   * {@link #getInstance(String, Class, String)}.
+   *
+   * @param name
+   *     Name of the client. This is used to load config settings specific to the name.
+   * @param cls
+   *     Class for the AWS client type to create, e.g. {@code Ec2Client.class}.
+   * @param accountId
+   *     The AWS account id to use when assuming to a role. If null, then the account
+   *     id should be specified directly in the role-arn setting or leave out the setting
+   *     to use the default credentials provider.
+   * @return
+   *     AWS client instance.
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T newInstance(String name, Class<T> cls, String accountId) {
     try {
       Method builderMethod = cls.getMethod("builder");
       return (T) ((AwsClientBuilder) builderMethod.invoke(null))
-          .credentialsProvider(createCredentialsProvider(name))
+          .credentialsProvider(createCredentialsProvider(name, accountId))
           .region(chooseRegion(name, cls))
           .overrideConfiguration(createClientConfig(name))
           .build();
     } catch (Exception e) {
       throw new RuntimeException("failed to create instance of " + cls.getName(), e);
     }
+  }
+
+  /**
+   * Get a shared instance of an AWS client of the specified type. The name of the config
+   * block will be based on the package for the class name. For example, if requesting an
+   * instance of {@code software.amazon.awssdk.services.ec2.Ec2Client} the config name used
+   * will be {@code ec2}.
+   *
+   * @param cls
+   *     Class for the AWS client type to create, e.g. {@code Ec2Client.class}.
+   * @return
+   *     AWS client instance.
+   */
+  public <T> T getInstance(Class<T> cls) {
+    return getInstance(getDefaultName(cls), cls);
+  }
+
+  /**
+   * Get a shared instance of an AWS client.
+   *
+   * @param name
+   *     Name of the client. This is used to load config settings specific to the name.
+   * @param cls
+   *     Class for the AWS client type to create, e.g. {@code Ec2Client.class}.
+   * @return
+   *     AWS client instance.
+   */
+  public <T> T getInstance(String name, Class<T> cls) {
+    return getInstance(name, cls, null);
+  }
+
+  /**
+   * Get a shared instance of an AWS client. The name of the config
+   * block will be based on the package for the class name. For example, if requesting an
+   * instance of {@code software.amazon.awssdk.services.ec2.Ec2Client} the config name used
+   * will be {@code ec2}.
+   *
+   * @param cls
+   *     Class for the AWS client type to create, e.g. {@code Ec2Client.class}.
+   * @param accountId
+   *     The AWS account id to use when assuming to a role. If null, then the account
+   *     id should be specified directly in the role-arn setting or leave out the setting
+   *     to use the default credentials provider.
+   * @return
+   *     AWS client instance.
+   */
+  public <T> T getInstance(Class<T> cls, String accountId) {
+    return getInstance(getDefaultName(cls), cls, accountId);
+  }
+
+  /**
+   * Get a shared instance of an AWS client.
+   *
+   * @param name
+   *     Name of the client. This is used to load config settings specific to the name.
+   * @param cls
+   *     Class for the AWS client type to create, e.g. {@code Ec2Client.class}.
+   * @param accountId
+   *     The AWS account id to use when assuming to a role. If null, then the account
+   *     id should be specified directly in the role-arn setting or leave out the setting
+   *     to use the default credentials provider.
+   * @return
+   *     AWS client instance.
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T getInstance(String name, Class<T> cls, String accountId) {
+    try {
+      final String key = name + ":" + cls.getName() + ":" + accountId;
+      return (T) clients.computeIfAbsent(key,
+          k -> (SdkAutoCloseable) newInstance(name, cls, accountId));
+    } catch (Exception e) {
+      throw new RuntimeException("failed to get instance of " + cls.getName(), e);
+    }
+  }
+
+  /**
+   * Cleanup resources used by shared clients.
+   */
+  @Override public void close() throws Exception {
+    clients.values().forEach(SdkAutoCloseable::close);
   }
 }
