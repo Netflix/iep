@@ -155,21 +155,9 @@ lazy val `iep-module-aws2` = project
   .dependsOn(`iep-nflxenv`)
   .settings(libraryDependencies ++= Seq(
     Dependencies.aws2Core,
-    Dependencies.aws2AutoScaling % "test",
-    Dependencies.aws2CloudWatch % "test",
-    Dependencies.aws2DynamoDB % "test",
     Dependencies.aws2EC2 % "test",
-    Dependencies.aws2ELB % "test",
-    Dependencies.aws2ELBv2 % "test",
-    Dependencies.aws2EMR % "test",
-    Dependencies.aws2Route53 % "test",
     Dependencies.aws2STS,
     Dependencies.guiceCore,
-    Dependencies.jacksonCbor,    // Jackson deps are not used directly, here to force 2.9.1
-    Dependencies.jacksonMapper,  // https://bugs.openjdk.java.net/browse/JDK-8186334
-    Dependencies.jacksonJr,
-    Dependencies.reactiveStreams,
-    Dependencies.rxjava2,
     Dependencies.slf4jApi,
     Dependencies.typesafeConfig
   ))
