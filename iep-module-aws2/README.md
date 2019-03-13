@@ -11,7 +11,7 @@ tuned as needed in the configuration file.
 
 For more complete settings see the [reference.conf]. A quick example is shown below:
 
-[reference.conf](https://github.com/Netflix/iep/blob/master/iep-module-aws2/src/main/resources/reference.conf)
+[reference.conf]: https://github.com/Netflix/iep/blob/master/iep-module-aws2/src/main/resources/reference.conf
 
 ```hocon
 netflix.iep.aws {
