@@ -147,7 +147,7 @@ $ project/sbt test
 
 There is also a makefile included that runs SBT with some convenient targets.
 To reproduce the validation done for PR builds locally, including verification of
-[license headers](#license-headers) and [formatting](#scalafmt), just run:
+[license headers](#license-headers), just run:
 
 ```
 $ make
