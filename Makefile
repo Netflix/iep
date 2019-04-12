@@ -10,7 +10,7 @@ build:
 
 snapshot:
 	echo "Starting snapshot build"
-	git fetch --unshallow
+	git fetch --unshallow --tags
 	$(SBT) storeBintrayCredentials
 	$(SBT) clean test checkLicenseHeaders publish
 
@@ -21,7 +21,7 @@ release:
 	# The storeBintrayCredentials still needs to be on the subsequent command or we get:
 	# [error] (iep-service/*:bintrayEnsureCredentials) java.util.NoSuchElementException: None.get
 	echo "Starting release build"
-	git fetch --unshallow
+	git fetch --unshallow --tags
 	$(SBT) storeBintrayCredentials
 	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
 
