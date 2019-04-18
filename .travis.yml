@@ -9,7 +9,6 @@ matrix:
     env: BINTRAY_PUBLISH=false
 scala:
 - 2.12.8
-sudo: false
 script:
 - ./buildViaTravis.sh
 env:
