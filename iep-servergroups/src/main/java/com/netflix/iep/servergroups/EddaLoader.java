@@ -34,7 +34,7 @@ import java.util.List;
  * server groups across both EC2 and Titus. This data is based on Edda's cache of AWS and Titus
  * data.
  */
-class EddaLoader implements Loader {
+public class EddaLoader implements Loader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EddaLoader.class);
 
@@ -51,7 +51,7 @@ class EddaLoader implements Loader {
    * @param uri
    *     Full URI to the {@code /netflix/serverGroups} endpoint on the Edda server.
    */
-  EddaLoader(HttpClient client, URI uri) {
+  public EddaLoader(HttpClient client, URI uri) {
     this.client = client;
     this.uri = uri;
     this.mapper = new ObjectMapper();
