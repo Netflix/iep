@@ -100,6 +100,7 @@ public final class Context implements AutoCloseable {
         .withRetries(2)
         .acceptJson()
         .acceptGzip()
+        .customizeLogging(entry -> entry.withEndpoint(name))
         .send()
         .decompress();
   }
