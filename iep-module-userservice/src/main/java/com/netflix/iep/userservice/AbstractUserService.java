@@ -66,7 +66,7 @@ abstract class AbstractUserService extends AbstractService implements UserServic
     if (enabled) {
       PolledMeter.using(registry)
           .withId(cacheAge)
-          .monitorValue(new AtomicLong(clock.wallTime()), Functions.age(clock));
+          .monitorValue(lastUpdateTime, Functions.age(clock));
     }
   }
 
@@ -102,7 +102,6 @@ abstract class AbstractUserService extends AbstractService implements UserServic
       lastUpdateTime.set(context.registry().clock().wallTime());
       return true;
     } catch (Exception e) {
-      e.printStackTrace();
       logger.warn("failed to refresh users list", e);
       return false;
     }
