@@ -3,16 +3,16 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.3.14"
-    val aws        = "1.11.534"
-    val aws2       = "2.5.25"
+    val aws        = "1.11.556"
+    val aws2       = "2.5.47"
     val eureka     = "1.9.9"
     val guice      = "4.1.0"
-    val jackson    = "2.9.8"
+    val jackson    = "2.9.9"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.8"
     val slf4j      = "1.7.26"
-    val spectator  = "0.90.0"
+    val spectator  = "0.92.0"
   }
 
   import Versions._
@@ -48,7 +48,7 @@ object Dependencies {
   val aws2Route53        = "software.amazon.awssdk" % "route53" % aws2
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.1.8"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.1.9"
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceAssist        = "com.google.inject.extensions" % "guice-assistedinject" % guice
   val guiceCore          = "com.google.inject" % "guice" % guice
@@ -64,7 +64,7 @@ object Dependencies {
   val jacksonScala       = "com.fasterxml.jackson.module" %% "jackson-module-scala" % jackson
   val jacksonSmile       = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-smile" % jackson
   val jodaConvert        = "org.joda" % "joda-convert" % "1.8.1"
-  val jodaTime           = "joda-time" % "joda-time" % "2.10.1"
+  val jodaTime           = "joda-time" % "joda-time" % "2.10.2"
   val jsr250             = "javax.annotation" % "jsr250-api" % "1.0"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
@@ -89,5 +89,5 @@ object Dependencies {
   val spectatorIpc       = "com.netflix.spectator" % "spectator-ext-ipc" % spectator
   val spectatorJvm       = "com.netflix.spectator" % "spectator-ext-jvm" % spectator
   val spectatorStateless = "com.netflix.spectator" % "spectator-reg-stateless" % spectator
-  val typesafeConfig     = "com.typesafe" % "config" % "1.3.3"
+  val typesafeConfig     = "com.typesafe" % "config" % "1.3.4"
 }
