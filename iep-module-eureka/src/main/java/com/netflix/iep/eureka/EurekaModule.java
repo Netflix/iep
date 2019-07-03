@@ -30,6 +30,8 @@ import com.netflix.discovery.AbstractDiscoveryClientOptionalArgs;
 import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClientConfig;
+import com.netflix.discovery.shared.resolver.EndpointRandomizer;
+import com.netflix.discovery.shared.resolver.ResolverUtils;
 import com.netflix.discovery.shared.transport.jersey.Jersey1DiscoveryClientOptionalArgs;
 import com.netflix.iep.admin.guice.AdminModule;
 import com.netflix.iep.service.Service;
@@ -73,11 +75,15 @@ public final class EurekaModule extends AbstractModule {
 
     // BackupRegistry, automatic via ImplementedBy annotation
 
+    // EndpointRandomizer
+    bind(EndpointRandomizer.class).toInstance(ResolverUtils::randomize);
+
     // Needs:
     // * InstanceInfo
     // * EurekaClientConfig
     // * DiscoveryClientOptionalArgs
     // * BackupRegistry
+    // * EndpointRandomizer (https://github.com/Netflix/eureka/pull/1194)
     bind(DiscoveryClient.class).asEagerSingleton();
     bind(HealthCheckHandler.class).toProvider(HandlerProvider.class).asEagerSingleton();
 
