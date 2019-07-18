@@ -251,7 +251,7 @@ lazy val `iep-servergroups` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-service`)
   .settings(libraryDependencies ++= Seq(
-    Dependencies.jacksonMapper,
+    Dependencies.jacksonCore,
     Dependencies.spectatorApi,
     Dependencies.spectatorIpc,
     Dependencies.slf4jApi,
