@@ -15,24 +15,23 @@
  */
 package com.netflix.iep.servergroups;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.netflix.spectator.ipc.http.HttpClient;
 import com.netflix.spectator.ipc.http.HttpResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Load server groups from Eureka. Queries the {@code /v2/apps} endpoint to get all apps
@@ -42,13 +41,11 @@ import java.util.function.Predicate;
  */
 public class EurekaLoader implements Loader {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(EurekaLoader.class);
-
   private final HttpClient client;
   private final URI uri;
   private final Predicate<String> accounts;
 
-  private final ObjectMapper mapper;
+  private final JsonFactory jsonFactory;
 
   /**
    * Create a new instance.
@@ -67,83 +64,106 @@ public class EurekaLoader implements Loader {
     this.client = client;
     this.uri = uri;
     this.accounts = accounts;
-    this.mapper = new ObjectMapper();
+    this.jsonFactory = new JsonFactory();
   }
 
-  private Instance.Status getStatus(JsonNode instance) {
-    String status = instance.get("status").textValue();
-    return Instance.Status.valueOf(status);
+  private void decodeMetadata(InstanceInfo info, JsonParser jp) throws IOException {
+    JsonUtils.forEachField(jp, (field, p) -> {
+      switch (field) {
+        case "accountId":
+          info.account = JsonUtils.stringValue(p);
+          break;
+        case "vpc-id":
+          info.builder.vpcId(JsonUtils.stringValue(p));
+          break;
+        case "ami-id":
+          info.builder.ami(JsonUtils.stringValue(p));
+          break;
+        case "availability-zone":
+          info.builder.zone(JsonUtils.stringValue(p));
+          break;
+        case "local-ipv4":
+          if (info.privateIp == null) {
+            info.privateIp = JsonUtils.stringValue(p);
+          } else {
+            JsonUtils.skipValue(p);
+          }
+          break;
+        case "instance-id":
+          info.node = JsonUtils.stringValue(p);
+          break;
+        case "instance-type":
+          String vmtype = JsonUtils.stringValue(p);
+          if (!"Titus".equals(vmtype)) {
+            info.builder.vmtype(vmtype);
+          }
+          break;
+        default:
+          JsonUtils.skipValue(p);
+          break;
+      }
+    });
   }
 
-  private String getInstanceId(JsonNode instance) {
-    JsonNode id = instance.get("instanceId");
-    return id == null
-        ? getMetadataField(instance, "instance-id")
-        : id.textValue();
+  private void decodeDataCenterInfo(InstanceInfo info, JsonParser jp) throws IOException {
+    JsonUtils.forEachField(jp, (field, p) -> {
+      if ("metadata".equals(field)) {
+        decodeMetadata(info, p);
+      } else {
+        JsonUtils.skipValue(p);
+      }
+    });
   }
 
-  private String getPrivateIp(JsonNode instance) {
-    JsonNode ip = instance.get("ipAddr");
-    return ip == null
-        ? getMetadataField(instance, "local-ipv4")
-        : ip.textValue();
-  }
+  private void decodeInstance(Map<GroupId, Set<Instance>> instances, JsonParser jp) throws IOException {
+    InstanceInfo info = new InstanceInfo();
+    JsonUtils.forEachField(jp, (field, p) -> {
+      switch (field) {
+        case "asgName":
+          info.group = JsonUtils.stringValue(p);
+          break;
+        case "ipAddr":
+          info.privateIp = JsonUtils.stringValue(p);
+          break;
+        case "instanceId":
+          info.node = JsonUtils.stringValue(p);
+          break;
+        case "status":
+          info.builder.status(Instance.Status.valueOf(JsonUtils.stringValue(p)));
+          break;
+        case "dataCenterInfo":
+          decodeDataCenterInfo(info, p);
+          break;
+        default:
+          JsonUtils.skipValue(p);
+          break;
+      }
+    });
 
-  private String getMetadataField(JsonNode instance, String key) {
-    JsonNode node = instance.path("dataCenterInfo").path("metadata").path(key);
-    return node.isMissingNode() ? null : node.textValue();
-  }
 
-  private String getInstanceType(JsonNode instance) {
-    String vmtype = getMetadataField(instance, "instance-type");
-    return "Titus".equals(vmtype) ? null : vmtype;
-  }
-
-  private Instance decodeInstance(JsonNode instance) {
-    String account = getMetadataField(instance, "accountId");
-    if (!accounts.test(account)) {
-      return null;
-    }
-
-    String node = getInstanceId(instance);
-    String privateIp = getPrivateIp(instance);
-    if (node == null || privateIp == null) {
-      return null;
-    }
-
-    return Instance.builder()
-        .node(node)
-        .privateIpAddress(privateIp)
-        .vpcId(getMetadataField(instance, "vpc-id"))
-        .ami(getMetadataField(instance, "ami-id"))
-        .vmtype(getInstanceType(instance))
-        .zone(getMetadataField(instance, "availability-zone"))
-        .status(getStatus(instance))
-        .build();
-  }
-
-  private Map<GroupId, Set<Instance>> decodeApp(JsonNode app) {
-    Map<GroupId, Set<Instance>> instances = new HashMap<>();
-    JsonNode instancesArray = app.get("instance");
-    if (instancesArray == null) {
-      return instances;
-    }
-
-    Iterator<JsonNode> iter = instancesArray.elements();
-    while (iter.hasNext()) {
-      JsonNode instance = iter.next();
-      JsonNode group = instance.get("asgName");
-      if (group != null) {
-        Instance instanceObj = decodeInstance(instance);
-        if (instanceObj != null) {
-          String platform = instanceObj.getNode().startsWith("i-") ? "ec2" : "titus";
-          GroupId id = new GroupId(platform, group.textValue());
-          instances.computeIfAbsent(id, k -> new HashSet<>()).add(instanceObj);
-        } else {
-          LOGGER.trace("failed to decode instance: {}", instance);
-        }
+    if (info.group != null && accounts.test(info.account)) {
+      Instance instance = info.toInstance();
+      if (instance != null) {
+        String platform = info.node.startsWith("i-") ? "ec2" : "titus";
+        GroupId id = new GroupId(platform, info.group);
+        instances.computeIfAbsent(id, k -> new HashSet<>()).add(instance);
       }
     }
+  }
+
+  private void decodeInstances(Map<GroupId, Set<Instance>> instances, JsonParser jp) throws IOException {
+    JsonUtils.forEach(jp, p -> decodeInstance(instances, p));
+  }
+
+  private Map<GroupId, Set<Instance>> decodeApp(JsonParser jp) throws IOException {
+    Map<GroupId, Set<Instance>> instances = new HashMap<>();
+    JsonUtils.forEachField(jp, (field, p) -> {
+      if ("instance".equals(field)) {
+        decodeInstances(instances, p);
+      } else {
+        JsonUtils.skipValue(p);
+      }
+    });
     return instances;
   }
 
@@ -153,14 +173,10 @@ public class EurekaLoader implements Loader {
     }
   }
 
-  private List<ServerGroup> decodeAppList(JsonNode apps) {
+  private void decodeAppList(List<ServerGroup> groups, JsonParser jp) throws IOException {
     Map<GroupId, Set<Instance>> instances = new HashMap<>();
-    Iterator<JsonNode> iter = apps.elements();
-    while (iter.hasNext()) {
-      merge(instances, decodeApp(iter.next()));
-    }
+    JsonUtils.forEach(jp, p -> merge(instances, decodeApp(p)));
 
-    List<ServerGroup> groups = new ArrayList<>();
     for (Map.Entry<GroupId, Set<Instance>> entry : instances.entrySet()) {
       GroupId id = entry.getKey();
       groups.add(ServerGroup.builder()
@@ -169,7 +185,28 @@ public class EurekaLoader implements Loader {
           .addInstances(entry.getValue())
           .build());
     }
+  }
 
+  private void decodeApps(List<ServerGroup> groups, JsonParser jp) throws IOException {
+    JsonUtils.forEachField(jp, (field, p) -> {
+      if ("application".equals(field)) {
+        decodeAppList(groups, p);
+      } else {
+        JsonUtils.skipValue(p);
+      }
+    });
+  }
+
+  private List<ServerGroup> decodeApps(JsonParser jp) throws IOException {
+    jp.nextToken();
+    List<ServerGroup> groups = new ArrayList<>();
+    JsonUtils.forEachField(jp, (field, p) -> {
+      if ("applications".equals(field)) {
+        decodeApps(groups, p);
+      } else {
+        JsonUtils.skipValue(p);
+      }
+    });
     return groups;
   }
 
@@ -179,15 +216,18 @@ public class EurekaLoader implements Loader {
         .customizeLogging(entry -> entry.withEndpoint("/eureka/v2/apps"))
         .acceptGzip()
         .acceptJson()
-        .send()
-        .decompress();
+        .send();
 
     if (response.status() != 200) {
       throw new IOException("request failed with status " + response.status());
     }
 
-    JsonNode node = mapper.readTree(response.entity());
-    return decodeAppList(node.get("applications").get("application"));
+    String enc = response.header("Content-Encoding");
+    JsonParser jp = (enc != null && enc.contains("gzip"))
+        ? jsonFactory.createParser(new GZIPInputStream(new ByteArrayInputStream(response.entity())))
+        : jsonFactory.createParser(response.entity());
+
+    return decodeApps(jp);
   }
 
   private static class GroupId {
@@ -213,6 +253,30 @@ public class EurekaLoader implements Loader {
 
     @Override public int hashCode() {
       return Objects.hash(platform, group);
+    }
+  }
+
+  private static class InstanceInfo {
+    private String group;
+    private String account;
+    private String node;
+    private String privateIp;
+    private Instance.Builder builder;
+
+    InstanceInfo() {
+      this.builder = Instance.builder();
+    }
+
+    Instance toInstance() {
+
+      if (node == null || privateIp == null) {
+        return null;
+      }
+
+      return builder
+          .node(node)
+          .privateIpAddress(privateIp)
+          .build();
     }
   }
 }

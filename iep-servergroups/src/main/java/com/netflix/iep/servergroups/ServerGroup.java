@@ -225,7 +225,7 @@ public final class ServerGroup {
         + "maxSize=" + maxSize + ", "
         + "desiredSize=" + desiredSize + ", "
         + "currentSize=" + instances.size() + ", "
-        + "instancesHash=" + instances.hashCode()
+        + "instancesHash=" + instances.hashCode() + ", " + instances
         + ")";
   }
 

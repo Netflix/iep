@@ -3,6 +3,7 @@
     "id": "ec2.app-main-dev-v001",
     "platform": "ec2",
     "app": "app",
+    "foo": ["bar", "baz", {"abc":  ["def", {}]}],
     "cluster": "app-main-dev",
     "group": "app-main-dev-v001",
     "stack": "main",

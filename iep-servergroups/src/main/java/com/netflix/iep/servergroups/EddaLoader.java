@@ -15,19 +15,16 @@
  */
 package com.netflix.iep.servergroups;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.netflix.spectator.ipc.http.HttpClient;
 import com.netflix.spectator.ipc.http.HttpResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Load server groups from Edda. Queries the {@code /netflix/serverGroups} endpoint to get all
@@ -36,12 +33,10 @@ import java.util.List;
  */
 public class EddaLoader implements Loader {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(EddaLoader.class);
-
   private final HttpClient client;
   private final URI uri;
 
-  private final ObjectMapper mapper;
+  private final JsonFactory jsonFactory;
 
   /**
    * Create a new instance.
@@ -54,63 +49,81 @@ public class EddaLoader implements Loader {
   public EddaLoader(HttpClient client, URI uri) {
     this.client = client;
     this.uri = uri;
-    this.mapper = new ObjectMapper();
+    this.jsonFactory = new JsonFactory();
   }
 
-  private String getString(JsonNode node, String field) {
-    JsonNode value = node.get(field);
-    return value == null ? null : value.textValue();
+  private Instance decodeInstance(JsonParser jp) throws IOException {
+    Instance.Builder builder = Instance.builder().status(Instance.Status.NOT_REGISTERED);
+    JsonUtils.forEachField(jp, (field, p) -> {
+      switch (field) {
+        case "node":
+          builder.node(JsonUtils.stringValue(jp));
+          break;
+        case "privateIpAddress":
+          builder.privateIpAddress(JsonUtils.stringValue(jp));
+          break;
+        case "vpcId":
+          builder.vpcId(JsonUtils.stringValue(jp));
+          break;
+        case "subnetId":
+          builder.subnetId(JsonUtils.stringValue(jp));
+          break;
+        case "ami":
+          builder.ami(JsonUtils.stringValue(jp));
+          break;
+        case "vmtype":
+          builder.vmtype(JsonUtils.stringValue(jp));
+          break;
+        case "zone":
+          builder.zone(JsonUtils.stringValue(jp));
+          break;
+        default:
+          // Ignore unknown fields
+          JsonUtils.skipValue(jp);
+          break;
+      }
+    });
+    return builder.build();
   }
 
-  private int getInt(JsonNode node, String field) {
-    JsonNode value = node.get(field);
-    return value == null ? 0 : value.asInt();
+  private List<Instance> decodeInstances(JsonParser jp) throws IOException {
+    return JsonUtils.toList(jp, this::decodeInstance);
   }
 
-  private Instance decodeInstance(JsonNode instance) {
-    return Instance.builder()
-        .node(getString(instance, "node"))
-        .privateIpAddress(getString(instance, "privateIpAddress"))
-        .vpcId(getString(instance, "vpcId"))
-        .subnetId(getString(instance, "subnetId"))
-        .ami(getString(instance, "ami"))
-        .vmtype(getString(instance, "vmtype"))
-        .zone(getString(instance, "zone"))
-        .status(Instance.Status.NOT_REGISTERED)
-        .build();
+  private ServerGroup decodeServerGroup(JsonParser jp) throws IOException {
+    ServerGroup.Builder builder = ServerGroup.builder();
+    JsonUtils.forEachField(jp, (field, p) -> {
+      switch (field) {
+        case "platform":
+          builder.platform(JsonUtils.stringValue(jp));
+          break;
+        case "group":
+          builder.group(JsonUtils.stringValue(jp));
+          break;
+        case "minSize":
+          builder.minSize(JsonUtils.intValue(jp));
+          break;
+        case "maxSize":
+          builder.maxSize(JsonUtils.intValue(jp));
+          break;
+        case "desiredSize":
+          builder.desiredSize(JsonUtils.intValue(jp));
+          break;
+        case "instances":
+          builder.addInstances(decodeInstances(jp));
+          break;
+        default:
+          // Ignore unknown fields
+          JsonUtils.skipValue(jp);
+          break;
+      }
+    });
+    return builder.build();
   }
 
-  private List<Instance> decodeInstances(JsonNode entries) {
-    if (entries == null) {
-      return Collections.emptyList();
-    }
-
-    List<Instance> instances = new ArrayList<>();
-    Iterator<JsonNode> iter = entries.elements();
-    while (iter.hasNext()) {
-      instances.add(decodeInstance(iter.next()));
-    }
-    return instances;
-  }
-
-  private ServerGroup decodeServerGroup(JsonNode group) {
-    return ServerGroup.builder()
-        .platform(getString(group, "platform"))
-        .group(getString(group, "group"))
-        .minSize(getInt(group, "minSize"))
-        .maxSize(getInt(group, "maxSize"))
-        .desiredSize(getInt(group, "desiredSize"))
-        .addInstances(decodeInstances(group.get("instances")))
-        .build();
-  }
-
-  private List<ServerGroup> decodeServerGroups(JsonNode entries) {
-    List<ServerGroup> groups = new ArrayList<>();
-    Iterator<JsonNode> iter = entries.elements();
-    while (iter.hasNext()) {
-      groups.add(decodeServerGroup(iter.next()));
-    }
-    return groups;
+  private List<ServerGroup> decodeServerGroups(JsonParser jp) throws IOException {
+    jp.nextToken();
+    return JsonUtils.toList(jp, this::decodeServerGroup);
   }
 
   @Override public List<ServerGroup> call() throws Exception {
@@ -119,13 +132,16 @@ public class EddaLoader implements Loader {
         .customizeLogging(entry -> entry.withEndpoint("/api/v2/netflix/serverGroups"))
         .acceptGzip()
         .acceptJson()
-        .send()
-        .decompress();
+        .send();
 
     if (response.status() != 200) {
       throw new IOException("request failed with status " + response.status());
     }
 
-    return decodeServerGroups(mapper.readTree(response.entity()));
+    String enc = response.header("Content-Encoding");
+    JsonParser jp = (enc != null && enc.contains("gzip"))
+        ? jsonFactory.createParser(new GZIPInputStream(new ByteArrayInputStream(response.entity())))
+        : jsonFactory.createParser(response.entity());
+    return decodeServerGroups(jp);
   }
 }
