@@ -7,6 +7,8 @@ lazy val root = project.in(file("."))
     `iep-eureka-testconfig`,
     `iep-guice`,
     `iep-launcher`,
+    `iep-leader-api`,
+    `iep-leader-dynamodb`,
     `iep-module-admin`,
     `iep-module-archaius1`,
     `iep-module-archaius2`,
@@ -17,6 +19,7 @@ lazy val root = project.in(file("."))
     `iep-module-awsmetrics`,
     `iep-module-eureka`,
     `iep-module-jmxport`,
+    `iep-module-leader`,
     `iep-module-rxnetty`,
     `iep-module-userservice`,
     `iep-nflxenv`,
@@ -64,6 +67,25 @@ lazy val `iep-guice` = project
 
 lazy val `iep-launcher` = project
   .configure(BuildSettings.profile)
+
+lazy val `iep-leader-api` = project
+  .configure(BuildSettings.profile)
+  .settings(libraryDependencies ++= Seq(
+    Dependencies.inject,
+    Dependencies.slf4jApi,
+    Dependencies.spectatorApi,
+    Dependencies.typesafeConfig,
+    Dependencies.assertjcore % "test",
+    Dependencies.equalsVerifier % "test"
+  ))
+
+lazy val `iep-leader-dynamodb` = project
+  .configure(BuildSettings.profile)
+  .dependsOn(`iep-leader-api`, `iep-module-aws2`)
+  .settings(libraryDependencies ++= Seq(
+      Dependencies.aws2DynamoDB,
+      Dependencies.spectatorApi
+  ))
 
 lazy val `iep-module-admin` = project
   .configure(BuildSettings.profile)
@@ -186,6 +208,18 @@ lazy val `iep-module-jmxport` = project
   .settings(libraryDependencies ++= Seq(
     Dependencies.guiceCore,
     Dependencies.slf4jApi
+  ))
+
+lazy val `iep-module-leader` = project
+  .configure(BuildSettings.profile)
+  .dependsOn(`iep-leader-api`, `iep-service`)
+  .settings(libraryDependencies ++= Seq(
+    Dependencies.guiceCore,
+    Dependencies.guiceMulti,
+    Dependencies.slf4jApi,
+    Dependencies.spectatorApi,
+    Dependencies.typesafeConfig,
+    Dependencies.assertjcore % "test"
   ))
 
 lazy val `iep-module-rxnetty` = project
