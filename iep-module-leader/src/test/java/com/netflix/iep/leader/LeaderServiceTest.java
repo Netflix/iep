@@ -91,6 +91,10 @@ public class LeaderServiceTest {
 
   @Test
   public void electionsCounterIsIncrementedOnSuccess() throws Exception {
+    // The sleep() is not ideal, but the flow of control issue here causes a timing issue that's out
+    // of the test's ability to manage
+    Thread.sleep(10);
+
     final Counter counter = registry.counter(leaderElectionsId.withTag("result", "success"));
     assertThat(counter.count()).isEqualTo(1);
   }
@@ -100,8 +104,8 @@ public class LeaderServiceTest {
     stopLeaderService();
     createLeaderService(true);
 
-    // The sleep() is not ideal, but the latency introduced by exception handling causes a timing
-    // issue that's out of the test's ability to manage
+    // The sleep() is not ideal, but the flow of control issue here causes a timing issue that's out
+    // of the test's ability to manage
     Thread.sleep(10);
 
     final Id idWithTags =
