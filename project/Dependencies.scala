@@ -3,6 +3,7 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.3.14"
+    val assertj    = "3.13.1"
     val aws        = "1.11.579"
     val aws2       = "2.6.4"
     val eureka     = "1.9.12"
@@ -23,6 +24,7 @@ object Dependencies {
   val archaiusLegacy     = "com.netflix.archaius" % "archaius-core" % "0.7.6"
   val archaiusPersist    = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe   = "com.netflix.archaius" % "archaius2-typesafe" % archaius
+  val assertjcore        = "org.assertj" % "assertj-core" % assertj
   val awsAutoScaling     = "com.amazonaws" % "aws-java-sdk-autoscaling" % aws
   val awsCache           = "com.amazonaws" % "aws-java-sdk-elasticache" % aws
   val awsCore            = "com.amazonaws" % "aws-java-sdk-core" % aws
