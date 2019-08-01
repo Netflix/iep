@@ -43,10 +43,10 @@ import static org.assertj.core.groups.Tuple.tuple;
 public class StandardLeaderElectorTest {
   private final String defaultConfigString = createConfigString(false);
   private final Config defaultConfig = ConfigFactory.parseString(defaultConfigString);
-  private final DefaultRegistry defaultRegistry = new DefaultRegistry();
-  private final Id resourceLeaderGaugeId = defaultRegistry.createId("leader.test.resourceLeader");
-  private final Id noLeaderGaugeId = defaultRegistry.createId("leader.test.resourceWithNoLeader");
-  private final Id removalFailureMetricId = defaultRegistry.createId("leader.test.removalFailure");
+  private final DefaultRegistry registry = new DefaultRegistry();
+  private final Id resourceLeaderGaugeId = registry.createId("leader.test.resourceLeader");
+  private final Id noLeaderGaugeId = registry.createId("leader.test.resourceWithNoLeader");
+  private final Id removalsCounterId = registry.createId("leader.test.removals");
   private final LeaderId leaderId = LeaderId.create("test-leader");
   private final LeaderId otherLeaderId = LeaderId.create("test-other-leader");
   private TestableLeaderDatabase testableLeaderDatabase;
@@ -67,7 +67,7 @@ public class StandardLeaderElectorTest {
 
   @After
   public void tearDown() {
-    defaultRegistry.reset();
+    registry.reset();
   }
 
   private StandardLeaderElector createLeaderElector(Config config) {
@@ -75,9 +75,9 @@ public class StandardLeaderElectorTest {
         leaderId,
         testableLeaderDatabase,
         config,
-        defaultRegistry,
+        registry,
         new HashMap<>(),
-        removalFailureMetricId,
+        removalsCounterId,
         resourceLeaderGaugeId,
         noLeaderGaugeId
     );
@@ -245,10 +245,10 @@ public class StandardLeaderElectorTest {
     final Id leaderMetricId = idWithResourceTag.withTag("leader", leaderId.getId());
     final Id otherLeaderMetricId = idWithResourceTag.withTag("leader", otherLeaderId.getId());
 
-    final Gauge leaderGauge = defaultRegistry.gauge(leaderMetricId);
-    final Gauge otherLeaderGauge = defaultRegistry.gauge(otherLeaderMetricId);
+    final Gauge leaderGauge = registry.gauge(leaderMetricId);
+    final Gauge otherLeaderGauge = registry.gauge(otherLeaderMetricId);
     final Gauge noLeaderGauge =
-        defaultRegistry.gauge(noLeaderGaugeId.withTag("resource", id1.getId()));
+        registry.gauge(noLeaderGaugeId.withTag("resource", id1.getId()));
 
     testableLeaderDatabase.winLeadershipInUpdate = true;
     leaderElector.runElection();
@@ -288,7 +288,7 @@ public class StandardLeaderElectorTest {
     testableLeaderDatabase.throwExceptionInUpdate = true;
     leaderElector.runElection();
 
-    final Gauge leaderGauge = defaultRegistry.gauge(
+    final Gauge leaderGauge = registry.gauge(
         resourceLeaderGaugeId
             .withTag("resource", id1.getId())
             .withTag("leader", LeaderId.UNKNOWN.getId())
@@ -296,7 +296,7 @@ public class StandardLeaderElectorTest {
     assertThat(leaderGauge.value()).isEqualTo(0.0);
 
     final Gauge noLeaderGauge =
-        defaultRegistry.gauge(noLeaderGaugeId.withTag("resource", id1.getId()));
+        registry.gauge(noLeaderGaugeId.withTag("resource", id1.getId()));
     // only set to 1.0 if the leader is specifically set to NO_LEADER
     assertThat(noLeaderGauge.value()).isEqualTo(0.0);
   }
@@ -308,7 +308,7 @@ public class StandardLeaderElectorTest {
     leaderElector.addResource(id1);
 
     final Gauge noLeaderGauge =
-        defaultRegistry.gauge(noLeaderGaugeId.withTag("resource", id1.getId()));
+        registry.gauge(noLeaderGaugeId.withTag("resource", id1.getId()));
 
     testableLeaderDatabase.winLeadershipInUpdate = true;
     leaderElector.runElection();
@@ -325,6 +325,55 @@ public class StandardLeaderElectorTest {
     testableLeaderDatabase.winLeadershipInUpdate = true;
     leaderElector.runElection();
     assertThat(noLeaderGauge.value()).isEqualTo(0.0);
+  }
+
+  @Test
+  public void removeLeaderIncrementsCounterOnSuccess() {
+    testableLeaderDatabase.allowRemoveLeadership = true;
+
+    final ResourceId resourceId = new ResourceId("test-resource-one");
+    leaderElector.addResource(resourceId);
+    leaderElector.runElection();
+    leaderElector.removeLeaderFor(resourceId);
+
+    final Id idWithTags = removalsCounterId
+        .withTag("resource", resourceId.getId())
+        .withTag("result", "success");
+    assertThat(registry.counter(idWithTags).count()).isEqualTo(1);
+  }
+
+  @Test
+  public void removeLeaderIncrementsCounterOnFailure() {
+    testableLeaderDatabase.winLeadershipInUpdate = false;
+    testableLeaderDatabase.allowRemoveLeadership = true;
+
+    final ResourceId resourceId = new ResourceId("test-resource-one");
+    leaderElector.addResource(resourceId);
+    leaderElector.runElection();
+    leaderElector.removeLeaderFor(resourceId);
+
+    final Id idWithTags = removalsCounterId
+        .withTag("resource", resourceId.getId())
+        .withTag("result", "failure")
+        .withTag("error", "not_leader");
+    assertThat(registry.counter(idWithTags).count()).isEqualTo(1);
+  }
+
+  @Test
+  public void removeLeaderIncrementsCounterOnError() {
+    testableLeaderDatabase.winLeadershipInUpdate = false;
+    testableLeaderDatabase.throwExceptionInRemove = true;
+
+    final ResourceId resourceId = new ResourceId("test-resource-one");
+    leaderElector.addResource(resourceId);
+    leaderElector.runElection();
+    leaderElector.removeLeaderFor(resourceId);
+
+    final Id idWithTags = removalsCounterId
+        .withTag("resource", resourceId.getId())
+        .withTag("result", "failure")
+        .withTag("error", "RuntimeException");
+    assertThat(registry.counter(idWithTags).count()).isEqualTo(1);
   }
 
   @Test
@@ -379,8 +428,9 @@ public class StandardLeaderElectorTest {
   private static class TestableLeaderDatabase implements LeaderDatabase {
 
     boolean winLeadershipInUpdate = true;
-    boolean throwExceptionInUpdate = false;
     boolean allowRemoveLeadership = true;
+    boolean throwExceptionInUpdate = false;
+    boolean throwExceptionInRemove = false;
 
     boolean initialized = false;
     int databaseHitCount = 0;
@@ -415,21 +465,30 @@ public class StandardLeaderElectorTest {
 
       if (winLeadershipInUpdate) {
         resourceLeaders.put(resourceId, leaderId);
-      } else if(!resourceLeaders.getOrDefault(resourceId, LeaderId.UNKNOWN)
-          .equals(LeaderId.NO_LEADER)) {
+      } else if(!resourceHasNoLeader(resourceId)) {
         resourceLeaders.put(resourceId, otherLeaderId);
       }
       return winLeadershipInUpdate;
     }
 
+    private boolean resourceHasNoLeader(ResourceId resourceId) {
+      return resourceLeaders.getOrDefault(resourceId, LeaderId.UNKNOWN).equals(LeaderId.NO_LEADER);
+    }
+
     @Override
     public boolean removeLeadershipFor(ResourceId resourceId) {
       ++databaseHitCount;
-      if (allowRemoveLeadership &&
-          resourceLeaders.getOrDefault(resourceId, LeaderId.UNKNOWN).equals(leaderId)) {
+
+      if (throwExceptionInRemove) {
+        throw new RuntimeException("test exception configured for removeLeadershipFor");
+      }
+
+      final boolean removed = allowRemoveLeadership &&
+          resourceLeaders.getOrDefault(resourceId, LeaderId.UNKNOWN).equals(leaderId);
+      if (removed) {
         resourceLeaders.put(resourceId, LeaderId.NO_LEADER);
       }
-      return allowRemoveLeadership;
+      return removed;
     }
   }
 }

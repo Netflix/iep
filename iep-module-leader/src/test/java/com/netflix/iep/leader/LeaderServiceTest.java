@@ -196,7 +196,7 @@ public class LeaderServiceTest {
       ++runElectionCount;
       leaderElectorLatch.countDown();
       if (throwDuringElection) {
-        throw new RuntimeException("test");
+        throw new RuntimeException("test exception configured for runElection");
       }
     }
   }
