@@ -45,7 +45,19 @@ The steps are as follows:
 * `error`: The error that occurred, if `result` is `failure`.
 * Common Infrastructure
 
+#### leader.electorInitializeDuration
+
+The total time taken for the leader elector to complete initialization.
+
+**Unit:** seconds
+
+**Dimensions:**
+
+* Common Infrastructure
+
 #### leader.timeSinceLastElection
+
+The time since the last successfully completed election.
 
 **Unit:** seconds 
 

@@ -22,6 +22,7 @@ import com.netflix.iep.leader.api.ResourceId;
 import com.netflix.spectator.api.Counter;
 import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Id;
+import com.netflix.spectator.api.Timer;
 import com.netflix.spectator.impl.Scheduler;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -49,7 +50,8 @@ public class LeaderServiceTest {
   private CountDownLatch leaderElectorLatch;
   private final AtomicLong timeSinceLastElection = new AtomicLong();
   private final DefaultRegistry registry = new DefaultRegistry();
-  private Id leaderElectionsId;
+  private Id leaderElectionsId = registry.createId("leader.test.elections");
+  private Timer electorInitializeTimer = registry.timer("leader.test.electorInitializeDuration");
 
   @Before
   public void setUp() throws Exception {
@@ -67,13 +69,13 @@ public class LeaderServiceTest {
     final Scheduler.Options leaderElectorSchedulerOptions = new Scheduler.Options()
         .withFrequency(Scheduler.Policy.RUN_ONCE, Duration.ZERO);
     final Scheduler leaderElectorScheduler = new Scheduler(registry, "test", 1);
-    leaderElectionsId = registry.createId("leader.test.elections");
     leaderService = new LeaderService(
         leaderElector,
         registry,
         leaderElectorScheduler,
         leaderElectorSchedulerOptions,
         leaderElectionsId,
+        electorInitializeTimer,
         timeSinceLastElection);
     leaderService.start();
     leaderElectorLatch.await(6, TimeUnit.SECONDS);
@@ -134,6 +136,11 @@ public class LeaderServiceTest {
 
     assertThatThrownBy(() -> LeaderService.configureSchedulerOptions(config))
         .hasMessageContaining("iep.leader.leaderElectorFrequency");
+  }
+
+  @Test
+  public void electorInitializeTimerIsSet() {
+    assertThat(electorInitializeTimer.totalTime()).isGreaterThan(0);
   }
 
   @Test
