@@ -63,7 +63,7 @@ public class StandardLeaderElector implements LeaderElector, LeaderStatus {
   private final ConcurrentMap<ResourceId, LeaderId> resourceLeaders;
   private final Registry registry;
 
-  private final Id leaderRemovalFailureCounterId;
+  private final Id leaderRemovalsCounterId;
   private final Id resourceLeaderGaugeId;
   private final Id resourceWithNoLeaderGaugeId;
 
@@ -75,7 +75,7 @@ public class StandardLeaderElector implements LeaderElector, LeaderStatus {
         config,
         registry,
         initializeResourceLeaderMap(ResourceId.create(config)),
-        registry.createId("leader.removalFailure"),
+        registry.createId("leader.removals"),
         registry.createId("leader.resourceLeader"),
         registry.createId("leader.resourceWithNoLeader")
     );
@@ -87,7 +87,7 @@ public class StandardLeaderElector implements LeaderElector, LeaderStatus {
       Config config,
       Registry registry,
       Map<ResourceId, LeaderId> resourceLeaders,
-      Id leaderRemovalFailureCounterId,
+      Id leaderRemovalsCounterId,
       Id resourceLeaderGaugeId,
       Id resourceWithNoLeaderGaugeId
   ) {
@@ -96,7 +96,7 @@ public class StandardLeaderElector implements LeaderElector, LeaderStatus {
     Objects.requireNonNull(config, "config");
     Objects.requireNonNull(registry, "registry");
     Objects.requireNonNull(resourceLeaders, "resourceLeaders");
-    Objects.requireNonNull(leaderRemovalFailureCounterId, "leaderRemovalFailureCounterId");
+    Objects.requireNonNull(leaderRemovalsCounterId, "leaderRemovalsCounterId");
     Objects.requireNonNull(resourceLeaderGaugeId, "resourceLeaderGaugeId");
     Objects.requireNonNull(resourceWithNoLeaderGaugeId, "resourceWithNoLeaderGaugeId");
 
@@ -106,7 +106,7 @@ public class StandardLeaderElector implements LeaderElector, LeaderStatus {
     this.registry = registry;
     this.resourceLeaders = new ConcurrentHashMap<>(resourceLeaders); // defensive copy
 
-    this.leaderRemovalFailureCounterId = leaderRemovalFailureCounterId;
+    this.leaderRemovalsCounterId = leaderRemovalsCounterId;
     this.resourceLeaderGaugeId = resourceLeaderGaugeId;
     this.resourceWithNoLeaderGaugeId = resourceWithNoLeaderGaugeId;
   }
@@ -148,18 +148,34 @@ public class StandardLeaderElector implements LeaderElector, LeaderStatus {
       removed = leaderDatabase.removeLeadershipFor(resourceId);
       if (removed) {
         resourceLeaders.put(resourceId, LeaderId.NO_LEADER);
+        registry.counter(
+            leaderRemovalsCounterId
+                .withTag("resource", resourceId.getId())
+                .withTag("result", "success")
+        )
+        .increment();
+      } else {
+        registry.counter(
+            leaderRemovalsCounterId
+                .withTag("resource", resourceId.getId())
+                .withTag("result", "failure")
+                .withTag("error", "not_leader")
+        )
+        .increment();
       }
     } catch (Exception e) {
-      if (removeLocalLeaderStatusOnError()) {
+      final boolean removeLocalLeaderOnError = removeLocalLeaderStatusOnError();
+      if (removeLocalLeaderOnError) {
         resourceLeaders.put(resourceId, LeaderId.UNKNOWN);
       }
 
       final String exceptionName = e.getCause() != null ?
           e.getCause().getClass().getSimpleName() : e.getClass().getSimpleName();
       registry.counter(
-          leaderRemovalFailureCounterId
+          leaderRemovalsCounterId
               .withTag("resource", resourceId.getId())
-              .withTag("exception", exceptionName)
+              .withTag("result", "failure")
+              .withTag("error", exceptionName)
       )
       .increment();
       logger.error("Exception during leader removal", e);

@@ -36,14 +36,15 @@ Additional configuration options are documented inline in `reference.conf`.
 
 ### Metrics
 
-#### leader.removalFailure
+#### leader.removals
 
-**Unit:** failures/second
+**Unit:** removals/second
 
 **Dimensions:**
 
 * `resource`: The ID of the resource for which removal of the leader failed.
-* `exception`: The simple name of the exception that occurred.
+* `result`: One of `success` or `failure`.
+* `error`: The error that occurred, if `result` is `failure`.
 * Common Infrastructure
 
 #### leader.resourceLeader

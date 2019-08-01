@@ -127,7 +127,9 @@ public class LeaderService extends AbstractService {
           logger.info("Skipping election run.");
         }
       } catch (Throwable t) {
-        final String throwableName = t.getClass().getSimpleName();
+        final String throwableName = t.getCause() != null ?
+            t.getCause().getClass().getSimpleName() : t.getClass().getSimpleName();
+
         final Id counterIdWithTags =
             leaderElectionsCounterId.withTag("result", "failure").withTag("error", throwableName);
         registry.counter(counterIdWithTags).increment();
