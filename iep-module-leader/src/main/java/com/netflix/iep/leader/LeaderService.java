@@ -22,6 +22,7 @@ import com.netflix.iep.service.AbstractService;
 import com.netflix.spectator.api.Functions;
 import com.netflix.spectator.api.Id;
 import com.netflix.spectator.api.Registry;
+import com.netflix.spectator.api.Timer;
 import com.netflix.spectator.api.patterns.PolledMeter;
 import com.netflix.spectator.impl.Scheduler;
 import com.typesafe.config.Config;
@@ -44,11 +45,13 @@ public class LeaderService extends AbstractService {
   private final LeaderElector leaderElector;
   private final Scheduler.Options leaderElectorSchedulerOptions;
   private final Scheduler leaderElectorScheduler;
-  private final Id leaderElectionsCounterId;
-  private final AtomicLong timeSinceLastElection;
-  private final Registry registry;
   // visible for testing
   final Runnable leaderServiceTask = createLeaderServiceTask();
+
+  private final Registry registry;
+  private final Id leaderElectionsCounterId;
+  private final Timer electorInitializeTimer;
+  private final AtomicLong timeSinceLastElection;
 
   private volatile boolean running = false;
 
@@ -60,6 +63,7 @@ public class LeaderService extends AbstractService {
         new Scheduler(registry, "iep-leader-elector", 1),
         configureSchedulerOptions(config),
         registry.createId("leader.elections"),
+        registry.timer("leader.electorInitializeDuration"),
         new AtomicLong()
     );
 
@@ -71,12 +75,14 @@ public class LeaderService extends AbstractService {
       Scheduler leaderElectorScheduler,
       Scheduler.Options leaderElectorSchedulerOptions,
       Id leaderElectionsCounterId,
+      Timer electorInitializeTimer,
       AtomicLong timeSinceLastElection) {
     Objects.requireNonNull(leaderElector, "leaderElector");
     Objects.requireNonNull(registry, "registry");
     Objects.requireNonNull(leaderElectorScheduler, "leaderElectorScheduler");
     Objects.requireNonNull(leaderElectorSchedulerOptions, "leaderElectorSchedulerOptions");
     Objects.requireNonNull(leaderElectionsCounterId, "leaderElectionsCounterId");
+    Objects.requireNonNull(electorInitializeTimer, "electorInitializeTimer");
     Objects.requireNonNull(timeSinceLastElection, "timeSinceLastElection");
 
     this.leaderElector = leaderElector;
@@ -84,6 +90,7 @@ public class LeaderService extends AbstractService {
     this.leaderElectorScheduler = leaderElectorScheduler;
     this.leaderElectorSchedulerOptions = leaderElectorSchedulerOptions;
     this.leaderElectionsCounterId = leaderElectionsCounterId;
+    this.electorInitializeTimer = electorInitializeTimer;
     this.timeSinceLastElection = timeSinceLastElection;
   }
 
@@ -99,7 +106,9 @@ public class LeaderService extends AbstractService {
   protected void startImpl() {
     logger.info("Starting leader service");
 
-    leaderElector.initialize();
+    electorInitializeTimer.record(
+        leaderElector::initialize
+    );
 
     running = true;
     startMonitoringTimeSinceLastElection();
