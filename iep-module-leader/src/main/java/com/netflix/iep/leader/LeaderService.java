@@ -19,8 +19,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.netflix.iep.leader.api.LeaderElector;
 import com.netflix.iep.leader.api.ResourceId;
 import com.netflix.iep.service.AbstractService;
-import com.netflix.spectator.api.Counter;
 import com.netflix.spectator.api.Functions;
+import com.netflix.spectator.api.Id;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.patterns.PolledMeter;
 import com.netflix.spectator.impl.Scheduler;
@@ -44,7 +44,7 @@ public class LeaderService extends AbstractService {
   private final LeaderElector leaderElector;
   private final Scheduler.Options leaderElectorSchedulerOptions;
   private final Scheduler leaderElectorScheduler;
-  private final Counter leaderElectionFailureCounter;
+  private final Id leaderElectionsCounterId;
   private final AtomicLong timeSinceLastElection;
   private final Registry registry;
   // visible for testing
@@ -59,7 +59,7 @@ public class LeaderService extends AbstractService {
         registry,
         new Scheduler(registry, "iep-leader-elector", 1),
         configureSchedulerOptions(config),
-        registry.counter("leader.electionFailure"),
+        registry.createId("leader.elections"),
         new AtomicLong()
     );
 
@@ -70,20 +70,20 @@ public class LeaderService extends AbstractService {
       Registry registry,
       Scheduler leaderElectorScheduler,
       Scheduler.Options leaderElectorSchedulerOptions,
-      Counter leaderElectionFailureCounter,
+      Id leaderElectionsCounterId,
       AtomicLong timeSinceLastElection) {
     Objects.requireNonNull(leaderElector, "leaderElector");
     Objects.requireNonNull(registry, "registry");
     Objects.requireNonNull(leaderElectorScheduler, "leaderElectorScheduler");
     Objects.requireNonNull(leaderElectorSchedulerOptions, "leaderElectorSchedulerOptions");
-    Objects.requireNonNull(leaderElectionFailureCounter, "leaderElectionFailureCounter");
+    Objects.requireNonNull(leaderElectionsCounterId, "leaderElectionsCounterId");
     Objects.requireNonNull(timeSinceLastElection, "timeSinceLastElection");
 
     this.leaderElector = leaderElector;
     this.registry = registry;
     this.leaderElectorScheduler = leaderElectorScheduler;
     this.leaderElectorSchedulerOptions = leaderElectorSchedulerOptions;
-    this.leaderElectionFailureCounter = leaderElectionFailureCounter;
+    this.leaderElectionsCounterId = leaderElectionsCounterId;
     this.timeSinceLastElection = timeSinceLastElection;
   }
 
@@ -122,11 +122,15 @@ public class LeaderService extends AbstractService {
           logger.info("Running an election.");
           leaderElector.runElection();
           timeSinceLastElection.set(registry.clock().wallTime());
+          registry.counter(leaderElectionsCounterId.withTag("result", "success")).increment();
         } else {
           logger.info("Skipping election run.");
         }
       } catch (Throwable t) {
-        leaderElectionFailureCounter.increment();
+        final String throwableName = t.getClass().getSimpleName();
+        final Id counterIdWithTags =
+            leaderElectionsCounterId.withTag("result", "failure").withTag("error", throwableName);
+        registry.counter(counterIdWithTags).increment();
         logger.warn("Leader election attempt failed", t);
       }
     };

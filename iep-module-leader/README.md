@@ -15,7 +15,7 @@ public class YourAppService extends AbstractService {
   }
 
   private void runTask() {
-    if(leaderStatus.hasLeadership()) {
+    if (leaderStatus.hasLeadership()) {
       // do the task
     }
   }
@@ -35,12 +35,14 @@ The steps are as follows:
 
 ### Metrics
 
-#### leader.electionFailure
+#### leader.elections
 
-**Unit:** failures/second
+**Unit:** elections/second
 
 **Dimensions:**
 
+* `result`: One of `success` or `failure`.
+* `error`: The error that occurred, if `result` is `failure`.
 * Common Infrastructure
 
 #### leader.timeSinceLastElection

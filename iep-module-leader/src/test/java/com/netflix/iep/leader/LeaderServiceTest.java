@@ -21,7 +21,7 @@ import com.netflix.iep.leader.api.LeaderId;
 import com.netflix.iep.leader.api.ResourceId;
 import com.netflix.spectator.api.Counter;
 import com.netflix.spectator.api.DefaultRegistry;
-import com.netflix.spectator.api.Registry;
+import com.netflix.spectator.api.Id;
 import com.netflix.spectator.impl.Scheduler;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -48,48 +48,76 @@ public class LeaderServiceTest {
   private CountingLeaderElector leaderElector;
   private CountDownLatch leaderElectorLatch;
   private final AtomicLong timeSinceLastElection = new AtomicLong();
+  private final DefaultRegistry registry = new DefaultRegistry();
+  private Id leaderElectionsId;
 
   @Before
   public void setUp() throws Exception {
+    createLeaderService(false);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    stopLeaderService();
+  }
+
+  private void createLeaderService(boolean throwDuringElection) throws Exception {
     leaderElectorLatch = new CountDownLatch(1);
-    leaderElector = new CountingLeaderElector();
-    final Registry registry = new DefaultRegistry();
+    leaderElector = new CountingLeaderElector(throwDuringElection);
     final Scheduler.Options leaderElectorSchedulerOptions = new Scheduler.Options()
         .withFrequency(Scheduler.Policy.RUN_ONCE, Duration.ZERO);
     final Scheduler leaderElectorScheduler = new Scheduler(registry, "test", 1);
-    final Counter leaderElectionFailureCounter = registry.counter("leaderElectionFailureCounter");
+    leaderElectionsId = registry.createId("leader.test.elections");
     leaderService = new LeaderService(
         leaderElector,
         registry,
         leaderElectorScheduler,
         leaderElectorSchedulerOptions,
-        leaderElectionFailureCounter,
+        leaderElectionsId,
         timeSinceLastElection);
-
     leaderService.start();
+    leaderElectorLatch.await(6, TimeUnit.SECONDS);
   }
 
-  @After
-  public void tearDown() throws Exception {
+  private void stopLeaderService() throws Exception {
     leaderService.stop();
+    registry.reset();
   }
 
   @Test
   public void runElectionIsCalled() throws Exception {
-    leaderElectorLatch.await(1, TimeUnit.SECONDS);
     assertThat(leaderElector.runElectionCount).isEqualTo(1);
   }
 
   @Test
+  public void electionsCounterIsIncrementedOnSuccess() throws Exception {
+    final Counter counter = registry.counter(leaderElectionsId.withTag("result", "success"));
+    assertThat(counter.count()).isEqualTo(1);
+  }
+
+  @Test
+  public void electionsCounterIsIncrementedOnException() throws Exception {
+    stopLeaderService();
+    createLeaderService(true);
+
+    // The sleep() is not ideal, but the latency introduced by exception handling causes a timing
+    // issue that's out of the test's ability to manage
+    Thread.sleep(10);
+
+    final Id idWithTags =
+        leaderElectionsId.withTags("result", "failure").withTag("error", "RuntimeException");
+    final Counter counter = registry.counter(idWithTags);
+    assertThat(counter.count()).isEqualTo(1);
+  }
+
+  @Test
   public void initializeIsCalled() throws Exception {
-    leaderElectorLatch.await(1, TimeUnit.SECONDS);
     assertThat(leaderElector.initializationCount).isEqualTo(1);
   }
 
   @Test
   public void removeLeadersIsCalled() throws Exception {
     leaderService.stop();
-    leaderElectorLatch.await(1, TimeUnit.SECONDS);
     assertThat(leaderElector.removeLeaderCount).isEqualTo(1);
   }
 
@@ -106,7 +134,6 @@ public class LeaderServiceTest {
 
   @Test
   public void timeSinceLastElectionIsSet() throws Exception {
-    leaderElectorLatch.await(1, TimeUnit.SECONDS);
     long firstElectionTime = this.timeSinceLastElection.get();
     Thread.sleep(300);
     leaderService.leaderServiceTask.run();
@@ -118,10 +145,16 @@ public class LeaderServiceTest {
   }
 
   private class CountingLeaderElector implements LeaderElector {
+    boolean throwDuringElection;
     int initializationCount = 0;
     int runElectionCount = 0;
     int removeLeaderCount = 0;
+
     private final HashSet<ResourceId> resourceIds = Sets.newHashSet(new ResourceId("test"));
+
+    CountingLeaderElector(boolean throwDuringElection) {
+      this.throwDuringElection = throwDuringElection;
+    }
 
     @Override
     public boolean addResource(ResourceId resourceId) {
@@ -158,6 +191,9 @@ public class LeaderServiceTest {
     public void runElection() {
       ++runElectionCount;
       leaderElectorLatch.countDown();
+      if (throwDuringElection) {
+        throw new RuntimeException("test");
+      }
     }
   }
 }
