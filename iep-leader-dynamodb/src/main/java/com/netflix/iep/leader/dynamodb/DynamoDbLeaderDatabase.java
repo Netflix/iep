@@ -100,13 +100,13 @@ public class DynamoDbLeaderDatabase implements LeaderDatabase {
         db,
         config,
         LeaderId.create(config),
-        config.getString(DB_CONFIG_PATH_NAME + "tableName"),
-        config.getString(DB_CONFIG_PATH_NAME + "tableHashKeyName"),
-        config.getLong(DB_CONFIG_PATH_NAME + "tableReadCapacityUnits"),
-        config.getLong(DB_CONFIG_PATH_NAME + "tableWriteCapacityUnits"),
-        config.getDuration(DB_CONFIG_PATH_NAME + "tableActiveTimeout"),
-        config.getString(DB_CONFIG_PATH_NAME + "leaderIdAttributeName"),
-        config.getString(DB_CONFIG_PATH_NAME + "lastUpdateAttributeName")
+        config.getString(DB_CONFIG_PATH_NAME + ".tableName"),
+        config.getString(DB_CONFIG_PATH_NAME + ".tableHashKeyName"),
+        config.getLong(DB_CONFIG_PATH_NAME + ".tableReadCapacityUnits"),
+        config.getLong(DB_CONFIG_PATH_NAME + ".tableWriteCapacityUnits"),
+        config.getDuration(DB_CONFIG_PATH_NAME + ".tableActiveTimeout"),
+        config.getString(DB_CONFIG_PATH_NAME + ".leaderIdAttributeName"),
+        config.getString(DB_CONFIG_PATH_NAME + ".lastUpdateAttributeName")
     );
   }
 
