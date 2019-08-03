@@ -263,6 +263,9 @@ public class DynamoDbLeaderDatabase implements LeaderDatabase {
       );
 
       final Map<String, AttributeValue> expressionAttributeValues = new HashMap<>(2, 1.0f);
+      expressionAttributeValues.put(LEADER_ID_PLACEHOLDER,
+          AttributeValue.builder().s(leaderId.getId()).build()
+      );
       expressionAttributeValues.put(NOW_MILLIS_PLACEHOLDER,
           AttributeValue.builder().n(String.valueOf(now.toEpochMilli())).build()
       );
