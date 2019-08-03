@@ -77,6 +77,7 @@ dependencies.
 | [iep-module-awsmetrics]  | Configure Spectator client metrics for AWS clients.                 |
 | [iep-module-eureka]      | Setup EurekaClient for registration or use with clients.            |
 | [iep-module-jmxport]     | Restrict JMX port so it is easier to make tooling work via tunnels. |
+| [iep-module-leader]      | Default bindings for the simple leader election API.                |
 | [iep-module-rxnetty]     | Setup Eureka aware RxHttp client to be injected.                    |
 | [iep-module-userservice] | User service for validating known email addresses.                  |
 
@@ -90,6 +91,7 @@ dependencies.
 [iep-module-awsmetrics]: https://github.com/Netflix/iep/tree/master/iep-module-awsmetrics
 [iep-module-eureka]: https://github.com/Netflix/iep/tree/master/iep-module-eureka
 [iep-module-jmxport]: https://github.com/Netflix/iep/tree/master/iep-module-jmxport
+[iep-module-leader]: https://github.com/Netflix/iep/tree/master/iep-module-leader
 [iep-module-rxnetty]: https://github.com/Netflix/iep/tree/master/iep-module-rxnetty
 [iep-module-userservice]: https://github.com/Netflix/iep/tree/master/iep-module-userservice
 
@@ -101,6 +103,8 @@ These are standalone libraries used in various Insight products.
 |--------------------------|---------------------------------------------------------------------|
 | [iep-admin]              | Simple admin service to aid in debugging.                           |
 | [iep-eureka-testconfig]  | Configs for using Eureka within test cases.                         |
+| [iep-leader-api]         | Simple leader election API with a default implementation.           |
+| [iep-leader-dynamodb]    | DynamoDB implementation as the backing storage for [iep-leader-api].|
 | [iep-nflxenv]            | Configuration for accessing context from the environment.           |
 | [iep-rxhttp]             | Async HTTP client library with Eureka integration.                  |
 | [iep-service]            | Simple abstraction for a service that is part of an application.    |
@@ -108,7 +112,9 @@ These are standalone libraries used in various Insight products.
 
 [iep-admin]: https://github.com/Netflix/iep/tree/master/iep-admin
 [iep-eureka-testconfig]: https://github.com/Netflix/iep/tree/master/iep-eureka-testconfig
-[iep-nflxenv]: https://github.com/Netflix/iep/tree/master/iep-ses
+[iep-leader-api]: https://github.com/Netflix/iep/tree/master/iep-leader-api
+[iep-leader-dynamodb]: https://github.com/Netflix/iep/tree/master/iep-leader-dynamodb
+[iep-nflxenv]: https://github.com/Netflix/iep/tree/master/iep-nflxenv
 [iep-rxhttp]: https://github.com/Netflix/iep/tree/master/iep-rxhttp
 [iep-service]: https://github.com/Netflix/iep/tree/master/iep-service
 [iep-ses]: https://github.com/Netflix/iep/tree/master/iep-ses
