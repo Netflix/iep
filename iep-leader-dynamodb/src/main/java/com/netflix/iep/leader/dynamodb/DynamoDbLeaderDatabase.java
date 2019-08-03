@@ -262,7 +262,7 @@ public class DynamoDbLeaderDatabase implements LeaderDatabase {
           hashKeyName, AttributeValue.builder().s(resourceId).build()
       );
 
-      final Map<String, AttributeValue> expressionAttributeValues = new HashMap<>(2, 1.0f);
+      final Map<String, AttributeValue> expressionAttributeValues = new HashMap<>(3, 1.0f);
       expressionAttributeValues.put(LEADER_ID_PLACEHOLDER,
           AttributeValue.builder().s(leaderId.getId()).build()
       );
@@ -300,8 +300,12 @@ public class DynamoDbLeaderDatabase implements LeaderDatabase {
           hashKeyName, AttributeValue.builder().s(resourceId.getId()).build()
       );
 
-      final Map<String, AttributeValue> leaderIdAttributeMap = Collections.singletonMap(
-          LEADER_ID_PLACEHOLDER, AttributeValue.builder().s(leaderId.getId()).build()
+      final Map<String, AttributeValue> expressionAttributeValues = new HashMap<>(2, 1.0f);
+      expressionAttributeValues.put(LEADER_ID_PLACEHOLDER,
+          AttributeValue.builder().s(leaderId.getId()).build()
+      );
+      expressionAttributeValues.put(NO_LEADER_PLACEHOLDER,
+          AttributeValue.builder().s(LeaderId.NO_LEADER.getId()).build()
       );
 
       final UpdateItemRequest updateRequest = UpdateItemRequest.builder()
@@ -309,7 +313,7 @@ public class DynamoDbLeaderDatabase implements LeaderDatabase {
           .key(resourceRecordKey)
           .updateExpression(removeLeadershipExpression)
           .conditionExpression(removeLeadershipConditionExpression)
-          .expressionAttributeValues(leaderIdAttributeMap)
+          .expressionAttributeValues(expressionAttributeValues)
           .build();
 
       removed = db.updateItem(updateRequest).sdkHttpResponse().isSuccessful();
