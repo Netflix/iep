@@ -46,7 +46,7 @@ public class Main {
   }
 
   private static boolean exitOnFailure() {
-    return "true".equals(System.getProperty(EXIT_ON_FAILURE_PROP, "false"));
+    return "true".equals(System.getProperty(EXIT_ON_FAILURE_PROP, "true"));
   }
 
   private static List<Module> loadExplicitModules() throws Exception {
