@@ -3,17 +3,17 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.3.14"
-    val assertj    = "3.13.1"
-    val aws        = "1.11.579"
-    val aws2       = "2.6.4"
+    val assertj    = "3.13.2"
+    val aws        = "1.11.611"
+    val aws2       = "2.7.23"
     val eureka     = "1.9.12"
     val guice      = "4.1.0"
     val jackson    = "2.9.9"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.8"
-    val slf4j      = "1.7.26"
-    val spectator  = "0.92.0"
+    val slf4j      = "1.7.28"
+    val spectator  = "0.94.0"
   }
 
   import Versions._
@@ -66,14 +66,14 @@ object Dependencies {
   val jacksonScala       = "com.fasterxml.jackson.module" %% "jackson-module-scala" % jackson
   val jacksonSmile       = "com.fasterxml.jackson.dataformat" % "jackson-dataformat-smile" % jackson
   val jodaConvert        = "org.joda" % "joda-convert" % "1.8.1"
-  val jodaTime           = "joda-time" % "joda-time" % "2.10.2"
+  val jodaTime           = "joda-time" % "joda-time" % "2.10.3"
   val jsr250             = "javax.annotation" % "jsr250-api" % "1.0"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
   val reactiveStreams    = "org.reactivestreams" % "reactive-streams" % "1.0.2"
   val rxjava             = "io.reactivex" % "rxjava" % "1.3.8"
-  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.10"
+  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.11"
   val rxScala            = "io.reactivex" %% "rxscala" % rxscala
   val rxnettyCore        = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettySpectator   = "io.reactivex" % "rxnetty-spectator" % rxnetty
