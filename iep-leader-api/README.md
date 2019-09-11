@@ -12,7 +12,7 @@ support of correctness vs efficiency.
 
 [kleppmann]: https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html
 
-### Usage
+## Usage
 
 Typical usage consists of binding `LeaderElector` and `LeaderStatus` to `StandardLeaderElector`
 using an inversion of control framework, such as Guice or Spring Injection. One can also instantiate
@@ -21,7 +21,7 @@ that, the other methods may be interleaved in any fashion. `runElection()` shoul
 periodically based upon the value of `iep.leader.leaderElectorFrequency` which, in turn, should be
 set to something reasonable based upon `iep.leader.maxIdleDuration`.
 
-### Configuration
+## Configuration
 
 A value for the `iep.leader.leaderId` property must be set.
 
@@ -34,9 +34,11 @@ instance ID and the resource IDs to the single value of the cluster name as the 
 
 Additional configuration options are documented inline in `reference.conf`.
 
-### Metrics
+## Metrics
 
-#### leader.removals
+### leader.removals
+
+The number of leader removals that have occurred.
 
 **Unit:** removals/second
 
@@ -47,9 +49,11 @@ Additional configuration options are documented inline in `reference.conf`.
 * `error`: The error that occurred, if `result` is `failure`.
 * Common Infrastructure
 
-#### leader.resourceLeader
+### leader.resourceLeader
 
-**Unit:** boolean - 1.0 if reporting instance is leader of `resource`, 0.0 if not
+Identifies the leader of a resource. Reports 1.0 if the instance is the leader, 0.0 otherwise.
+
+**Unit:** boolean 
 
 **Dimensions:**
 
@@ -57,9 +61,11 @@ Additional configuration options are documented inline in `reference.conf`.
 * `leader`: The leader ID.
 * Common Infrastructure
 
-#### leader.resourceWithNoLeader
+### leader.resourceWithNoLeader
 
-**Unit:** boolean - 1.0 if the leader of `resource` is specifically _NO_LEADER_, 0.0 otherwise
+Identifies resources without a leader. Reports 1.0 if the leader is specifically `NO_LEADER`, 0.0 otherwise.
+ 
+**Unit:** boolean
 
 **Dimensions:**
 
