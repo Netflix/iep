@@ -21,7 +21,7 @@ object Dependencies {
   val archaiusBridge     = "com.netflix.archaius" % "archaius2-archaius1-bridge" % archaius
   val archaiusCore       = "com.netflix.archaius" % "archaius2-core" % archaius
   val archaiusGuice      = "com.netflix.archaius" % "archaius2-guice" % archaius
-  val archaiusLegacy     = "com.netflix.archaius" % "archaius-core" % "0.7.6"
+  val archaiusLegacy     = "com.netflix.archaius" % "archaius-core" % "0.7.7"
   val archaiusPersist    = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe   = "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val assertjcore        = "org.assertj" % "assertj-core" % assertj
