@@ -2,18 +2,18 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.3.14"
+    val archaius   = "2.3.15"
     val assertj    = "3.13.2"
-    val aws        = "1.11.611"
-    val aws2       = "2.7.23"
-    val eureka     = "1.9.12"
+    val aws        = "1.11.629"
+    val aws2       = "2.8.7"
+    val eureka     = "1.9.13"
     val guice      = "4.1.0"
     val jackson    = "2.9.9"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.8"
     val slf4j      = "1.7.28"
-    val spectator  = "0.94.0"
+    val spectator  = "0.96.0"
   }
 
   import Versions._
@@ -21,7 +21,7 @@ object Dependencies {
   val archaiusBridge     = "com.netflix.archaius" % "archaius2-archaius1-bridge" % archaius
   val archaiusCore       = "com.netflix.archaius" % "archaius2-core" % archaius
   val archaiusGuice      = "com.netflix.archaius" % "archaius2-guice" % archaius
-  val archaiusLegacy     = "com.netflix.archaius" % "archaius-core" % "0.7.6"
+  val archaiusLegacy     = "com.netflix.archaius" % "archaius-core" % "0.7.7"
   val archaiusPersist    = "com.netflix.archaius" % "archaius2-persisted2" % archaius
   val archaiusTypesafe   = "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val assertjcore        = "org.assertj" % "assertj-core" % assertj
@@ -71,9 +71,9 @@ object Dependencies {
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
-  val reactiveStreams    = "org.reactivestreams" % "reactive-streams" % "1.0.2"
+  val reactiveStreams    = "org.reactivestreams" % "reactive-streams" % "1.0.3"
   val rxjava             = "io.reactivex" % "rxjava" % "1.3.8"
-  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.11"
+  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.12"
   val rxScala            = "io.reactivex" %% "rxscala" % rxscala
   val rxnettyCore        = "io.reactivex" % "rxnetty" % rxnetty
   val rxnettySpectator   = "io.reactivex" % "rxnetty-spectator" % rxnetty
