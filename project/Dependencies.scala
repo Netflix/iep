@@ -58,7 +58,7 @@ object Dependencies {
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
   val reactiveStreams    = "org.reactivestreams" % "reactive-streams" % "1.0.3"
   val rxjava             = "io.reactivex" % "rxjava" % "1.3.8"
-  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.12"
+  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.13"
   val rxnettyCore        = "io.reactivex" % "rxnetty" % rxnetty
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi       = "com.netflix.spectator" % "spectator-api" % spectator
