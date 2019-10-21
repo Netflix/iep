@@ -91,5 +91,5 @@ object Dependencies {
   val spectatorIpc       = "com.netflix.spectator" % "spectator-ext-ipc" % spectator
   val spectatorJvm       = "com.netflix.spectator" % "spectator-ext-jvm" % spectator
   val spectatorStateless = "com.netflix.spectator" % "spectator-reg-stateless" % spectator
-  val typesafeConfig     = "com.typesafe" % "config" % "1.3.4"
+  val typesafeConfig     = "com.typesafe" % "config" % "1.4.0"
 }
