@@ -5,10 +5,10 @@ matrix:
     env: BINTRAY_PUBLISH=true
   - jdk: openjdk11
     env: BINTRAY_PUBLISH=false
-  - jdk: openjdk12
+  - jdk: openjdk13
     env: BINTRAY_PUBLISH=false
 scala:
-- 2.12.8
+- 2.12.10
 script:
 - ./buildViaTravis.sh
 env:

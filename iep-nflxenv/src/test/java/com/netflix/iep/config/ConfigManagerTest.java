@@ -46,7 +46,9 @@ public class ConfigManagerTest {
 
   @Test
   public void includeDoesNotOverrideSubstitutions() {
-    Assert.assertEquals("reference", ConfigManager.get().getString("iep.substitute"));
+    // Prior to typesafe config 1.4.0, this will return "reference".
+    // https://github.com/lightbend/config/issues/167
+    Assert.assertEquals("application", ConfigManager.get().getString("iep.substitute"));
   }
 
   @Test
