@@ -67,6 +67,30 @@ public class EddaLoaderTest {
   }
 
   @Test
+  public void overflow() throws Exception {
+    List<ServerGroup> expected = new ArrayList<>();
+    expected.add(ServerGroup.builder()
+        .platform("ec2")
+        .group("app-main-dev-v001")
+        .minSize(-1)
+        .maxSize(-1)
+        .desiredSize(-1)
+        .addInstance(Instance.builder()
+            .node("i-1234567890")
+            .privateIpAddress("10.20.30.40")
+            .vpcId("vpc-54321")
+            .subnetId("subnet-54321")
+            .ami("ami-0987654321")
+            .vmtype("m5.large")
+            .zone("us-east-1d")
+            .status(Instance.Status.NOT_REGISTERED)
+            .build())
+        .build());
+    List<ServerGroup> actual = get("edda-overflow.json");
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
   public void noInstances() throws Exception {
     List<ServerGroup> expected = new ArrayList<>();
     expected.add(ServerGroup.builder()
