@@ -17,7 +17,10 @@ package com.netflix.iep.servergroups;
 
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +31,8 @@ import java.util.List;
  * Helper functions for deserializing JSON using Jackson's streaming API.
  */
 final class JsonUtils {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtils.class);
 
   private static boolean isEndOfArrayOrInput(JsonParser jp) {
     JsonToken t = jp.getCurrentToken();
@@ -100,7 +105,12 @@ final class JsonUtils {
   /** Extract an integer value. */
   static int intValue(JsonParser jp) throws IOException {
     expect(jp, JsonToken.VALUE_NUMBER_INT);
-    int v = jp.getIntValue();
+    int v = -1;
+    try {
+      v = jp.getIntValue();
+    } catch (JsonProcessingException e) {
+      LOGGER.warn("failed to parse value as integer", e);
+    }
     jp.nextToken();
     return v;
   }
