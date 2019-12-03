@@ -650,7 +650,7 @@ public class RxHttpTest {
     Map<Integer, Integer> counts = new HashMap<>();
     for (int i = 0; i < 10; ++i) {
       int p = getPortForReq();
-      counts.merge(p, 1, (a, b) -> a + b);
+      counts.merge(p, 1, Integer::sum);
     }
     Assert.assertTrue("connections not getting reused", counts.size() < 4);
   }

@@ -151,7 +151,6 @@ public class LeaderServiceTest {
     final long lastElectionTime = timeSinceLastElection.get();
     final Duration electionInterval = Duration.ofMillis(lastElectionTime - firstElectionTime);
 
-    System.out.println(electionInterval);
     assertThat(electionInterval).isGreaterThan(Duration.ofMillis(295));
   }
 

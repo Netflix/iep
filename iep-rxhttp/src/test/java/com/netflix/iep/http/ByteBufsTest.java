@@ -87,7 +87,7 @@ public class ByteBufsTest {
       @Override
       public void call(ByteBuf byteBuf) {
         bufs[2 + i] = byteBuf;
-        String obj = byteBuf.toString(Charset.forName("UTF-8"));
+        String obj = byteBuf.toString(StandardCharsets.UTF_8);
         byteBuf.release();
         Assert.assertEquals(String.format("{\"a\":%d}", ++i), obj);
       }
@@ -95,7 +95,6 @@ public class ByteBufsTest {
     bufs[0].release();
     bufs[1].release();
     for (ByteBuf buf : bufs) {
-      //System.err.println("bufs[" + i + "]: " + bufs[i].refCnt());
       Assert.assertEquals(0, buf.refCnt());
     }
   }
@@ -110,16 +109,14 @@ public class ByteBufsTest {
       private int i = 0;
       @Override
       public void call(ByteBuf byteBuf) {
-        String obj = byteBuf.toString(Charset.forName("UTF-8"));
+        String obj = byteBuf.toString(StandardCharsets.UTF_8);
         byteBuf.release();
-        System.err.println("bytesBuf: '" + obj + "'");
         Assert.assertEquals(String.format("{\"a\":%d}", ++i), obj);
         bufs[1 + i] = byteBuf;
       }
     });
     bufs[0].release();
     for (ByteBuf buf : bufs) {
-      //System.err.println("bufs[" + i + "]: " + bufs[i].refCnt());
       Assert.assertEquals(0, buf.refCnt());
     }
   }
@@ -147,7 +144,7 @@ public class ByteBufsTest {
     byte[] data = "0\n1\n2\n3\n".getBytes(StandardCharsets.UTF_8);
     int count = obs(data).compose(ByteBufs.lines(10))
         .reduce(0, (acc, b) -> {
-          Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
+          Assert.assertEquals("" + acc, b.toString(StandardCharsets.UTF_8));
           return acc + 1;
         })
         .toBlocking()
@@ -160,7 +157,7 @@ public class ByteBufsTest {
     byte[] data = "0\r\n1\r\n2\r\n3\r\n".getBytes(StandardCharsets.UTF_8);
     int count = obs(data).compose(ByteBufs.lines(10))
         .reduce(0, (acc, b) -> {
-          Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
+          Assert.assertEquals("" + acc, b.toString(StandardCharsets.UTF_8));
           return acc + 1;
         })
         .toBlocking()
@@ -173,7 +170,7 @@ public class ByteBufsTest {
     byte[] data = "0\r1\r2\r3\r".getBytes(StandardCharsets.UTF_8);
     int count = obs(data).compose(ByteBufs.lines(10))
         .reduce(0, (acc, b) -> {
-          Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
+          Assert.assertEquals("" + acc, b.toString(StandardCharsets.UTF_8));
           return acc + 1;
         })
         .toBlocking()
@@ -187,8 +184,7 @@ public class ByteBufsTest {
     byte[] data = "0\n1\n2\n3".getBytes(StandardCharsets.UTF_8);
     int count = obs(data).compose(ByteBufs.lines(10))
         .reduce(0, (acc, b) -> {
-          System.out.println(b.toString(Charset.forName("UTF-8")));
-          Assert.assertEquals("" + acc, b.toString(Charset.forName("UTF-8")));
+          Assert.assertEquals("" + acc, b.toString(StandardCharsets.UTF_8));
           return acc + 1;
         })
         .toBlocking()
@@ -201,7 +197,7 @@ public class ByteBufsTest {
     byte[] data = "\n\n\n".getBytes(StandardCharsets.UTF_8);
     int count = obs(data).compose(ByteBufs.lines(10))
         .reduce(0, (acc, b) -> {
-          Assert.assertEquals("", b.toString(Charset.forName("UTF-8")));
+          Assert.assertEquals("", b.toString(StandardCharsets.UTF_8));
           return acc + 1;
         })
         .toBlocking()
@@ -216,7 +212,7 @@ public class ByteBufsTest {
       private int i = 0;
       @Override
       public void call(ByteBuf byteBuf) {
-        String obj = byteBuf.toString(Charset.forName("UTF-8"));
+        String obj = byteBuf.toString(StandardCharsets.UTF_8);
         Assert.assertEquals(String.format("%d", ++i), obj);
       }
     });

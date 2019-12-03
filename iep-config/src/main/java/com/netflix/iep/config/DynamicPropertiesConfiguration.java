@@ -44,7 +44,7 @@ public class DynamicPropertiesConfiguration implements AutoCloseable {
     return instance;
   }
 
-  protected class DynamicPropertiesConfigurationInstance implements IConfiguration {
+  protected static class DynamicPropertiesConfigurationInstance implements IConfiguration {
     private final PropertyRepository factory;
     private final Map<String, Property<String>> props = new ConcurrentHashMap<>();
 

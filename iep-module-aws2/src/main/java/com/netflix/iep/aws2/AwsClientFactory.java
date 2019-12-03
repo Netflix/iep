@@ -242,7 +242,7 @@ public class AwsClientFactory implements AutoCloseable {
   public <T> T newInstance(String name, Class<T> cls, String accountId) {
     try {
       Method builderMethod = cls.getMethod("builder");
-      return (T) ((AwsClientBuilder) builderMethod.invoke(null))
+      return (T) ((AwsClientBuilder<?, ?>) builderMethod.invoke(null))
           .credentialsProvider(createCredentialsProvider(name, accountId))
           .region(chooseRegion(name, cls))
           .overrideConfiguration(createClientConfig(name))

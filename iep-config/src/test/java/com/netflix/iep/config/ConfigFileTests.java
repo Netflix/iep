@@ -54,7 +54,7 @@ public class ConfigFileTests {
       put("a", "b");
     }};
     assertTrue(ConfigFile.checkScope(map, "a == 'b'"));
-    assertTrue(!ConfigFile.checkScope(map, "a != 'b'"));
+    assertFalse(ConfigFile.checkScope(map, "a != 'b'"));
   }
 
   @Test

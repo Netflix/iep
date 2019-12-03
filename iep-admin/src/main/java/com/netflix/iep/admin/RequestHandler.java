@@ -79,8 +79,6 @@ class RequestHandler implements HttpHandler {
         exchange.sendResponseHeaders(200, -1L);
         break;
       case "GET":
-        sendResponse(exchange, obj);
-        break;
       case "HEAD":
         sendResponse(exchange, obj);
         break;

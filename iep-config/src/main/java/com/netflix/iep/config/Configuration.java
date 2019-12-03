@@ -52,7 +52,7 @@ public final class Configuration {
         return iConfiguration.get((args[0] == null) ? null : args[0].toString());
       }
       else {
-        Class rt = method.getReturnType();
+        Class<?> rt = method.getReturnType();
         String key = (prefix == null) ? method.getName() : prefix + "." + method.getName();
         if (IConfiguration.class.isAssignableFrom(rt)) {
           return newProxy(rt, key);

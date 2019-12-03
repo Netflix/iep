@@ -102,7 +102,7 @@ public class Strings {
     return sb.toString();
   }
 
-  public static boolean conversionExists(Class c) {
+  public static boolean conversionExists(Class<?> c) {
     return c == String.class
         || c == boolean.class
         || c == byte.class
@@ -185,7 +185,7 @@ public class Strings {
     m = NamedDate.matcher(v);
     if (m.matches()) return parseRefVar(ref, m.group(1));
     m = UnixDate.matcher(v);
-    if (m.matches()) return new DateTime(Long.valueOf(m.group(1)) * 1000, DateTimeZone.UTC);
+    if (m.matches()) return new DateTime(Long.parseLong(m.group(1)) * 1000, DateTimeZone.UTC);
     throw new IllegalArgumentException("invalid date " + v);
   }
 
@@ -213,7 +213,7 @@ public class Strings {
   }
 
   private static Period parseAtPeriod(String amt, String unit) {
-    int v = Integer.valueOf(amt);
+    int v = Integer.parseInt(amt);
     if (unit.equals("s") || unit.equals("second") || unit.equals("seconds"))
       return Period.seconds(v);
     if (unit.equals("m") || unit.equals("min") || unit.equals("minute") || unit.equals("minutes"))
