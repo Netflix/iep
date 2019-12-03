@@ -55,7 +55,7 @@ public class AdminModule extends AbstractModule {
    *
    * <pre>
    * public class MyModule extends AbstractModule {
-   *   @Override protected void configure() {
+   *   {@literal @}Override protected void configure() {
    *     AdminModule.endpointBinder(binder())
    *       .addBinding("/foo").to(FooEndpoint.class);
    *   }

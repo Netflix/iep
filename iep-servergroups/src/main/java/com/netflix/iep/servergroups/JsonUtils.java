@@ -125,9 +125,6 @@ final class JsonUtils {
     }
     switch (jp.getCurrentToken()) {
       case START_ARRAY:
-        jp.skipChildren();
-        jp.nextToken();
-        break;
       case START_OBJECT:
         jp.skipChildren();
         jp.nextToken();

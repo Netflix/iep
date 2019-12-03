@@ -93,14 +93,13 @@ public final class Pagination {
   public static <R, T> Iterator<T> createIterator(R request, Function<R, T> f) {
     return new Iterator<T>() {
       private R nextReq = request;
-      private T res = null;
 
       @Override public boolean hasNext() {
         return nextReq != null;
       }
 
       @Override public T next() {
-        res = f.apply(nextReq);
+        T res = f.apply(nextReq);
         nextReq = getNextRequest(nextReq, res);
         return res;
       }
@@ -218,6 +217,6 @@ public final class Pagination {
   }
 
   private static boolean isNullOrEmpty(Object next) {
-    return (next == null) || (next instanceof Map && ((Map) next).isEmpty());
+    return (next == null) || (next instanceof Map && ((Map<?, ?>) next).isEmpty());
   }
 }

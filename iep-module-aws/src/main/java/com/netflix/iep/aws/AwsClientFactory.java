@@ -244,7 +244,7 @@ public class AwsClientFactory implements AutoCloseable {
     try {
       final Class<?> clientCls = getClientClass(cls);
       Method builderMethod = clientCls.getMethod("builder");
-      return (T) ((AwsClientBuilder) builderMethod.invoke(null))
+      return (T) ((AwsClientBuilder<?, ?>) builderMethod.invoke(null))
           .withCredentials(createCredentialsProvider(name, accountId))
           .withClientConfiguration(createClientConfig(name))
           .withRegion(chooseRegion(name, cls))

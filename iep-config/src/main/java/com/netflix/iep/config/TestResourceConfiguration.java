@@ -44,12 +44,12 @@ public class TestResourceConfiguration {
       String propFile, Map<String,String> subs, Map<String,String> overrides) throws Exception {
     URL propUrl = Resources.getResource(propFile);
     String propData = Resources.toString(propUrl);
-    for (Map.Entry e : subs.entrySet()) {
+    for (Map.Entry<String, String> e : subs.entrySet()) {
       propData = propData.replaceAll("\\{" + e.getKey() + "\\}", (String) e.getValue());
     }
     final Properties props = new Properties();
     props.load(new ByteArrayInputStream(propData.getBytes()));
-    for (Map.Entry e : overrides.entrySet()) {
+    for (Map.Entry<String, String> e : overrides.entrySet()) {
       props.setProperty((String) e.getKey(), (String) e.getValue());
     }
 

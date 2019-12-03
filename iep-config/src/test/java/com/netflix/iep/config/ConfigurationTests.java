@@ -123,7 +123,7 @@ public class ConfigurationTests {
     }};
     TestConfig config = mkConfig(props);
     boolean p = config.getBooleanPrimitive();
-    assertTrue("getBooleanPrimitive", !p);
+    assertFalse("getBooleanPrimitive", p);
     Boolean o = config.getBooleanObject();
     assertEquals("getBooleanObject", o, Boolean.FALSE);
   }

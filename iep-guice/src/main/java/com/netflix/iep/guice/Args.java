@@ -63,7 +63,7 @@ public class Args implements Iterable<String> {
 
   /** Return an array with a copy of the command line arguments. */
   public String[] asArray() {
-    return argv.toArray(new String[argv.size()]);
+    return argv.toArray(new String[0]);
   }
 
   @Override public Iterator<String> iterator() {

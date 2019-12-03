@@ -38,7 +38,7 @@ public final class ServerSentEvent {
    * Parse a server sent event line from the ByteBuf.
    */
   public static ServerSentEvent parse(ByteBuf buf) {
-    return parse(buf.toString(Charset.forName("UTF-8")));
+    return parse(buf.toString(StandardCharsets.UTF_8));
   }
 
   /**
