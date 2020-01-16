@@ -2,18 +2,18 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.3.15"
+    val archaius   = "2.3.16"
     val assertj    = "3.14.0"
-    val aws        = "1.11.681"
-    val aws2       = "2.10.24"
-    val eureka     = "1.9.14"
+    val aws        = "1.11.702"
+    val aws2       = "2.10.42"
+    val eureka     = "1.9.16"
     val guice      = "4.1.0"
-    val jackson    = "2.10.1"
+    val jackson    = "2.10.2"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
-    val scala      = "2.12.8"
-    val slf4j      = "1.7.29"
-    val spectator  = "0.99.2"
+    val scala      = "2.12.10"
+    val slf4j      = "1.7.30"
+    val spectator  = "0.101.0"
   }
 
   import Versions._
@@ -44,21 +44,21 @@ object Dependencies {
   val aws2EC2            = "software.amazon.awssdk" % "ec2" % aws2
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.1.10"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.1.11"
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceCore          = "com.google.inject" % "guice" % guice
   val guiceMulti         = "com.google.inject.extensions" % "guice-multibindings" % guice
   val inject             = "javax.inject" % "javax.inject" % "1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
-  val jodaTime           = "joda-time" % "joda-time" % "2.10.4"
+  val jodaTime           = "joda-time" % "joda-time" % "2.10.5"
   val jsr250             = "javax.annotation" % "jsr250-api" % "1.0"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
   val reactiveStreams    = "org.reactivestreams" % "reactive-streams" % "1.0.3"
   val rxjava             = "io.reactivex" % "rxjava" % "1.3.8"
-  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.15"
+  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.17"
   val rxnettyCore        = "io.reactivex" % "rxnetty" % rxnetty
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi       = "com.netflix.spectator" % "spectator-api" % spectator
