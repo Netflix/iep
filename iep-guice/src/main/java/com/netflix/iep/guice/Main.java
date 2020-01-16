@@ -55,7 +55,7 @@ public class Main {
     for (String cname : cnames) {
       if (!"".equals(cname)) {
         Class<?> cls = Class.forName(cname);
-        modules.add((Module) cls.newInstance());
+        modules.add((Module) cls.getDeclaredConstructor().newInstance());
       }
     }
     return modules;

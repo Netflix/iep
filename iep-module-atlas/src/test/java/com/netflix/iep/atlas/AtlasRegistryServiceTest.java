@@ -31,9 +31,6 @@ public class AtlasRegistryServiceTest {
     AtlasRegistry registry = (AtlasRegistry) service.getRegistry();
     AtlasConfig config = (AtlasConfig) registry.config();
     Assert.assertEquals("-._A-Za-z0-9", config.validTagCharacters());
-    Assert.assertEquals("-._A-Za-z0-9^~", config.validTagValueCharacters().get("nf.cluster"));
-    Assert.assertEquals("-._A-Za-z0-9^~", config.validTagValueCharacters().get("nf.asg"));
-    Assert.assertNull(config.validTagValueCharacters().get("nf.zone"));
     service.stop();
   }
 }
