@@ -26,8 +26,10 @@ import com.netflix.spectator.ipc.http.HttpClient;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * Setup bindings for {@link UserService}.
@@ -43,6 +45,7 @@ public class UserServiceModule extends AbstractModule {
     userBinder.addBinding().to(EmployeeUserService.class);
     userBinder.addBinding().to(SimpleUserService.class);
     userBinder.addBinding().to(WhitelistUserService.class);
+    userBinder.addBinding().to(HttpUserService.class);
 
     // Show individual startup as part of servicemanager for improved debugging
     Multibinder<Service> serviceBinder = Multibinder.newSetBinder(binder(), Service.class);
@@ -50,6 +53,7 @@ public class UserServiceModule extends AbstractModule {
     serviceBinder.addBinding().to(EmployeeUserService.class);
     serviceBinder.addBinding().to(SimpleUserService.class);
     serviceBinder.addBinding().to(WhitelistUserService.class);
+    serviceBinder.addBinding().to(HttpUserService.class);
     serviceBinder.addBinding().to(CompositeUserService.class);
 
     // Register endpoint to admin to aid in debugging
@@ -76,8 +80,12 @@ public class UserServiceModule extends AbstractModule {
     @Inject(optional = true)
     private HttpClient client = HttpClient.DEFAULT_CLIENT;
 
+    @Named("iep.userservice")
+    @Inject(optional = true)
+    private SSLSocketFactory sslFactory = null;
+
     @Override public Context get() {
-      return new Context(registry, config, client);
+      return new Context(registry, config, client, sslFactory);
     }
   }
 }

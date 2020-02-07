@@ -235,6 +235,7 @@ lazy val `iep-module-userservice` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-module-admin`, `iep-service`)
   .settings(libraryDependencies ++= Seq(
+    Dependencies.caffeine,
     Dependencies.guiceCore,
     Dependencies.guiceMulti,
     Dependencies.jacksonMapper,

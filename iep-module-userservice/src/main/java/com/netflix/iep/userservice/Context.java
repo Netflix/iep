@@ -18,11 +18,13 @@ package com.netflix.iep.userservice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.ipc.http.HttpClient;
+import com.netflix.spectator.ipc.http.HttpRequestBuilder;
 import com.netflix.spectator.ipc.http.HttpResponse;
 import com.typesafe.config.Config;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.Executors;
@@ -40,6 +42,8 @@ public final class Context implements AutoCloseable {
   private final Config config;
   private final HttpClient client;
 
+  private final SSLSocketFactory sslFactory;
+
   private final int connectTimeout;
   private final int readTimeout;
 
@@ -48,10 +52,11 @@ public final class Context implements AutoCloseable {
   private final ScheduledExecutorService executor;
 
   @Inject
-  public Context(Registry registry, Config config, HttpClient client) {
+  public Context(Registry registry, Config config, HttpClient client, SSLSocketFactory sslFactory) {
     this.registry = registry;
     this.config = config.getConfig("netflix.iep.userservice");
     this.client = client;
+    this.sslFactory = sslFactory;
 
     connectTimeout = (int) this.config.getDuration("connect-timeout", TimeUnit.MILLISECONDS);
     readTimeout = (int) this.config.getDuration("read-timeout", TimeUnit.MILLISECONDS);
@@ -94,7 +99,17 @@ public final class Context implements AutoCloseable {
   }
 
   HttpResponse get(String name, String uri) throws IOException {
-    return client.get(URI.create(uri))
+    return get(name, uri, false);
+  }
+
+  HttpResponse get(String name, String uri, boolean useSslFactory) throws IOException {
+
+    HttpRequestBuilder builder = client.get(URI.create(uri));
+    if (useSslFactory) {
+      builder.withSSLSocketFactory(sslFactory);
+    }
+
+    return builder
         .withConnectTimeout(connectTimeout)
         .withReadTimeout(readTimeout)
         .withRetries(2)
