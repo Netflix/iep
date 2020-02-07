@@ -39,7 +39,7 @@ public class DepartedUserServiceTest {
   private final Config config = ConfigFactory.load();
 
   private Context newContext(HttpClient client) {
-    return new Context(registry, config, client);
+    return new Context(registry, config, client, null);
   }
 
   private HttpResponse ok(String data) {

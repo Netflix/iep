@@ -43,6 +43,7 @@ public class UserServiceModuleTest {
     expected.add("EmployeeUserService");
     expected.add("SimpleUserService");
     expected.add("WhitelistUserService");
+    expected.add("HttpUserService");
     expected.add("CompositeUserService");
     Set<String> result = manager.services().stream()
         .map(Service::name)

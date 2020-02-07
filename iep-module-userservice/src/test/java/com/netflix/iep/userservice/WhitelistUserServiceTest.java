@@ -32,7 +32,7 @@ public class WhitelistUserServiceTest {
   private final ManualClock clock = new ManualClock();
   private final Registry registry = new DefaultRegistry(clock);
   private final Config config = ConfigFactory.load();
-  private final Context context = new Context(registry, config, HttpClient.DEFAULT_CLIENT);
+  private final Context context = new Context(registry, config, HttpClient.DEFAULT_CLIENT, null);
 
   @Test
   public void start() throws Exception {

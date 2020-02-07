@@ -21,6 +21,7 @@ import com.netflix.spectator.ipc.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 
 class TestClient implements HttpClient {
 
@@ -33,7 +34,12 @@ class TestClient implements HttpClient {
   @Override public HttpRequestBuilder newRequest(URI uri) {
     return new HttpRequestBuilder(HttpClient.DEFAULT_LOGGER, uri) {
       @Override protected HttpResponse sendImpl() throws IOException {
-        return supplier.get();
+        if (supplier != null) {
+          return supplier.get();
+        } else {
+          int status = Integer.parseInt(uri.getHost());
+          return new HttpResponse(status, Collections.emptyMap());
+        }
       }
     };
   }
