@@ -32,7 +32,7 @@ import java.util.Set;
 /**
  * Calls one or more remote services via HTTP to check if an email is valid. The only
  * supported call is {@link #isValidEmail(String)}, the others just return an empty set.
- * Emails checks will get cached to reduce load and improve performance for repeated checks.
+ * Email checks will get cached to reduce load and improve performance for repeated checks.
  */
 @Singleton
 public class HttpUserService extends AbstractService implements UserService {
