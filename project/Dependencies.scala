@@ -3,17 +3,17 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.3.16"
-    val assertj    = "3.14.0"
-    val aws        = "1.11.702"
-    val aws2       = "2.10.56"
-    val eureka     = "1.9.16"
+    val assertj    = "3.15.0"
+    val aws        = "1.11.723"
+    val aws2       = "2.10.66"
+    val eureka     = "1.9.18"
     val guice      = "4.1.0"
     val jackson    = "2.10.2"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.10"
     val slf4j      = "1.7.30"
-    val spectator  = "0.101.0"
+    val spectator  = "0.103.0"
   }
 
   import Versions._
@@ -45,7 +45,7 @@ object Dependencies {
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.8.1"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.1.11"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.1.12"
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceCore          = "com.google.inject" % "guice" % guice
   val guiceMulti         = "com.google.inject.extensions" % "guice-multibindings" % guice
