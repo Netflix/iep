@@ -1,6 +1,8 @@
 
 ## Description
 
+> :warning: **Deprecated:** internally at Netflix, use Shrimpi instead.
+
 Guice module to configure [eureka](https://github.com/Netflix/eureka). It will do the following:
 
 * Setup binding so you can inject `ApplicationInfoManager` and `DiscoveryClient`.
