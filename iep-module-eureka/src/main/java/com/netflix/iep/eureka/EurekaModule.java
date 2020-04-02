@@ -43,7 +43,11 @@ import javax.inject.Singleton;
 
 /**
  * Setup eureka and create binding for DiscoveryClient.
+ *
+ * @deprecated Move to some other solution. Internally at Netflix, Shrimpi can be used
+ * if heart-beating is all that is required.
  */
+@Deprecated
 public final class EurekaModule extends AbstractModule {
 
   private static class OptionalInjections {
