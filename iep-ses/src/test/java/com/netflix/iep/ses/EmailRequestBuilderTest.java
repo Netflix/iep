@@ -252,4 +252,14 @@ public class EmailRequestBuilderTest {
         .withTextBody("Body of the email message.");
     builder.toString();
   }
+
+  @Test
+  public void sesConfigSet() throws IOException {
+    checkMessage("sesConfigSet", new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .withConfigSet("emailTracking")
+        .withSubject("Test message")
+        .withHtmlBody("Repo <a href=\"https://github.com/Netflix/iep/\">repo</a>."));
+  }
 }

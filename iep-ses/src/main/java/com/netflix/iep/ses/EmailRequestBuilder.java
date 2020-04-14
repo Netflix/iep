@@ -70,6 +70,7 @@ public final class EmailRequestBuilder {
   private List<String> ccAddresses;
   private List<String> bccAddresses;
   private List<String> replyToAddresses;
+  private String configSet;
   private String subject;
   private String contentType;
   private String body;
@@ -138,6 +139,16 @@ public final class EmailRequestBuilder {
    */
   public EmailRequestBuilder withBccAddresses(String... addresses) {
     this.bccAddresses = Arrays.asList(addresses);
+    return this;
+  }
+
+  /**
+   * Specifies an SES configuration set to use for the message.
+   *
+   * @see <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/using-configuration-sets.html">configuration sets</a>
+   */
+  public EmailRequestBuilder withConfigSet(String configSet) {
+    this.configSet = configSet;
     return this;
   }
 
@@ -230,6 +241,10 @@ public final class EmailRequestBuilder {
 
     if (fromArn != null && !fromArn.isEmpty()) {
       builder.append(EmailHeader.fromArn(fromArn));
+    }
+
+    if (configSet != null && !configSet.isEmpty()) {
+      builder.append(EmailHeader.configSet(configSet));
     }
 
     builder
