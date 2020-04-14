@@ -101,6 +101,11 @@ class EmailHeader {
     return new EmailHeader("Subject", EncodingUtils.wrapBase64(subject, "Subject: ".length(), 50));
   }
 
+  /** SES configuration set header. */
+  static EmailHeader configSet(String name) {
+    return new EmailHeader("X-SES-CONFIGURATION-SET", name);
+  }
+
   private final String name;
   private final String value;
 
