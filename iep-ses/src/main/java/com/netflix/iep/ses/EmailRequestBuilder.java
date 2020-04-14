@@ -202,7 +202,7 @@ public final class EmailRequestBuilder {
         : EmailHeader.from(fromAddress).toString();
 
     final String to = encodeAddressList(toAddresses);
-    if (to == null || to.isEmpty()) {
+    if (to.isEmpty()) {
       throw new IllegalArgumentException("no recipients specified");
     }
 
@@ -214,17 +214,17 @@ public final class EmailRequestBuilder {
         .append(EmailHeader.subject(subject));
 
     final String cc = encodeAddressList(ccAddresses);
-    if (cc != null && !cc.isEmpty()) {
+    if (!cc.isEmpty()) {
       builder.append(EmailHeader.cc(cc));
     }
 
     final String bcc = encodeAddressList(bccAddresses);
-    if (bcc != null && !bcc.isEmpty()) {
+    if (!bcc.isEmpty()) {
       builder.append(EmailHeader.bcc(bcc));
     }
 
     final String replyTo = encodeAddressList(replyToAddresses);
-    if (replyTo != null && !replyTo.isEmpty()) {
+    if (!replyTo.isEmpty()) {
       builder.append(EmailHeader.replyTo(replyTo));
     }
 
