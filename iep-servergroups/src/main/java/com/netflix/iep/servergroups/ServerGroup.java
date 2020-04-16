@@ -44,6 +44,8 @@ public final class ServerGroup {
   private final String group;
   private final String stack;
   private final String detail;
+  private final String shard1;
+  private final String shard2;
 
   private final int minSize;
   private final int maxSize;
@@ -62,6 +64,8 @@ public final class ServerGroup {
     group = builder.group;
     stack = sg.stack();
     detail = sg.detail();
+    shard1 = sg.shard1();
+    shard2 = sg.shard2();
 
     minSize = builder.minSize;
     maxSize = builder.maxSize;
@@ -121,6 +125,22 @@ public final class ServerGroup {
    */
   public String getDetail() {
     return detail;
+  }
+
+  /**
+   * Return the value for the first shard extracted from the detail of the server group based
+   * on the ShardingNamingConvention in Frigga.
+   */
+  public String getShard1() {
+    return shard1;
+  }
+
+  /**
+   * Return the value for the second shard extracted from the detail of the server group based
+   * on the ShardingNamingConvention in Frigga.
+   */
+  public String getShard2() {
+    return shard2;
   }
 
   /** Return the minimum size for the group. */
@@ -207,13 +227,15 @@ public final class ServerGroup {
         Objects.equals(group, that.group) &&
         Objects.equals(stack, that.stack) &&
         Objects.equals(detail, that.detail) &&
+        Objects.equals(shard1, that.shard1) &&
+        Objects.equals(shard2, that.shard2) &&
         Objects.equals(instances, that.instances);
   }
 
   @Override public int hashCode() {
     return Objects.hash(
         id, platform,
-        app, cluster, group, stack, detail,
+        app, cluster, group, stack, detail, shard1, shard2,
         minSize, maxSize, desiredSize,
         instances);
   }
