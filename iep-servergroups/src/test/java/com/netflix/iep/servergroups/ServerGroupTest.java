@@ -71,6 +71,17 @@ public class ServerGroupTest {
         .build();
   }
 
+  private ServerGroup shardedGroup() {
+    return ServerGroup.builder()
+        .platform("ec2")
+        .group("app-stack-x1shard1-x2shard2-other-detail-v001")
+        .minSize(10)
+        .maxSize(100)
+        .desiredSize(42)
+        .addInstance(defaultInstance())
+        .build();
+  }
+
   @Test
   public void id() {
     Assert.assertEquals("ec2.app-stack-detail-v001", defaultGroup().getId());
@@ -104,6 +115,31 @@ public class ServerGroupTest {
   @Test
   public void detail() {
     Assert.assertEquals("detail", defaultGroup().getDetail());
+  }
+
+  @Test
+  public void shard1() {
+    Assert.assertNull(defaultGroup().getShard1());
+  }
+
+  @Test
+  public void shard2() {
+    Assert.assertNull(defaultGroup().getShard2());
+  }
+
+  @Test
+  public void shardedDetail() {
+    Assert.assertEquals("x1shard1-x2shard2-other-detail", shardedGroup().getDetail());
+  }
+
+  @Test
+  public void shardedShard1() {
+    Assert.assertEquals("shard1", shardedGroup().getShard1());
+  }
+
+  @Test
+  public void shardedShard2() {
+    Assert.assertEquals("shard2", shardedGroup().getShard2());
   }
 
   @Test
