@@ -39,9 +39,6 @@ public class UserServiceModuleTest {
     Assert.assertNotNull(manager);
 
     Set<String> expected = new TreeSet<>();
-    expected.add("DepartedUserService");
-    expected.add("EmployeeUserService");
-    expected.add("SimpleUserService");
     expected.add("WhitelistUserService");
     expected.add("HttpUserService");
     expected.add("CompositeUserService");
@@ -62,7 +59,7 @@ public class UserServiceModuleTest {
   @Test
   public void specificUserService() throws Exception {
     Injector injector = Guice.createInjector(new UserServiceModule());
-    SimpleUserService s = injector.getInstance(SimpleUserService.class);
+    WhitelistUserService s = injector.getInstance(WhitelistUserService.class);
     Assert.assertNotNull(s);
   }
 }
