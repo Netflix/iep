@@ -41,17 +41,11 @@ public class UserServiceModule extends AbstractModule {
 
     // Set used for composite
     Multibinder<UserService> userBinder = Multibinder.newSetBinder(binder(), UserService.class);
-    userBinder.addBinding().to(DepartedUserService.class);
-    userBinder.addBinding().to(EmployeeUserService.class);
-    userBinder.addBinding().to(SimpleUserService.class);
     userBinder.addBinding().to(WhitelistUserService.class);
     userBinder.addBinding().to(HttpUserService.class);
 
     // Show individual startup as part of servicemanager for improved debugging
     Multibinder<Service> serviceBinder = Multibinder.newSetBinder(binder(), Service.class);
-    serviceBinder.addBinding().to(DepartedUserService.class);
-    serviceBinder.addBinding().to(EmployeeUserService.class);
-    serviceBinder.addBinding().to(SimpleUserService.class);
     serviceBinder.addBinding().to(WhitelistUserService.class);
     serviceBinder.addBinding().to(HttpUserService.class);
     serviceBinder.addBinding().to(CompositeUserService.class);
