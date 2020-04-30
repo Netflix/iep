@@ -6,7 +6,7 @@ object Dependencies {
     val assertj    = "3.15.0"
     val aws        = "1.11.764"
     val aws2       = "2.13.6"
-    val eureka     = "1.9.18"
+    val eureka     = "1.9.20"
     val guice      = "4.1.0"
     val jackson    = "2.10.3"
     val rxnetty    = "0.4.20"
