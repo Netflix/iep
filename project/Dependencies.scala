@@ -4,16 +4,16 @@ object Dependencies {
   object Versions {
     val archaius   = "2.3.16"
     val assertj    = "3.15.0"
-    val aws        = "1.11.752"
-    val aws2       = "2.11.7"
-    val eureka     = "1.9.18"
+    val aws        = "1.11.764"
+    val aws2       = "2.13.6"
+    val eureka     = "1.9.20"
     val guice      = "4.1.0"
-    val jackson    = "2.10.3"
+    val jackson    = "2.11.0"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.10"
     val slf4j      = "1.7.30"
-    val spectator  = "0.106.0"
+    val spectator  = "0.107.0"
   }
 
   import Versions._
@@ -44,7 +44,7 @@ object Dependencies {
   val aws2EC2            = "software.amazon.awssdk" % "ec2" % aws2
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
-  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.8.1"
+  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.8.2"
   val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.1.13"
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceCore          = "com.google.inject" % "guice" % guice
@@ -52,7 +52,7 @@ object Dependencies {
   val inject             = "javax.inject" % "javax.inject" % "1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
-  val jodaTime           = "joda-time" % "joda-time" % "2.10.5"
+  val jodaTime           = "joda-time" % "joda-time" % "2.10.6"
   val jsr250             = "javax.annotation" % "jsr250-api" % "1.0"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
