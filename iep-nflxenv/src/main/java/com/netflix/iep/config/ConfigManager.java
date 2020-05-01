@@ -34,9 +34,21 @@ public final class ConfigManager {
 
   private static final Config CONFIG = load();
 
+  private static final DynamicConfigManager DYNAMIC = DynamicConfigManager.create(CONFIG);
+
   /** Get a cached copy of the config loaded from the default class loader. */
   public static Config get() {
     return CONFIG;
+  }
+
+  /** Get the global dynamic config manager. */
+  public static DynamicConfigManager dynamicConfigManager() {
+    return DYNAMIC;
+  }
+
+  /** Get a snapshot of the current dynamic config instance. */
+  public static Config dynamicConfig() {
+    return DYNAMIC.get();
   }
 
   /** Load config using the default class loader. */

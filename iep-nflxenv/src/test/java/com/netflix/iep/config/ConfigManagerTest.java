@@ -16,6 +16,7 @@
 package com.netflix.iep.config;
 
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,5 +62,13 @@ public class ConfigManagerTest {
     } finally {
       Thread.currentThread().setContextClassLoader(cl);
     }
+  }
+
+  @Test
+  public void dynamicConfig() {
+    Assert.assertEquals("classpath", ConfigManager.dynamicConfig().getString("iep.value"));
+    ConfigManager.dynamicConfigManager()
+        .setOverrideConfig(ConfigFactory.parseString("iep.value = \"dynamic\""));
+    Assert.assertEquals("dynamic", ConfigManager.dynamicConfig().getString("iep.value"));
   }
 }
