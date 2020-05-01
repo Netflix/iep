@@ -15,8 +15,72 @@
  */
 package com.netflix.iep.ses;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
 /** Header to include in the email. */
 class EmailHeader {
+
+  private static final Set<String> DENYLIST;
+  static {
+    Set<String> denylist = new HashSet<>();
+    denylist.add("mime-version");
+    denylist.add("content-type");
+    denylist.add("content-disposition");
+    denylist.add("content-transfer-encoding");
+    denylist.add("content-id");
+    denylist.add("reply-to");
+    denylist.add("from");
+    denylist.add("to");
+    denylist.add("cc");
+    denylist.add("bcc");
+    denylist.add("subject");
+    denylist.add("x-ses-from-arn");
+    denylist.add("x-ses-configuration-set");
+    DENYLIST = Collections.unmodifiableSet(denylist);
+  }
+
+  /** Checks if a header is allowed to be set by the user or is blacklisted. */
+  static void checkCustomHeader(String header) {
+    if (DENYLIST.contains(header.toLowerCase(Locale.US))) {
+      throw new IllegalArgumentException("'" + header + "' cannot be used as a custom header, " +
+          "use the appropriate method on the builder");
+    }
+
+    // Check that only allowed characters are used in the header
+    for (int i = 0; i < header.length(); ++i) {
+      if (!isAllowedInFieldName(header.charAt(i))) {
+        throw new IllegalArgumentException("'" + header + "' contains an invalid character: '" +
+            header.charAt(i) + "'");
+      }
+    }
+
+    // Check max length of header, lines should be 78 characters or less including CRLF. Since
+    // the header cannot be folded this means max length of 74 (78 - len(': ') - len(CRLF)).
+    // https://tools.ietf.org/html/rfc5322#section-2.2.3
+    if (header.length() > 74) {
+      throw new IllegalArgumentException("'" + header + "' header exceeds max length of 74");
+    }
+  }
+
+  /**
+   * Returns true if the character is allowed for use within the field name of an email
+   * header according to <a href="https://tools.ietf.org/html/rfc5322#section-2.2">RFC-5322</a>.
+   */
+  static boolean isAllowedInFieldName(char c) {
+    return c >= 33 && c <= 126 && c != ':';
+  }
+
+  /**
+   * Create a new custom header instance. The values will be base64 encoded and wrapped
+   * to fit email restrictions.
+   */
+  static EmailHeader custom(String key, String value) {
+    // Add 2 to key length to account for ': ' between key and value
+    return new EmailHeader(key, EncodingUtils.wrapBase64(value, key.length() + 2, 50));
+  }
 
   /** Mime version header included by default. */
   static EmailHeader mime() {

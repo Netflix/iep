@@ -20,7 +20,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -70,6 +72,7 @@ public final class EmailRequestBuilder {
   private List<String> ccAddresses;
   private List<String> bccAddresses;
   private List<String> replyToAddresses;
+  private Map<String, String> headers;
   private String configSet;
   private String subject;
   private String contentType;
@@ -83,6 +86,7 @@ public final class EmailRequestBuilder {
     ccAddresses = Collections.emptyList();
     bccAddresses = Collections.emptyList();
     replyToAddresses = Collections.emptyList();
+    headers = new LinkedHashMap<>();
     body = "";
     attachments = new ArrayList<>();
     boundary = UUID.randomUUID().toString();
@@ -139,6 +143,15 @@ public final class EmailRequestBuilder {
    */
   public EmailRequestBuilder withBccAddresses(String... addresses) {
     this.bccAddresses = Arrays.asList(addresses);
+    return this;
+  }
+
+  /**
+   * Add a custom header to the email message.
+   */
+  public EmailRequestBuilder addHeader(String key, String value) {
+    EmailHeader.checkCustomHeader(key);
+    this.headers.put(key, value);
     return this;
   }
 
@@ -246,6 +259,8 @@ public final class EmailRequestBuilder {
     if (configSet != null && !configSet.isEmpty()) {
       builder.append(EmailHeader.configSet(configSet));
     }
+
+    headers.forEach((k, v) -> builder.append(EmailHeader.custom(k, v)));
 
     builder
         .append(EncodingUtils.CRLF)

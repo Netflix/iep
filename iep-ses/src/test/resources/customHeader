@@ -1,0 +1,15 @@
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+  boundary="331239ab-8a31-4cc6-84d6-5557f96ebc3a"
+From: bob@example.com
+To: andrew@example.com
+Subject: =?UTF-8?B?VGVzdCBtZXNzYWdl?=
+X-Custom-Header: =?UTF-8?B?Q3VzdG9tIGhlYWRlciB2YWx1ZSA=?=
+ =?UTF-8?B?d2l0aCBVVEYtOCBjaGFyYWN0ZXJzOiDorabmiqU=?=
+
+--331239ab-8a31-4cc6-84d6-5557f96ebc3a
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: base64
+
+UmVwbyA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vTmV0ZmxpeC9pZXAvIj5yZXBvPC9hPi4=
+--331239ab-8a31-4cc6-84d6-5557f96ebc3a--
