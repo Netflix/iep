@@ -23,7 +23,7 @@ import java.util.Set;
 /** Header to include in the email. */
 class EmailHeader {
 
-  private static final Set<String> BLACKLIST;
+  private static final Set<String> DENYLIST;
   static {
     Set<String> blacklist = new HashSet<>();
     blacklist.add("mime-version");
@@ -39,12 +39,12 @@ class EmailHeader {
     blacklist.add("subject");
     blacklist.add("x-ses-from-arn");
     blacklist.add("x-ses-configuration-set");
-    BLACKLIST = Collections.unmodifiableSet(blacklist);
+    DENYLIST = Collections.unmodifiableSet(blacklist);
   }
 
   /** Checks if a header is allowed to be set by the user or is blacklisted. */
   static void checkCustomHeader(String header) {
-    if (BLACKLIST.contains(header.toLowerCase(Locale.US))) {
+    if (DENYLIST.contains(header.toLowerCase(Locale.US))) {
       throw new IllegalArgumentException("'" + header + "' cannot be used as a custom header, " +
           "use the appropriate method on the builder");
     }
