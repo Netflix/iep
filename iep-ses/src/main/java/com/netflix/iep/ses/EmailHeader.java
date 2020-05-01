@@ -25,21 +25,21 @@ class EmailHeader {
 
   private static final Set<String> DENYLIST;
   static {
-    Set<String> blacklist = new HashSet<>();
-    blacklist.add("mime-version");
-    blacklist.add("content-type");
-    blacklist.add("content-disposition");
-    blacklist.add("content-transfer-encoding");
-    blacklist.add("content-id");
-    blacklist.add("reply-to");
-    blacklist.add("from");
-    blacklist.add("to");
-    blacklist.add("cc");
-    blacklist.add("bcc");
-    blacklist.add("subject");
-    blacklist.add("x-ses-from-arn");
-    blacklist.add("x-ses-configuration-set");
-    DENYLIST = Collections.unmodifiableSet(blacklist);
+    Set<String> denylist = new HashSet<>();
+    denylist.add("mime-version");
+    denylist.add("content-type");
+    denylist.add("content-disposition");
+    denylist.add("content-transfer-encoding");
+    denylist.add("content-id");
+    denylist.add("reply-to");
+    denylist.add("from");
+    denylist.add("to");
+    denylist.add("cc");
+    denylist.add("bcc");
+    denylist.add("subject");
+    denylist.add("x-ses-from-arn");
+    denylist.add("x-ses-configuration-set");
+    DENYLIST = Collections.unmodifiableSet(denylist);
   }
 
   /** Checks if a header is allowed to be set by the user or is blacklisted. */
