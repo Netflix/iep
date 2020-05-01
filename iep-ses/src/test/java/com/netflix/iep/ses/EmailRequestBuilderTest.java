@@ -262,4 +262,70 @@ public class EmailRequestBuilderTest {
         .withSubject("Test message")
         .withHtmlBody("Repo <a href=\"https://github.com/Netflix/iep/\">repo</a>."));
   }
+
+  @Test
+  public void customHeader() throws IOException {
+    checkMessage("customHeader", new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .addHeader("X-Custom-Header", "Custom header value with UTF-8 characters: 警报")
+        .withSubject("Test message")
+        .withHtmlBody("Repo <a href=\"https://github.com/Netflix/iep/\">repo</a>."));
+  }
+
+  @Test
+  public void customHeaderMaxLength() throws IOException {
+    StringBuilder builder = new StringBuilder().append("X-");
+    for (int i = 0; i < 72; ++i) {
+      builder.append('a');
+    }
+    checkMessage("customHeaderMaxLength", new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .addHeader(builder.toString(), "Custom header value with UTF-8 characters: 警报")
+        .withSubject("Test message")
+        .withHtmlBody("Repo <a href=\"https://github.com/Netflix/iep/\">repo</a>."));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void customHeaderTooLong() throws IOException {
+    StringBuilder builder = new StringBuilder().append("X-");
+    for (int i = 0; i < 73; ++i) {
+      builder.append('a');
+    }
+    new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .addHeader(builder.toString(), "Custom header value with UTF-8 characters: 警报");
+  }
+
+  @Test
+  public void customHeaderLongValue() throws IOException {
+    StringBuilder builder = new StringBuilder();
+    for (int i = 0; i < 50; ++i) {
+      builder.append("Custom header value with UTF-8 characters: 警报. ");
+    }
+    checkMessage("customHeaderLongValue", new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .addHeader("X-Custom-Header", builder.toString())
+        .withSubject("Test message")
+        .withHtmlBody("Repo <a href=\"https://github.com/Netflix/iep/\">repo</a>."));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void customHeaderInvalidValue() throws IOException {
+    new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .addHeader("X Custom Header", "Message");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void customHeaderBlacklisted() throws IOException {
+    new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .addHeader("Subject", "Message");
+  }
 }

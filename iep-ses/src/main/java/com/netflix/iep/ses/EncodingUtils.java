@@ -103,7 +103,7 @@ class EncodingUtils {
 
     int length = maxLength - prefix.length() - suffix.length() - 1;
     int start = 0;
-    int end = length - offset;
+    int end = Math.max(length - offset, 0); // use max for cases where header exceeds maxLength
     StringBuilder builder = new StringBuilder();
     do {
       String part = s.substring(start, Math.min(end, s.length()));
