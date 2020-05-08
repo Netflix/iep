@@ -32,7 +32,7 @@ lazy val root = project.in(file("."))
 
 lazy val `iep-admin` = project
   .configure(BuildSettings.profile)
-  .dependsOn(`iep-service`)
+  .dependsOn(`iep-nflxenv`, `iep-service`)
   .settings(libraryDependencies ++= Seq(
     Dependencies.inject,
     Dependencies.jacksonCore,

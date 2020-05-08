@@ -15,6 +15,9 @@
  */
 package com.netflix.iep.admin;
 
+import com.netflix.iep.config.ConfigManager;
+import com.typesafe.config.Config;
+
 import java.time.Duration;
 
 /**
@@ -23,30 +26,25 @@ import java.time.Duration;
 public interface AdminConfig {
 
   /**
-   * Default instance of the config using fixed values. Defaults are:
-   *
-   * <pre>
-   * port          = 8077
-   * backlog       = 10
-   * shutdownDelay = PT0S
-   * uiLocation    = /ui
-   * </pre>
+   * Default instance of the config using values from reference config.
    */
   AdminConfig DEFAULT = new AdminConfig() {
+    private final Config cfg = ConfigManager.get().getConfig("netflix.iep.admin");
+
     @Override public int port() {
-      return 8077;
+      return cfg.getInt("port");
     }
 
     @Override public int backlog() {
-      return 10;
+      return cfg.getInt("backlog");
     }
 
     @Override public Duration shutdownDelay() {
-      return Duration.ZERO;
+      return cfg.getDuration("shutdown-delay");
     }
 
     @Override public String uiLocation() {
-      return "/ui";
+      return cfg.getString("ui-location");
     }
   };
 
