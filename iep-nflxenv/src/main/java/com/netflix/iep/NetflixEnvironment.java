@@ -15,15 +15,15 @@
  */
 package com.netflix.iep;
 
+import com.netflix.iep.config.ConfigManager;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 public class NetflixEnvironment {
   private NetflixEnvironment() {}
 
   private static final String NAMESPACE = "netflix.iep.env.";
 
-  private static final Config CONFIG = ConfigFactory.load();
+  private static final Config CONFIG = ConfigManager.get();
 
   public static String ami() {
     return CONFIG.getString(NAMESPACE + "ami");

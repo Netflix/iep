@@ -27,14 +27,20 @@ public class NetflixEnvironmentTest {
 
   @Test
   public void checkMethods() throws Exception {
-    for (Method method : NetflixEnvironment.class.getMethods()) {
-      if (Modifier.isStatic(method.getModifiers())) {
-        try {
-          method.invoke(null);
-        } catch (Exception e) {
-          throw new RuntimeException("failed to invoke " + method.getName(), e);
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader(null);
+    try {
+      for (Method method : NetflixEnvironment.class.getMethods()) {
+        if (Modifier.isStatic(method.getModifiers())) {
+          try {
+            method.invoke(null);
+          } catch (Exception e) {
+            throw new RuntimeException("failed to invoke " + method.getName(), e);
+          }
         }
       }
+    } finally {
+      Thread.currentThread().setContextClassLoader(cl);
     }
   }
 }
