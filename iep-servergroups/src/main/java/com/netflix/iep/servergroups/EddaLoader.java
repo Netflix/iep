@@ -17,12 +17,17 @@ package com.netflix.iep.servergroups;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.netflix.spectator.ipc.http.HttpClient;
 import com.netflix.spectator.ipc.http.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -32,6 +37,8 @@ import java.util.zip.GZIPInputStream;
  * data.
  */
 public class EddaLoader implements Loader {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(EddaLoader.class);
 
   private final HttpClient client;
   private final URI uri;
@@ -87,7 +94,19 @@ public class EddaLoader implements Loader {
   }
 
   private List<Instance> decodeInstances(JsonParser jp) throws IOException {
-    return JsonUtils.toList(jp, this::decodeInstance);
+    if (jp.getCurrentToken() == JsonToken.VALUE_NULL) {
+      return Collections.emptyList();
+    }
+    List<Instance> vs = new ArrayList<>();
+    JsonUtils.forEach(jp, p -> {
+      try {
+        vs.add(decodeInstance(jp));
+      } catch (NullPointerException e) {
+        // Log but otherwise ignore failures like missing IP address
+        LOGGER.warn("failed to process instance in Edda response", e);
+      }
+    });
+    return vs;
   }
 
   private ServerGroup decodeServerGroup(JsonParser jp) throws IOException {

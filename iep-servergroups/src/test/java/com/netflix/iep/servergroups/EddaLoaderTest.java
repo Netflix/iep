@@ -103,4 +103,12 @@ public class EddaLoaderTest {
     List<ServerGroup> actual = get("edda-no-instances.json");
     Assert.assertEquals(expected, actual);
   }
+
+  @Test
+  public void noIP() throws Exception {
+    List<ServerGroup> expected = new ArrayList<>();
+    expected.add(defaultEc2Group());
+    List<ServerGroup> actual = get("edda-noip.json");
+    Assert.assertEquals(expected, actual);
+  }
 }
