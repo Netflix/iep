@@ -1,5 +1,5 @@
 
-lazy val root = project.in(file("."))
+lazy val iep = project.in(file("."))
   .configure(BuildSettings.profile)
   .aggregate(
     `iep-admin`,
