@@ -22,6 +22,7 @@ import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.Spectator;
 import com.netflix.spectator.atlas.AtlasConfig;
 import com.netflix.spectator.atlas.AtlasRegistry;
+import com.netflix.spectator.atlas.RollupPolicy;
 import com.netflix.spectator.gc.GcLogger;
 import com.netflix.spectator.jvm.Jmx;
 import com.typesafe.config.Config;
@@ -30,7 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -129,6 +132,16 @@ class AtlasRegistryService extends AbstractService {
         }
       }
       return tags;
+    }
+
+    @Override public RollupPolicy rollupPolicy() {
+      List<RollupPolicy.Rule> rules = new ArrayList<>();
+      for (Config cfg : config.getConfigList("atlas.rollupPolicy")) {
+        rules.add(new RollupPolicy.Rule(cfg.getString("query"), cfg.getStringList("rollup")));
+      }
+      return rules.isEmpty()
+          ? RollupPolicy.noop(commonTags())
+          : RollupPolicy.fromRules(commonTags(), rules);
     }
 
     @Override public String validTagCharacters() {
