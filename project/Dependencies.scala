@@ -8,7 +8,7 @@ object Dependencies {
     val aws2       = "2.14.4"
     val eureka     = "1.9.25"
     val guice      = "4.1.0"
-    val jackson    = "2.11.1"
+    val jackson    = "2.11.2"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.10"
