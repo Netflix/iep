@@ -44,7 +44,7 @@ object Dependencies {
   val aws2EC2            = "software.amazon.awssdk" % "ec2" % aws2
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
-  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.8.4"
+  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.8.5"
   val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.4.1"
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceCore          = "com.google.inject" % "guice" % guice
