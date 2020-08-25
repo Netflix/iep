@@ -4,16 +4,16 @@ object Dependencies {
   object Versions {
     val archaius   = "2.3.16"
     val assertj    = "3.16.1"
-    val aws        = "1.11.820"
-    val aws2       = "2.13.52"
+    val aws        = "1.11.847"
+    val aws2       = "2.14.4"
     val eureka     = "1.9.25"
     val guice      = "4.1.0"
-    val jackson    = "2.11.1"
+    val jackson    = "2.11.2"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
-    val scala      = "2.12.10"
+    val scala      = "2.12.12"
     val slf4j      = "1.7.30"
-    val spectator  = "0.114.0"
+    val spectator  = "0.115.0"
   }
 
   import Versions._
@@ -44,8 +44,8 @@ object Dependencies {
   val aws2EC2            = "software.amazon.awssdk" % "ec2" % aws2
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
-  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.8.4"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.4.1"
+  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.8.5"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.4.2"
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val guiceCore          = "com.google.inject" % "guice" % guice
   val guiceMulti         = "com.google.inject.extensions" % "guice-multibindings" % guice
