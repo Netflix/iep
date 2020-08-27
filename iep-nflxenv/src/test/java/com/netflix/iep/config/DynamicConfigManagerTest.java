@@ -83,6 +83,7 @@ public class DynamicConfigManagerTest {
     AtomicInteger value = new AtomicInteger();
     DynamicConfigManager mgr = newInstance(config("a.b = 1"));
     mgr.addListener(ConfigListener.forPath("a", c -> value.set(c.getInt("b"))));
+    Assert.assertEquals(1, value.get());
     mgr.setOverrideConfig(config("a.b = 2"));
     Assert.assertEquals(2, value.get());
   }
@@ -91,9 +92,14 @@ public class DynamicConfigManagerTest {
   public void listenerOnlyCalledOnChange() {
     AtomicInteger value = new AtomicInteger();
     DynamicConfigManager mgr = newInstance(config("a.b = 1"));
-    mgr.addListener(ConfigListener.forPath("a", c -> value.set(c.getInt("b"))));
+    mgr.addListener(ConfigListener.forPath("a", c -> {
+      int v = c.getInt("b");
+      if (v == value.get()) {
+        Assert.fail("listener invoked without a change in the value");
+      }
+      value.set(v);
+    }));
     mgr.setOverrideConfig(config("a.b = 1"));
-    Assert.assertEquals(0, value.get());
   }
 
   @Test
@@ -103,7 +109,7 @@ public class DynamicConfigManagerTest {
     mgr.addListener(ConfigListener.forPath("c", c -> value.addAndGet(c.getInt("b"))));
     mgr.addListener(ConfigListener.forPath("a", c -> value.addAndGet(c.getInt("b"))));
     mgr.setOverrideConfig(config("a.b = 2"));
-    Assert.assertEquals(2, value.get());
+    Assert.assertEquals(3, value.get());
   }
 
   @Test

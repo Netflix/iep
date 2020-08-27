@@ -39,9 +39,9 @@ public interface ConfigListener {
    */
   static ConfigListener forPath(String path, Consumer<Config> consumer) {
     return (previous, current) -> {
-      Config c1 = (path == null) ? previous : previous.getConfig(path);
-      Config c2 = (path == null) ? current : current.getConfig(path);
-      if (!c1.equals(c2)) {
+      Config c1 = (path == null) ? previous : ListenerUtils.getConfig(previous, path);
+      Config c2 = (path == null) ? current : ListenerUtils.getConfig(current, path);
+      if (ListenerUtils.hasChanged(c1, c2)) {
         consumer.accept(c2);
       }
     };

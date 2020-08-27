@@ -49,18 +49,22 @@ final class DynamicConfigManagerImpl implements DynamicConfigManager {
   public synchronized void setOverrideConfig(Config override) {
     Config previous = current;
     current = override.withFallback(baseConfig).resolve();
-    listeners.forEach(listener -> {
-      try {
-        listener.onUpdate(previous, current);
-      } catch (Exception e) {
-        LOGGER.warn("failed to update a listener", e);
-      }
-    });
+    listeners.forEach(listener -> invokeListener(listener, previous, current));
+  }
+
+  private void invokeListener(ConfigListener listener, Config previous, Config current) {
+    try {
+      listener.onUpdate(previous, current);
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOGGER.warn("failed to update a listener", e);
+    }
   }
 
   @Override
   public void addListener(ConfigListener listener) {
     listeners.add(listener);
+    invokeListener(listener, null, current);
   }
 
   @Override

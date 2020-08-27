@@ -46,7 +46,9 @@ public interface DynamicConfigManager {
   void setOverrideConfig(Config override);
 
   /**
-   * Add a listener that will get invoked whenever the override config layer is updated.
+   * Add a listener that will get invoked once when added and then each time the override config
+   * layer is updated. When invoked for the initialization, the previous config value will be
+   * {@code null}.
    */
   void addListener(ConfigListener listener);
 
