@@ -15,6 +15,9 @@
  */
 package com.netflix.iep.config;
 
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Value;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -30,10 +33,6 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Comparator;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptEngine;
-import javax.script.SimpleBindings;
-import javax.script.ScriptException;
 
 /**
  * Helpers for loading configuration properties with scoped blocks.
@@ -55,21 +54,12 @@ import javax.script.ScriptException;
 public class ConfigFile {
 
   public static boolean checkScope(Map<String,String> vars, String str) {
-    ScriptEngineManager mgr = new ScriptEngineManager(null);
-    ScriptEngine engine = mgr.getEngineByName("javascript");
-
-    if (engine == null) throw new IllegalStateException("no javascipt engine found");
-
-    SimpleBindings bindings = new SimpleBindings();
+    Context context = Context.create();
+    Value bindings = context.getBindings("js");
     for (Map.Entry<String,String> t : vars.entrySet()) {
-      bindings.put(t.getKey(), t.getValue());
+      bindings.putMember(t.getKey(), t.getValue());
     }
-    try {
-      return (Boolean) engine.eval(str, bindings);
-    }
-    catch (ScriptException e) {
-      throw new RuntimeException(e);
-    }
+    return context.eval("js", str).asBoolean();
   }
 
   /** Load the configuration file using the system environment variables as the `vars`. */
