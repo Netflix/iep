@@ -7,6 +7,7 @@ object Dependencies {
     val aws        = "1.11.847"
     val aws2       = "2.14.4"
     val eureka     = "1.9.25"
+    val graal      = "20.0.0"
     val guice      = "4.1.0"
     val jackson    = "2.11.2"
     val rxnetty    = "0.4.20"
@@ -47,6 +48,8 @@ object Dependencies {
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.8.5"
   val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.4.2"
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
+  val graalJs            = "org.graalvm.js" % "js" % graal
+  val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
   val guiceCore          = "com.google.inject" % "guice" % guice
   val guiceMulti         = "com.google.inject.extensions" % "guice-multibindings" % guice
   val inject             = "javax.inject" % "javax.inject" % "1"

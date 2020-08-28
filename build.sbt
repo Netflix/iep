@@ -47,6 +47,8 @@ lazy val `iep-config` = project
   .settings(libraryDependencies ++= Seq(
     Dependencies.archaiusBridge,
     Dependencies.archaiusCore,
+    Dependencies.graalJs,
+    Dependencies.graalJsEngine,
     Dependencies.guiceCore,
     Dependencies.jodaTime,
     Dependencies.equalsVerifier % "test"
