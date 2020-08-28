@@ -25,6 +25,7 @@ import com.netflix.archaius.guice.ArchaiusModule;
 import com.netflix.archaius.typesafe.TypesafeConfig;
 import com.netflix.iep.admin.guice.AdminModule;
 import com.netflix.iep.config.ConfigManager;
+import com.netflix.iep.config.DynamicConfigManager;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.Spectator;
 import com.typesafe.config.Config;
@@ -54,6 +55,12 @@ public final class PlatformServiceModule extends ArchaiusModule {
   @Singleton
   Config providesTypesafeConfig() {
     return ConfigManager.get();
+  }
+
+  @Provides
+  @Singleton
+  DynamicConfigManager providesDynamicConfigManager() {
+    return ConfigManager.dynamicConfigManager();
   }
 
   @Provides

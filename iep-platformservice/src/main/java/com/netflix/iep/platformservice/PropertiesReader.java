@@ -16,11 +16,14 @@
 package com.netflix.iep.platformservice;
 
 import com.netflix.archaius.config.polling.PollingResponse;
+import com.netflix.iep.config.ConfigManager;
 import com.netflix.spectator.api.Functions;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.patterns.PolledMeter;
 import com.netflix.spectator.ipc.http.HttpClient;
 import com.netflix.spectator.ipc.http.HttpResponse;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +70,8 @@ class PropertiesReader implements Callable<PollingResponse> {
               k -> LOGGER.trace("received property: [{}] = [{}]", k, props.getProperty(k)));
         }
 
+        updateDynamicConfig(props);
+
         Map<String, String> data = props.stringPropertyNames()
             .stream()
             .collect(Collectors.toMap(k -> k, props::getProperty));
@@ -76,6 +81,24 @@ class PropertiesReader implements Callable<PollingResponse> {
       }
     } else {
       throw new IOException("request failed with status: " + response.status());
+    }
+  }
+
+  /**
+   * Update the {@link ConfigManager#dynamicConfigManager()} with the properties. The value
+   * for a special key {@code netflix.iep.override} will be treated as a Typesafe Config string
+   * so that all constructs can be supported. Other properties will get used directly.
+   */
+  void updateDynamicConfig(Properties props) {
+    final String overrideKey = "netflix.iep.override";
+    if (props.containsKey(overrideKey)) {
+      Config override = ConfigFactory.parseString(props.getProperty(overrideKey));
+      props.remove(overrideKey);
+      Config config = override.withFallback(ConfigFactory.parseProperties(props));
+      ConfigManager.dynamicConfigManager().setOverrideConfig(config);
+    } else {
+      Config config = ConfigFactory.parseProperties(props);
+      ConfigManager.dynamicConfigManager().setOverrideConfig(config);
     }
   }
 }

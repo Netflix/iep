@@ -27,6 +27,8 @@ import com.netflix.spectator.api.Registry;
 
 /**
  * Work around for overriding the AppConfig.
+ *
+ * @deprecated Move to using Typesafe Config directly.
  */
 public final class OverrideModule extends AbstractModule {
   @Override protected void configure() {
