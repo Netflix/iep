@@ -56,7 +56,6 @@ final class DynamicConfigManagerImpl implements DynamicConfigManager {
     try {
       listener.onUpdate(previous, current);
     } catch (Exception e) {
-      e.printStackTrace();
       LOGGER.warn("failed to update a listener", e);
     }
   }
