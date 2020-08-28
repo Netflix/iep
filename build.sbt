@@ -17,6 +17,7 @@ lazy val iep = project.in(file("."))
     `iep-module-aws`,
     `iep-module-aws2`,
     `iep-module-awsmetrics`,
+    `iep-module-dynconfig`,
     `iep-module-eureka`,
     `iep-module-jmxport`,
     `iep-module-leader`,
@@ -191,6 +192,17 @@ lazy val `iep-module-awsmetrics` = project
     Dependencies.spectatorAws,
     Dependencies.guiceCore,
     Dependencies.slf4jApi
+  ))
+
+lazy val `iep-module-dynconfig` = project
+  .configure(BuildSettings.profile)
+  .dependsOn(`iep-nflxenv`, `iep-module-admin`)
+  .settings(libraryDependencies ++= Seq(
+      Dependencies.guiceCore,
+      Dependencies.guiceMulti,
+      Dependencies.slf4jApi,
+      Dependencies.spectatorApi,
+      Dependencies.spectatorIpc
   ))
 
 lazy val `iep-module-eureka` = project

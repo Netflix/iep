@@ -30,8 +30,7 @@ import javax.inject.Singleton;
 /**
  * Helper for configuring archaius v1.
  *
- * @deprecated Move to archaius v2 or to using Typesafe Config directly. Note, Runtime support
- * for archaius v2 looks to be limited.
+ * @deprecated Move to using Typesafe Config directly.
  */
 @Deprecated
 public final class Archaius1Module extends AbstractModule {
