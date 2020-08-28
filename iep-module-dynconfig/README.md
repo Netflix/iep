@@ -1,7 +1,7 @@
 
 ## Description
 
-Guice module to configure [iep-nflxenv] for to refresh the dynamic override layer with
+Guice module that configures [iep-nflxenv] to refresh the dynamic override layer with
 properties from [iep-archaius].
 
 [iep-nflxenv]: https://github.com/Netflix/iep/blob/master/iep-nflxenv/README.md
@@ -26,7 +26,7 @@ public class Worker {
     Config config = manager.get();
     ... use config ...
 
-    // To listen for changes to a particular properties
+    // To listen for changes to particular properties
     manager.addListener(ConfigListener.forBoolean("worker.enabled", this::enableToggled));
   }
 

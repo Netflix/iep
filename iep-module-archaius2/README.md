@@ -1,9 +1,9 @@
 
 ## Description
 
-> :warning: **Deprecated:** For new work prefer [iep-module-dynconfig][a2].
+> :warning: **Deprecated:** For new work prefer [iep-module-dynconfig][dynconfig].
 
-[a2]: https://github.com/Netflix/iep/tree/master/iep-module-dynconfig
+[dynconfig]: https://github.com/Netflix/iep/tree/master/iep-module-dynconfig
 
 Guice module to configure [archaius2](https://github.com/Netflix/archaius/tree/2.x) for use
 internally at Netflix. It will install the archaius2 guice module and put in the following

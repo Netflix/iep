@@ -46,6 +46,7 @@ class DynamicConfigService extends AbstractService {
   private static final Logger LOGGER = LoggerFactory.getLogger(DynamicConfigService.class);
 
   private final AtomicLong lastUpdateTime;
+  private final boolean enabled;
   private final URI uri;
   private final long pollingInterval;
   private final boolean syncInit;
@@ -60,6 +61,7 @@ class DynamicConfigService extends AbstractService {
           Functions.AGE);
 
     Config config = ConfigManager.get();
+    this.enabled = config.getBoolean("netflix.iep.archaius.enabled");
     this.uri = URI.create(config.getString("netflix.iep.archaius.url"));
     this.pollingInterval = config.getDuration("netflix.iep.archaius.polling-interval", TimeUnit.MILLISECONDS);
     this.syncInit = config.getBoolean("netflix.iep.archaius.sync-init");
@@ -71,17 +73,21 @@ class DynamicConfigService extends AbstractService {
   }
 
   @Override protected void startImpl() throws Exception {
-    // Wait until properties have been updated at least once
-    while (syncInit) {
-      if (update()) {
-        break;
-      } else {
-        Thread.sleep(pollingInterval);
+    if (enabled) {
+      // Wait until properties have been updated at least once
+      while (syncInit) {
+        if (update()) {
+          break;
+        } else {
+          Thread.sleep(pollingInterval);
+        }
       }
-    }
 
-    // Schedule for regular updates
-    executor.scheduleWithFixedDelay(this::update, pollingInterval, pollingInterval, TimeUnit.MILLISECONDS);
+      // Schedule for regular updates
+      executor.scheduleWithFixedDelay(this::update, pollingInterval, pollingInterval, TimeUnit.MILLISECONDS);
+    } else {
+      LOGGER.debug("service is disabled, dynamic properties will not be available");
+    }
   }
 
   @Override protected void stopImpl() throws Exception {
