@@ -53,14 +53,13 @@ class DynamicConfigService extends AbstractService {
   private final ScheduledExecutorService executor;
 
   @Inject
-  DynamicConfigService(Registry registry) {
+  DynamicConfigService(Registry registry, Config config) {
     this.lastUpdateTime = PolledMeter.using(registry)
         .withName("iep.archaius.cacheAge")
         .monitorValue(
           new AtomicLong(System.currentTimeMillis()),
           Functions.AGE);
 
-    Config config = ConfigManager.get();
     this.enabled = config.getBoolean("netflix.iep.archaius.enabled");
     this.uri = URI.create(config.getString("netflix.iep.archaius.url"));
     this.pollingInterval = config.getDuration("netflix.iep.archaius.polling-interval", TimeUnit.MILLISECONDS);

@@ -26,6 +26,7 @@ import com.netflix.iep.config.DynamicConfigManager;
 import com.netflix.iep.service.Service;
 import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Registry;
+import com.typesafe.config.Config;
 
 /**
  * Configures the {@link ConfigManager#dynamicConfigManager()} to update the override layer
@@ -34,6 +35,8 @@ import com.netflix.spectator.api.Registry;
 public final class DynamicConfigModule extends AbstractModule {
 
   @Override protected void configure() {
+    bind(Config.class).toInstance(ConfigManager.get());
+
     Multibinder<Service> serviceBinder = Multibinder.newSetBinder(binder(), Service.class);
     serviceBinder.addBinding().to(DynamicConfigService.class);
 
@@ -42,8 +45,8 @@ public final class DynamicConfigModule extends AbstractModule {
 
   @Provides
   @Singleton
-  DynamicConfigService providesDynamicConfigService(OptionalInjections opts) {
-    return new DynamicConfigService(opts.getRegistry());
+  DynamicConfigService providesDynamicConfigService(OptionalInjections opts, Config config) {
+    return new DynamicConfigService(opts.getRegistry(), config);
   }
 
   @Provides
