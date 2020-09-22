@@ -32,7 +32,7 @@ public class DynamicConfigServiceTest {
   private final DynamicConfigManager manager = ConfigManager.dynamicConfigManager();
 
   private DynamicConfigService newService() {
-    return new DynamicConfigService(new NoopRegistry());
+    return new DynamicConfigService(new NoopRegistry(), ConfigManager.get());
   }
 
   @Before
