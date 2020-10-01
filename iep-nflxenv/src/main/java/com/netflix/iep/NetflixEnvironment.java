@@ -84,4 +84,8 @@ public class NetflixEnvironment {
   public static String accountEnv() {
     return CONFIG.getString(NAMESPACE + "account-env");
   }
+
+  public static String insightAccountId() {
+    return CONFIG.getString(NAMESPACE + "insight-account-id");
+  }
 }
