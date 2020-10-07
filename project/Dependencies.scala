@@ -3,18 +3,18 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.3.16"
-    val assertj    = "3.16.1"
-    val aws        = "1.11.847"
-    val aws2       = "2.14.4"
-    val eureka     = "1.9.25"
-    val graal      = "20.0.0"
+    val assertj    = "3.17.2"
+    val aws        = "1.11.877"
+    val aws2       = "2.15.5"
+    val eureka     = "1.10.4"
+    val graal      = "20.2.0"
     val guice      = "4.1.0"
-    val jackson    = "2.11.2"
+    val jackson    = "2.11.3"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.12"
     val slf4j      = "1.7.30"
-    val spectator  = "0.115.0"
+    val spectator  = "0.119.0"
   }
 
   import Versions._
@@ -46,7 +46,7 @@ object Dependencies {
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.8.5"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.4.2"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.4.3"
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
@@ -62,7 +62,7 @@ object Dependencies {
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
   val reactiveStreams    = "org.reactivestreams" % "reactive-streams" % "1.0.3"
   val rxjava             = "io.reactivex" % "rxjava" % "1.3.8"
-  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.19"
+  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.20"
   val rxnettyCore        = "io.reactivex" % "rxnetty" % rxnetty
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi       = "com.netflix.spectator" % "spectator-api" % spectator
