@@ -4,4 +4,4 @@ addSbtPlugin("pl.project13.scala"        % "sbt-jmh"              % "0.4.0")
 addSbtPlugin("com.typesafe.sbt"          % "sbt-git"              % "1.0.0")
 
 // Convenient helpers, not required
-addSbtPlugin("com.timushev.sbt"          % "sbt-updates"          % "0.5.0")
+addSbtPlugin("com.timushev.sbt"          % "sbt-updates"          % "0.5.1")
