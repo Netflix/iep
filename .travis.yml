@@ -2,7 +2,7 @@ language: scala
 matrix:
   include:
   - jdk: openjdk8
-    env: BINTRAY_PUBLISH=true
+    env: BINTRAY_PUBLISH=false
   - jdk: openjdk11
     env: BINTRAY_PUBLISH=false
   - jdk: openjdk15
