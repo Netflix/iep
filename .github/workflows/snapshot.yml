@@ -22,8 +22,8 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.sbt') }}
       - name: Build
         env:
-          bintrayUser: ${{ secrets.bintrayUser }}
-          bintrayKey: ${{ secrets.bintrayKey }}
+          bintrayUser: ${{ secrets.ORG_BINTRAY_USER }}
+          bintrayKey: ${{ secrets.ORG_BINTRAY_KEY }}
         run: |
           git fetch --unshallow --tags
           cat /dev/null | project/sbt storeBintrayCredentials
