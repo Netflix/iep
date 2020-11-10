@@ -41,7 +41,12 @@ public class EnvEndpointTest {
   public void getProperty() {
     Assume.assumeTrue(System.getenv("JAVA_HOME") != null);
     Map<String, String> map = (Map<String, String>) endpoint.get("JAVA_HOME");
-    Assert.assertEquals(1, map.size());
+    int size = (int) System.getenv()
+        .keySet()
+        .stream()
+        .filter(s -> s.startsWith("JAVA_HOME"))
+        .count();
+    Assert.assertEquals(size, map.size());
     Assert.assertEquals(System.getenv("JAVA_HOME"), map.get("JAVA_HOME"));
   }
 
