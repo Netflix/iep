@@ -1,7 +1,5 @@
 # Insight Engineering Platform
 
-[![Build Status](https://travis-ci.org/Netflix/iep.svg)](https://travis-ci.org/Netflix/iep/builds)
-
 Set of base libraries used primarily by the Insight Engineering team at Netflix to support
 applications that need to run internally and externally.
 
