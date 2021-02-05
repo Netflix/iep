@@ -3,18 +3,18 @@ import sbt._
 object Dependencies {
   object Versions {
     val archaius   = "2.3.16"
-    val assertj    = "3.18.1"
-    val aws        = "1.11.934"
-    val aws2       = "2.15.61"
+    val assertj    = "3.19.0"
+    val aws        = "1.11.946"
+    val aws2       = "2.15.74"
     val eureka     = "1.10.12"
-    val graal      = "20.3.0"
+    val graal      = "21.0.0"
     val guice      = "4.1.0"
     val jackson    = "2.12.1"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.12"
     val slf4j      = "1.7.30"
-    val spectator  = "0.123.1"
+    val spectator  = "0.124.0"
   }
 
   import Versions._
@@ -46,7 +46,7 @@ object Dependencies {
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.8.8"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.5.1"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.5.3"
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
