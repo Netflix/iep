@@ -16,7 +16,7 @@ object SonatypeSettings {
 
   lazy val settings: Seq[Def.Setting[_]] = sonatypeSettings ++ Seq(
     sonatypeProfileName := "com.netflix",
-    sonatypeProjectHosting := Some(GitHubHosting("brharrington", "iep", "brharrington@netflix.com")),
+    sonatypeProjectHosting := Some(GitHubHosting("Netflix", "iep", "netflixoss@netflix.com")),
 
     publishMavenStyle := true,
     licenses += ("APL2" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
