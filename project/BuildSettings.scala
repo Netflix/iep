@@ -21,9 +21,6 @@ object BuildSettings {
   lazy val checkLicenseHeaders = taskKey[Unit]("Check the license headers for all source files.")
   lazy val formatLicenseHeaders = taskKey[Unit]("Fix the license headers for all source files.")
 
-  lazy val storeBintrayCredentials = taskKey[Unit]("Store bintray credentials.")
-  lazy val credentialsFile = Path.userHome / ".bintray" / ".credentials"
-
   lazy val baseSettings = GitVersion.settings
 
   lazy val buildSettings = baseSettings ++ Seq(
@@ -45,12 +42,6 @@ object BuildSettings {
 
     checkLicenseHeaders := License.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
     formatLicenseHeaders := License.formatLicenseHeaders(streams.value.log, sourceDirectory.value),
-
-    storeBintrayCredentials := {
-      IO.write(
-        credentialsFile,
-        bintray.BintrayCredentials.api.template(Bintray.user, Bintray.pass))
-    },
 
     packageOptions in (Compile, packageBin) += Package.ManifestAttributes(
       "Build-Date"   -> java.time.Instant.now().toString,
@@ -76,21 +67,8 @@ object BuildSettings {
   )
 
   def profile: Project => Project = p => {
-    bintrayProfile(p)
+    p.settings(SonatypeSettings.settings)
       .settings(buildSettings: _*)
       .settings(libraryDependencies ++= commonDeps)
-  }
-
-  // Disable bintray plugin when not running under CI. Avoids a bunch of warnings like:
-  //
-  // ```
-  // Missing bintray credentials /Users/brharrington/.bintray/.credentials. Some bintray features depend on this.
-  // [warn] Credentials file /Users/brharrington/.bintray/.credentials does not exist
-  // ```
-  def bintrayProfile(p: Project): Project = {
-    if (credentialsFile.exists)
-      p.settings(Bintray.settings)
-    else
-      p.disablePlugins(bintray.BintrayPlugin)
   }
 }
