@@ -71,6 +71,12 @@ public class Main {
   }
 
   void runImpl(String[] args, Module... additionalModules) throws Exception {
+    // Send uncaught exceptions to the expected logger. Register early as errors
+    // could get generated during startup.
+    Thread.setDefaultUncaughtExceptionHandler((thread, e) ->
+      LOGGER.error("Uncaught exception from thread {} ({})", thread.getName(), thread.getId(), e)
+    );
+
     try {
       // Setup binding for command line arguments
       Module argsModule = new AbstractModule() {
