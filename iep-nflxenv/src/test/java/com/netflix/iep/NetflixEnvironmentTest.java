@@ -15,12 +15,15 @@
  */
 package com.netflix.iep;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(JUnit4.class)
 public class NetflixEnvironmentTest {
@@ -31,7 +34,7 @@ public class NetflixEnvironmentTest {
     Thread.currentThread().setContextClassLoader(null);
     try {
       for (Method method : NetflixEnvironment.class.getMethods()) {
-        if (Modifier.isStatic(method.getModifiers())) {
+        if (Modifier.isStatic(method.getModifiers()) && method.getParameterCount() == 0) {
           try {
             method.invoke(null);
           } catch (Exception e) {
@@ -42,5 +45,155 @@ public class NetflixEnvironmentTest {
     } finally {
       Thread.currentThread().setContextClassLoader(cl);
     }
+  }
+
+  private static Map<String, String> sampleEnvironmentVars() {
+    Map<String, String> vars = new HashMap<>();
+    vars.put("NETFLIX_ACCOUNT_ID", "1234567890");
+    vars.put("EC2_AMI_ID", "ami-54321");
+    vars.put("NETFLIX_APP", "foo");
+    vars.put("NETFLIX_AUTO_SCALE_GROUP", "foo-bar-s1abc-s2def-v001");
+    vars.put("NETFLIX_CLUSTER", "foo-bar-s1abc-s2def");
+    vars.put("NETFLIX_INSTANCE_ID", "i-12345");
+    vars.put("EC2_REGION", "us-east-1");
+    vars.put("NETFLIX_SHARD1", "abc");
+    vars.put("NETFLIX_SHARD2", "def");
+    vars.put("NETFLIX_STACK", "bar");
+    vars.put("EC2_INSTANCE_TYPE", "m5.large");
+    vars.put("EC2_AVAILABILITY_ZONE", "us-east-1e");
+    vars.put("NETFLIX_PROCESS_NAME", "www");
+
+    vars.put("NETFLIX_ACCOUNT_TYPE", "example");
+    vars.put("NETFLIX_BUILD_JOB", "http://build/foo/42");
+    vars.put("NETFLIX_BUILD_SOURCE_REPO", "http://source/foo/42");
+    vars.put("NETFLIX_BUILD_BRANCH", "main");
+    vars.put("NETFLIX_BUILD_COMMIT", "abcd1234");
+
+    vars.put("MANTIS_JOB_NAME", "foo");
+    vars.put("MANTIS_JOB_ID", "12");
+    vars.put("MANTIS_WORKER_INDEX", "0");
+    vars.put("MANTIS_WORKER_NUMBER", "4");
+    vars.put("MANTIS_WORKER_STAGE_NUMBER", "5");
+    vars.put("MANTIS_USER", "bob");
+    return vars;
+  }
+
+  private static Map<String, String> sampleExpectedTags() {
+    Map<String, String> vars = new HashMap<>();
+    vars.put("nf.account", "1234567890");
+    vars.put("nf.ami", "ami-54321");
+    vars.put("nf.app", "foo");
+    vars.put("nf.asg", "foo-bar-s1abc-s2def-v001");
+    vars.put("nf.cluster", "foo-bar-s1abc-s2def");
+    vars.put("nf.node", "i-12345");
+    vars.put("nf.region", "us-east-1");
+    vars.put("nf.shard1", "abc");
+    vars.put("nf.shard2", "def");
+    vars.put("nf.stack", "bar");
+    vars.put("nf.vmtype", "m5.large");
+    vars.put("nf.zone", "us-east-1e");
+    vars.put("process", "www");
+
+    vars.put("accountType", "example");
+    vars.put("buildUrl", "http://build/foo/42");
+    vars.put("sourceRepo", "http://source/foo/42");
+    vars.put("branch", "main");
+    vars.put("commit", "abcd1234");
+
+    vars.put("mantisJobName", "foo");
+    vars.put("mantisJobId", "12");
+    vars.put("mantisWorkerIndex", "0");
+    vars.put("mantisWorkerNumber", "4");
+    vars.put("mantisWorkerStageNumber", "5");
+    vars.put("mantisUser", "bob");
+    return vars;
+  }
+
+  private static Map<String, String> atlasExpectedTags() {
+    Map<String, String> expected = sampleExpectedTags();
+    expected.remove("nf.ami");
+    expected.remove("accountType");
+    expected.remove("buildUrl");
+    expected.remove("sourceRepo");
+    expected.remove("branch");
+    expected.remove("commit");
+    expected.keySet().removeIf(k -> k.startsWith("mantis"));
+    return expected;
+  }
+
+  @Test
+  public void commonTags() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    Map<String, String> expected = sampleExpectedTags();
+    Map<String, String> actual = NetflixEnvironment.commonTags(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsWhitespaceIgnored() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.put("NETFLIX_APP", "    foo \t\t");
+    Map<String, String> expected = sampleExpectedTags();
+    Map<String, String> actual = NetflixEnvironment.commonTags(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsNullIgnored() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.remove("NETFLIX_SHARD2");
+    Map<String, String> expected = sampleExpectedTags();
+    expected.remove("nf.shard2");
+    Map<String, String> actual = NetflixEnvironment.commonTags(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsEmptyIgnored() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.put("NETFLIX_SHARD2", "");
+    Map<String, String> expected = sampleExpectedTags();
+    expected.remove("nf.shard2");
+    Map<String, String> actual = NetflixEnvironment.commonTags(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsForAtlas() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    Map<String, String> expected = atlasExpectedTags();
+    Map<String, String> actual = NetflixEnvironment.commonTagsForAtlas(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsForAtlasSkipNode() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.put("ATLAS_SKIP_COMMON_TAGS", "nf.node");
+    Map<String, String> expected = atlasExpectedTags();
+    expected.remove("nf.node");
+    Map<String, String> actual = NetflixEnvironment.commonTagsForAtlas(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsForAtlasSkipMultiple() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.put("ATLAS_SKIP_COMMON_TAGS", "nf.node, , nf.zone\n\t,nf.asg,,");
+    Map<String, String> expected = atlasExpectedTags();
+    expected.remove("nf.asg");
+    expected.remove("nf.node");
+    expected.remove("nf.zone");
+    Map<String, String> actual = NetflixEnvironment.commonTagsForAtlas(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsForAtlasSkipEmpty() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.put("ATLAS_SKIP_COMMON_TAGS", "");
+    Map<String, String> expected = atlasExpectedTags();
+    Map<String, String> actual = NetflixEnvironment.commonTagsForAtlas(vars::get);
+    Assert.assertEquals(expected, actual);
   }
 }
