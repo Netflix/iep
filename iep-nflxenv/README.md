@@ -21,7 +21,7 @@ used settings are:
 | Name         | Environment Variable    | Description                       |
 |--------------|-------------------------|-----------------------------------|
 | ami          | EC2_AMI_ID              | [AWS Image ID][ami]               |
-| instance-id  | EC2_INSTANCE_ID         | AWS Instance ID                   |
+| instance-id  | NETFLIX_INSTANCE_ID     | AWS Instance ID                   |
 | region       | EC2_REGION              | [AWS Region][regions]             |
 | vmtype       | EC2_INSTANCE_TYPE       | [AWS instance type][vmtype]       |
 | zone         | EC2_AVAILABILITY_ZONE   | [AWS Availability Zone][regions]  |
@@ -34,14 +34,14 @@ used settings are:
 
 These are settings that typically get set by Netflix when the system is configured. When
 running in EC2 they are set via the user data in the launch config. All of these environment
-variables will have a prefix of `NETFLIX_` or `CLOUD_`. If both are present, then the
-`CLOUD_` prefix will get used.
+variables will have a prefix of `NETFLIX_`.
 
 | Name         | Environment Variable    | Description                                                                                     |
 |--------------|-------------------------|-------------------------------------------------------------------------------------------------|
 | account      | ACCOUNT                 | Account name, typically `$type$env`                                                             |
 | account-env  | ACCOUNT_ENV             | Should always be test or prod                                                                   |
 | account-type | ACCOUNT_TYPE            | Type of the account, usually matches the stack name of supporting services                      |
+| account-id   | ACCOUNT_ID              | Id for the account                                                                              |
 | environment  | ENVIRONMENT             | With new user data should always be test or prod. Older user data it may be the same as ACCOUNT |
 | domain       | DOMAIN                  | DNS sub domain for this environment. Used to substitute config settings with host names         |
 
@@ -60,8 +60,8 @@ foo_webapp-main-canary-v042
 
 [frigga]: https://github.com/Netflix/frigga
 
-All of these environment variables will have a prefix of `NETFLIX_` or `CLOUD_`. If both are
-present, then the `CLOUD_` prefix will get used. The property names and environment variables are:
+All of these environment variables will have a prefix of `NETFLIX_`. The property
+names and environment variables are:
 
 | Name         | Environment Variable    | Description                             |
 |--------------|-------------------------|-----------------------------------------|
