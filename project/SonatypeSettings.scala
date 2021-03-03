@@ -5,14 +5,12 @@ import xerial.sbt.Sonatype.SonatypeKeys._
 
 object SonatypeSettings {
 
-  lazy val now = System.currentTimeMillis
-
   private def get(k: String): String = {
-    sys.env.getOrElse(s"sonatype$k", s"missing$k")
+    sys.env.getOrElse(s"NETFLIX_OSS_SONATYPE_$k", s"missing$k")
   }
 
-  lazy val user = get("User")
-  lazy val pass = get("Password")
+  private lazy val user = get("USERNAME")
+  private lazy val pass = get("PASSWORD")
 
   lazy val settings: Seq[Def.Setting[_]] = sonatypeSettings ++ Seq(
     sonatypeProfileName := "com.netflix",
