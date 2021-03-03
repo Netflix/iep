@@ -23,9 +23,13 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.sbt') }}
       - name: Build
         env:
-          sonatypeUser: ${{ secrets.ORG_SONATYPE_USERNAME }}
-          sonatypePassword: ${{ secrets.ORG_SONATYPE_PASSWORD }}
+          NETFLIX_OSS_REPO_USERNAME: ${{ secrets.ORG_NETFLIXOSS_USERNAME }}
+          NETFLIX_OSS_REPO_PASSWORD: ${{ secrets.ORG_NETFLIXOSS_PASSWORD }}
+          NETFLIX_OSS_SONATYPE_USERNAME: ${{ secrets.ORG_SONATYPE_USERNAME }}
+          NETFLIX_OSS_SONATYPE_PASSWORD: ${{ secrets.ORG_SONATYPE_PASSWORD }}
+          PGP_SECRET: ${{ secrets.ORG_SIGNING_KEY }}
+          PGP_PASSPHRASE: ${{ secrets.ORG_SIGNING_PASSWORD }}
         run: |
           git fetch --unshallow --tags
-          cat /dev/null | project/sbt clean test publish
+          cat /dev/null | project/sbt clean test publishSigned
           cat /dev/null | project/sbt sonatypeBundleRelease
