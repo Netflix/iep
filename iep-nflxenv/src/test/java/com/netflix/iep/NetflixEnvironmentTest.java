@@ -196,4 +196,46 @@ public class NetflixEnvironmentTest {
     Map<String, String> actual = NetflixEnvironment.commonTagsForAtlas(vars::get);
     Assert.assertEquals(expected, actual);
   }
+
+  @Test
+  public void commonTagsFallbackToOwnerId() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.put("EC2_OWNER_ID", vars.get("NETFLIX_ACCOUNT_ID"));
+    vars.remove("NETFLIX_ACCOUNT_ID");
+    Map<String, String> expected = sampleExpectedTags();
+    Map<String, String> actual = NetflixEnvironment.commonTags(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsFallbackToTitusTaskId() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.put("TITUS_TASK_INSTANCE_ID", vars.get("NETFLIX_INSTANCE_ID"));
+    vars.remove("NETFLIX_INSTANCE_ID");
+    Map<String, String> expected = sampleExpectedTags();
+    Map<String, String> actual = NetflixEnvironment.commonTags(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsFallbackToEc2InstanceId() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.put("EC2_INSTANCE_ID", vars.get("NETFLIX_INSTANCE_ID"));
+    vars.remove("NETFLIX_INSTANCE_ID");
+    Map<String, String> expected = sampleExpectedTags();
+    Map<String, String> actual = NetflixEnvironment.commonTags(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsTitusOverridesEc2InstanceId() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.put("EC2_INSTANCE_ID", vars.get("NETFLIX_INSTANCE_ID"));
+    vars.put("TITUS_TASK_INSTANCE_ID", "titus-12345");
+    vars.remove("NETFLIX_INSTANCE_ID");
+    Map<String, String> expected = sampleExpectedTags();
+    expected.put("nf.node", "titus-12345");
+    Map<String, String> actual = NetflixEnvironment.commonTags(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
 }
