@@ -147,12 +147,17 @@ public class NetflixEnvironment {
     Map<String, String> tags = new HashMap<>();
 
     // Generic infrastructure
-    putIfNotEmptyOrNull(getenv, tags, "nf.account", "NETFLIX_ACCOUNT_ID");
+    putIfNotEmptyOrNull(getenv, tags, "nf.account",
+        "NETFLIX_ACCOUNT_ID",
+        "EC2_OWNER_ID");
     putIfNotEmptyOrNull(getenv, tags, "nf.ami", "EC2_AMI_ID");
     putIfNotEmptyOrNull(getenv, tags, "nf.app", "NETFLIX_APP");
     putIfNotEmptyOrNull(getenv, tags, "nf.asg", "NETFLIX_AUTO_SCALE_GROUP");
     putIfNotEmptyOrNull(getenv, tags, "nf.cluster", "NETFLIX_CLUSTER");
-    putIfNotEmptyOrNull(getenv, tags, "nf.node", "NETFLIX_INSTANCE_ID");
+    putIfNotEmptyOrNull(getenv, tags, "nf.node",
+        "NETFLIX_INSTANCE_ID",
+        "TITUS_TASK_INSTANCE_ID",
+        "EC2_INSTANCE_ID");
     putIfNotEmptyOrNull(getenv, tags, "nf.region", "EC2_REGION");
     putIfNotEmptyOrNull(getenv, tags, "nf.shard1", "NETFLIX_SHARD1");
     putIfNotEmptyOrNull(getenv, tags, "nf.shard2", "NETFLIX_SHARD2");
@@ -259,10 +264,13 @@ public class NetflixEnvironment {
   }
 
   private static void putIfNotEmptyOrNull(
-      Function<String, String> getenv, Map<String, String> tags, String key, String envVar) {
-    String value = getenv.apply(envVar);
-    if (!isEmptyOrNull(value)) {
-      tags.put(key, value.trim());
+      Function<String, String> getenv, Map<String, String> tags, String key, String... envVars) {
+    for (String envVar : envVars) {
+      String value = getenv.apply(envVar);
+      if (!isEmptyOrNull(value)) {
+        tags.put(key, value.trim());
+        break;
+      }
     }
   }
 
