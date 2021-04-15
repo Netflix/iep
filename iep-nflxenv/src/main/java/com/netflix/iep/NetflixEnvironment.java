@@ -158,7 +158,9 @@ public class NetflixEnvironment {
         "NETFLIX_INSTANCE_ID",
         "TITUS_TASK_INSTANCE_ID",
         "EC2_INSTANCE_ID");
-    putIfNotEmptyOrNull(getenv, tags, "nf.region", "EC2_REGION");
+    putIfNotEmptyOrNull(getenv, tags, "nf.region",
+        "NETFLIX_REGION",
+        "EC2_REGION");
     putIfNotEmptyOrNull(getenv, tags, "nf.shard1", "NETFLIX_SHARD1");
     putIfNotEmptyOrNull(getenv, tags, "nf.shard2", "NETFLIX_SHARD2");
     putIfNotEmptyOrNull(getenv, tags, "nf.stack", "NETFLIX_STACK");

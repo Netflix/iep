@@ -55,7 +55,7 @@ public class NetflixEnvironmentTest {
     vars.put("NETFLIX_AUTO_SCALE_GROUP", "foo-bar-s1abc-s2def-v001");
     vars.put("NETFLIX_CLUSTER", "foo-bar-s1abc-s2def");
     vars.put("NETFLIX_INSTANCE_ID", "i-12345");
-    vars.put("EC2_REGION", "us-east-1");
+    vars.put("NETFLIX_REGION", "us-east-1");
     vars.put("NETFLIX_SHARD1", "abc");
     vars.put("NETFLIX_SHARD2", "def");
     vars.put("NETFLIX_STACK", "bar");
@@ -194,6 +194,16 @@ public class NetflixEnvironmentTest {
     vars.put("ATLAS_SKIP_COMMON_TAGS", "");
     Map<String, String> expected = atlasExpectedTags();
     Map<String, String> actual = NetflixEnvironment.commonTagsForAtlas(vars::get);
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void commonTagsFallbackToEc2Region() {
+    Map<String, String> vars = sampleEnvironmentVars();
+    vars.put("EC2_REGION", vars.get("NETFLIX_REGION"));
+    vars.remove("NETFLIX_REGION");
+    Map<String, String> expected = sampleExpectedTags();
+    Map<String, String> actual = NetflixEnvironment.commonTags(vars::get);
     Assert.assertEquals(expected, actual);
   }
 
