@@ -40,7 +40,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Helper for configuring archaius with the Netflix dynamic property source.
+ *
+ * @deprecated Archaius is deprecated. Migrate to {@code iep-module-dynconfig}.
  */
+@Deprecated
 public final class PlatformServiceModule extends ArchaiusModule {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PlatformServiceModule.class);

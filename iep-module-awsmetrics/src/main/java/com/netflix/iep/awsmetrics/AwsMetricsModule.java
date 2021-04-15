@@ -26,6 +26,12 @@ import com.netflix.spectator.aws.SpectatorMetricCollector;
 
 import javax.inject.Singleton;
 
+/**
+ * @deprecated Migrate to AWS SDK for Java V2. The {@code spectator-ext-aws2} library
+ * can be used and will be loaded automatically by the V2 SDK if it is present on the
+ * classpath.
+ */
+@Deprecated
 public final class AwsMetricsModule extends AbstractModule {
 
   @Override protected void configure() {
