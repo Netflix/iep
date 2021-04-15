@@ -30,7 +30,11 @@ import java.util.function.Function;
 
 /**
  * Helper for paginating AWS requests.
+ *
+ * @deprecated Migrate to AWS SDK for Java V2 ({@code iep-module-aws2}). The V2 SDK
+ * supports pagination automatically.
  */
+@Deprecated
 public final class Pagination {
 
   private Pagination() {

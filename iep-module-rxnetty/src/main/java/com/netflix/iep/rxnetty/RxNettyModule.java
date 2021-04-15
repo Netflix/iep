@@ -29,7 +29,11 @@ import com.netflix.iep.http.ServerRegistry;
 
 import javax.inject.Singleton;
 
-
+/**
+ * @deprecated RxNetty is deprecated and no longer maintained. Move to a supported
+ * networking library.
+ */
+@Deprecated
 public final class RxNettyModule extends AbstractModule {
 
   private static class OptionalInjections {

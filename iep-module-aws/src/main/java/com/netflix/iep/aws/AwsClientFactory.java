@@ -38,7 +38,10 @@ import java.util.function.Function;
 
 /**
  * Factory for creating instances of AWS clients.
+ *
+ * @deprecated Migrate to AWS SDK for Java V2 ({@code iep-module-aws2}).
  */
+@Deprecated
 @Singleton
 public class AwsClientFactory implements AutoCloseable {
 

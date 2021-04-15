@@ -25,7 +25,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Creates a binding for an {@link AwsClientFactory}.
+ *
+ * @deprecated Migrate to AWS SDK for Java V2 ({@code iep-module-aws2}).
  */
+@Deprecated
 public final class AwsModule extends AbstractModule {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AwsModule.class);
