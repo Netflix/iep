@@ -16,7 +16,6 @@
 package com.netflix.iep;
 
 import com.netflix.iep.config.ConfigManager;
-import com.typesafe.config.Config;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,70 +30,68 @@ public class NetflixEnvironment {
 
   private static final String NAMESPACE = "netflix.iep.env.";
 
-  private static final Config CONFIG = ConfigManager.get();
-
   public static String ami() {
-    return CONFIG.getString(NAMESPACE + "ami");
+    return ConfigManager.get().getString(NAMESPACE + "ami");
   }
 
   public static String vmtype() {
-    return CONFIG.getString(NAMESPACE + "vmtype");
+    return ConfigManager.get().getString(NAMESPACE + "vmtype");
   }
 
   public static String vpcId() {
-    return CONFIG.getString(NAMESPACE + "vpc-id");
+    return ConfigManager.get().getString(NAMESPACE + "vpc-id");
   }
 
   public static String region() {
-    return CONFIG.getString(NAMESPACE + "region");
+    return ConfigManager.get().getString(NAMESPACE + "region");
   }
 
   public static String zone() {
-    return CONFIG.getString(NAMESPACE + "zone");
+    return ConfigManager.get().getString(NAMESPACE + "zone");
   }
 
   public static String instanceId() {
-    return CONFIG.getString(NAMESPACE + "instance-id");
+    return ConfigManager.get().getString(NAMESPACE + "instance-id");
   }
 
   public static String app() {
-    return CONFIG.getString(NAMESPACE + "app");
+    return ConfigManager.get().getString(NAMESPACE + "app");
   }
 
   public static String cluster() {
-    return CONFIG.getString(NAMESPACE + "cluster");
+    return ConfigManager.get().getString(NAMESPACE + "cluster");
   }
 
   public static String asg() {
-    return CONFIG.getString(NAMESPACE + "asg");
+    return ConfigManager.get().getString(NAMESPACE + "asg");
   }
 
   public static String stack() {
-    return CONFIG.getString(NAMESPACE + "stack");
+    return ConfigManager.get().getString(NAMESPACE + "stack");
   }
 
   public static String env() {
-    return CONFIG.getString(NAMESPACE + "environment");
+    return ConfigManager.get().getString(NAMESPACE + "environment");
   }
 
   public static String accountId() {
-    return CONFIG.getString(NAMESPACE + "account-id");
+    return ConfigManager.get().getString(NAMESPACE + "account-id");
   }
 
   public static String accountName() {
-    return CONFIG.getString(NAMESPACE + "account");
+    return ConfigManager.get().getString(NAMESPACE + "account");
   }
 
   public static String accountType() {
-    return CONFIG.getString(NAMESPACE + "account-type");
+    return ConfigManager.get().getString(NAMESPACE + "account-type");
   }
 
   public static String accountEnv() {
-    return CONFIG.getString(NAMESPACE + "account-env");
+    return ConfigManager.get().getString(NAMESPACE + "account-env");
   }
 
   public static String insightAccountId() {
-    return CONFIG.getString(NAMESPACE + "insight-account-id");
+    return ConfigManager.get().getString(NAMESPACE + "insight-account-id");
   }
 
   /**
