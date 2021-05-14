@@ -39,6 +39,7 @@ class ClassFactoryProvider implements Provider<ClassFactory> {
   public ClassFactory get() {
     return new DefaultClassFactory(type -> {
       try {
+        System.out.println("HERE " + type);
         return injector.getInstance(Key.get(type));
       } catch (ConfigurationException e) {
         return null;

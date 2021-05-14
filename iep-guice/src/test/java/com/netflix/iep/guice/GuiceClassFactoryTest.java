@@ -17,6 +17,7 @@ package com.netflix.iep.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import com.google.inject.name.Names;
 import com.netflix.iep.service.ClassFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,6 +81,25 @@ public class GuiceClassFactoryTest {
     helper.shutdown();
   }
 
+  @Test
+  public void qualifers() throws Exception {
+    Module module = new AbstractModule() {
+      @Override protected void configure() {
+        bind(String.class).toInstance("1");
+        bind(String.class).annotatedWith(Names.named("s2")).toInstance("2");
+      }
+    };
+    GuiceHelper helper = new GuiceHelper();
+    helper.start(module);
+
+    ClassFactory factory = helper.getInjector().getInstance(ClassFactory.class);
+    WithQualifier obj = factory.newInstance(WithQualifier.class);
+    Assert.assertEquals("1", obj.s1);
+    Assert.assertEquals("2", obj.s2);
+
+    helper.shutdown();
+  }
+
   public static class Normal {
     final TestClass configClass;
 
@@ -129,6 +150,25 @@ public class GuiceClassFactoryTest {
     @Inject
     public ProviderClass(Provider<String> v) {
       this.v = v;
+    }
+  }
+
+  public static class WithQualifier {
+    final String s1;
+    final String s2;
+
+    public WithQualifier(String s1, Wrapper wrapper) {
+      this.s1 = s1;
+      this.s2 = wrapper.s2;
+    }
+  }
+
+  public static class Wrapper {
+    final String s2;
+
+    @Inject
+    public Wrapper(@Named("s2") String s2) {
+      this.s2 = s2;
     }
   }
 }
