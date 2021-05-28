@@ -182,6 +182,7 @@ lazy val `iep-module-aws2` = project
     Dependencies.aws2Core,
     Dependencies.aws2EC2 % "test",
     Dependencies.aws2STS,
+    Dependencies.aws2UrlClient % "test",
     Dependencies.guiceCore,
     Dependencies.slf4jApi,
     Dependencies.typesafeConfig

@@ -25,6 +25,8 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
+import software.amazon.awssdk.http.SdkHttpService;
+import software.amazon.awssdk.http.apache.ApacheSdkHttpService;
 import software.amazon.awssdk.services.ec2.Ec2AsyncClient;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.DescribeAddressesRequest;
@@ -85,10 +87,14 @@ public class AwsClientFactoryTest {
     Assert.assertEquals("override-defaults", getUserAgentPrefix(settings));
   }
 
+  private SdkHttpService httpService() {
+    return new ApacheSdkHttpService();
+  }
+
   @Test
   public void createCredentialsProvider() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider(null, null);
+    AwsCredentialsProvider creds = factory.createCredentialsProvider(null, null, httpService());
     Assert.assertTrue(creds instanceof DefaultCredentialsProvider);
   }
 
@@ -105,7 +111,7 @@ public class AwsClientFactoryTest {
   @Test
   public void createCredentialsProviderOverride() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", null);
+    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", null, httpService());
     Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
     Assert.assertEquals("arn:aws:iam::1234567890:role/IepTest", getRequest(creds).roleArn());
     Assert.assertEquals("iep", getRequest(creds).roleSessionName());
@@ -114,7 +120,7 @@ public class AwsClientFactoryTest {
   @Test
   public void createCredentialsProviderForAccount() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-account", "123");
+    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-account", "123", httpService());
     Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
     Assert.assertEquals("arn:aws:iam::123:role/IepTest", getRequest(creds).roleArn());
     Assert.assertEquals("ieptest", getRequest(creds).roleSessionName());
@@ -123,13 +129,13 @@ public class AwsClientFactoryTest {
   @Test(expected = IllegalArgumentException.class)
   public void createCredentialsProviderForAccountNull() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    factory.createCredentialsProvider("ec2-account", null);
+    factory.createCredentialsProvider("ec2-account", null, httpService());
   }
 
   @Test
   public void createCredentialsProviderForAccountIgnored() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", "123");
+    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", "123", httpService());
     Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
     Assert.assertEquals("arn:aws:iam::1234567890:role/IepTest", getRequest(creds).roleArn());
     Assert.assertEquals("iep", getRequest(creds).roleSessionName());
