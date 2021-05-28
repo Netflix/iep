@@ -29,7 +29,6 @@ import com.netflix.iep.admin.endpoints.BaseServerEndpoint;
 import com.netflix.iep.admin.endpoints.EnvEndpoint;
 import com.netflix.iep.admin.endpoints.JarsEndpoint;
 import com.netflix.iep.admin.endpoints.JmxEndpoint;
-import com.netflix.iep.admin.endpoints.ReflectEndpoint;
 import com.netflix.iep.admin.endpoints.ServicesEndpoint;
 import com.netflix.iep.admin.endpoints.SpectatorEndpoint;
 import com.netflix.iep.admin.endpoints.SystemPropsEndpoint;
@@ -77,7 +76,6 @@ public class AdminModule extends AbstractModule {
     endpoints.addBinding("/spectator").to(SpectatorEndpoint.class);
     endpoints.addBinding("/services").to(ServicesEndpoint.class);
     endpoints.addBinding("/v1/platform/base").to(BaseServerEndpoint.class);
-    endpoints.addBinding("/debug").to(GuiceDebugEndpoint.class);
     endpoints.addBinding("/guice").to(GuiceEndpoint.class);
 
     // Init set of services to an empty set
@@ -105,21 +103,6 @@ public class AdminModule extends AbstractModule {
         config = AdminConfig.DEFAULT;
       }
       return config;
-    }
-  }
-
-  @Singleton
-  private static class DebugProvider implements Provider<ReflectEndpoint> {
-
-    private final ReflectEndpoint endpoint;
-
-    @Inject
-    DebugProvider(Injector injector) {
-      endpoint = new ReflectEndpoint(injector);
-    }
-
-    @Override public ReflectEndpoint get() {
-      return endpoint;
     }
   }
 
