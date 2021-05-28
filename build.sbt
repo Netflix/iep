@@ -61,9 +61,7 @@ lazy val `iep-eureka-testconfig` = project
 lazy val `iep-guice` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-service`)
-  .settings(libraryDependencies ++= Seq(
-    Dependencies.guiceCore,
-    Dependencies.guiceMulti,
+  .settings(libraryDependencies ++= Dependencies.guiceCoreAndMulti ++ Seq(
     Dependencies.slf4jApi,
     Dependencies.jsr250 % "test"
   ))
@@ -93,21 +91,17 @@ lazy val `iep-leader-dynamodb` = project
 lazy val `iep-module-admin` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-admin`)
-  .settings(libraryDependencies ++= Seq(
-    Dependencies.guiceCore,
-    Dependencies.guiceMulti,
+  .settings(libraryDependencies ++= Dependencies.guiceCoreAndMulti ++ Seq(
     Dependencies.slf4jApi
   ))
 
 lazy val `iep-module-archaius1` = project
   .configure(BuildSettings.profile)
-  .settings(libraryDependencies ++= Seq(
+  .settings(libraryDependencies ++= Dependencies.guiceCoreAndMulti ++ Seq(
     Dependencies.archaiusBridge,
     Dependencies.archaiusCore,
     Dependencies.archaiusGuice,
     Dependencies.archaiusLegacy,
-    Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.slf4jApi
   ))
 
@@ -126,9 +120,7 @@ lazy val `iep-module-archaius2` = project
 lazy val `iep-module-atlas` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-nflxenv`, `iep-service`)
-  .settings(libraryDependencies ++= Seq(
-    Dependencies.guiceCore,
-    Dependencies.guiceMulti,
+  .settings(libraryDependencies ++= Dependencies.guiceCoreAndMulti ++ Seq(
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
     Dependencies.spectatorAtlas,
@@ -140,9 +132,7 @@ lazy val `iep-module-atlas` = project
 lazy val `iep-module-atlasaggr` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-nflxenv`, `iep-service`)
-  .settings(libraryDependencies ++= Seq(
-    Dependencies.guiceCore,
-    Dependencies.guiceMulti,
+  .settings(libraryDependencies ++= Dependencies.guiceCoreAndMulti ++ Seq(
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
     Dependencies.spectatorStateless,
@@ -200,9 +190,7 @@ lazy val `iep-module-awsmetrics` = project
 lazy val `iep-module-dynconfig` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-nflxenv`, `iep-module-admin`)
-  .settings(libraryDependencies ++= Seq(
-      Dependencies.guiceCore,
-      Dependencies.guiceMulti,
+  .settings(libraryDependencies ++= Dependencies.guiceCoreAndMulti ++ Seq(
       Dependencies.slf4jApi,
       Dependencies.spectatorApi,
       Dependencies.spectatorIpc
@@ -211,10 +199,8 @@ lazy val `iep-module-dynconfig` = project
 lazy val `iep-module-eureka` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-service`, `iep-module-admin`, `iep-eureka-testconfig` % "test")
-  .settings(libraryDependencies ++= Seq(
+  .settings(libraryDependencies ++= Dependencies.guiceCoreAndMulti ++ Seq(
     Dependencies.eurekaClient,
-    Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.slf4jApi
   ))
 
@@ -228,9 +214,7 @@ lazy val `iep-module-jmxport` = project
 lazy val `iep-module-leader` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-leader-api`, `iep-service`)
-  .settings(libraryDependencies ++= Seq(
-    Dependencies.guiceCore,
-    Dependencies.guiceMulti,
+  .settings(libraryDependencies ++= Dependencies.guiceCoreAndMulti ++ Seq(
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
     Dependencies.typesafeConfig,
@@ -249,10 +233,8 @@ lazy val `iep-module-rxnetty` = project
 lazy val `iep-module-userservice` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-module-admin`, `iep-service`)
-  .settings(libraryDependencies ++= Seq(
+  .settings(libraryDependencies ++= Dependencies.guiceCoreAndMulti ++ Seq(
     Dependencies.caffeine,
-    Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.jacksonMapper,
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
@@ -270,13 +252,11 @@ lazy val `iep-nflxenv` = project
 lazy val `iep-platformservice` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-nflxenv`, `iep-module-admin`)
-  .settings(libraryDependencies ++= Seq(
+  .settings(libraryDependencies ++= Dependencies.guiceCoreAndMulti ++ Seq(
     Dependencies.archaiusCore,
     Dependencies.archaiusGuice,
     Dependencies.archaiusPersist,
     Dependencies.archaiusTypesafe,
-    Dependencies.guiceCore,
-    Dependencies.guiceMulti,
     Dependencies.slf4jApi,
     Dependencies.spectatorApi,
     Dependencies.spectatorIpc
