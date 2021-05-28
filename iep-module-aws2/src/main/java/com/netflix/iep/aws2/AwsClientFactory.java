@@ -20,9 +20,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.awscore.client.builder.AwsAsyncClientBuilder;
 import software.amazon.awssdk.awscore.client.builder.AwsClientBuilder;
+import software.amazon.awssdk.awscore.client.builder.AwsSyncClientBuilder;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
+import software.amazon.awssdk.http.SdkHttpService;
+import software.amazon.awssdk.http.async.SdkAsyncHttpService;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
@@ -33,6 +37,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -129,12 +135,13 @@ public class AwsClientFactory implements AutoCloseable {
   }
 
   private AwsCredentialsProvider createAssumeRoleProvider(
-      Config cfg, String accountId, AwsCredentialsProvider p) {
+      Config cfg, String accountId, AwsCredentialsProvider p, SdkHttpService service) {
     final String arn = createRoleArn(cfg.getString("role-arn"), accountId);
     final String name = cfg.getString("role-session-name");
     final StsClient stsClient = StsClient.builder()
         .credentialsProvider(p)
         .region(Region.of(region))
+        .httpClientBuilder(service.createHttpClientBuilder())
         .build();
     final AssumeRoleRequest request = AssumeRoleRequest.builder()
         .roleArn(arn)
@@ -146,13 +153,14 @@ public class AwsClientFactory implements AutoCloseable {
         .build();
   }
 
-  AwsCredentialsProvider createCredentialsProvider(String name, String accountId) {
+  AwsCredentialsProvider createCredentialsProvider(
+      String name, String accountId, SdkHttpService service) {
     final AwsCredentialsProvider dflt = DefaultCredentialsProvider.builder()
         .asyncCredentialUpdateEnabled(true)
         .build();
     final Config cfg = getConfig(name, "credentials");
     if (cfg.hasPath("role-arn")) {
-      return createAssumeRoleProvider(cfg, accountId, dflt);
+      return createAssumeRoleProvider(cfg, accountId, dflt, service);
     } else {
       if (accountId != null) {
         LOGGER.warn("requested account, {}, ignored, no role ARN configured", accountId);
@@ -172,6 +180,52 @@ public class AwsClientFactory implements AutoCloseable {
       endpointRegion = config.getString(dfltProp);
     }
     return Region.of(endpointRegion);
+  }
+
+  private SdkHttpService createSyncHttpService(String name) {
+    Config clientConfig = getConfig(name, "client");
+    if (clientConfig.hasPath("sync-http-impl")) {
+      String clsName = clientConfig.getString("sync-http-impl");
+      try {
+        Class<?> clientClass = Class.forName(clsName);
+        return (SdkHttpService) clientClass.getConstructor().newInstance();
+      } catch (Exception e) {
+        throw new RuntimeException("failed to create instance of " + clsName, e);
+      }
+    } else {
+      Iterator<SdkHttpService> services = ServiceLoader
+          .load(SdkHttpService.class)
+          .iterator();
+      if (services.hasNext()) {
+        return services.next();
+      } else {
+        throw new IllegalStateException("could not find SdkHttpService on classpath, " +
+            "set `sync-http-impl` to specify the implementation to use");
+      }
+    }
+  }
+
+  private SdkAsyncHttpService createAsyncHttpService(String name) {
+    Config clientConfig = getConfig(name, "client");
+    if (clientConfig.hasPath("async-http-impl")) {
+      String clsName = clientConfig.getString("async-http-impl");
+      try {
+        Class<?> clientClass = Class.forName(clsName);
+        return (SdkAsyncHttpService) clientClass.getConstructor().newInstance();
+      } catch (Exception e) {
+        throw new RuntimeException("failed to create instance of " + clsName, e);
+      }
+    } else {
+      Iterator<SdkAsyncHttpService> services = ServiceLoader
+          .load(SdkAsyncHttpService.class)
+          .iterator();
+      if (services.hasNext()) {
+        return services.next();
+      } else {
+        throw new IllegalStateException("could not find SdkAsyncHttpService on classpath, " +
+            "set `async-http-impl` to specify the implementation to use");
+      }
+    }
   }
 
   /**
@@ -241,12 +295,23 @@ public class AwsClientFactory implements AutoCloseable {
   @SuppressWarnings("unchecked")
   public <T> T newInstance(String name, Class<T> cls, String accountId) {
     try {
+      SdkHttpService service = createSyncHttpService(name);
       Method builderMethod = cls.getMethod("builder");
-      return (T) ((AwsClientBuilder<?, ?>) builderMethod.invoke(null))
-          .credentialsProvider(createCredentialsProvider(name, accountId))
+      AwsClientBuilder<?, ?> builder = ((AwsClientBuilder<?, ?>) builderMethod.invoke(null))
+          .credentialsProvider(createCredentialsProvider(name, accountId, service))
           .region(chooseRegion(name, cls))
-          .overrideConfiguration(createClientConfig(name))
-          .build();
+          .overrideConfiguration(createClientConfig(name));
+
+      if (builder instanceof AwsSyncClientBuilder<?, ?>) {
+        ((AwsSyncClientBuilder<?, ?>) builder)
+            .httpClientBuilder(service.createHttpClientBuilder());
+      } else if (builder instanceof AwsAsyncClientBuilder<?, ?>) {
+        SdkAsyncHttpService asyncService = createAsyncHttpService(name);
+        ((AwsAsyncClientBuilder<?, ?>) builder)
+            .httpClientBuilder(asyncService.createAsyncHttpClientFactory());
+      }
+
+      return (T) builder.build();
     } catch (Exception e) {
       throw new RuntimeException("failed to create instance of " + cls.getName(), e);
     }
