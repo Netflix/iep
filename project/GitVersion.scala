@@ -6,7 +6,7 @@ import com.typesafe.sbt.SbtGit._
 object GitVersion {
 
   // Base version for master branch
-  private val baseVersion = "v2.6.x"
+  private val baseVersion = "v3.0.x"
 
   // 0.1.x
   private val versionBranch = """v?([0-9\.]+)(?:\.x)?""".r
@@ -54,7 +54,7 @@ object GitVersion {
   }
 
   lazy val settings: Seq[Def.Setting[_]] = Seq(
-    version in ThisBuild := {
+    ThisBuild / version := {
       val branch = extractBranchName(git.gitCurrentBranch.value)
       val branchVersion = if (branch == "master") baseVersion else branch
       git.gitDescribedVersion.value getOrElse "0.1-SNAPSHOT" match {
