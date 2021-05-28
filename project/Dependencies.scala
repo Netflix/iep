@@ -1,4 +1,5 @@
 import sbt._
+import sbt.librarymanagement.DependencyBuilders.OrganizationArtifactName
 
 object Dependencies {
   object Versions {
@@ -8,7 +9,7 @@ object Dependencies {
     val aws2       = "2.16.45"
     val eureka     = "1.10.13"
     val graal      = "21.1.0"
-    val guice      = "4.1.0"
+    val guice      = "5.0.1"
     val jackson    = "2.12.3"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
@@ -51,8 +52,8 @@ object Dependencies {
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
-  val guiceCore          = "com.google.inject" % "guice" % guice
-  val guiceMulti         = "com.google.inject.extensions" % "guice-multibindings" % guice
+  val guiceCoreBase      = "com.google.inject" % "guice"
+  val guiceMultiBase     = "com.google.inject.extensions" % "guice-multibindings"
   val inject             = "javax.inject" % "javax.inject" % "1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
@@ -74,4 +75,21 @@ object Dependencies {
   val spectatorJvm       = "com.netflix.spectator" % "spectator-ext-jvm" % spectator
   val spectatorStateless = "com.netflix.spectator" % "spectator-reg-stateless" % spectator
   val typesafeConfig     = "com.typesafe" % "config" % "1.4.1"
+
+  def isBeforeJava16: Boolean = {
+    System.getProperty("java.specification.version").toDouble < 16
+  }
+
+  private def guiceDep(base: OrganizationArtifactName): ModuleID = {
+    base % (if (isBeforeJava16) "4.1.0" else guice)
+  }
+
+  def guiceCore: ModuleID = guiceDep(guiceCoreBase)
+
+  def guiceCoreAndMulti: Seq[ModuleID] = {
+    if (isBeforeJava16)
+      Seq(guiceDep(guiceCoreBase), guiceDep(guiceMultiBase))
+    else
+      Seq(guiceDep(guiceCoreBase))
+  }
 }
