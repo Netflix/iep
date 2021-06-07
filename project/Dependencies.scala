@@ -5,8 +5,8 @@ object Dependencies {
   object Versions {
     val archaius   = "2.3.16"
     val assertj    = "3.19.0"
-    val aws        = "1.11.1002"
-    val aws2       = "2.16.45"
+    val aws        = "1.11.1033"
+    val aws2       = "2.16.78"
     val eureka     = "1.10.13"
     val graal      = "21.1.0"
     val guice      = "5.0.1"
@@ -15,7 +15,7 @@ object Dependencies {
     val rxscala    = "0.26.5"
     val scala      = "2.12.12"
     val slf4j      = "1.7.30"
-    val spectator  = "0.128.0"
+    val spectator  = "0.131.0"
   }
 
   import Versions._
@@ -47,8 +47,8 @@ object Dependencies {
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
-  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.9.0"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.6"
+  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.9.1"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.6.1"
   val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
