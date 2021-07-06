@@ -14,7 +14,7 @@ object Dependencies {
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.12"
-    val slf4j      = "1.7.30"
+    val slf4j      = "1.7.31"
     val spectator  = "0.131.0"
   }
 
