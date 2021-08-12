@@ -7,7 +7,6 @@ object Dependencies {
     val assertj    = "3.20.2"
     val aws        = "1.12.14"
     val aws2       = "2.16.92"
-    val eureka     = "1.10.13"
     val graal      = "21.1.0"
     val guice      = "5.0.1"
     val jackson    = "2.12.4"
@@ -49,7 +48,6 @@ object Dependencies {
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.9.1"
   val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.6.1"
-  val eurekaClient       = "com.netflix.eureka" % "eureka-client" % eureka
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
   val guiceCoreBase      = "com.google.inject" % "guice"
