@@ -102,7 +102,8 @@ public final class EurekaModule extends AbstractModule {
   @Provides
   @Singleton
   private EurekaInstanceConfig provideInstanceConfig(OptionalInjections opts) {
-    return new CloudInstanceConfig("netflix.appinfo.");
+    // Customize AmazonInfo to avoid use of IMDS
+    return new CustomEurekaInstanceConfig();
   }
 
   @Override public boolean equals(Object obj) {
