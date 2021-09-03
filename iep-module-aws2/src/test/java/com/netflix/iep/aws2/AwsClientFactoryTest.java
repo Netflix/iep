@@ -25,6 +25,7 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
+import software.amazon.awssdk.http.SdkHttpConfigurationOption;
 import software.amazon.awssdk.http.SdkHttpService;
 import software.amazon.awssdk.http.apache.ApacheSdkHttpService;
 import software.amazon.awssdk.services.ec2.Ec2AsyncClient;
@@ -32,6 +33,8 @@ import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.DescribeAddressesRequest;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
+import software.amazon.awssdk.utils.AttributeMap;
+
 
 import java.lang.reflect.Field;
 import java.time.Duration;
@@ -252,5 +255,17 @@ public class AwsClientFactoryTest {
     ClientOverrideConfiguration settings = factory.createClientConfig("timeouts");
     Assert.assertEquals(Duration.ofMillis(42000), settings.apiCallAttemptTimeout().get());
     Assert.assertEquals(Duration.ofMillis(13000), settings.apiCallTimeout().get());
+    Assert.assertEquals(Integer.valueOf(5), settings.retryPolicy().get().numRetries());
+  }
+
+  @Test
+  public void settingsSdkHttpClient() {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    AttributeMap settings = factory.getSdkHttpConfigurationOptions("sdk-http-client");
+    Assert.assertEquals(Duration.ofMillis(60000), settings.get(SdkHttpConfigurationOption.CONNECTION_TIMEOUT));
+    Assert.assertEquals(Duration.ofMillis(120000), settings.get(SdkHttpConfigurationOption.CONNECTION_MAX_IDLE_TIMEOUT));
+    Assert.assertEquals(500, settings.get(SdkHttpConfigurationOption.MAX_CONNECTIONS).intValue());
+    Assert.assertEquals(true, settings.get(SdkHttpConfigurationOption.REAP_IDLE_CONNECTIONS));
+
   }
 }
