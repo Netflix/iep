@@ -96,11 +96,11 @@ public class AwsClientFactory implements AutoCloseable {
   }
 
   private void setRetriesIfPresent(Config cfg, ClientOverrideConfiguration.Builder builder) {
-    if (cfg.hasPath("retries")) {
+    if (cfg.hasPath("retry-policy.num-retries")) {
       RetryPolicy retryPolicy = RetryPolicy.builder()
               .backoffStrategy(BackoffStrategy.defaultStrategy())
               .throttlingBackoffStrategy(BackoffStrategy.defaultThrottlingStrategy())
-              .numRetries(cfg.getInt("retries"))
+              .numRetries(cfg.getInt("retry-policy.num-retries"))
               .retryCondition(RetryCondition.defaultRetryCondition())
               .build();
       builder.retryPolicy(retryPolicy);
@@ -350,7 +350,6 @@ public class AwsClientFactory implements AutoCloseable {
   public <T> T newInstance(String name, Class<T> cls, String accountId) {
     try {
       SdkHttpService service = createSyncHttpService(name);
-      SdkAsyncHttpService asyncService = createAsyncHttpService(name);
       Method builderMethod = cls.getMethod("builder");
       AwsClientBuilder<?, ?> builder = ((AwsClientBuilder<?, ?>) builderMethod.invoke(null))
           .credentialsProvider(createCredentialsProvider(name, accountId, service))
@@ -362,6 +361,7 @@ public class AwsClientFactory implements AutoCloseable {
         ((AwsSyncClientBuilder<?, ?>) builder)
                 .httpClient(service.createHttpClientBuilder().buildWithDefaults(attributeMap));
       } else if (builder instanceof AwsAsyncClientBuilder<?, ?>) {
+        SdkAsyncHttpService asyncService = createAsyncHttpService(name);
         ((AwsAsyncClientBuilder<?, ?>) builder)
                 .httpClient(asyncService.createAsyncHttpClientFactory().buildWithDefaults(attributeMap));
       }
