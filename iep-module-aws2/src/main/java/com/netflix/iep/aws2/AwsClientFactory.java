@@ -25,19 +25,26 @@ import software.amazon.awssdk.awscore.client.builder.AwsClientBuilder;
 import software.amazon.awssdk.awscore.client.builder.AwsSyncClientBuilder;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
+import software.amazon.awssdk.core.retry.RetryPolicy;
+import software.amazon.awssdk.core.retry.backoff.BackoffStrategy;
+import software.amazon.awssdk.core.retry.conditions.RetryCondition;
+import software.amazon.awssdk.http.SdkHttpConfigurationOption;
 import software.amazon.awssdk.http.SdkHttpService;
 import software.amazon.awssdk.http.async.SdkAsyncHttpService;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
+import software.amazon.awssdk.utils.AttributeMap;
 import software.amazon.awssdk.utils.SdkAutoCloseable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -88,6 +95,18 @@ public class AwsClientFactory implements AutoCloseable {
     }
   }
 
+  private void setRetriesIfPresent(Config cfg, ClientOverrideConfiguration.Builder builder) {
+    if (cfg.hasPath("retry-policy.num-retries")) {
+      RetryPolicy retryPolicy = RetryPolicy.builder()
+              .backoffStrategy(BackoffStrategy.defaultStrategy())
+              .throttlingBackoffStrategy(BackoffStrategy.defaultThrottlingStrategy())
+              .numRetries(cfg.getInt("retry-policy.num-retries"))
+              .retryCondition(RetryCondition.defaultRetryCondition())
+              .build();
+      builder.retryPolicy(retryPolicy);
+    }
+  }
+
   ClientOverrideConfiguration createClientConfig(String name) {
     final Config cfg = getConfig(name, "client");
     ClientOverrideConfiguration.Builder builder = ClientOverrideConfiguration.builder();
@@ -97,6 +116,8 @@ public class AwsClientFactory implements AutoCloseable {
 
     setIfPresent(cfg, "user-agent-prefix", SdkAdvancedClientOption.USER_AGENT_PREFIX, builder);
     setIfPresent(cfg, "user-agent-suffix", SdkAdvancedClientOption.USER_AGENT_SUFFIX, builder);
+
+    setRetriesIfPresent(cfg, builder);
 
     if (cfg.hasPath("headers")) {
       for (String header : cfg.getStringList("headers")) {
@@ -167,6 +188,39 @@ public class AwsClientFactory implements AutoCloseable {
       }
       return dflt;
     }
+  }
+
+  AttributeMap getSdkHttpConfigurationOptions(String name) {
+    Map<AttributeMap.Key<?>, Object> configuration = new HashMap<>();
+    Config clientConfig = getConfig(name, "client");
+
+    if(clientConfig.hasPath("http-configuration")) {
+      Config httpConfig =  clientConfig.getConfig("http-configuration");
+      if (httpConfig.hasPath("read-timeout"))
+        configuration.put(SdkHttpConfigurationOption.READ_TIMEOUT, httpConfig.getDuration("read-timeout"));
+      if (httpConfig.hasPath("write-timeout"))
+        configuration.put(SdkHttpConfigurationOption.WRITE_TIMEOUT, httpConfig.getDuration("write-timeout"));
+      if (httpConfig.hasPath("connection-timeout"))
+        configuration.put(SdkHttpConfigurationOption.CONNECTION_TIMEOUT, httpConfig.getDuration("connection-timeout"));
+      if (httpConfig.hasPath("connection-acquire-timeout"))
+        configuration.put(SdkHttpConfigurationOption.CONNECTION_ACQUIRE_TIMEOUT, httpConfig.getDuration("connection-acquire-timeout"));
+      if (httpConfig.hasPath("connection-max-idle-timeout"))
+        configuration.put(SdkHttpConfigurationOption.CONNECTION_MAX_IDLE_TIMEOUT, httpConfig.getDuration("connection-max-idle-timeout"));
+      if (httpConfig.hasPath("connection-time-to-live"))
+        configuration.put(SdkHttpConfigurationOption.CONNECTION_TIME_TO_LIVE, httpConfig.getDuration("connection-time-to-live"));
+      if (httpConfig.hasPath("max-connections"))
+        configuration.put(SdkHttpConfigurationOption.MAX_CONNECTIONS, httpConfig.getInt("max-connections"));
+      if (httpConfig.hasPath("max-pending-connection-acquires"))
+        configuration.put(SdkHttpConfigurationOption.MAX_PENDING_CONNECTION_ACQUIRES, httpConfig.getInt("max-pending-connection-acquires"));
+      if (httpConfig.hasPath("reap-idle-connections"))
+        configuration.put(SdkHttpConfigurationOption.REAP_IDLE_CONNECTIONS, httpConfig.getBoolean("reap-idle-connections"));
+      if (httpConfig.hasPath("tcp-keepalive"))
+        configuration.put(SdkHttpConfigurationOption.TCP_KEEPALIVE, httpConfig.getBoolean("tcp-keepalive"));
+      if (httpConfig.hasPath("trust-all-certificates"))
+        configuration.put(SdkHttpConfigurationOption.TRUST_ALL_CERTIFICATES, httpConfig.getBoolean("trust-all-certificates"));
+    }
+
+    return AttributeMap.builder().putAll(configuration).build();
   }
 
   private Region chooseRegion(String name, Class<?> cls) {
@@ -301,14 +355,15 @@ public class AwsClientFactory implements AutoCloseable {
           .credentialsProvider(createCredentialsProvider(name, accountId, service))
           .region(chooseRegion(name, cls))
           .overrideConfiguration(createClientConfig(name));
+      AttributeMap attributeMap = getSdkHttpConfigurationOptions(name);
 
       if (builder instanceof AwsSyncClientBuilder<?, ?>) {
         ((AwsSyncClientBuilder<?, ?>) builder)
-            .httpClientBuilder(service.createHttpClientBuilder());
+                .httpClient(service.createHttpClientBuilder().buildWithDefaults(attributeMap));
       } else if (builder instanceof AwsAsyncClientBuilder<?, ?>) {
         SdkAsyncHttpService asyncService = createAsyncHttpService(name);
         ((AwsAsyncClientBuilder<?, ?>) builder)
-            .httpClientBuilder(asyncService.createAsyncHttpClientFactory());
+                .httpClient(asyncService.createAsyncHttpClientFactory().buildWithDefaults(attributeMap));
       }
 
       return (T) builder.build();
