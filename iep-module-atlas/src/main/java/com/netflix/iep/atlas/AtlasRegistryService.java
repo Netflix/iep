@@ -100,9 +100,6 @@ class AtlasRegistryService extends AbstractService {
     if (cfg.getBoolean("atlas.collection.jvm")) {
       Jmx.registerStandardMXBeans(registry);
     }
-
-    // Start collection for the registry
-    registry.start();
   }
 
   @Override protected void stopImpl() throws Exception {
