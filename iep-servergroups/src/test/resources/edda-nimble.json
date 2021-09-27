@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ec2.app-main-dev-v001",
+    "platform": "ec2",
+    "app": "app",
+    "cluster": "app-main-dev",
+    "group": "app-main-dev-v001",
+    "stack": "main",
+    "detail": "dev",
+    "minSize": 1,
+    "maxSize": 3,
+    "desiredSize": 2,
+    "instances": [
+      {
+        "launchTime": 1544328558000,
+        "node": "i-0001",
+        "privateIpAddress": "10.20.30.01",
+        "vpcId": "vpc-54321",
+        "subnetId": "subnet-54321",
+        "ami": "ami-0987654321",
+        "vmtype": "m5.large",
+        "zone": "us-east-1d"
+      }
+    ]
+  },
+  {
+    "id": "ec2.nimble_app-main-dev-v001",
+    "platform": "ec2",
+    "app": "nimble_app",
+    "cluster": "nimble_app-main-dev",
+    "group": "nimble_app-main-dev-v001",
+    "stack": "main",
+    "detail": "dev",
+    "minSize": 1,
+    "maxSize": 3,
+    "desiredSize": 2,
+    "instances": [
+      {
+        "launchTime": 1544328558000,
+        "node": "i-0002",
+        "privateIpAddress": "10.20.30.02",
+        "vpcId": "vpc-54321",
+        "subnetId": "subnet-54321",
+        "ami": "ami-0987654321",
+        "vmtype": "m5.large",
+        "zone": "us-east-1d"
+      }
+    ]
+  }
+]

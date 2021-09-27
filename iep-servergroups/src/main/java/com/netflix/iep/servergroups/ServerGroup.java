@@ -23,9 +23,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -251,6 +253,41 @@ public final class ServerGroup {
         + ")";
   }
 
+  private String nimbleId() {
+    return platform + "." + NIMBLE_PREFIX + group;
+  }
+
+  /**
+   * Return a copy of the server group with the nimble naming. Nimble clusters register with
+   * Eureka using the transplant server group information, this method is used to convert to
+   * the actual Nimble server group information to merge with another source like Edda.
+   *
+   * @param instanceIds
+   *     Set of instance ids that should be included in the Nimble group. Since the registration
+   *     is wrong, the instances from the actual server group need to be excluded.
+   * @return
+   *     Nimble server group.
+   */
+  private ServerGroup toNimbleGroup(Set<String> instanceIds) {
+    List<Instance> nimbleInstances = new ArrayList<>();
+    for (Instance instance : instances) {
+      if (instanceIds.contains(instance.getNode())) {
+        nimbleInstances.add(instance);
+      }
+    }
+    return builder()
+        .platform(platform)
+        .group(NIMBLE_PREFIX + group)
+        .minSize(minSize)
+        .maxSize(maxSize)
+        .desiredSize(desiredSize)
+        .addInstances(nimbleInstances)
+        .build();
+  }
+
+  // Prefix added for nimble enabled server groups
+  private static String NIMBLE_PREFIX = "nimble_";
+
   /**
    * Merge both sets of groups.
    *
@@ -263,21 +300,49 @@ public final class ServerGroup {
    */
   public static List<ServerGroup> merge(Collection<ServerGroup> gs1, Collection<ServerGroup> gs2) {
 
+    Map<String, ServerGroup> nimbleGroups = new HashMap<>();
+    for (ServerGroup g : gs1) {
+      if (g.getApp().startsWith(NIMBLE_PREFIX)) {
+        nimbleGroups.put(g.id, g);
+      }
+    }
+
     Map<String, ServerGroup> otherGroups = new HashMap<>();
+    Map<String, ServerGroup> otherNimbleGroups = new HashMap<>();
     for (ServerGroup g : gs2) {
       otherGroups.put(g.id, g);
+      String nimbleId = g.nimbleId();
+      if (nimbleGroups.containsKey(nimbleId)) {
+        otherNimbleGroups.put(nimbleId, g);
+      }
     }
 
     List<ServerGroup> merged = new ArrayList<>(gs1.size());
 
     // Groups in gs1 only or in both lists
     for (ServerGroup g1 : gs1) {
-      ServerGroup g2 = otherGroups.remove(g1.id);
-      merged.add(g2 == null ? g1 : g1.merge(g2));
+      if (!g1.group.startsWith(NIMBLE_PREFIX)) {
+        ServerGroup g2 = otherGroups.remove(g1.id);
+        merged.add(g2 == null ? g1 : g1.merge(g2));
+      }
     }
 
     // Add groups only in gs2
     merged.addAll(otherGroups.values());
+
+    // Merge for nimble groups that report the wrong information to sources like Eureka
+    for (ServerGroup g1 : nimbleGroups.values()) {
+      ServerGroup g2 = otherNimbleGroups.remove(g1.id);
+      if (g2 == null) {
+        merged.add(g1);
+      } else {
+        Set<String> instanceIds = new HashSet<>();
+        for (Instance instance : g1.getInstances()) {
+          instanceIds.add(instance.getNode());
+        }
+        merged.add(g1.merge(g2.toNimbleGroup(instanceIds)));
+      }
+    }
 
     return merged;
   }

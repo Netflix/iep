@@ -15,25 +15,20 @@
  */
 package com.netflix.iep.servergroups;
 
-import com.netflix.spectator.ipc.http.HttpClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @RunWith(JUnit4.class)
 public class EddaLoaderTest {
-  private final URI uri = URI.create("http://localhost:7101/api/v2/netflix/serverGroups");
 
   private List<ServerGroup> get(String resource) throws Exception {
-    HttpClient client = TestHttpClient.resource(200, resource);
-    EddaLoader loader = new EddaLoader(client, uri);
-    List<ServerGroup> groups = loader.call();
+    List<ServerGroup> groups = LoaderUtils.createEddaLoader(resource).call();
     groups.sort(Comparator.comparing(ServerGroup::getId));
     return groups;
   }
