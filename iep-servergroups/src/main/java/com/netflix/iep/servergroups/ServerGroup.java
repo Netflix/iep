@@ -268,7 +268,7 @@ public final class ServerGroup {
    * @return
    *     Nimble server group.
    */
-  private ServerGroup toNimbleGroup(Set<String> instanceIds) {
+  ServerGroup toNimbleGroup(Set<String> instanceIds) {
     List<Instance> nimbleInstances = new ArrayList<>();
     for (Instance instance : instances) {
       if (instanceIds.contains(instance.getNode())) {
