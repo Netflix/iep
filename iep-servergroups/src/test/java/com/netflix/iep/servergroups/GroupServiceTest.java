@@ -24,6 +24,7 @@ import org.junit.runners.JUnit4;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -108,5 +109,28 @@ public class GroupServiceTest {
     service.start();
     Assert.assertEquals(Collections.singletonList(eddaGroup()), service.getGroups());
     service.stop();
+  }
+
+  @Test
+  public void nimbleMerge() throws Exception {
+    Map<String, Loader> loaders = new LinkedHashMap<>();
+    loaders.put("edda", LoaderUtils.createEddaLoader("edda-nimble.json"));
+    loaders.put("eureka", LoaderUtils.createEurekaLoader("eureka-nimble.json", "12345"));
+    GroupService service = new GroupService(new NoopRegistry(), Duration.ZERO, loaders);
+    service.start();
+    List<ServerGroup> groups = service.getGroups();
+    service.stop();
+
+    for (ServerGroup group : groups) {
+      System.out.println(group);
+      group.getInstances().forEach(System.out::println);
+      Assert.assertEquals(1, group.getInstances().size());
+      if (group.getApp().startsWith("nimble_")) {
+        Assert.assertEquals("i-0002", group.getInstances().get(0).getNode());
+        Assert.assertEquals(Instance.Status.STARTING, group.getInstances().get(0).getStatus());
+      } else {
+        Assert.assertEquals("i-0001", group.getInstances().get(0).getNode());
+      }
+    }
   }
 }

@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.Collections;
+import java.util.Set;
 
 @RunWith(JUnit4.class)
 public class ServerGroupTest {
@@ -279,5 +280,57 @@ public class ServerGroupTest {
     Assert.assertEquals(
         Collections.singletonList(g2),
         ServerGroup.merge(Collections.singletonList(g2), Collections.singletonList(g1)));
+  }
+
+  @Test
+  public void mergeNimbleStarting() {
+    Set<String> set = Collections.singleton("i-0001");
+    ServerGroup g1 = ServerGroup.builder()
+        .platform("ec2")
+        .group("nimble_app-stack-detail-v001")
+        .addInstance(Instance.builder()
+            .node("i-0001")
+            .privateIpAddress("1.2.3.4")
+            .status(Instance.Status.NOT_REGISTERED)
+            .build())
+        .build();
+    ServerGroup g2 = ServerGroup.builder()
+        .platform("ec2")
+        .group("app-stack-detail-v001")
+        .addInstance(Instance.builder()
+            .node("i-0001")
+            .privateIpAddress("1.2.3.4")
+            .status(Instance.Status.STARTING)
+            .build())
+        .build()
+        .toNimbleGroup(set);
+    Assert.assertEquals(g2, g1.merge(g2));
+    Assert.assertEquals(g2, g2.merge(g1));
+  }
+
+  @Test
+  public void mergeNimbleUp() {
+    Set<String> set = Collections.singleton("i-0001");
+    ServerGroup g1 = ServerGroup.builder()
+        .platform("ec2")
+        .group("nimble_app-stack-detail-v001")
+        .addInstance(Instance.builder()
+            .node("i-0001")
+            .privateIpAddress("1.2.3.4")
+            .status(Instance.Status.NOT_REGISTERED)
+            .build())
+        .build();
+    ServerGroup g2 = ServerGroup.builder()
+        .platform("ec2")
+        .group("app-stack-detail-v001")
+        .addInstance(Instance.builder()
+            .node("i-0001")
+            .privateIpAddress("1.2.3.4")
+            .status(Instance.Status.UP)
+            .build())
+        .build()
+        .toNimbleGroup(set);
+    Assert.assertEquals(g2, g1.merge(g2));
+    Assert.assertEquals(g2, g2.merge(g1));
   }
 }

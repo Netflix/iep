@@ -30,17 +30,13 @@ import java.util.function.Predicate;
 
 @RunWith(JUnit4.class)
 public class EurekaLoaderTest {
-  private final URI uri = URI.create("http://localhost:7101/v2/apps");
 
   private List<ServerGroup> get(String resource) throws Exception {
     return get(resource, null);
   }
 
   private List<ServerGroup> get(String resource, String account) throws Exception {
-    HttpClient client = TestHttpClient.resource(200, resource);
-    Predicate<String> p = (account == null) ? v -> true : account::equals;
-    EurekaLoader loader = new EurekaLoader(client, uri, p);
-    List<ServerGroup> groups = loader.call();
+    List<ServerGroup> groups = LoaderUtils.createEurekaLoader(resource, account).call();
     groups.sort(Comparator.comparing(ServerGroup::getId));
     return groups;
   }
@@ -144,7 +140,7 @@ public class EurekaLoaderTest {
   @Test(expected = IOException.class)
   public void failedRequest() throws Exception {
     HttpClient client = TestHttpClient.empty(400);
-    EurekaLoader loader = new EurekaLoader(client, uri, v -> true);
+    EurekaLoader loader = new EurekaLoader(client, LoaderUtils.EUREKA_URI, v -> true);
     loader.call();
   }
 }

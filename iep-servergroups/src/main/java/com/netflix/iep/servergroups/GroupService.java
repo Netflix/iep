@@ -79,9 +79,15 @@ public class GroupService extends AbstractService {
    * have been cached.
    */
   private boolean refreshOnce(String loaderName, Loader loader) {
+    AtomicLong lastUpdateTime = lastUpdateTimes.get(loaderName);
+    if (lastUpdateTime == null) {
+      // This can happen on shutdown if a refresh is scheduled after the map has
+      // been cleared.
+      return false;
+    }
     try {
       cachedData.put(loaderName, loader.call());
-      lastUpdateTimes.get(loaderName).set(registry.clock().wallTime());
+      lastUpdateTime.set(registry.clock().wallTime());
       merged = null;
       return true;
     } catch (Exception e) {
