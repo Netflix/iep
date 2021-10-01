@@ -101,6 +101,12 @@ public class NetflixEnvironment {
   private static final Set DEFAULT_ATLAS_TAG_KEYS;
   static {
     Set<String> tagKeys = new HashSet<>();
+    tagKeys.add("mantisJobId");
+    tagKeys.add("mantisJobName");
+    tagKeys.add("mantisUser");
+    tagKeys.add("mantisWorkerIndex");
+    tagKeys.add("mantisWorkerNumber");
+    tagKeys.add("mantisWorkerStageNumber");
     tagKeys.add("nf.account");
     tagKeys.add("nf.app");
     tagKeys.add("nf.asg");
@@ -113,6 +119,7 @@ public class NetflixEnvironment {
     tagKeys.add("nf.vmtype");
     tagKeys.add("nf.zone");
     tagKeys.add("process");
+
     DEFAULT_ATLAS_TAG_KEYS = Collections.unmodifiableSet(tagKeys);
   }
 
