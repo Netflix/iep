@@ -117,7 +117,6 @@ public class NetflixEnvironmentTest {
     expected.remove("sourceRepo");
     expected.remove("branch");
     expected.remove("commit");
-    expected.keySet().removeIf(k -> k.startsWith("mantis"));
     return expected;
   }
 
