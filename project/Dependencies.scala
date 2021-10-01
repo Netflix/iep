@@ -14,7 +14,7 @@ object Dependencies {
     val rxscala    = "0.26.5"
     val scala      = "2.12.12"
     val slf4j      = "1.7.32"
-    val spectator  = "0.135.0"
+    val spectator  = "1.0.2"
   }
 
   import Versions._
