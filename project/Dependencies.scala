@@ -4,17 +4,17 @@ import sbt.librarymanagement.DependencyBuilders.OrganizationArtifactName
 object Dependencies {
   object Versions {
     val archaius   = "2.3.16"
-    val assertj    = "3.20.2"
-    val aws        = "1.12.62"
-    val aws2       = "2.17.34"
+    val assertj    = "3.21.0"
+    val aws        = "1.12.78"
+    val aws2       = "2.17.50"
     val graal      = "21.1.0"
     val guice      = "5.0.1"
-    val jackson    = "2.12.5"
+    val jackson    = "2.13.0"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.12"
     val slf4j      = "1.7.32"
-    val spectator  = "0.135.0"
+    val spectator  = "1.0.2"
   }
 
   import Versions._
