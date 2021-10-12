@@ -15,6 +15,7 @@
  */
 package com.netflix.iep.eureka;
 
+import com.netflix.appinfo.AmazonInfo;
 import com.netflix.appinfo.PropertiesInstanceConfig;
 
 import javax.inject.Inject;
@@ -26,5 +27,12 @@ class CustomEurekaInstanceConfig extends PropertiesInstanceConfig {
   @Inject
   CustomEurekaInstanceConfig() {
     super("netflix.appinfo.", AmazonInfoUtils.createFromEnvironment());
+  }
+
+  @Override
+  public String getHostName(boolean refresh) {
+    AmazonInfo info = (AmazonInfo) getDataCenterInfo();
+    String ip = info.get(AmazonInfo.MetaDataKey.localHostname);
+    return ip == null ? super.getHostName(refresh) : ip;
   }
 }
