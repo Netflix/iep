@@ -12,7 +12,7 @@ object Dependencies {
     val jackson    = "2.13.0"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
-    val scala      = "2.12.12"
+    val scala      = "2.12.15"
     val slf4j      = "1.7.32"
     val spectator  = "1.0.4"
   }
