@@ -55,13 +55,14 @@ public class NetflixEnvironmentTest {
     vars.put("NETFLIX_AUTO_SCALE_GROUP", "foo-bar-s1abc-s2def-v001");
     vars.put("NETFLIX_CLUSTER", "foo-bar-s1abc-s2def");
     vars.put("NETFLIX_INSTANCE_ID", "i-12345");
+    vars.put("NETFLIX_PROCESS_NAME", "www");
     vars.put("NETFLIX_REGION", "us-east-1");
     vars.put("NETFLIX_SHARD1", "abc");
     vars.put("NETFLIX_SHARD2", "def");
     vars.put("NETFLIX_STACK", "bar");
     vars.put("EC2_INSTANCE_TYPE", "m5.large");
     vars.put("EC2_AVAILABILITY_ZONE", "us-east-1e");
-    vars.put("NETFLIX_PROCESS_NAME", "www");
+    vars.put("TITUS_CONTAINER_NAME", "main");
 
     vars.put("NETFLIX_ACCOUNT_TYPE", "example");
     vars.put("NETFLIX_BUILD_JOB", "http://build/foo/42");
@@ -85,14 +86,15 @@ public class NetflixEnvironmentTest {
     vars.put("nf.app", "foo");
     vars.put("nf.asg", "foo-bar-s1abc-s2def-v001");
     vars.put("nf.cluster", "foo-bar-s1abc-s2def");
+    vars.put("nf.container", "main");
     vars.put("nf.node", "i-12345");
+    vars.put("nf.process", "www");
     vars.put("nf.region", "us-east-1");
     vars.put("nf.shard1", "abc");
     vars.put("nf.shard2", "def");
     vars.put("nf.stack", "bar");
     vars.put("nf.vmtype", "m5.large");
     vars.put("nf.zone", "us-east-1e");
-    vars.put("process", "www");
 
     vars.put("accountType", "example");
     vars.put("buildUrl", "http://build/foo/42");
