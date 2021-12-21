@@ -111,14 +111,16 @@ public class NetflixEnvironment {
     tagKeys.add("nf.app");
     tagKeys.add("nf.asg");
     tagKeys.add("nf.cluster");
+    tagKeys.add("nf.container");
     tagKeys.add("nf.node");
+    tagKeys.add("nf.process");
     tagKeys.add("nf.region");
     tagKeys.add("nf.shard1");
     tagKeys.add("nf.shard2");
     tagKeys.add("nf.stack");
     tagKeys.add("nf.vmtype");
     tagKeys.add("nf.zone");
-    tagKeys.add("process");
+
 
     DEFAULT_ATLAS_TAG_KEYS = Collections.unmodifiableSet(tagKeys);
   }
@@ -158,10 +160,12 @@ public class NetflixEnvironment {
     putIfNotEmptyOrNull(getenv, tags, "nf.app", "NETFLIX_APP");
     putIfNotEmptyOrNull(getenv, tags, "nf.asg", "NETFLIX_AUTO_SCALE_GROUP");
     putIfNotEmptyOrNull(getenv, tags, "nf.cluster", "NETFLIX_CLUSTER");
+    putIfNotEmptyOrNull(getenv, tags, "nf.container", "TITUS_CONTAINER_NAME");
     putIfNotEmptyOrNull(getenv, tags, "nf.node",
         "NETFLIX_INSTANCE_ID",
         "TITUS_TASK_INSTANCE_ID",
         "EC2_INSTANCE_ID");
+    putIfNotEmptyOrNull(getenv, tags, "nf.process", "NETFLIX_PROCESS_NAME");
     putIfNotEmptyOrNull(getenv, tags, "nf.region",
         "NETFLIX_REGION",
         "EC2_REGION");
@@ -170,7 +174,6 @@ public class NetflixEnvironment {
     putIfNotEmptyOrNull(getenv, tags, "nf.stack", "NETFLIX_STACK");
     putIfNotEmptyOrNull(getenv, tags, "nf.vmtype", "EC2_INSTANCE_TYPE");
     putIfNotEmptyOrNull(getenv, tags, "nf.zone", "EC2_AVAILABILITY_ZONE");
-    putIfNotEmptyOrNull(getenv, tags, "process", "NETFLIX_PROCESS_NAME");
 
     // Build info
     putIfNotEmptyOrNull(getenv, tags, "accountType", "NETFLIX_ACCOUNT_TYPE");
