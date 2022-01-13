@@ -131,6 +131,24 @@ public class EurekaLoaderTest {
   }
 
   @Test
+  public void titusGroupVmtype() throws Exception {
+    List<ServerGroup> expected = new ArrayList<>();
+    expected.add(ServerGroup.builder()
+        .platform("titus")
+        .group("app-main-v001")
+        .addInstance(Instance.builder()
+            .node("8d78c384-aa57-48cc-ad4d-a1a887f46221")
+            .privateIpAddress("10.20.30.40")
+            .vpcId("vpc-54321")
+            .zone("us-east-1d")
+            .status(Instance.Status.UP)
+            .build())
+        .build());
+    List<ServerGroup> actual = get("eureka-titus-2.json", "12345");
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
   public void invalidInstance() throws Exception {
     List<ServerGroup> expected = new ArrayList<>();
     List<ServerGroup> actual = get("eureka-invalid.json");

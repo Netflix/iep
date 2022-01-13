@@ -1,0 +1,65 @@
+{
+  "applications": {
+    "application": [
+      {
+        "name": "APP",
+        "instance": [
+          {
+            "instanceId": "8d78c384-aa57-48cc-ad4d-a1a887f46221",
+            "app": "APP",
+            "appGroupName": "UNKNOWN",
+            "ipAddr": "10.20.30.40",
+            "sid": "na",
+            "homePageUrl": "http://10.20.30.40:7101/",
+            "statusPageUrl": "http://10.20.30.40:7101/Status",
+            "healthCheckUrl": "http://10.20.30.40:7101/healthcheck",
+            "vipAddress": "app-main:7001",
+            "countryId": 1,
+            "dataCenterInfo": {
+              "@class": "com.netflix.appinfo.AmazonInfo",
+              "name": "Amazon",
+              "metadata": {
+                "mac": "0a:0b:0c:0d:0e:0f",
+                "local-hostname": "ip-10-20-30-40.ec2.internal",
+                "instance-id": "8d78c384-aa57-48cc-ad4d-a1a887f46221",
+                "availability-zone": "us-east-1d",
+                "instance-type": "CPU=10;GPU=0;MEM=64000;NET=128;DISK=10000",
+                "accountId": "12345",
+                "public-hostname": "10.20.30.40",
+                "vpc-id": "vpc-54321",
+                "local-ipv4": "10.20.30.40"
+              }
+            },
+            "hostName": "10.20.30.40",
+            "status": "UP",
+            "overriddenStatus": "UNKNOWN",
+            "leaseInfo": {
+              "renewalIntervalInSecs": 30,
+              "durationInSecs": 90,
+              "registrationTimestamp": 1551379716423,
+              "lastRenewalTimestamp": 1551934330011,
+              "evictionTimestamp": 0,
+              "serviceUpTimestamp": 1551379716423
+            },
+            "isCoordinatingDiscoveryServer": false,
+            "lastUpdatedTimestamp": 1551379716423,
+            "lastDirtyTimestamp": 1551379715718,
+            "actionType": "ADDED",
+            "asgName": "app-main-v001",
+            "port": {
+              "$": 7101,
+              "@enabled": "true"
+            },
+            "securePort": {
+              "$": 7102,
+              "@enabled": "false"
+            },
+            "metadata": {
+              "@class": "java.util.Collections$EmptyMap"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
