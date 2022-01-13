@@ -122,8 +122,6 @@ public class GroupServiceTest {
     service.stop();
 
     for (ServerGroup group : groups) {
-      System.out.println(group);
-      group.getInstances().forEach(System.out::println);
       Assert.assertEquals(1, group.getInstances().size());
       if (group.getApp().startsWith("nimble_")) {
         Assert.assertEquals("i-0002", group.getInstances().get(0).getNode());
