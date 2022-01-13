@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -40,6 +41,11 @@ import java.util.zip.GZIPInputStream;
  * can be used as a backup if data coming from other sources is stale.
  */
 public class EurekaLoader implements Loader {
+
+  // Some environments like Titus can result in arbitrary values for the
+  // instance type in the metadata. This pattern is used to check for reasonable
+  // values.
+  private static final Pattern VM_TYPE_PATTERN = Pattern.compile("^[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$");
 
   private final HttpClient client;
   private final URI uri;
@@ -94,7 +100,7 @@ public class EurekaLoader implements Loader {
           break;
         case "instance-type":
           String vmtype = JsonUtils.stringValue(p);
-          if (!"Titus".equals(vmtype)) {
+          if (vmtype != null && VM_TYPE_PATTERN.matcher(vmtype).matches()) {
             info.builder.vmtype(vmtype);
           }
           break;
