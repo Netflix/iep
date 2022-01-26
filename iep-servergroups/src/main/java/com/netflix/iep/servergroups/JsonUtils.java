@@ -15,17 +15,21 @@
  */
 package com.netflix.iep.servergroups;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
+import com.netflix.spectator.ipc.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 /**
  * Helper functions for deserializing JSON using Jackson's streaming API.
@@ -33,6 +37,8 @@ import java.util.List;
 final class JsonUtils {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtils.class);
+
+  private static final JsonFactory FACTORY = new JsonFactory();
 
   private static boolean isEndOfArrayOrInput(JsonParser jp) {
     JsonToken t = jp.getCurrentToken();
@@ -148,5 +154,29 @@ final class JsonUtils {
   /** Consumer that handles current input of the parser for a given field. */
   interface IOBiConsumer {
     void apply(String field, JsonParser jp) throws IOException;
+  }
+
+  /**
+   * Helper for parsing a JSON response and ensuring the resources are properly cleaned
+   * up. After the {@code JsonParser} is created, then provided function will be used to
+   * process the data from the parser.
+   */
+  static List<ServerGroup> parseResponse(
+      HttpResponse response, IOFunction<List<ServerGroup>> function) throws IOException {
+    String enc = response.header("Content-Encoding");
+    if (enc != null && enc.contains("gzip")) {
+      // Decompress while parsing to avoid allocating an intermediate byte array of the
+      // full decompressed payload.
+      try (
+          GZIPInputStream gzin = new GZIPInputStream(new ByteArrayInputStream(response.entity()));
+          JsonParser jp = FACTORY.createParser(gzin)
+      ) {
+        return function.apply(jp);
+      }
+    } else {
+      try (JsonParser jp = FACTORY.createParser(response.entity())) {
+        return function.apply(jp);
+      }
+    }
   }
 }

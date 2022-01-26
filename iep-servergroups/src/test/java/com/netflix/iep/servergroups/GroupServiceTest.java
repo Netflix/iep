@@ -114,7 +114,7 @@ public class GroupServiceTest {
   @Test
   public void nimbleMerge() throws Exception {
     Map<String, Loader> loaders = new LinkedHashMap<>();
-    loaders.put("edda", LoaderUtils.createEddaLoader("edda-nimble.json"));
+    loaders.put("edda", LoaderUtils.createEddaLoader("edda-nimble.json", false));
     loaders.put("eureka", LoaderUtils.createEurekaLoader("eureka-nimble.json", "12345"));
     GroupService service = new GroupService(new NoopRegistry(), Duration.ZERO, loaders);
     service.start();

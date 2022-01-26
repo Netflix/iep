@@ -28,7 +28,7 @@ import java.util.List;
 public class EddaLoaderTest {
 
   private List<ServerGroup> get(String resource) throws Exception {
-    List<ServerGroup> groups = LoaderUtils.createEddaLoader(resource).call();
+    List<ServerGroup> groups = LoaderUtils.createEddaLoader(resource, false).call();
     groups.sort(Comparator.comparing(ServerGroup::getId));
     return groups;
   }
@@ -58,6 +58,17 @@ public class EddaLoaderTest {
     List<ServerGroup> expected = new ArrayList<>();
     expected.add(defaultEc2Group());
     List<ServerGroup> actual = get("edda-ec2.json");
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void ec2GroupGzip() throws Exception {
+    List<ServerGroup> expected = new ArrayList<>();
+    expected.add(defaultEc2Group());
+    List<ServerGroup> actual = LoaderUtils
+        .createEddaLoader("edda-ec2.json", true)
+        .call();
+    actual.sort(Comparator.comparing(ServerGroup::getId));
     Assert.assertEquals(expected, actual);
   }
 
