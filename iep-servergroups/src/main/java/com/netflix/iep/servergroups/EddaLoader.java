@@ -15,7 +15,6 @@
  */
 package com.netflix.iep.servergroups;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.netflix.spectator.ipc.http.HttpClient;
@@ -23,13 +22,11 @@ import com.netflix.spectator.ipc.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Load server groups from Edda. Queries the {@code /netflix/serverGroups} endpoint to get all
@@ -43,8 +40,6 @@ public class EddaLoader implements Loader {
   private final HttpClient client;
   private final URI uri;
 
-  private final JsonFactory jsonFactory;
-
   /**
    * Create a new instance.
    *
@@ -56,7 +51,6 @@ public class EddaLoader implements Loader {
   public EddaLoader(HttpClient client, URI uri) {
     this.client = client;
     this.uri = uri;
-    this.jsonFactory = new JsonFactory();
   }
 
   private Instance decodeInstance(JsonParser jp) throws IOException {
@@ -157,10 +151,6 @@ public class EddaLoader implements Loader {
       throw new IOException("request failed with status " + response.status());
     }
 
-    String enc = response.header("Content-Encoding");
-    JsonParser jp = (enc != null && enc.contains("gzip"))
-        ? jsonFactory.createParser(new GZIPInputStream(new ByteArrayInputStream(response.entity())))
-        : jsonFactory.createParser(response.entity());
-    return decodeServerGroups(jp);
+    return JsonUtils.parseResponse(response, this::decodeServerGroups);
   }
 }

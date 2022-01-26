@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 class TestHttpClient implements HttpClient {
 
@@ -33,28 +36,33 @@ class TestHttpClient implements HttpClient {
 
   private final int status;
   private final byte[] data;
+  private final boolean gzip;
 
-  TestHttpClient(int status, byte[] data) {
+  TestHttpClient(int status, byte[] data, boolean gzip) {
     this.status = status;
     this.data = data;
+    this.gzip = gzip;
   }
 
   @Override public HttpRequestBuilder newRequest(URI uri) {
     return new HttpRequestBuilder(logger, uri) {
       protected HttpResponse sendImpl() throws IOException {
-        return new HttpResponse(status, Collections.emptyMap(), data);
+        Map<String, List<String>> headers = gzip
+            ? Collections.singletonMap("Content-Encoding", Collections.singletonList("gzip"))
+            : Collections.emptyMap();
+        return new HttpResponse(status, headers, data);
       }
     };
   }
 
   static HttpClient empty(int status) {
-    return new TestHttpClient(status, new byte[] {});
+    return new TestHttpClient(status, new byte[] {}, false);
   }
 
-  static HttpClient resource(int status, String name) throws IOException {
+  static HttpClient resource(int status, String name, boolean gzip) throws IOException {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     try (InputStream in = cl.getResourceAsStream(name)) {
-      return new TestHttpClient(status, readAll(in));
+      return new TestHttpClient(status, gzip ? compress(readAll(in)) : readAll(in), gzip);
     }
   }
 
@@ -64,6 +72,14 @@ class TestHttpClient implements HttpClient {
     int length;
     while ((length = in.read(buf)) > 0) {
       baos.write(buf, 0, length);
+    }
+    return baos.toByteArray();
+  }
+
+  private static byte[] compress(byte[] data) throws IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream(data.length);
+    try (GZIPOutputStream out = new GZIPOutputStream(baos)) {
+      out.write(data);
     }
     return baos.toByteArray();
   }

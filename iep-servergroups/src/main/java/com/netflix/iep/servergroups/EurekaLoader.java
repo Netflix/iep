@@ -15,12 +15,10 @@
  */
 package com.netflix.iep.servergroups;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.netflix.spectator.ipc.http.HttpClient;
 import com.netflix.spectator.ipc.http.HttpResponse;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -32,7 +30,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Load server groups from Eureka. Queries the {@code /v2/apps} endpoint to get all apps
@@ -51,8 +48,6 @@ public class EurekaLoader implements Loader {
   private final URI uri;
   private final Predicate<String> accounts;
 
-  private final JsonFactory jsonFactory;
-
   /**
    * Create a new instance.
    *
@@ -70,7 +65,6 @@ public class EurekaLoader implements Loader {
     this.client = client;
     this.uri = uri;
     this.accounts = accounts;
-    this.jsonFactory = new JsonFactory();
   }
 
   private void decodeMetadata(InstanceInfo info, JsonParser jp) throws IOException {
@@ -228,12 +222,7 @@ public class EurekaLoader implements Loader {
       throw new IOException("request failed with status " + response.status());
     }
 
-    String enc = response.header("Content-Encoding");
-    JsonParser jp = (enc != null && enc.contains("gzip"))
-        ? jsonFactory.createParser(new GZIPInputStream(new ByteArrayInputStream(response.entity())))
-        : jsonFactory.createParser(response.entity());
-
-    return decodeApps(jp);
+    return JsonUtils.parseResponse(response, this::decodeApps);
   }
 
   private static class GroupId {
