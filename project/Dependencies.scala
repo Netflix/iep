@@ -5,16 +5,16 @@ object Dependencies {
   object Versions {
     val archaius   = "2.3.16"
     val assertj    = "3.22.0"
-    val aws        = "1.12.131"
-    val aws2       = "2.17.102"
+    val aws        = "1.12.150"
+    val aws2       = "2.17.121"
     val graal      = "21.1.0"
-    val guice      = "5.0.1"
+    val guice      = "5.1.0"
     val jackson    = "2.13.1"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.15"
-    val slf4j      = "1.7.32"
-    val spectator  = "1.0.13"
+    val slf4j      = "1.7.35"
+    val spectator  = "1.1.1"
   }
 
   import Versions._
@@ -47,7 +47,7 @@ object Dependencies {
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.9.3"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.8.1"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.9"
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
   val guiceCoreBase      = "com.google.inject" % "guice"
@@ -72,7 +72,7 @@ object Dependencies {
   val spectatorIpc       = "com.netflix.spectator" % "spectator-ext-ipc" % spectator
   val spectatorJvm       = "com.netflix.spectator" % "spectator-ext-jvm" % spectator
   val spectatorStateless = "com.netflix.spectator" % "spectator-reg-stateless" % spectator
-  val typesafeConfig     = "com.typesafe" % "config" % "1.4.1"
+  val typesafeConfig     = "com.typesafe" % "config" % "1.4.2"
 
   def isBeforeJava16: Boolean = {
     System.getProperty("java.specification.version").toDouble < 16
