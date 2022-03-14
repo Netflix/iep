@@ -5,16 +5,16 @@ object Dependencies {
   object Versions {
     val archaius   = "2.3.16"
     val assertj    = "3.22.0"
-    val aws        = "1.12.150"
-    val aws2       = "2.17.121"
+    val aws        = "1.12.173"
+    val aws2       = "2.17.144"
     val graal      = "21.1.0"
     val guice      = "5.1.0"
-    val jackson    = "2.13.1"
+    val jackson    = "2.13.2"
     val rxnetty    = "0.4.20"
     val rxscala    = "0.26.5"
     val scala      = "2.12.15"
-    val slf4j      = "1.7.35"
-    val spectator  = "1.1.1"
+    val slf4j      = "1.7.36"
+    val spectator  = "1.1.2"
   }
 
   import Versions._
