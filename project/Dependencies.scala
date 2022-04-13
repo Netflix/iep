@@ -6,7 +6,7 @@ object Dependencies {
     val archaius   = "2.3.16"
     val assertj    = "3.22.0"
     val aws        = "1.12.194"
-    val aws2       = "2.17.144"
+    val aws2       = "2.17.165"
     val graal      = "21.1.0"
     val guice      = "5.1.0"
     val jackson    = "2.13.2"
