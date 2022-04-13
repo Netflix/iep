@@ -3,28 +3,19 @@ import sbt.librarymanagement.DependencyBuilders.OrganizationArtifactName
 
 object Dependencies {
   object Versions {
-    val archaius   = "2.3.16"
     val assertj    = "3.22.0"
-    val aws        = "1.12.173"
-    val aws2       = "2.17.144"
+    val aws        = "1.12.194"
+    val aws2       = "2.17.165"
     val graal      = "21.1.0"
     val guice      = "5.1.0"
     val jackson    = "2.13.2"
-    val rxnetty    = "0.4.20"
-    val rxscala    = "0.26.5"
     val scala      = "2.12.15"
     val slf4j      = "1.7.36"
-    val spectator  = "1.1.2"
+    val spectator  = "1.3.0"
   }
 
   import Versions._
 
-  val archaiusBridge     = "com.netflix.archaius" % "archaius2-archaius1-bridge" % archaius
-  val archaiusCore       = "com.netflix.archaius" % "archaius2-core" % archaius
-  val archaiusGuice      = "com.netflix.archaius" % "archaius2-guice" % archaius
-  val archaiusLegacy     = "com.netflix.archaius" % "archaius-core" % "0.7.7"
-  val archaiusPersist    = "com.netflix.archaius" % "archaius2-persisted2" % archaius
-  val archaiusTypesafe   = "com.netflix.archaius" % "archaius2-typesafe" % archaius
   val assertjcore        = "org.assertj" % "assertj-core" % assertj
   val awsAutoScaling     = "com.amazonaws" % "aws-java-sdk-autoscaling" % aws
   val awsCache           = "com.amazonaws" % "aws-java-sdk-elasticache" % aws
@@ -47,7 +38,7 @@ object Dependencies {
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.9.3"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.9"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.10"
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
   val guiceCoreBase      = "com.google.inject" % "guice"
@@ -60,10 +51,6 @@ object Dependencies {
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
-  val reactiveStreams    = "org.reactivestreams" % "reactive-streams" % "1.0.3"
-  val rxjava             = "io.reactivex" % "rxjava" % "1.3.8"
-  val rxjava2            = "io.reactivex.rxjava2" % "rxjava" % "2.2.21"
-  val rxnettyCore        = "io.reactivex" % "rxnetty" % rxnetty
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi       = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorAtlas     = "com.netflix.spectator" % "spectator-reg-atlas" % spectator
