@@ -94,6 +94,10 @@ public class NetflixEnvironment {
     return ConfigManager.get().getString(NAMESPACE + "insight-account-id");
   }
 
+  public static String detail() {
+    return ConfigManager.get().getString(NAMESPACE + "detail");
+  }
+
   /**
    * Set of common tag keys that should be used for metrics by default. Other contexts
    * like logs could use a larger set that are inappropriate for use on metrics.
