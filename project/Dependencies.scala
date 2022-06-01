@@ -8,7 +8,7 @@ object Dependencies {
     val aws2       = "2.17.202"
     val graal      = "21.1.0"
     val guice      = "5.1.0"
-    val jackson    = "2.13.2"
+    val jackson    = "2.13.3"
     val scala      = "2.12.15"
     val slf4j      = "1.7.36"
     val spectator  = "1.3.5"
@@ -45,7 +45,7 @@ object Dependencies {
   val guiceMultiBase     = "com.google.inject.extensions" % "guice-multibindings"
   val inject             = "javax.inject" % "javax.inject" % "1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
-  val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % (jackson + ".2")
+  val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
   val jsr250             = "javax.annotation" % "jsr250-api" % "1.0"
   val junit              = "junit" % "junit" % "4.12"
