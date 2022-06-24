@@ -75,7 +75,7 @@ public class NetflixEnvironmentTest {
     vars.put("MANTIS_WORKER_INDEX", "0");
     vars.put("MANTIS_WORKER_NUMBER", "4");
     vars.put("MANTIS_WORKER_STAGE_NUMBER", "5");
-    vars.put("MANTIS_USER", "bob");
+    vars.put("MANTIS_USER", "bob@example.com");
     return vars;
   }
 
@@ -107,7 +107,7 @@ public class NetflixEnvironmentTest {
     vars.put("mantisWorkerIndex", "0");
     vars.put("mantisWorkerNumber", "4");
     vars.put("mantisWorkerStageNumber", "5");
-    vars.put("mantisUser", "bob");
+    vars.put("mantisUser", "bob@example.com");
     return vars;
   }
 
@@ -119,6 +119,7 @@ public class NetflixEnvironmentTest {
     expected.remove("sourceRepo");
     expected.remove("branch");
     expected.remove("commit");
+    expected.put("mantisUser", "bob_example.com");
     return expected;
   }
 
