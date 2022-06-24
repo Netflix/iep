@@ -125,8 +125,21 @@ public class NetflixEnvironment {
     tagKeys.add("nf.vmtype");
     tagKeys.add("nf.zone");
 
-
     DEFAULT_ATLAS_TAG_KEYS = Collections.unmodifiableSet(tagKeys);
+  }
+
+  /** Replace characters not allowed by Atlas with underscore. */
+  private static String fixTagString(String str) {
+    return str.replaceAll("[^-._A-Za-z0-9~^]", "_");
+  }
+
+  /** Fix tag strings for map to ensure they are valid for Atlas. */
+  private static Map<String, String> fixTagStrings(Map<String, String> tags) {
+    Map<String, String> result = new HashMap<>();
+    for (Map.Entry<String, String> entry : tags.entrySet()) {
+      result.put(fixTagString(entry.getKey()), fixTagString(entry.getValue()));
+    }
+    return result;
   }
 
   /**
@@ -220,7 +233,7 @@ public class NetflixEnvironment {
    *     Common tags based on the environment.
    */
   public static Map<String, String> commonTagsForAtlas(Function<String, String> getenv) {
-    return commonTagsForAtlas(getenv, defaultAtlasKeyPredicate(getenv));
+    return fixTagStrings(commonTagsForAtlas(getenv, defaultAtlasKeyPredicate(getenv)));
   }
 
   /**
