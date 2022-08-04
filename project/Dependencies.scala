@@ -4,14 +4,14 @@ import sbt.librarymanagement.DependencyBuilders.OrganizationArtifactName
 object Dependencies {
   object Versions {
     val assertj    = "3.23.1"
-    val aws        = "1.12.231"
-    val aws2       = "2.17.202"
+    val aws        = "1.12.272"
+    val aws2       = "2.17.243"
     val graal      = "21.1.0"
     val guice      = "5.1.0"
     val jackson    = "2.13.3"
     val scala      = "2.12.15"
     val slf4j      = "1.7.36"
-    val spectator  = "1.3.5"
+    val spectator  = "1.3.6"
   }
 
   import Versions._
@@ -38,7 +38,7 @@ object Dependencies {
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.9.3"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.10"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.10.1"
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
   val guiceCoreBase      = "com.google.inject" % "guice"
