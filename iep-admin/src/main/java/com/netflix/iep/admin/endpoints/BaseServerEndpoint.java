@@ -38,7 +38,7 @@ public class BaseServerEndpoint implements HttpEndpoint {
   private final Registry registry;
 
   @Inject
-  BaseServerEndpoint(Registry registry) {
+  public BaseServerEndpoint(Registry registry) {
     this.registry = registry;
   }
 

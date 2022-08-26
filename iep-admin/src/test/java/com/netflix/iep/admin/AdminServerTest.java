@@ -32,9 +32,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
 
@@ -68,10 +69,10 @@ public class AdminServerTest {
         return "/ui";
       }
     };
-    Map<String, Object> endpoints = new HashMap<>();
-    endpoints.put("/bad",  new BadEndpoint());
-    endpoints.put("/test", new TestEndpoint());
-    server = new AdminServer(config, endpoints);
+    Set<EndpointMapping> mappings = new HashSet<>();
+    mappings.add(new EndpointMapping("/bad", new BadEndpoint()));
+    mappings.add(new EndpointMapping("/test", new TestEndpoint()));
+    server = new AdminServer(config, mappings);
   }
 
   @After

@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -39,8 +41,20 @@ public class AdminServer implements AutoCloseable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AdminServer.class);
 
+  private static Map<String, Object> toMap(Set<EndpointMapping> mappings) {
+    Map<String, Object> endpoints = new TreeMap<>();
+    for (EndpointMapping mapping : mappings) {
+      endpoints.put(mapping.getPath(), mapping.getObject());
+    }
+    return endpoints;
+  }
+
   private final AdminConfig config;
   private final HttpServer server;
+
+  public AdminServer(AdminConfig config, Set<EndpointMapping> mappings) throws IOException {
+    this(config, toMap(mappings));
+  }
 
   @Inject
   public AdminServer(AdminConfig config, @AdminEndpoint Map<String, Object> endpoints)
