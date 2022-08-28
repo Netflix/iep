@@ -48,7 +48,7 @@ public class Main implements AutoCloseable {
     this.context = context;
   }
 
-  ApplicationContext getContext() {
+  public ApplicationContext getContext() {
     return context;
   }
 
