@@ -49,37 +49,33 @@ part of the work to open source [Atlas][atlas] to allow us to:
 
 ## Modules
 
-Libraries named with a prefix of `iep-module-` are Guice modules that can be pulled in. All
-Insight libraries should work using plain Guice, we do not rely on [Governator][governator]
-extensions. However, some libraries do require some lifecycle management with methods that
-are annotated with [PostConstruct][PostConstruct] and [PreDestroy][PreDestroy]. Guice does
-not support that out of the box, for minimal support on top of guice you can use the
-[iep-guice][iep-guice] library.
+Libraries named with a prefix of `iep-spring-` are Spring configurations that can be pulled in. All
+Insight libraries should work using plain Spring, we do not rely on [Governator][governator]
+extensions.
 
 [PostConstruct]: http://docs.oracle.com/javaee/5/api/javax/annotation/PostConstruct.html
 [PreDestroy]: http://docs.oracle.com/javaee/5/api/javax/annotation/PreDestroy.html
-[iep-guice]: https://github.com/Netflix/iep/tree/master/iep-guice
 
 You can pick and choose just the set of modules you need. If one module requires another, then
 it will install that module explicitly so you do not need to worry about the transitive
 dependencies.
 
-| Module                   | Description                                                         |
-|--------------------------|---------------------------------------------------------------------|
-| [iep-module-admin]       | Setup admin service for debugging the application.                  |
-| [iep-module-atlas]       | Configure Spectator to use AtlasRegistry.                           |
-| [iep-module-aws2]        | Setting up and injecting AWS clients.                               |
-| [iep-module-jmxport]     | Restrict JMX port so it is easier to make tooling work via tunnels. |
-| [iep-module-leader]      | Default bindings for the simple leader election API.                |
-| [iep-module-userservice] | User service for validating known email addresses.                  |
+| Module                       | Description                                           |
+|------------------------------|-------------------------------------------------------|
+| [iep-spring-admin]           | Setup admin service for debugging the application.    |
+| [iep-spring-atlas]           | Configure Spectator to use AtlasRegistry.             |
+| [iep-spring-aws2]            | Setting up and injecting AWS clients.                 |
+| [iep-spring-leader]          | Default bindings for the simple leader election API.  |
+| [iep-spring-leader-dynamodb] | DynamoDB bindings for the simple leader election API. |
+| [iep-spring-userservice]     | User service for validating known email addresses.    |
 
 
-[iep-module-admin]: https://github.com/Netflix/iep/tree/master/iep-module-admin
-[iep-module-atlas]: https://github.com/Netflix/iep/tree/master/iep-module-atlas
-[iep-module-aws2]: https://github.com/Netflix/iep/tree/master/iep-module-aws2
-[iep-module-jmxport]: https://github.com/Netflix/iep/tree/master/iep-module-jmxport
-[iep-module-leader]: https://github.com/Netflix/iep/tree/master/iep-module-leader
-[iep-module-userservice]: https://github.com/Netflix/iep/tree/master/iep-module-userservice
+[iep-spring-admin]: https://github.com/Netflix/iep/tree/main/iep-spring-admin
+[iep-spring-atlas]: https://github.com/Netflix/iep/tree/main/iep-spring-atlas
+[iep-spring-aws2]: https://github.com/Netflix/iep/tree/main/iep-spring-aws2
+[iep-spring-jmxport]: https://github.com/Netflix/iep/tree/main/iep-spring-jmxport
+[iep-spring-leader]: https://github.com/Netflix/iep/tree/main/iep-spring-leader
+[iep-spring-userservice]: https://github.com/Netflix/iep/tree/main/iep-spring-userservice
 
 ## Libraries
 
@@ -89,17 +85,15 @@ These are standalone libraries used in various Insight products.
 |--------------------------|---------------------------------------------------------------------|
 | [iep-admin]              | Simple admin service to aid in debugging.                           |
 | [iep-leader-api]         | Simple leader election API with a default implementation.           |
-| [iep-leader-dynamodb]    | DynamoDB implementation as the backing storage for [iep-leader-api].|
 | [iep-nflxenv]            | Configuration for accessing context from the environment.           |
 | [iep-service]            | Simple abstraction for a service that is part of an application.    |
 | [iep-ses]                | Helper for sending HTML emails with SES.                            |
 
-[iep-admin]: https://github.com/Netflix/iep/tree/master/iep-admin
-[iep-leader-api]: https://github.com/Netflix/iep/tree/master/iep-leader-api
-[iep-leader-dynamodb]: https://github.com/Netflix/iep/tree/master/iep-leader-dynamodb
-[iep-nflxenv]: https://github.com/Netflix/iep/tree/master/iep-nflxenv
-[iep-service]: https://github.com/Netflix/iep/tree/master/iep-service
-[iep-ses]: https://github.com/Netflix/iep/tree/master/iep-ses
+[iep-admin]: https://github.com/Netflix/iep/tree/main/iep-admin
+[iep-leader-api]: https://github.com/Netflix/iep/tree/main/iep-leader-api
+[iep-nflxenv]: https://github.com/Netflix/iep/tree/main/iep-nflxenv
+[iep-service]: https://github.com/Netflix/iep/tree/main/iep-service
+[iep-ses]: https://github.com/Netflix/iep/tree/main/iep-ses
 
 ## Compatibility
 
@@ -122,8 +116,7 @@ This section will provide a quick summary of which parts we use and the differen
 Archaius is the primary configuration library used at Netflix. The primary feature over
 other alternatives is that it can communicate with a property service to allow for properties
 that can be changed at runtime. This can be used for things like feature flags to enable or
-quickly disable functionality. Insight uses [Archaius 2][a2] configured via
-[iep-module-archaius2].
+quickly disable functionality. Insight no longer uses [Archaius 2][a2].
 
 It should be noted that as deployment automation and velocity has increased our (Insight team)
 interest in runtime properties has waned. Changing runtime properties can be just as risky
@@ -149,11 +142,9 @@ log4j2 so we can tune log levels on an instance.
 
 Eureka is the Netflix service discovery system. All of the Insight apps should register
 with Eureka to integrate well with internal systems that check this as part of ensuring
-the service is healthy. If using [iep-module-eureka], then registration should happen
-automatically and the Eureka status will be mapped to the [service state][iep-service]
-so it accurately reflects if the application is fully up and ready to receive traffic.
-Insight apps will also map the [healthcheck endpoint][healthcheck] to the service state
-so that healthcheck polling and the state from Eureka heartbeats should match.
+the service is healthy. Insight apps will map the [healthcheck endpoint][healthcheck] to
+the service state so that healthcheck polling used to populate the Eureka state will accurately
+reflect the service state.
 
 [healthcheck]: https://github.com/Netflix/atlas/blob/master/atlas-akka/src/main/scala/com/netflix/atlas/akka/HealthcheckApi.scala
 
@@ -162,19 +153,7 @@ For client side uses, see section discussing [Ribbon](#ribbon).
 ### Governator
 
 IEP is compatible with, but does not directly use or require [Governator][governator].
-All Insight libraries should work using plain Guice, we do not rely on [Governator][governator]
-extensions. However, some libraries do require some lifecycle management with methods that
-are annotated with [PostConstruct][PostConstruct] and [PreDestroy][PreDestroy]. Guice does
-not support that out of the box, for minimal support on top of guice you can use the
-[iep-guice] library.
-
-### JMX
-
-The internal `platform-management` library restricts JMX to use a single
-port so that it is easier to make tools like VisualVM and JMC work via SSH tunnels
-or firewalls where there is no desire to open up a full range of ports. This functionality
-is not available in other NetflixOSS, but is supported if the [iep-module-jmxport]
-module is used.
+All Insight libraries should work using plain Spring, we do not rely on [Governator][governator].
 
 ### Karyon
 

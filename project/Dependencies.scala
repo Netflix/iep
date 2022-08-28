@@ -7,11 +7,11 @@ object Dependencies {
     val aws        = "1.12.272"
     val aws2       = "2.17.243"
     val graal      = "21.1.0"
-    val guice      = "5.1.0"
     val jackson    = "2.13.3"
     val scala      = "2.12.15"
     val slf4j      = "1.7.36"
     val spectator  = "1.3.6"
+    val spring     = "5.3.22"
   }
 
   import Versions._
@@ -41,8 +41,6 @@ object Dependencies {
   val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.10.1"
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
-  val guiceCoreBase      = "com.google.inject" % "guice"
-  val guiceMultiBase     = "com.google.inject.extensions" % "guice-multibindings"
   val inject             = "javax.inject" % "javax.inject" % "1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
@@ -58,23 +56,7 @@ object Dependencies {
   val spectatorGc        = "com.netflix.spectator" % "spectator-ext-gc" % spectator
   val spectatorIpc       = "com.netflix.spectator" % "spectator-ext-ipc" % spectator
   val spectatorJvm       = "com.netflix.spectator" % "spectator-ext-jvm" % spectator
-  val spectatorStateless = "com.netflix.spectator" % "spectator-reg-stateless" % spectator
+  val spectatorSidecar   = "com.netflix.spectator" % "spectator-reg-sidecar" % spectator
+  val springContext      = "org.springframework" % "spring-context" % spring
   val typesafeConfig     = "com.typesafe" % "config" % "1.4.2"
-
-  def isBeforeJava16: Boolean = {
-    System.getProperty("java.specification.version").toDouble < 16
-  }
-
-  private def guiceDep(base: OrganizationArtifactName): ModuleID = {
-    base % (if (isBeforeJava16) "4.1.0" else guice)
-  }
-
-  def guiceCore: ModuleID = guiceDep(guiceCoreBase)
-
-  def guiceCoreAndMulti: Seq[ModuleID] = {
-    if (isBeforeJava16)
-      Seq(guiceDep(guiceCoreBase), guiceDep(guiceMultiBase))
-    else
-      Seq(guiceDep(guiceCoreBase))
-  }
 }
