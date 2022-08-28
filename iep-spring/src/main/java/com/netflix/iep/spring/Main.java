@@ -61,7 +61,6 @@ public class Main implements AutoCloseable {
 
     try {
       // Binding for command line arguments
-      context.register(IepConfiguration.class);
       context.registerBean(Args.class, () -> Args.from(args));
       context.refresh();
 

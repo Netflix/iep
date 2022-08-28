@@ -43,6 +43,7 @@ public class MainTest {
 
   private AnnotationConfigApplicationContext createContext() {
     AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+    context.register(IepConfiguration.class);
     return context;
   }
 
