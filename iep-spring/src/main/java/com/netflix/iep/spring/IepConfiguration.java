@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.inject.Provider;
 import java.util.Set;
 
 /**
@@ -38,5 +39,10 @@ public class IepConfiguration {
   @Bean
   ServiceManager serviceManager(Set<Service> services) {
     return new ServiceManager(services);
+  }
+
+  @Bean
+  Provider<ServiceManager> serviceManagerProvider(ApplicationContext context) {
+    return () -> context.getBean(ServiceManager.class);
   }
 }
