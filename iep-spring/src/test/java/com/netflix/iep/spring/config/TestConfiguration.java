@@ -16,11 +16,14 @@
 package com.netflix.iep.spring.config;
 
 import com.netflix.iep.spring.Args;
+import com.netflix.iep.spring.IepConfiguration;
 import com.netflix.iep.spring.TestService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration
+@Import(IepConfiguration.class)
 public class TestConfiguration {
 
   @Bean
