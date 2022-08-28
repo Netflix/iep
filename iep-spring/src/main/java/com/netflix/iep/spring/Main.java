@@ -60,15 +60,9 @@ public class Main implements AutoCloseable {
     );
 
     try {
-      // Binding for class factory
-      context.registerBean(SpringClassFactory.class);
-
       // Binding for command line arguments
+      context.register(IepConfiguration.class);
       context.registerBean(Args.class, () -> Args.from(args));
-
-      // Binding for service manager
-      context.registerBean(ServiceManager.class);
-
       context.refresh();
 
       // Start up

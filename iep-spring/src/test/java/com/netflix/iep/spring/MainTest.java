@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.springframework.beans.factory.UnsatisfiedDependencyException;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 
@@ -59,7 +59,7 @@ public class MainTest {
     boolean startupFailed = false;
     try {
       Main.run(new String[]{}, context);
-    } catch (UnsatisfiedDependencyException e) {
+    } catch (BeanCreationException e) {
       startupFailed = true;
       Assert.assertEquals("missing required argument", e.getRootCause().getMessage());
     } finally {
@@ -73,7 +73,7 @@ public class MainTest {
     boolean startupFailed = false;
     try {
       Main.main(new String[]{});
-    } catch (UnsatisfiedDependencyException e) {
+    } catch (BeanCreationException e) {
       startupFailed = true;
       Assert.assertEquals("missing required argument", e.getRootCause().getMessage());
     } finally {
@@ -108,7 +108,7 @@ public class MainTest {
     boolean startupFailed = false;
     try {
       Main.run(new String[]{"foo"});
-    } catch (UnsatisfiedDependencyException e) {
+    } catch (BeanCreationException e) {
       startupFailed = true;
       Assert.assertEquals("unknown mode: foo", e.getRootCause().getMessage());
     } finally {
