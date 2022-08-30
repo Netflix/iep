@@ -17,6 +17,7 @@ package com.netflix.iep.leader;
 
 import com.netflix.iep.leader.api.LeaderDatabase;
 import com.netflix.iep.leader.api.LeaderElector;
+import com.netflix.iep.leader.api.LeaderStatus;
 import com.netflix.spectator.api.NoopRegistry;
 import com.netflix.spectator.api.Registry;
 import com.typesafe.config.Config;
@@ -30,7 +31,7 @@ import java.util.Optional;
 public class LeaderConfiguration {
 
   @Bean
-  LeaderElector leaderElector(
+  StandardLeaderElector leaderElector(
       LeaderDatabase db, Optional<Registry> registry, Optional<Config> config) {
     Registry r = registry.orElseGet(NoopRegistry::new);
     Config c = config.orElseGet(ConfigFactory::load);

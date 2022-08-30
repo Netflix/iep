@@ -23,6 +23,8 @@ import com.netflix.iep.leader.api.ResourceId;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 public class LeaderConfigurationTest {
 
@@ -72,6 +74,18 @@ public class LeaderConfigurationTest {
   }
 
   @Test
+  public void leaderStatusInject() {
+    try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+      context.register(LeaderConfiguration.class, TestConfiguration.class);
+      context.registerBean(LeaderDatabase.class, this::createLeaderDatabase);
+      context.refresh();
+      context.start();
+      StatusWrapper wrapper = context.getBean(StatusWrapper.class);
+      Assert.assertNotNull(wrapper.status);
+    }
+  }
+
+  @Test
   public void leaderService() {
     try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
       context.register(LeaderConfiguration.class);
@@ -79,6 +93,24 @@ public class LeaderConfigurationTest {
       context.refresh();
       context.start();
       Assert.assertNotNull(context.getBean(LeaderService.class));
+    }
+  }
+
+  @Configuration
+  public static class TestConfiguration {
+
+    @Bean
+    StatusWrapper statusString(LeaderStatus status) {
+      return new StatusWrapper(status);
+    }
+  }
+
+  public static class StatusWrapper {
+
+    final LeaderStatus status;
+
+    StatusWrapper(LeaderStatus status) {
+      this.status = status;
     }
   }
 }
