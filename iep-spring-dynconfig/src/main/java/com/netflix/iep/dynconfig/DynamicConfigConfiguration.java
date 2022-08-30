@@ -22,6 +22,7 @@ import com.netflix.spectator.api.NoopRegistry;
 import com.netflix.spectator.api.Registry;
 import com.typesafe.config.Config;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
 
@@ -29,7 +30,8 @@ import java.util.Optional;
  * Configures the {@link ConfigManager#dynamicConfigManager()} to update the override layer
  * with properties from a remote property service.
  */
-public final class DynamicConfigConfiguration {
+@Configuration
+public class DynamicConfigConfiguration {
 
   @Bean
   Config config() {
