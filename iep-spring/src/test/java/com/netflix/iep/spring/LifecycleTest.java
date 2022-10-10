@@ -121,6 +121,23 @@ public class LifecycleTest {
     Assert.assertEquals(State.STOPPED, obj.getState());
   }
 
+  @Test
+  public void postConstructCalledBeforeInjecting() throws Exception {
+    InjectedStateObject obj;
+
+    try (AnnotationConfigApplicationContext context = createContext()) {
+      context.registerBean(StateObject.class, StateObject::new, bd -> bd.setScope("singleton"));
+      context.registerBean(InjectedStateObject.class);
+      context.refresh();
+      context.start();
+
+      obj = context.getBean(InjectedStateObject.class);
+      Assert.assertEquals(State.STARTED, obj.getState());
+    }
+
+    Assert.assertEquals(State.STOPPED, obj.getState());
+  }
+
   private enum State {
     INIT, STARTED, STOPPED
   }
@@ -176,6 +193,23 @@ public class LifecycleTest {
 
     State getState() {
       return state;
+    }
+  }
+
+
+  @Singleton
+  private static class InjectedStateObject {
+
+    private StateObject obj;
+
+    @Inject
+    InjectedStateObject(StateObject obj) {
+      this.obj = obj;
+      Assert.assertEquals(State.STARTED, obj.getState());
+    }
+
+    State getState() {
+      return obj.getState();
     }
   }
 }

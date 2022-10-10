@@ -39,7 +39,10 @@ public class DynamicConfigConfiguration {
   }
 
   @Bean
-  DynamicConfigManager dynamicConfigManager() {
+  DynamicConfigManager dynamicConfigManager(DynamicConfigService service) {
+    // The service parameter is necessary to ensure that the dependency injector will
+    // create the service and update the remote layer before injecting the DynamicConfigManager
+    // into other objects.
     return ConfigManager.dynamicConfigManager();
   }
 
