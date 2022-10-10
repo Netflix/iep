@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.inject.Provider;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Base configuration needed for most IEP apps.
@@ -43,6 +44,11 @@ public class IepConfiguration {
 
   @Bean
   Provider<ServiceManager> serviceManagerProvider(ApplicationContext context) {
+    return () -> context.getBean(ServiceManager.class);
+  }
+
+  @Bean
+  Supplier<ServiceManager> serviceManagerSupplier(ApplicationContext context) {
     return () -> context.getBean(ServiceManager.class);
   }
 }
