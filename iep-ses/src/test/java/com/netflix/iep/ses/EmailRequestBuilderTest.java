@@ -15,23 +15,25 @@
  */
 package com.netflix.iep.ses;
 
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
-import com.amazonaws.services.simpleemail.model.RawMessage;
-import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.core.SdkBytes;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.ses.SesClient;
+import software.amazon.awssdk.services.ses.model.RawMessage;
+import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RunWith(JUnit4.class)
 public class EmailRequestBuilderTest {
@@ -50,19 +52,16 @@ public class EmailRequestBuilderTest {
   private void writeResource(String name, byte[] data) throws IOException {
     // Path ends with: iep-ses/target/test-classes/des-example.png
     URL url = Thread.currentThread().getContextClassLoader().getResource("des-example.png");
-    File projectDir = (new File(url.getPath()))
-        .getParentFile()
-        .getParentFile()
-        .getParentFile();
-    File resourceDir = new File(projectDir, "src/test/resources");
+    Path projectDir = Paths.get(url.getPath()).getParent().getParent().getParent();
+    Path resourceDir = projectDir.resolve("src/test/resources");
 
     // Sanity check that resource dir exists
-    if (!resourceDir.isDirectory()) {
+    if (!Files.isDirectory(resourceDir)) {
       throw new IOException("cannot find resource directory: " + resourceDir);
     }
 
     // Write data to file
-    try (OutputStream out = new FileOutputStream(new File(resourceDir, name))) {
+    try (OutputStream out = Files.newOutputStream(resourceDir.resolve(name))) {
       out.write(data);
     }
   }
@@ -81,13 +80,21 @@ public class EmailRequestBuilderTest {
       String message = builder.toString();
       writeResource(name, message.getBytes(StandardCharsets.US_ASCII));
     } else if (SEND) {
-      AmazonSimpleEmailService client = AmazonSimpleEmailServiceClient.builder()
-          .withCredentials(new DefaultAWSCredentialsProviderChain())
-          .withRegion("us-east-1")
-          .build();
-      SendRawEmailRequest request = new SendRawEmailRequest()
-          .withRawMessage(new RawMessage().withData(builder.toByteBuffer()));
-      client.sendRawEmail(request);
+      try (SesClient client = SesClient
+          .builder()
+          .credentialsProvider(DefaultCredentialsProvider.create())
+          .region(Region.US_EAST_1)
+          .build()) {
+        SendRawEmailRequest request = SendRawEmailRequest
+            .builder()
+            .rawMessage(RawMessage
+                .builder()
+                .data(SdkBytes.fromByteBuffer(builder.toByteBuffer()))
+                .build()
+            )
+            .build();
+        client.sendRawEmail(request);
+      }
     } else {
       String message = builder.toString();
       Assert.assertEquals(readResource(name), message);
@@ -327,5 +334,20 @@ public class EmailRequestBuilderTest {
         .withFromAddress(FROM)
         .withToAddresses(TO)
         .addHeader("Subject", "Message");
+  }
+
+  @Test
+  public void builderToSdkBytes() throws Exception {
+    EmailRequestBuilder builder = new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .withSubject("Test message")
+        .withHtmlBody("<html><body><h1>Alert!</h1><p><img src=\"cid:des-example.png\"></p></body></html>")
+        .addAttachment(Attachment.fromResource("image/png", "des-example.png"));
+    SdkBytes buffer = SdkBytes.fromByteBuffer(builder.toByteBuffer());
+    SdkBytes bytes = SdkBytes.fromByteArray(builder.toByteArray());
+    SdkBytes string = SdkBytes.fromUtf8String(builder.toString());
+    Assert.assertEquals(buffer, bytes);
+    Assert.assertEquals(buffer, string);
   }
 }
