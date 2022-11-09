@@ -4,7 +4,6 @@ import sbt.librarymanagement.DependencyBuilders.OrganizationArtifactName
 object Dependencies {
   object Versions {
     val assertj    = "3.23.1"
-    val aws        = "1.12.318"
     val aws2       = "2.17.289"
     val graal      = "21.1.0"
     val jackson    = "2.13.4"
@@ -17,20 +16,6 @@ object Dependencies {
   import Versions._
 
   val assertjcore        = "org.assertj" % "assertj-core" % assertj
-  val awsAutoScaling     = "com.amazonaws" % "aws-java-sdk-autoscaling" % aws
-  val awsCache           = "com.amazonaws" % "aws-java-sdk-elasticache" % aws
-  val awsCloudWatch      = "com.amazonaws" % "aws-java-sdk-cloudwatch" % aws
-  val awsCore            = "com.amazonaws" % "aws-java-sdk-core" % aws
-  val awsDynamoDB        = "com.amazonaws" % "aws-java-sdk-dynamodb" % aws
-  val awsEC2             = "com.amazonaws" % "aws-java-sdk-ec2" % aws
-  val awsELB             = "com.amazonaws" % "aws-java-sdk-elasticloadbalancing" % aws
-  val awsELBv2           = "com.amazonaws" % "aws-java-sdk-elasticloadbalancingv2" % aws
-  val awsEMR             = "com.amazonaws" % "aws-java-sdk-emr" % aws
-  val awsLambda          = "com.amazonaws" % "aws-java-sdk-lambda" % aws
-  val awsRDS             = "com.amazonaws" % "aws-java-sdk-rds" % aws
-  val awsRoute53         = "com.amazonaws" % "aws-java-sdk-route53" % aws
-  val awsSES             = "com.amazonaws" % "aws-java-sdk-ses" % aws
-  val awsSTS             = "com.amazonaws" % "aws-java-sdk-sts" % aws
   val aws2Core           = "software.amazon.awssdk" % "core" % aws2
   val aws2DynamoDB       = "software.amazon.awssdk" % "dynamodb" % aws2
   val aws2EC2            = "software.amazon.awssdk" % "ec2" % aws2

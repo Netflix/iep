@@ -74,8 +74,6 @@ lazy val `iep-service` = project
 lazy val `iep-ses` = project
   .configure(BuildSettings.profile)
   .settings(libraryDependencies ++= Seq(
-      Dependencies.awsCore,
-      Dependencies.awsSES % "test",
       Dependencies.aws2SES % "test"
   ))
 
