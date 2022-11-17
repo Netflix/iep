@@ -100,8 +100,13 @@ public class AdminConfiguration {
   }
 
   @Bean
-  EndpointMapping springEndpointMapping(ApplicationContext context) {
-    return new EndpointMapping("/spring", new SpringEndpoint(context));
+  EndpointMapping springBeansEndpointMapping(ApplicationContext context) {
+    return new EndpointMapping("/spring-beans", new SpringBeansEndpoint(context));
+  }
+
+  @Bean
+  EndpointMapping springEnvEndpointMapping(ApplicationContext context) {
+    return new EndpointMapping("/spring-env", new SpringEnvEndpoint(context));
   }
 
   /**

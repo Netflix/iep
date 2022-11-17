@@ -32,12 +32,12 @@ import java.util.stream.Collectors;
  * Endpoint that provides a list of keys available via the Spring ApplicationContext.
  */
 @Singleton
-public class SpringEndpoint implements HttpEndpoint {
+public class SpringBeansEndpoint implements HttpEndpoint {
 
   private final ApplicationContext context;
 
   @Inject
-  public SpringEndpoint(ApplicationContext context) {
+  public SpringBeansEndpoint(ApplicationContext context) {
     this.context = context;
   }
 

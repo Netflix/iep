@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(JUnit4.class)
-public class SpringEndpointTest {
+public class SpringBeansEndpointTest {
 
   @Configuration
   public static class TestConfiguration {
@@ -59,7 +59,7 @@ public class SpringEndpointTest {
     return context;
   }
 
-  private final SpringEndpoint endpoint = new SpringEndpoint(createContext());
+  private final SpringBeansEndpoint endpoint = new SpringBeansEndpoint(createContext());
 
   @Test
   public void get() {
