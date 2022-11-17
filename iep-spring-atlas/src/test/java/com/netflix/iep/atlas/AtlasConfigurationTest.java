@@ -21,7 +21,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.env.MapPropertySource;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(JUnit4.class)
 public class AtlasConfigurationTest {
@@ -34,6 +39,21 @@ public class AtlasConfigurationTest {
       context.start();
       Registry registry = context.getBean(Registry.class);
       Assert.assertTrue(registry instanceof AtlasRegistry);
+    }
+  }
+
+  @Test(expected = NoSuchBeanDefinitionException.class)
+  public void registryIsNotBoundIfSbnIsPresent() {
+    Map<String, Object> props = new HashMap<>();
+    props.put("management.metrics.export.atlas.enabled", "true");
+    try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+      context.getEnvironment()
+          .getPropertySources()
+          .addFirst(new MapPropertySource("test", props));
+      context.register(AtlasConfiguration.class);
+      context.refresh();
+      context.start();
+      context.getBean(Registry.class);
     }
   }
 }

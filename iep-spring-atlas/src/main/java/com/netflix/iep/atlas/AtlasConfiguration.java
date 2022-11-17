@@ -19,6 +19,7 @@ import com.netflix.spectator.api.Clock;
 import com.netflix.spectator.api.Registry;
 import com.typesafe.config.Config;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Optional;
@@ -27,6 +28,7 @@ import java.util.Optional;
  * Setup registry for reporting spectator data to Atlas.
  */
 @Configuration
+@Conditional(NoSbnCondition.class)
 public class AtlasConfiguration {
 
   @Bean
