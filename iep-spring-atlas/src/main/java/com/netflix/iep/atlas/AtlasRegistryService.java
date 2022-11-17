@@ -108,13 +108,25 @@ class AtlasRegistryService extends AbstractService {
   private static class TypesafeAtlasConfig implements AtlasConfig {
 
     private final Config config;
+    private final boolean isLocal;
 
     TypesafeAtlasConfig(Config config) {
       this.config = config;
+      this.isLocal = checkIfLocal(config);
+    }
+
+    private static boolean checkIfLocal(Config config) {
+      final String prop = "env.host";
+      return !config.hasPath(prop) || "localhost".equals(config.getString(prop));
     }
 
     @Override public String get(String k) {
       return config.hasPath(k) ? config.getString(k) : null;
+    }
+
+    @Override public boolean enabled() {
+      String v = get("atlas.enabled");
+      return (v == null && !isLocal) || Boolean.parseBoolean(v);
     }
 
     @Override public Map<String, String> commonTags() {
@@ -122,13 +134,17 @@ class AtlasRegistryService extends AbstractService {
     }
 
     @Override public RollupPolicy rollupPolicy() {
-      List<RollupPolicy.Rule> rules = new ArrayList<>();
-      for (Config cfg : config.getConfigList("atlas.rollupPolicy")) {
-        rules.add(new RollupPolicy.Rule(cfg.getString("query"), cfg.getStringList("rollup")));
+      if (!config.hasPath("atlas.rollupPolicy")) {
+        return RollupPolicy.noop(commonTags());
+      } else {
+        List<RollupPolicy.Rule> rules = new ArrayList<>();
+        for (Config cfg : config.getConfigList("atlas.rollupPolicy")) {
+          rules.add(new RollupPolicy.Rule(cfg.getString("query"), cfg.getStringList("rollup")));
+        }
+        return rules.isEmpty()
+            ? RollupPolicy.noop(commonTags())
+            : RollupPolicy.fromRules(commonTags(), rules);
       }
-      return rules.isEmpty()
-          ? RollupPolicy.noop(commonTags())
-          : RollupPolicy.fromRules(commonTags(), rules);
     }
 
     @Override public String validTagCharacters() {

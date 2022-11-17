@@ -17,10 +17,15 @@ package com.netflix.iep.atlas;
 
 import com.netflix.spectator.atlas.AtlasConfig;
 import com.netflix.spectator.atlas.AtlasRegistry;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(JUnit4.class)
 public class AtlasRegistryServiceTest {
@@ -32,5 +37,55 @@ public class AtlasRegistryServiceTest {
     AtlasConfig config = (AtlasConfig) registry.config();
     Assert.assertEquals("-._A-Za-z0-9", config.validTagCharacters());
     service.stop();
+  }
+
+  private Config createConfig(String... data) {
+    Map<String, Object> props = new HashMap<>();
+    for (int i = 0; i < data.length; i += 2) {
+      props.put(data[i], data[i + 1]);
+    }
+    props.put("netflix.iep.atlas.collection.gc", "false");
+    props.put("netflix.iep.atlas.collection.jvm", "false");
+    return ConfigFactory.parseMap(props);
+  }
+
+  private AtlasRegistry createRegistry(Config config) {
+    AtlasRegistryService service = new AtlasRegistryService(null, config);
+    return (AtlasRegistry) service.getRegistry();
+  }
+
+  @Test
+  public void disabledIfNull() {
+    Config config = createConfig();
+    try (AtlasRegistry registry = createRegistry(config)) {
+      Assert.assertFalse(((AtlasConfig) registry.config()).enabled());
+    }
+  }
+
+  @Test
+  public void disabledIfLocal() {
+    Config config = createConfig("netflix.iep.env.host", "localhost");
+    try (AtlasRegistry registry = createRegistry(config)) {
+      Assert.assertFalse(((AtlasConfig) registry.config()).enabled());
+    }
+  }
+
+  @Test
+  public void enabledIfNotLocal() {
+    Config config = createConfig("netflix.iep.env.host", "10.0.0.1");
+    try (AtlasRegistry registry = createRegistry(config)) {
+      Assert.assertTrue(((AtlasConfig) registry.config()).enabled());
+    }
+  }
+
+  @Test
+  public void explicitEnableOverridesLocal() {
+    Config config = createConfig(
+        "netflix.iep.env.host", "localhost",
+        "netflix.iep.atlas.enabled", "true"
+    );
+    try (AtlasRegistry registry = createRegistry(config)) {
+      Assert.assertTrue(((AtlasConfig) registry.config()).enabled());
+    }
   }
 }
