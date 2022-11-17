@@ -82,8 +82,6 @@ public class SpringEnvEndpointTest {
     Map<String, Map<String, Object>> expected = new LinkedHashMap<>();
     expected.put("test1", propsMap("foo.bar", "1"));
     expected.put("test2", propsMap("foo.bar", "2", "foo.baz", "abc"));
-    expected.put("systemProperties", propsMap());
-    expected.put("systemEnvironment", propsMap());
     Assert.assertEquals(expected, endpoint.get("foo"));
   }
 }

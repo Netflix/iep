@@ -49,7 +49,11 @@ public class SpringEnvEndpoint implements HttpEndpoint {
 
   @Override public Object get(String path) {
     Map<String, Map<String, Object>> sources = new LinkedHashMap<>();
-    getPropertyMap().forEach((key, value) -> sources.put(key, filter(value, path)));
+    getPropertyMap().forEach((key, value) -> {
+      Map<String, Object> filtered = filter(value, path);
+      if (!filtered.isEmpty())
+        sources.put(key, filtered);
+    });
     return sources;
   }
 
@@ -57,7 +61,7 @@ public class SpringEnvEndpoint implements HttpEndpoint {
     Map<String, Object> filtered = new TreeMap<>();
     props.entrySet()
         .stream()
-        .filter(e -> e.getKey().toString().startsWith(prefix))
+        .filter(e -> e.getKey().startsWith(prefix))
         .forEach(e -> filtered.put(e.getKey(), e.getValue()));
     return filtered;
   }
