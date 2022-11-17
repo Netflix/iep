@@ -20,16 +20,41 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(JUnit4.class)
 public class SpringEndpointTest {
 
+  @Configuration
+  public static class TestConfiguration {
+
+    @Bean
+    String foo() {
+      return "foo";
+    }
+
+    @Bean
+    BigInteger ten() {
+      return BigInteger.TEN;
+    }
+
+    @Bean
+    List<Object> values(String s, BigInteger i) {
+      List<Object> vs = new ArrayList<>();
+      vs.add(s);
+      vs.add(i);
+      return vs;
+    }
+  }
+
   private AnnotationConfigApplicationContext createContext() {
     AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-    context.registerBean(String.class, () -> "foo");
-    context.registerBean(BigInteger.class, () -> BigInteger.TEN);
+    context.register(TestConfiguration.class);
     context.refresh();
     return context;
   }
@@ -45,18 +70,10 @@ public class SpringEndpointTest {
 
   @Test
   public void getWithPath() {
-    String response = endpoint.get("math").toString();
+    String response = endpoint.get("math").toString().replace("[Ljava.lang.String;", "");
     Assert.assertFalse(response.contains("com.google.inject.Injector"));
     Assert.assertFalse(response.contains("java.lang.String"));
     Assert.assertTrue(response.contains("java.math.BigInteger"));
     Assert.assertFalse(response.contains("java.math.BigDecimal"));
-  }
-
-  @Test
-  public void bindingsMap() {
-    /*Map<String, Key<?>> bindings = endpoint.getBindingKeys(v -> true);
-    Assert.assertEquals(
-        BigInteger.TEN,
-        injector.getInstance(bindings.get("java.math.BigInteger")));*/
   }
 }
