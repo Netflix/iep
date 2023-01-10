@@ -2,13 +2,13 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val assertj    = "3.23.1"
-    val aws2       = "2.18.33"
+    val assertj    = "3.24.1"
+    val aws2       = "2.19.9"
     val graal      = "21.1.0"
     val jackson    = "2.14.1"
     val scala      = "2.12.15"
     val slf4j      = "1.7.36"
-    val spectator  = "1.4.2"
+    val spectator  = "1.5.1"
     val spring     = "5.3.24"
   }
 
@@ -22,7 +22,7 @@ object Dependencies {
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.9.3"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.12.2"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.12.3"
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
   val inject             = "javax.inject" % "javax.inject" % "1"
