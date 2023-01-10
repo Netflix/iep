@@ -3,6 +3,7 @@ lazy val iep = project.in(file("."))
   .configure(BuildSettings.profile)
   .aggregate(
     `iep-admin`,
+    `iep-dynconfig`,
     `iep-launcher`,
     `iep-leader-api`,
     `iep-nflxenv`,
@@ -31,6 +32,13 @@ lazy val `iep-admin` = project
       Dependencies.spectatorIpc
   ))
 
+lazy val `iep-dynconfig` = project
+  .configure(BuildSettings.profile)
+  .settings(libraryDependencies ++= Seq(
+      Dependencies.slf4jApi,
+      Dependencies.typesafeConfig
+  ))
+
 lazy val `iep-launcher` = project
   .configure(BuildSettings.profile)
 
@@ -47,8 +55,10 @@ lazy val `iep-leader-api` = project
 
 lazy val `iep-nflxenv` = project
   .configure(BuildSettings.profile)
+  .dependsOn(`iep-dynconfig`)
   .settings(libraryDependencies ++= Seq(
       Dependencies.slf4jApi,
+      Dependencies.spectatorTagging,
       Dependencies.typesafeConfig
   ))
 
