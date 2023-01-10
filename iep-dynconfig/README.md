@@ -1,8 +1,4 @@
 
-## DEPRECATED
-
-Use `iep-dynconfig` or `spectator-nflx-tagging` instead.
-
 ## Description
 
 Configuration for detecting information about the environment where the application is running.
@@ -12,7 +8,7 @@ Netflix. Where possible a sensible default will be used to make running locally 
 All of these settings can be accessed via the config using a prefix of `netflix.iep.env`. See
 the [reference.conf][ref] for a complete listing.
 
-[ref]: https://github.com/Netflix/iep/blob/master/iep-nflxenv/src/main/resources/reference.conf
+[ref]: https://github.com/Netflix/iep/blob/master/iep-dynconfig/src/main/resources/reference.conf
 
 ### EC2 Settings
 
@@ -79,5 +75,5 @@ names and environment variables are:
 ## Gradle
 
 ```
-compile "com.netflix.iep:iep-nflxenv:${version_iep}"
+compile "com.netflix.iep:iep-dynconfig:${version_iep}"
 ```
