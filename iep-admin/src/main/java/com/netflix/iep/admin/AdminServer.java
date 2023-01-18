@@ -21,8 +21,6 @@ import com.sun.net.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Collections;
@@ -36,7 +34,6 @@ import java.util.stream.Collectors;
 /**
  * Simple side server used to provide debugging information for the main application.
  */
-@Singleton
 public class AdminServer implements AutoCloseable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AdminServer.class);
@@ -56,7 +53,6 @@ public class AdminServer implements AutoCloseable {
     this(config, toMap(mappings));
   }
 
-  @Inject
   public AdminServer(AdminConfig config, @AdminEndpoint Map<String, Object> endpoints)
       throws IOException {
     this.config = config;

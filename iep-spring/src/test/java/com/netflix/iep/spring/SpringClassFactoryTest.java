@@ -26,11 +26,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @RunWith(JUnit4.class)
 public class SpringClassFactoryTest {
@@ -70,17 +69,17 @@ public class SpringClassFactoryTest {
   }
 
   @Test
-  public void provider() throws Exception {
+  public void supplier() throws Exception {
     try (AnnotationConfigApplicationContext context = createContext()) {
-      context.register(ProviderClassConfiguration.class);
-      context.registerBean(ProviderClass.class);
+      context.register(SupplierClassConfiguration.class);
+      context.registerBean(SupplierClass.class);
       context.registerBean(TestClass.class);
-      context.registerBean(WithProvider.class);
+      context.registerBean(WithSupplier.class);
       context.registerBean(String.class, () -> "foo");
       context.refresh();
       context.start();
 
-      WithProvider obj = context.getBean(WithProvider.class);
+      WithSupplier obj = context.getBean(WithSupplier.class);
       Assert.assertEquals("foo", obj.configClass.v.get());
     }
   }
@@ -119,7 +118,6 @@ public class SpringClassFactoryTest {
   public static class Normal {
     final TestClass configClass;
 
-    @Inject
     public Normal(ClassFactory factory) throws Exception {
       // Class name from configuration settings
       final String cname = TestClass.class.getName();
@@ -130,7 +128,6 @@ public class SpringClassFactoryTest {
   public static class WithOverride {
     final TestClass configClass;
 
-    @Inject
     public WithOverride(ClassFactory factory) throws Exception {
       // Class name from configuration settings
       final String cname = TestClass.class.getName();
@@ -140,13 +137,12 @@ public class SpringClassFactoryTest {
     }
   }
 
-  public static class WithProvider {
-    final ProviderClass configClass;
+  public static class WithSupplier {
+    final SupplierClass configClass;
 
-    @Inject
-    public WithProvider(ClassFactory factory) throws Exception {
+    public WithSupplier(ClassFactory factory) throws Exception {
       // Class name from configuration settings
-      final String cname = ProviderClass.class.getName();
+      final String cname = SupplierClass.class.getName();
       configClass = factory.newInstance(cname);
     }
   }
@@ -154,26 +150,24 @@ public class SpringClassFactoryTest {
   public static class TestClass {
     final String v;
 
-    @Inject
     public TestClass(String v) {
       this.v = v;
     }
   }
 
   @Configuration
-  public static class ProviderClassConfiguration {
+  public static class SupplierClassConfiguration {
 
     @Bean
-    Provider<String> stringValue(ApplicationContext context) {
+    Supplier<String> stringValue(ApplicationContext context) {
       return () -> context.getBean(String.class);
     }
   }
 
-  public static class ProviderClass {
-    final Provider<String> v;
+  public static class SupplierClass {
+    final Supplier<String> v;
 
-    @Inject
-    public ProviderClass(Provider<String> v) {
+    public SupplierClass(Supplier<String> v) {
       this.v = v;
     }
   }
@@ -191,7 +185,6 @@ public class SpringClassFactoryTest {
   public static class Wrapper {
     final String s2;
 
-    @Inject
     public Wrapper(@Named("s2") String s2) {
       this.s2 = s2;
     }

@@ -15,8 +15,6 @@
  */
 package com.netflix.iep.service;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,12 +27,10 @@ import java.util.Set;
  * is managed via the DI framework, typically via PostConstruct and PreDestroy annotations. All
  * services should be injected into the set for this manager.
  */
-@Singleton
 public class ServiceManager {
 
   private final List<Service> services;
 
-  @Inject
   public ServiceManager(Set<Service> serviceSet) {
     services = new ArrayList<>();
     services.addAll(serviceSet);

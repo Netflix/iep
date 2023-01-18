@@ -22,7 +22,6 @@ import com.netflix.spectator.api.Meter;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.Tag;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,7 +36,6 @@ public class BaseServerEndpoint implements HttpEndpoint {
   private final JarsEndpoint jars = new JarsEndpoint();
   private final Registry registry;
 
-  @Inject
   public BaseServerEndpoint(Registry registry) {
     this.registry = registry;
   }

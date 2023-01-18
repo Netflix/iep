@@ -20,7 +20,6 @@ import com.netflix.iep.config.DynamicConfigManager;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValue;
 
-import javax.inject.Inject;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -32,7 +31,6 @@ public class PropsEndpoint implements HttpEndpoint {
 
   private final DynamicConfigManager manager;
 
-  @Inject
   public PropsEndpoint(DynamicConfigManager manager) {
     this.manager = manager;
   }

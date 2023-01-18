@@ -19,7 +19,6 @@ import com.netflix.iep.admin.HttpEndpoint;
 import com.netflix.iep.service.Service;
 import com.netflix.iep.service.ServiceManager;
 
-import javax.inject.Inject;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -31,7 +30,6 @@ public class ServicesEndpoint implements HttpEndpoint {
 
   private final ServiceManager manager;
 
-  @Inject
   public ServicesEndpoint(ServiceManager manager) {
     this.manager = manager;
   }

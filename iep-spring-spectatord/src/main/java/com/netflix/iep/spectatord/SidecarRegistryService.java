@@ -28,8 +28,6 @@ import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
-
 /**
  * Service for StatelessRegistry that reports to Atlas aggregator endpoint. If using
  * an add on to Guice that supports lifecycle, then the service will get started and
@@ -37,7 +35,6 @@ import javax.inject.Singleton;
  * then the registry will be started when accessed, but never stopped. This means that
  * the final metrics during shutdown may not get reported correctly.
  */
-@Singleton
 class SidecarRegistryService extends AbstractService {
 
   private static Config defaultConfig() {

@@ -26,8 +26,6 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 @RunWith(JUnit4.class)
 public class LifecycleTest {
@@ -146,7 +144,6 @@ public class LifecycleTest {
   public static class StateObjectConfiguration {
 
     @Bean
-    @Singleton
     StateObject stateObject() {
       return new StateObject();
     }
@@ -157,7 +154,6 @@ public class LifecycleTest {
 
     private State state;
 
-    @Inject
     StateObject() {
       state = State.INIT;
     }
@@ -177,12 +173,10 @@ public class LifecycleTest {
     }
   }
 
-  @Singleton
   private static class AutoStateObject implements AutoCloseable {
 
     private State state;
 
-    @Inject
     AutoStateObject() {
       state = State.STARTED;
     }
@@ -197,12 +191,10 @@ public class LifecycleTest {
   }
 
 
-  @Singleton
   private static class InjectedStateObject {
 
     private StateObject obj;
 
-    @Inject
     InjectedStateObject(StateObject obj) {
       this.obj = obj;
       Assert.assertEquals(State.STARTED, obj.getState());
