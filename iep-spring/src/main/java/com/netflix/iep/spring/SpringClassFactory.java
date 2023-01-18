@@ -20,14 +20,10 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.lang.reflect.ParameterizedType;
 
-@Singleton
 class SpringClassFactory extends DefaultClassFactory {
 
-  @Inject
   SpringClassFactory(ApplicationContext context) {
     super(type -> {
       try {

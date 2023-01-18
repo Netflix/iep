@@ -20,10 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.Environment;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -31,12 +28,10 @@ import java.util.TreeMap;
 /**
  * Endpoint that provides an overview of properties in the Spring environment.
  */
-@Singleton
 public class SpringEnvEndpoint implements HttpEndpoint {
 
   private final ConfigurableEnvironment env;
 
-  @Inject
   public SpringEnvEndpoint(ApplicationContext context) {
     this.env = (context instanceof GenericApplicationContext)
         ? ((GenericApplicationContext) context).getEnvironment()

@@ -17,7 +17,6 @@ package com.netflix.iep.userservice;
 
 import com.netflix.iep.admin.HttpEndpoint;
 
-import javax.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -35,7 +34,6 @@ public class UserServiceEndpoint implements HttpEndpoint {
 
   private final UserService service;
 
-  @Inject
   public UserServiceEndpoint(UserService service) {
     this.service = service;
   }

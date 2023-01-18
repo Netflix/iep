@@ -25,7 +25,6 @@ import com.netflix.spectator.api.Tag;
 import com.netflix.spectator.api.Timer;
 import com.netflix.spectator.impl.Preconditions;
 
-import javax.inject.Inject;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -48,7 +47,6 @@ public class SpectatorEndpoint implements HttpEndpoint {
 
   private final Registry registry;
 
-  @Inject
   public SpectatorEndpoint(Registry registry) {
     this.registry = registry;
   }

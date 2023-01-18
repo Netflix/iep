@@ -17,8 +17,6 @@ package com.netflix.iep.userservice;
 
 import com.netflix.iep.service.AbstractService;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Set;
@@ -28,12 +26,10 @@ import java.util.TreeSet;
  * Combines a set of other user services into a combined view. It is assumed
  * that there is no overlap in the data sets.
  */
-@Singleton
 class CompositeUserService extends AbstractService implements UserService {
 
   private final Set<UserService> services;
 
-  @Inject
   CompositeUserService(Set<UserService> services) {
     this.services = services;
   }

@@ -22,8 +22,6 @@ import com.netflix.spectator.ipc.http.HttpRequestBuilder;
 import com.netflix.spectator.ipc.http.HttpResponse;
 import com.typesafe.config.Config;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.net.URI;
@@ -32,7 +30,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /** Common settings used across all services. */
-@Singleton
 public final class Context implements AutoCloseable {
 
   private final ObjectMapper mapper = new ObjectMapper();
@@ -51,7 +48,6 @@ public final class Context implements AutoCloseable {
 
   private final ScheduledExecutorService executor;
 
-  @Inject
   public Context(Registry registry, Config config, HttpClient client, SSLSocketFactory sslFactory) {
     this.registry = registry;
     this.config = config.getConfig("netflix.iep.userservice");

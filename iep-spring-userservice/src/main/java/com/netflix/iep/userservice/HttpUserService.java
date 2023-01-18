@@ -21,8 +21,6 @@ import com.netflix.iep.service.AbstractService;
 import com.netflix.spectator.ipc.http.HttpResponse;
 import com.typesafe.config.Config;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +32,6 @@ import java.util.Set;
  * supported call is {@link #isValidEmail(String)}, the others just return an empty set.
  * Email checks will get cached to reduce load and improve performance for repeated checks.
  */
-@Singleton
 public class HttpUserService extends AbstractService implements UserService {
 
   private final Context context;
@@ -43,7 +40,6 @@ public class HttpUserService extends AbstractService implements UserService {
 
   private final LoadingCache<String, Boolean> cache;
 
-  @Inject
   HttpUserService(Context context) {
     this(context, "http");
   }

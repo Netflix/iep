@@ -17,13 +17,10 @@ package com.netflix.iep.spring;
 
 import com.netflix.iep.service.AbstractService;
 
-import javax.inject.Inject;
-
 public class TestService extends AbstractService {
 
   private boolean healthy = false;
 
-  @Inject
   public TestService(Args args) {
     if (args.isEmpty()) {
       throw new IllegalArgumentException("missing required argument");

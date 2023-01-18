@@ -18,8 +18,6 @@ package com.netflix.iep.userservice;
 import com.netflix.iep.service.AbstractService;
 import com.typesafe.config.Config;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,13 +28,11 @@ import java.util.TreeSet;
  * Service based on an explicit list if addresses and mappings provided in the
  * config.
  */
-@Singleton
 class WhitelistUserService extends AbstractService implements UserService {
 
   private final Set<String> emails;
   private final Map<String, String> mappings;
 
-  @Inject
   WhitelistUserService(Context context) {
     Config config = context.config().getConfig("whitelist");
     emails = Collections.unmodifiableSet(new TreeSet<>(config.getStringList("emails")));

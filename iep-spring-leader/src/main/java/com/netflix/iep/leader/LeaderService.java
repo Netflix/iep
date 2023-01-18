@@ -28,15 +28,12 @@ import com.typesafe.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * {@code LeaderService} manages periodic leader election using the provided {@link LeaderElector}.
  */
-@Singleton
 public class LeaderService extends AbstractService {
 
   private static final Logger logger = LoggerFactory.getLogger(LeaderService.class);
@@ -54,7 +51,6 @@ public class LeaderService extends AbstractService {
 
   private volatile boolean running = false;
 
-  @Inject
   public LeaderService(LeaderElector leaderElector, Config config, Registry registry) {
     this(
         leaderElector,

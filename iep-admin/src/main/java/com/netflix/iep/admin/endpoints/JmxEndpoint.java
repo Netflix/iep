@@ -20,7 +20,6 @@ import com.netflix.iep.admin.HttpEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.MBeanAttributeInfo;
@@ -52,7 +51,6 @@ public class JmxEndpoint implements HttpEndpoint {
   /**
    * Create a new instance using the local platform MBean server.
    */
-  @Inject
   public JmxEndpoint() {
     this(ManagementFactory.getPlatformMBeanServer());
   }

@@ -39,8 +39,6 @@ import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
 import software.amazon.awssdk.services.dynamodb.model.TableStatus;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
@@ -49,7 +47,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-@Singleton
 public class DynamoDbLeaderDatabase implements LeaderDatabase {
 
   public static class TableActiveTimeoutException extends RuntimeException {
@@ -93,7 +90,6 @@ public class DynamoDbLeaderDatabase implements LeaderDatabase {
   private final String removeLeadershipExpression;
   private final String removeLeadershipConditionExpression;
 
-  @Inject
   public DynamoDbLeaderDatabase(DynamoDbClient db, Config config) {
     this(
         db,

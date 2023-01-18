@@ -21,8 +21,6 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
@@ -31,12 +29,10 @@ import java.util.stream.Collectors;
 /**
  * Endpoint that provides a list of keys available via the Spring ApplicationContext.
  */
-@Singleton
 public class SpringBeansEndpoint implements HttpEndpoint {
 
   private final ApplicationContext context;
 
-  @Inject
   public SpringBeansEndpoint(ApplicationContext context) {
     this.context = context;
   }

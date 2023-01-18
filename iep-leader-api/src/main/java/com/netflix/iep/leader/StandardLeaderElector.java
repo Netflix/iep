@@ -26,8 +26,6 @@ import com.typesafe.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -52,7 +50,6 @@ import java.util.stream.Collectors;
  * <li>{@code reference.conf} - the full list of configuration options</li>
  * <li>{@code README.conf} - the metrics provided</li>
  */
-@Singleton
 public class StandardLeaderElector implements LeaderElector, LeaderStatus {
 
   private static final Logger logger = LoggerFactory.getLogger(StandardLeaderElector.class);
@@ -67,7 +64,6 @@ public class StandardLeaderElector implements LeaderElector, LeaderStatus {
   private final Id resourceLeaderGaugeId;
   private final Id resourceWithNoLeaderGaugeId;
 
-  @Inject
   public StandardLeaderElector(LeaderDatabase leaderDatabase, Config config, Registry registry) {
     this(
         LeaderId.create(config),

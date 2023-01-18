@@ -30,7 +30,6 @@ import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +41,6 @@ import java.util.Map;
  * started when accessed, but never stopped. This means that the final metrics
  * during shutdown may not get reported correctly.
  */
-@Singleton
 class AtlasRegistryService extends AbstractService {
 
   private static Config defaultConfig() {
