@@ -15,7 +15,6 @@
  */
 package com.netflix.iep.atlas;
 
-import com.netflix.iep.NetflixEnvironment;
 import com.netflix.iep.service.AbstractService;
 import com.netflix.spectator.api.Clock;
 import com.netflix.spectator.api.Registry;
@@ -25,6 +24,7 @@ import com.netflix.spectator.atlas.AtlasRegistry;
 import com.netflix.spectator.atlas.RollupPolicy;
 import com.netflix.spectator.gc.GcLogger;
 import com.netflix.spectator.jvm.Jmx;
+import com.netflix.spectator.nflx.tagging.NetflixTagging;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
@@ -128,7 +128,7 @@ class AtlasRegistryService extends AbstractService {
     }
 
     @Override public Map<String, String> commonTags() {
-      return NetflixEnvironment.commonTagsForAtlas();
+      return NetflixTagging.commonTagsForAtlas();
     }
 
     @Override public RollupPolicy rollupPolicy() {
