@@ -5,8 +5,7 @@ object BuildSettings {
 
   val javaCompilerFlags = Seq(
     "-Xlint:unchecked",
-    "-source", "1.8",
-    "-target", "1.8")
+    "--release", "17")
 
   val javadocFlags = Seq("-Xdoclint:none")
 
@@ -16,7 +15,7 @@ object BuildSettings {
     "-Xexperimental",
     "-Xlint:_,-infer-any",
     "-feature",
-    "-target:jvm-1.8")
+    "-release", "17")
 
   lazy val checkLicenseHeaders = taskKey[Unit]("Check the license headers for all source files.")
   lazy val formatLicenseHeaders = taskKey[Unit]("Fix the license headers for all source files.")
