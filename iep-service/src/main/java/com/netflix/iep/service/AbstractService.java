@@ -15,7 +15,7 @@
  */
 package com.netflix.iep.service;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 /**
  * Base class that manages the service state. Just implement the {@link #startImpl()} and

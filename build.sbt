@@ -24,9 +24,9 @@ lazy val `iep-admin` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-dynconfig`, `iep-service`)
   .settings(libraryDependencies ++= Seq(
-      Dependencies.inject,
       Dependencies.jacksonCore,
       Dependencies.jacksonMapper,
+      Dependencies.jakartaInject,
       Dependencies.slf4jApi,
       Dependencies.spectatorIpc
   ))
@@ -44,7 +44,6 @@ lazy val `iep-launcher` = project
 lazy val `iep-leader-api` = project
   .configure(BuildSettings.profile)
   .settings(libraryDependencies ++= Seq(
-      Dependencies.inject,
       Dependencies.slf4jApi,
       Dependencies.spectatorApi,
       Dependencies.typesafeConfig,
@@ -66,8 +65,7 @@ lazy val `iep-servergroups` = project
 lazy val `iep-service` = project
   .configure(BuildSettings.profile)
   .settings(libraryDependencies ++= Seq(
-      Dependencies.inject,
-      Dependencies.jsr250,
+      Dependencies.jakartaAnno,
       Dependencies.slf4jApi
   ))
 
@@ -83,7 +81,8 @@ lazy val `iep-spring` = project
   .settings(libraryDependencies ++= Seq(
       Dependencies.slf4jApi,
       Dependencies.springContext,
-      Dependencies.jsr250 % "test"
+      Dependencies.jakartaAnno % "test",
+      Dependencies.jakartaInject % "test"
   ))
 
 lazy val `iep-spring-admin` = project

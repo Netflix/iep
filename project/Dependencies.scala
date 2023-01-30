@@ -9,7 +9,7 @@ object Dependencies {
     val scala      = "2.12.15"
     val slf4j      = "1.7.36"
     val spectator  = "1.5.1"
-    val spring     = "5.3.24"
+    val spring     = "6.0.4"
   }
 
   import Versions._
@@ -25,11 +25,11 @@ object Dependencies {
   val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.12.3"
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
-  val inject             = "javax.inject" % "javax.inject" % "1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
+  val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "2.1.1"
+  val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
-  val jsr250             = "javax.annotation" % "jsr250-api" % "1.0"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
