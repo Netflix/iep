@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
