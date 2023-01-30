@@ -6,7 +6,6 @@ lazy val iep = project.in(file("."))
     `iep-dynconfig`,
     `iep-launcher`,
     `iep-leader-api`,
-    `iep-nflxenv`,
     `iep-servergroups`,
     `iep-service`,
     `iep-ses`,
@@ -23,7 +22,7 @@ lazy val iep = project.in(file("."))
 
 lazy val `iep-admin` = project
   .configure(BuildSettings.profile)
-  .dependsOn(`iep-nflxenv`, `iep-service`)
+  .dependsOn(`iep-dynconfig`, `iep-service`)
   .settings(libraryDependencies ++= Seq(
       Dependencies.inject,
       Dependencies.jacksonCore,
@@ -51,15 +50,6 @@ lazy val `iep-leader-api` = project
       Dependencies.typesafeConfig,
       Dependencies.assertjcore % "test",
       Dependencies.equalsVerifier % "test"
-  ))
-
-lazy val `iep-nflxenv` = project
-  .configure(BuildSettings.profile)
-  .dependsOn(`iep-dynconfig`)
-  .settings(libraryDependencies ++= Seq(
-      Dependencies.slf4jApi,
-      Dependencies.spectatorTagging,
-      Dependencies.typesafeConfig
   ))
 
 lazy val `iep-servergroups` = project
@@ -106,20 +96,21 @@ lazy val `iep-spring-admin` = project
 
 lazy val `iep-spring-atlas` = project
   .configure(BuildSettings.profile)
-  .dependsOn(`iep-nflxenv`, `iep-service`)
+  .dependsOn(`iep-service`)
   .settings(libraryDependencies ++= Seq(
       Dependencies.slf4jApi,
       Dependencies.spectatorApi,
       Dependencies.spectatorAtlas,
       Dependencies.spectatorGc,
       Dependencies.spectatorJvm,
+      Dependencies.spectatorTagging,
       Dependencies.springContext,
       Dependencies.typesafeConfig
   ))
 
 lazy val `iep-spring-aws2` = project
   .configure(BuildSettings.profile)
-  .dependsOn(`iep-nflxenv`)
+  .dependsOn(`iep-dynconfig`)
   .settings(libraryDependencies ++= Seq(
       Dependencies.aws2Core,
       Dependencies.aws2EC2 % "test",
@@ -132,7 +123,7 @@ lazy val `iep-spring-aws2` = project
 
 lazy val `iep-spring-dynconfig` = project
   .configure(BuildSettings.profile)
-  .dependsOn(`iep-nflxenv`, `iep-spring-admin`)
+  .dependsOn(`iep-dynconfig`, `iep-spring-admin`)
   .settings(libraryDependencies ++= Seq(
       Dependencies.slf4jApi,
       Dependencies.spectatorApi,
@@ -161,7 +152,7 @@ lazy val `iep-spring-leader-dynamodb` = project
 
 lazy val `iep-spring-spectatord` = project
   .configure(BuildSettings.profile)
-  .dependsOn(`iep-nflxenv`, `iep-service`)
+  .dependsOn(`iep-service`)
   .settings(libraryDependencies ++= Seq(
       Dependencies.slf4jApi,
       Dependencies.spectatorApi,
