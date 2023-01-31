@@ -53,7 +53,7 @@ public class AdminServer implements AutoCloseable {
     this(config, toMap(mappings));
   }
 
-  public AdminServer(AdminConfig config, @AdminEndpoint Map<String, Object> endpoints)
+  public AdminServer(AdminConfig config, Map<String, Object> endpoints)
       throws IOException {
     this.config = config;
 
