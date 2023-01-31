@@ -26,7 +26,6 @@ lazy val `iep-admin` = project
   .settings(libraryDependencies ++= Seq(
       Dependencies.jacksonCore,
       Dependencies.jacksonMapper,
-      Dependencies.jakartaInject,
       Dependencies.slf4jApi,
       Dependencies.spectatorIpc
   ))
