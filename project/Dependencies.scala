@@ -30,9 +30,11 @@ object Dependencies {
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "2.1.1"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
+  val jedis              = "redis.clients" % "jedis" % "4.3.1"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
+  val mockitoCore        = "org.mockito" % "mockito-core" % "4.8.0"
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi       = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorAtlas     = "com.netflix.spectator" % "spectator-reg-atlas" % spectator
