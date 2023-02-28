@@ -28,11 +28,13 @@ object Dependencies {
   val inject             = "javax.inject" % "javax.inject" % "1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
+  val jedis              = "redis.clients" % "jedis" % "4.3.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
   val jsr250             = "javax.annotation" % "jsr250-api" % "1.0"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
+  val mockitoCore        = "org.mockito" % "mockito-core" % "4.8.0"
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi       = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorAtlas     = "com.netflix.spectator" % "spectator-reg-atlas" % spectator

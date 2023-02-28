@@ -17,6 +17,7 @@ lazy val iep = project.in(file("."))
     `iep-spring-dynconfig`,
     `iep-spring-leader`,
     `iep-spring-leader-dynamodb`,
+    `iep-spring-leader-redis-cluster`,
     `iep-spring-spectatord`,
     `iep-spring-userservice`)
   .settings(BuildSettings.noPackaging: _*)
@@ -157,6 +158,15 @@ lazy val `iep-spring-leader-dynamodb` = project
   .settings(libraryDependencies ++= Seq(
       Dependencies.aws2DynamoDB,
       Dependencies.spectatorApi
+  ))
+
+lazy val `iep-spring-leader-redis-cluster` = project
+  .configure(BuildSettings.profile)
+  .dependsOn(`iep-leader-api`, `iep-spring`)
+  .settings(libraryDependencies ++= Seq(
+    Dependencies.jedis,
+    Dependencies.spectatorApi,
+    Dependencies.mockitoCore % "test"
   ))
 
 lazy val `iep-spring-spectatord` = project
