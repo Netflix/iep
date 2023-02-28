@@ -101,7 +101,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void updateLeadershipFor_Success() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add("OK".getBytes(StandardCharsets.UTF_8));
     }});
     when(client.get(key)).thenReturn(null)
@@ -118,7 +118,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void updateLeadershipFor_AcquireReadBackFailed() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add("OK".getBytes(StandardCharsets.UTF_8));
     }});
     when(client.get(key)).thenReturn(null)
@@ -129,7 +129,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void updateLeadershipFor_AcquireTransactionFailedNull() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add(null);
     }});
     Assert.assertFalse(db.updateLeadershipFor(resourceId));
@@ -139,7 +139,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void updateLeadershipFor_AcquireTransactionFailedInvalid() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add("Invalid".getBytes(StandardCharsets.UTF_8));
     }});
     Assert.assertFalse(db.updateLeadershipFor(resourceId));
@@ -157,7 +157,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void updateLeadershipFor_Renew() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add("OK".getBytes(StandardCharsets.UTF_8));
     }});
     when(client.get(key)).thenReturn(leader)
@@ -174,7 +174,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void updateLeadershipFor_RenewReadBackFailed() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add("OK".getBytes(StandardCharsets.UTF_8));
     }});
     when(client.get(key)).thenReturn(leader)
@@ -186,7 +186,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void updateLeadershipFor_RenewTransactionFailedNull() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add(null);
     }});
     when(client.get(key)).thenReturn(leader);
@@ -196,7 +196,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void updateLeadershipFor_RenewTransactionFailedInvalid() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add("Invalid");
     }});
     when(client.get(key)).thenReturn(leader);
@@ -226,7 +226,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void removeLeadershipFor_Success() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add(1L);
     }});
     when(client.get(key)).thenReturn(leader)
@@ -243,7 +243,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void removeLeadershipFor_ReadBackFailed() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add(1L);
     }});
     when(client.get(key)).thenReturn(leader)
@@ -256,7 +256,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Test
   public void removeLeadershipFor_TransactionFailed() {
     when(client.watch(anyString())).thenReturn("OK");
-    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<>(){{
+    when(conn.getObjectMultiBulkReply()).thenReturn(new ArrayList<Object>(){{
       add(0L);
     }});
     when(client.get(key)).thenReturn(leader);
@@ -306,13 +306,13 @@ public class RedisClusterLeaderDatabaseTest {
   }
 
   private Config getConfig(Map<String, Object> overrides) {
-    Map<String, Object> map = new HashMap<>() {{
+    Map<String, Object> map = new HashMap<String, Object>() {{
       put("iep.leader.maxIdleDuration", "15s");
       put("iep.leader.connection.pool.max", 1);
       put("iep.leader.connection.port", 7101);
       put("iep.leader.cmd.timeout", "2s");
       put("iep.leader.leaderId", "UT");
-      put("iep.leader.resourceIds", new ArrayList(){{
+      put("iep.leader.resourceIds", new ArrayList<String>(){{
         add("MyCluster");
       }});
     }};
