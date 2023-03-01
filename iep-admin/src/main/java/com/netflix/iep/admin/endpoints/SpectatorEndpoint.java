@@ -64,14 +64,11 @@ public class SpectatorEndpoint implements HttpEndpoint {
           Map<String, String> tags = toMap(m.id());
           if (m instanceof Counter) {
             add(q, tags, ms, new CounterInfo(tags, ((Counter) m).count()));
-          } else if (m instanceof Timer) {
-            Timer t = (Timer) m;
+          } else if (m instanceof Timer t) {
             add(q, tags, ms, new TimerInfo(tags, t.totalTime(), t.count()));
-          } else if (m instanceof DistributionSummary) {
-            DistributionSummary t = (DistributionSummary) m;
+          } else if (m instanceof DistributionSummary t) {
             add(q, tags, ms, new DistInfo(tags, t.totalAmount(), t.count()));
-          } else if (m instanceof Gauge) {
-            Gauge g = (Gauge) m;
+          } else if (m instanceof Gauge g) {
             add(q, tags, ms, new GaugeInfo(tags, g.value()));
           }
           return ms.stream();

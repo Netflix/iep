@@ -235,10 +235,6 @@ public class RedisClusterLeaderDatabase implements LeaderDatabase {
   private String getKey(ResourceId resourceId) {
     // could be more efficient but elections generally only happen every few seconds.
     String id = resourceId.getId();
-    return new StringBuilder(13 + id.length())
-        .append("iep.leader:{")
-        .append(id)
-        .append("}")
-        .toString();
+    return "iep.leader:{" + id + "}";
   }
 }

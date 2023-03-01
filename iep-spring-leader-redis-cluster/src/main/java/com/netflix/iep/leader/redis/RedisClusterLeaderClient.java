@@ -37,7 +37,7 @@ public class RedisClusterLeaderClient {
 
   private static final String CONFIG_PATH_NAME = "iep.leader.rediscluster";
 
-  private WrappedJedis jedis;
+  private final WrappedJedis jedis;
 
   public RedisClusterLeaderClient(Config config) {
     GenericObjectPoolConfig<Connection> poolConfig = new GenericObjectPoolConfig<Connection>();

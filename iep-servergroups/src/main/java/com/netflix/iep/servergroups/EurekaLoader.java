@@ -256,7 +256,7 @@ public class EurekaLoader implements Loader {
     private String account;
     private String node;
     private String privateIp;
-    private Instance.Builder builder;
+    private final Instance.Builder builder;
 
     InstanceInfo() {
       this.builder = Instance.builder();

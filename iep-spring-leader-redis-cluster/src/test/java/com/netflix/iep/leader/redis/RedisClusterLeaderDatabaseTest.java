@@ -42,10 +42,10 @@ import static org.mockito.Mockito.*;
 
 public class RedisClusterLeaderDatabaseTest {
 
-  private Config config = getConfig(Collections.emptyMap());
-  private String key = "iep.leader:{MyCluster}";
-  private ResourceId resourceId = new ResourceId("MyCluster");
-  private String leader = "UT";
+  private final Config config = getConfig(Collections.emptyMap());
+  private final String key = "iep.leader:{MyCluster}";
+  private final ResourceId resourceId = new ResourceId("MyCluster");
+  private final String leader = "UT";
 
   private RedisClusterLeaderClient cluster;
   private RedisClusterLeaderDatabase db;
@@ -312,7 +312,7 @@ public class RedisClusterLeaderDatabaseTest {
       put("iep.leader.connection.port", 7101);
       put("iep.leader.cmd.timeout", "2s");
       put("iep.leader.leaderId", "UT");
-      put("iep.leader.resourceIds", new ArrayList(){{
+      put("iep.leader.resourceIds", new ArrayList<>(){{
         add("MyCluster");
       }});
     }};

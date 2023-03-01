@@ -193,7 +193,7 @@ public class LifecycleTest {
 
   private static class InjectedStateObject {
 
-    private StateObject obj;
+    private final StateObject obj;
 
     InjectedStateObject(StateObject obj) {
       this.obj = obj;

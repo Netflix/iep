@@ -109,15 +109,13 @@ public class JmxEndpoint implements HttpEndpoint {
   }
 
   private Object fixValue(Object obj) {
-    if (obj instanceof CompositeData) {
-      CompositeData cd = (CompositeData) obj;
+    if (obj instanceof CompositeData cd) {
       Map<String, Object> map = new TreeMap<>();
       for (String k : cd.getCompositeType().keySet()) {
         map.put(k, fixValue(cd.get(k)));
       }
       return map;
-    } else if (obj instanceof TabularData) {
-      TabularData td = (TabularData) obj;
+    } else if (obj instanceof TabularData td) {
       return td.values()
           .stream()
           .map(this::fixValue)

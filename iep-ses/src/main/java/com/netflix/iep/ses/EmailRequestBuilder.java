@@ -72,12 +72,12 @@ public final class EmailRequestBuilder {
   private List<String> ccAddresses;
   private List<String> bccAddresses;
   private List<String> replyToAddresses;
-  private Map<String, String> headers;
+  private final Map<String, String> headers;
   private String configSet;
   private String subject;
   private String contentType;
   private String body;
-  private List<Attachment> attachments;
+  private final List<Attachment> attachments;
   private String boundary;
 
   /** Create a new instance of the builder. */

@@ -50,8 +50,8 @@ public class LeaderServiceTest {
   private CountDownLatch leaderElectorLatch;
   private final AtomicLong timeSinceLastElection = new AtomicLong();
   private final DefaultRegistry registry = new DefaultRegistry();
-  private Id leaderElectionsId = registry.createId("leader.test.elections");
-  private Timer electorInitializeTimer = registry.timer("leader.test.electorInitializeDuration");
+  private final Id leaderElectionsId = registry.createId("leader.test.elections");
+  private final Timer electorInitializeTimer = registry.timer("leader.test.electorInitializeDuration");
 
   @Before
   public void setUp() throws Exception {
