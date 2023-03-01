@@ -346,7 +346,7 @@ public class DynamoDbLeaderDatabase implements LeaderDatabase {
 
     final String message = String.format(
         "Table '%s' did not transition to active within: %s",
-        tableName, tableActiveTimeout.toString()
+        tableName, tableActiveTimeout
     );
     logger.error(message);
     throw new TableActiveTimeoutException(message);

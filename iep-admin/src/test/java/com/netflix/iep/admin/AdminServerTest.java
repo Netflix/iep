@@ -114,7 +114,7 @@ public class AdminServerTest {
         while ((len = dataIn.read(buffer)) > 0) {
           baos.write(buffer, 0, len);
         }
-        content = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+        content = baos.toString(StandardCharsets.UTF_8);
       }
     }
 

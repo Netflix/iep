@@ -83,14 +83,12 @@ public class Attachment {
   }
 
   @Override public String toString() {
-    return new StringBuilder()
-        .append(EmailHeader.contentType(contentType, name).toString())
-        .append(EmailHeader.contentTransferEncoding("base64").toString())
-        .append(EmailHeader.contentDisposition(disposition).toString())
-        .append(EmailHeader.contentID(name).toString())
-        .append(EncodingUtils.CRLF)
-        .append(EncodingUtils.base64(data))
-        .append(EncodingUtils.CRLF)
-        .toString();
+    return String.valueOf(EmailHeader.contentType(contentType, name)) +
+        EmailHeader.contentTransferEncoding("base64") +
+        EmailHeader.contentDisposition(disposition) +
+        EmailHeader.contentID(name) +
+        EncodingUtils.CRLF +
+        EncodingUtils.base64(data) +
+        EncodingUtils.CRLF;
   }
 }

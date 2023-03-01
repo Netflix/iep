@@ -38,8 +38,7 @@ public class EndpointMapping {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof EndpointMapping)) return false;
-    EndpointMapping that = (EndpointMapping) o;
+    if (!(o instanceof EndpointMapping that)) return false;
     return path.equals(that.path) && object.equals(that.object);
   }
 

@@ -286,7 +286,7 @@ public final class ServerGroup {
   }
 
   // Prefix added for nimble enabled server groups
-  private static String NIMBLE_PREFIX = "nimble_";
+  private static final String NIMBLE_PREFIX = "nimble_";
 
   /**
    * Merge both sets of groups.
@@ -359,7 +359,7 @@ public final class ServerGroup {
     private int minSize;
     private int maxSize;
     private int desiredSize;
-    private List<Instance> instances = new ArrayList<>();
+    private final List<Instance> instances = new ArrayList<>();
 
     private Builder() {
     }
