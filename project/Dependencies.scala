@@ -22,7 +22,7 @@ object Dependencies {
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.9.3"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.12.3"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.14"
   val graalJs            = "org.graalvm.js" % "js" % graal
   val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
