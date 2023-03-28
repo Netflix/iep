@@ -28,6 +28,7 @@ import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
 import software.amazon.awssdk.http.SdkHttpConfigurationOption;
 import software.amazon.awssdk.http.SdkHttpService;
 import software.amazon.awssdk.http.apache.ApacheSdkHttpService;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ec2.Ec2AsyncClient;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.DescribeAddressesRequest;
@@ -41,6 +42,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @RunWith(JUnit4.class)
@@ -165,6 +167,13 @@ public class AwsClientFactoryTest {
   }
 
   @Test
+  public void newInstanceRegion() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    Ec2Client ec2 = factory.newInstance("ec2-test", Ec2Client.class, "123", Optional.of(Region.of("us-east-1")));
+    Assert.assertNotNull(ec2);
+  }
+
+  @Test
   public void newInstanceInterfaceAsync() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
     Ec2AsyncClient ec2 = factory.newInstance(Ec2AsyncClient.class);
@@ -207,6 +216,15 @@ public class AwsClientFactoryTest {
     Ec2Client ec2 = factory.getInstance("ec2-test", Ec2Client.class);
     Assert.assertNotNull(ec2);
     Assert.assertSame(ec2, factory.getInstance("ec2-test", Ec2Client.class));
+    Assert.assertNotSame(ec2, factory.getInstance(Ec2Client.class));
+  }
+
+  @Test
+  public void getInstanceRegion() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    Ec2Client ec2 = factory.getInstance("ec2-test", Ec2Client.class, "123", Optional.of(Region.of("us-east-1")));
+    Assert.assertNotNull(ec2);
+    Assert.assertSame(ec2, factory.getInstance("ec2-test", Ec2Client.class, "123", Optional.of(Region.of("us-east-1"))));
     Assert.assertNotSame(ec2, factory.getInstance(Ec2Client.class));
   }
 
