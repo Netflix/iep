@@ -43,6 +43,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -344,22 +345,44 @@ public class AwsClientFactory implements AutoCloseable {
    */
   @SuppressWarnings("unchecked")
   public <T> T newInstance(String name, Class<T> cls, String accountId) {
+    return newInstance(name, cls, accountId, Optional.empty());
+  }
+
+  /**
+   * Create a new instance of an AWS client. This method will always create a new instance.
+   * If you want to create or reuse an existing instance, then see
+   * {@link #getInstance(String, Class, String, Optional)}.
+   *
+   * @param name
+   *     Name of the client. This is used to load config settings specific to the name.
+   * @param cls
+   *     Class for the AWS client type to create, e.g. {@code Ec2Client.class}.
+   * @param accountId
+   *     The AWS account id to use when assuming to a role. If null, then the account
+   *     id should be specified directly in the role-arn setting or leave out the setting
+   *     to use the default credentials provider.
+   * @param region
+   *     An optional region to override that of the configuration.
+   * @return
+   *     AWS client instance.
+   */
+  public <T> T newInstance(String name, Class<T> cls, String accountId, Optional<Region> region) {
     try {
       SdkHttpService service = createSyncHttpService(name);
       Method builderMethod = cls.getMethod("builder");
       AwsClientBuilder<?, ?> builder = ((AwsClientBuilder<?, ?>) builderMethod.invoke(null))
           .credentialsProvider(createCredentialsProvider(name, accountId, service))
-          .region(chooseRegion(name, cls))
+          .region(region.orElseGet(() -> chooseRegion(name, cls)))
           .overrideConfiguration(createClientConfig(name));
       AttributeMap attributeMap = getSdkHttpConfigurationOptions(name);
 
       if (builder instanceof AwsSyncClientBuilder<?, ?>) {
         ((AwsSyncClientBuilder<?, ?>) builder)
-                .httpClient(service.createHttpClientBuilder().buildWithDefaults(attributeMap));
+            .httpClient(service.createHttpClientBuilder().buildWithDefaults(attributeMap));
       } else if (builder instanceof AwsAsyncClientBuilder<?, ?>) {
         SdkAsyncHttpService asyncService = createAsyncHttpService(name);
         ((AwsAsyncClientBuilder<?, ?>) builder)
-                .httpClient(asyncService.createAsyncHttpClientFactory().buildWithDefaults(attributeMap));
+            .httpClient(asyncService.createAsyncHttpClientFactory().buildWithDefaults(attributeMap));
       }
 
       return (T) builder.build();
@@ -432,10 +455,30 @@ public class AwsClientFactory implements AutoCloseable {
    */
   @SuppressWarnings("unchecked")
   public <T> T getInstance(String name, Class<T> cls, String accountId) {
+    return getInstance(name, cls, accountId, Optional.empty());
+  }
+
+  /**
+   * Get a shared instance of an AWS client.
+   *
+   * @param name
+   *     Name of the client. This is used to load config settings specific to the name.
+   * @param cls
+   *     Class for the AWS client type to create, e.g. {@code Ec2Client.class}.
+   * @param accountId
+   *     The AWS account id to use when assuming to a role. If null, then the account
+   *     id should be specified directly in the role-arn setting or leave out the setting
+   *     to use the default credentials provider.
+   * @param region
+   *     An optional region to override that of the configuration.
+   * @return
+   *     AWS client instance.
+   */
+  public <T> T getInstance(String name, Class<T> cls, String accountId, Optional<Region> region) {
     try {
-      final String key = name + ":" + cls.getName() + ":" + accountId;
+      final String key = name + ":" + cls.getName() + ":" + accountId + ":" + region.orElseGet(() -> chooseRegion(name, cls));
       return (T) clients.computeIfAbsent(key,
-          k -> (SdkAutoCloseable) newInstance(name, cls, accountId));
+          k -> (SdkAutoCloseable) newInstance(name, cls, accountId, region));
     } catch (Exception e) {
       throw new RuntimeException("failed to get instance of " + cls.getName(), e);
     }
