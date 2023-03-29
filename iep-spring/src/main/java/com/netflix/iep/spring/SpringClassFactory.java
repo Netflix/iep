@@ -50,7 +50,6 @@ class SpringClassFactory implements ClassFactory {
       Constructor<?> c = constructors[0];
       Type[] ptypes = c.getGenericParameterTypes();
       Object[] pvalues = new Object[ptypes.length];
-      Annotation[][] annos = c.getParameterAnnotations();
       for (int i = 0; i < pvalues.length; ++i) {
         Object value = overrides.apply(ptypes[i]);
         if (value == null) {
