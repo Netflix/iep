@@ -24,7 +24,6 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.MethodParameter;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.function.Function;
@@ -50,7 +49,6 @@ class SpringClassFactory implements ClassFactory {
       Constructor<?> c = constructors[0];
       Type[] ptypes = c.getGenericParameterTypes();
       Object[] pvalues = new Object[ptypes.length];
-      Annotation[][] annos = c.getParameterAnnotations();
       for (int i = 0; i < pvalues.length; ++i) {
         Object value = overrides.apply(ptypes[i]);
         if (value == null) {
