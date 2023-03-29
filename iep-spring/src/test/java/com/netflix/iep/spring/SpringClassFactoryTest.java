@@ -99,6 +99,19 @@ public class SpringClassFactoryTest {
     }
   }
 
+  @Test
+  public void directQualifier() throws Exception {
+    try (AnnotationConfigApplicationContext context = createContext()) {
+      context.register(StringConfiguration.class);
+      context.registerBean(Wrapper.class);
+      context.refresh();
+      context.start();
+
+      Wrapper obj = context.getBean(ClassFactory.class).newInstance(Wrapper.class);
+      Assert.assertEquals("2", obj.s2);
+    }
+  }
+
   @Configuration
   public static class StringConfiguration {
 
