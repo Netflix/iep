@@ -5,6 +5,8 @@ import java.util.TimeZone
 import scala.io.Source
 import sbt._
 
+import scala.util.Using
+
 /**
  * Loosely based on: https://github.com/Banno/sbt-license-plugin
  *
@@ -13,12 +15,12 @@ import sbt._
  * - supports both test and main source files
  * - add target to check which can fail the build
  */
-object License {
+object LicenseCheck {
   private val lineSeparator = System.getProperty("line.separator")
 
-  def year = Calendar.getInstance(TimeZone.getTimeZone("UTC")).get(Calendar.YEAR)
+  def year: Int = Calendar.getInstance(TimeZone.getTimeZone("UTC")).get(Calendar.YEAR)
 
-  val apache2 = s"""
+  val apache2: String = s"""
    |/*
    | * Copyright 2014-$year Netflix, Inc.
    | *
@@ -51,7 +53,9 @@ object License {
   }
 
   def checkLicenseHeader(file: File): Boolean = {
-    val lines = Source.fromFile(file, "UTF-8").getLines().toList
+    val lines = Using.resource(Source.fromFile(file, "UTF-8")) { src =>
+      src.getLines().toList
+    }
     checkLicenseHeader(lines)
   }
 
@@ -65,7 +69,9 @@ object License {
   }
 
   def formatLicenseHeader(log: Logger, file: File): Unit = {
-    val lines = Source.fromFile(file, "UTF-8").getLines().toList
+    val lines = Using.resource(Source.fromFile(file, "UTF-8")) { src =>
+      src.getLines().toList
+    }
     if (!checkLicenseHeader(lines)) {
       log.info(s"fixing license header: $file")
       writeLines(file, apache2 :: removeExistingHeader(lines))
