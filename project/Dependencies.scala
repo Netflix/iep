@@ -4,7 +4,6 @@ object Dependencies {
   object Versions {
     val assertj    = "3.24.2"
     val aws2       = "2.20.35"
-    val graal      = "21.1.0"
     val jackson    = "2.14.2"
     val scala      = "2.12.15"
     val slf4j      = "1.7.36"
@@ -23,8 +22,6 @@ object Dependencies {
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "2.9.3"
   val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.14"
-  val graalJs            = "org.graalvm.js" % "js" % graal
-  val graalJsEngine      = "org.graalvm.js" % "js-scriptengine" % graal
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "2.1.1"
