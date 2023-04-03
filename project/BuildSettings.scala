@@ -3,13 +3,13 @@ import sbt.Keys._
 
 object BuildSettings {
 
-  val javaCompilerFlags = Seq(
+  val javaCompilerFlags: Seq[String] = Seq(
     "-Xlint:unchecked",
     "--release", "17")
 
-  val javadocFlags = Seq("-Xdoclint:none")
+  val javadocFlags: Seq[String] = Seq("-Xdoclint:none")
 
-  val compilerFlags = Seq(
+  val compilerFlags: Seq[String] = Seq(
     "-deprecation",
     "-unchecked",
     "-Xexperimental",
@@ -20,9 +20,9 @@ object BuildSettings {
   lazy val checkLicenseHeaders = taskKey[Unit]("Check the license headers for all source files.")
   lazy val formatLicenseHeaders = taskKey[Unit]("Fix the license headers for all source files.")
 
-  lazy val baseSettings = GitVersion.settings
+  lazy val baseSettings: Seq[Def.Setting[_]] = GitVersion.settings
 
-  lazy val buildSettings = baseSettings ++ Seq(
+  lazy val buildSettings: Seq[Def.Setting[_]] = baseSettings ++ Seq(
     organization := "com.netflix.iep",
     scalaVersion := Dependencies.Versions.scala,
     scalacOptions ++= BuildSettings.compilerFlags,
@@ -39,8 +39,8 @@ object BuildSettings {
     // Linting: https://github.com/sbt/sbt/pull/5153
     (update / evictionWarningOptions).withRank(KeyRanks.Invisible) := EvictionWarningOptions.empty,
 
-    checkLicenseHeaders := License.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
-    formatLicenseHeaders := License.formatLicenseHeaders(streams.value.log, sourceDirectory.value),
+    checkLicenseHeaders := LicenseCheck.checkLicenseHeaders(streams.value.log, sourceDirectory.value),
+    formatLicenseHeaders := LicenseCheck.formatLicenseHeaders(streams.value.log, sourceDirectory.value),
 
     packageBin / packageOptions += Package.ManifestAttributes(
       "Build-Date"   -> java.time.Instant.now().toString,
@@ -48,18 +48,18 @@ object BuildSettings {
       "Commit"       -> sys.env.getOrElse("GITHUB_SHA",    "unknown"))
   )
 
-  lazy val commonDeps = Seq(
+  lazy val commonDeps: Seq[ModuleID] = Seq(
     Dependencies.junitInterface % "test"
   )
 
-  val resolvers = Seq(
+  val resolvers: Seq[Resolver] = Seq(
     Resolver.mavenLocal,
     Resolver.mavenCentral
   )
 
   // Don't create root.jar, from:
   // http://stackoverflow.com/questions/20747296/producing-no-artifact-for-root-project-with-package-under-multi-project-build-in
-  lazy val noPackaging = Seq(
+  lazy val noPackaging: Seq[Def.Setting[_]] = Seq(
     Keys.`package` :=  file(""),
     packageBin in Global :=  file(""),
     packagedArtifacts :=  Map()
