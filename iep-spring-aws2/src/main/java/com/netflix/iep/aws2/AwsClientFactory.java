@@ -153,8 +153,8 @@ public class AwsClientFactory implements AutoCloseable {
   }
 
   private AwsCredentialsProvider createAssumeRoleProvider(
-      Config cfg, String accountId, AwsCredentialsProvider p, SdkHttpService service) {
-    final String arn = createRoleArn(cfg.getString("role-arn"), accountId);
+      Config cfg, String accountId, AwsCredentialsProvider p, SdkHttpService service, Optional<String> arnPattern) {
+    final String arn = arnPattern.orElseGet(() -> createRoleArn(cfg.getString("role-arn"), accountId));
     final String name = cfg.getString("role-session-name");
     final StsClient stsClient = StsClient.builder()
         .credentialsProvider(p)
@@ -172,13 +172,13 @@ public class AwsClientFactory implements AutoCloseable {
   }
 
   AwsCredentialsProvider createCredentialsProvider(
-      String name, String accountId, SdkHttpService service) {
+      String name, String accountId, SdkHttpService service, Optional<String> arnPattern) {
     final AwsCredentialsProvider dflt = DefaultCredentialsProvider.builder()
         .asyncCredentialUpdateEnabled(true)
         .build();
     final Config cfg = getConfig(name, "credentials");
-    if (cfg.hasPath("role-arn")) {
-      return createAssumeRoleProvider(cfg, accountId, dflt, service);
+    if (arnPattern.isPresent() || cfg.hasPath("role-arn")) {
+      return createAssumeRoleProvider(cfg, accountId, dflt, service, arnPattern);
     } else {
       if (accountId != null) {
         LOGGER.warn("requested account, {}, ignored, no role ARN configured", accountId);
@@ -345,13 +345,13 @@ public class AwsClientFactory implements AutoCloseable {
    */
   @SuppressWarnings("unchecked")
   public <T> T newInstance(String name, Class<T> cls, String accountId) {
-    return newInstance(name, cls, accountId, Optional.empty());
+    return newInstance(name, cls, accountId, Optional.empty(), Optional.empty());
   }
 
   /**
    * Create a new instance of an AWS client. This method will always create a new instance.
    * If you want to create or reuse an existing instance, then see
-   * {@link #getInstance(String, Class, String, Optional)}.
+   * {@link #getInstance(String, Class, String, Optional, Optional)}.
    *
    * @param name
    *     Name of the client. This is used to load config settings specific to the name.
@@ -363,15 +363,24 @@ public class AwsClientFactory implements AutoCloseable {
    *     to use the default credentials provider.
    * @param region
    *     An optional region to override that of the configuration.
+   * @param arnPattern
+   *     An optional pattern for the ARN to use when assuming a role. Uses the config if
+   *     not specified.
    * @return
    *     AWS client instance.
    */
-  public <T> T newInstance(String name, Class<T> cls, String accountId, Optional<Region> region) {
+  public <T> T newInstance(
+      String name,
+      Class<T> cls,
+      String accountId,
+      Optional<Region> region,
+      Optional<String> arnPattern
+  ) {
     try {
       SdkHttpService service = createSyncHttpService(name);
       Method builderMethod = cls.getMethod("builder");
       AwsClientBuilder<?, ?> builder = ((AwsClientBuilder<?, ?>) builderMethod.invoke(null))
-          .credentialsProvider(createCredentialsProvider(name, accountId, service))
+          .credentialsProvider(createCredentialsProvider(name, accountId, service, arnPattern))
           .region(region.orElseGet(() -> chooseRegion(name, cls)))
           .overrideConfiguration(createClientConfig(name));
       AttributeMap attributeMap = getSdkHttpConfigurationOptions(name);
@@ -455,7 +464,7 @@ public class AwsClientFactory implements AutoCloseable {
    */
   @SuppressWarnings("unchecked")
   public <T> T getInstance(String name, Class<T> cls, String accountId) {
-    return getInstance(name, cls, accountId, Optional.empty());
+    return getInstance(name, cls, accountId, Optional.empty(), Optional.empty());
   }
 
   /**
@@ -471,14 +480,27 @@ public class AwsClientFactory implements AutoCloseable {
    *     to use the default credentials provider.
    * @param region
    *     An optional region to override that of the configuration.
+   * @param arnPattern
+   *     An optional pattern for the ARN to use when assuming a role. Uses the config if
+   *     not specified.
    * @return
    *     AWS client instance.
    */
-  public <T> T getInstance(String name, Class<T> cls, String accountId, Optional<Region> region) {
+  public <T> T getInstance(
+      String name,
+      Class<T> cls,
+      String accountId,
+      Optional<Region> region,
+      Optional<String> arnPattern
+  ) {
     try {
-      final String key = name + ":" + cls.getName() + ":" + accountId + ":" + region.orElseGet(() -> chooseRegion(name, cls));
+      final String key = name + ":"
+          + cls.getName() + ":"
+          + accountId + ":"
+          + region.orElseGet(() -> chooseRegion(name, cls))
+          + ":" + arnPattern.orElse("");
       return (T) clients.computeIfAbsent(key,
-          k -> (SdkAutoCloseable) newInstance(name, cls, accountId, region));
+          k -> (SdkAutoCloseable) newInstance(name, cls, accountId, region, arnPattern));
     } catch (Exception e) {
       throw new RuntimeException("failed to get instance of " + cls.getName(), e);
     }

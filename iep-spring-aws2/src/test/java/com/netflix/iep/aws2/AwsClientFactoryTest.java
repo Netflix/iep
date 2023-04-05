@@ -36,7 +36,6 @@ import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
 import software.amazon.awssdk.utils.AttributeMap;
 
-
 import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.Collections;
@@ -99,7 +98,7 @@ public class AwsClientFactoryTest {
   @Test
   public void createCredentialsProvider() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider(null, null, httpService());
+    AwsCredentialsProvider creds = factory.createCredentialsProvider(null, null, httpService(), Optional.empty());
     Assert.assertTrue(creds instanceof DefaultCredentialsProvider);
   }
 
@@ -116,7 +115,7 @@ public class AwsClientFactoryTest {
   @Test
   public void createCredentialsProviderOverride() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", null, httpService());
+    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", null, httpService(), Optional.empty());
     Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
     Assert.assertEquals("arn:aws:iam::1234567890:role/IepTest", getRequest(creds).roleArn());
     Assert.assertEquals("iep", getRequest(creds).roleSessionName());
@@ -125,22 +124,31 @@ public class AwsClientFactoryTest {
   @Test
   public void createCredentialsProviderForAccount() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-account", "123", httpService());
+    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-account", "123", httpService(), Optional.empty());
     Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
     Assert.assertEquals("arn:aws:iam::123:role/IepTest", getRequest(creds).roleArn());
+    Assert.assertEquals("ieptest", getRequest(creds).roleSessionName());
+  }
+
+  @Test
+  public void createCredentialsProviderForAccountandARN() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-account", "123", httpService(), Optional.of("arn:aws:iam::1234567890:role/DiffRole"));
+    Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
+    Assert.assertEquals("arn:aws:iam::1234567890:role/DiffRole", getRequest(creds).roleArn());
     Assert.assertEquals("ieptest", getRequest(creds).roleSessionName());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void createCredentialsProviderForAccountNull() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    factory.createCredentialsProvider("ec2-account", null, httpService());
+    factory.createCredentialsProvider("ec2-account", null, httpService(), Optional.empty());
   }
 
   @Test
   public void createCredentialsProviderForAccountIgnored() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", "123", httpService());
+    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", "123", httpService(), Optional.empty());
     Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
     Assert.assertEquals("arn:aws:iam::1234567890:role/IepTest", getRequest(creds).roleArn());
     Assert.assertEquals("iep", getRequest(creds).roleSessionName());
@@ -169,7 +177,7 @@ public class AwsClientFactoryTest {
   @Test
   public void newInstanceRegion() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    Ec2Client ec2 = factory.newInstance("ec2-test", Ec2Client.class, "123", Optional.of(Region.of("us-east-1")));
+    Ec2Client ec2 = factory.newInstance("ec2-test", Ec2Client.class, "123", Optional.of(Region.of("us-east-1")), Optional.empty());
     Assert.assertNotNull(ec2);
   }
 
@@ -222,10 +230,18 @@ public class AwsClientFactoryTest {
   @Test
   public void getInstanceRegion() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    Ec2Client ec2 = factory.getInstance("ec2-test", Ec2Client.class, "123", Optional.of(Region.of("us-east-1")));
+    Ec2Client ec2 = factory.getInstance("ec2-test", Ec2Client.class, "123", Optional.of(Region.of("us-east-1")), Optional.empty());
     Assert.assertNotNull(ec2);
-    Assert.assertSame(ec2, factory.getInstance("ec2-test", Ec2Client.class, "123", Optional.of(Region.of("us-east-1"))));
+    Assert.assertSame(ec2, factory.getInstance("ec2-test", Ec2Client.class, "123", Optional.of(Region.of("us-east-1")), Optional.empty()));
     Assert.assertNotSame(ec2, factory.getInstance(Ec2Client.class));
+  }
+
+  @Test
+  public void getInstanceARN() throws Exception {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    Ec2Client ec2 = factory.getInstance("ec2-test", Ec2Client.class, "123", Optional.empty(), Optional.empty());
+    Assert.assertNotNull(ec2);
+    Assert.assertNotSame(ec2, factory.getInstance("ec2-test", Ec2Client.class, "123", Optional.empty(), Optional.of("arn:aws:iam::1234567890:role/DiffRole")));
   }
 
   @Test
