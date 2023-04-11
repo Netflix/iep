@@ -11,17 +11,13 @@ jobs:
     if: ${{ github.repository == 'Netflix/iep' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.sbt
-            ~/.ivy2
-          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt') }}
+          distribution: 'temurin'
+          cache: 'sbt'
       - name: SetupPGP
         run: echo $ORG_SIGNING_KEY | sed -r 's/-----[^-]+-----//g;s/\n//g;s/ //g' | base64 --decode | gpg --batch --import
         env:
