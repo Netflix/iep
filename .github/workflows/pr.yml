@@ -14,12 +14,8 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.sbt
-            ~/.ivy2
-          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt') }}
+          distribution: 'temurin'
+          cache: 'sbt'
       - name: Build
         run: cat /dev/null | project/sbt clean test
   check:
@@ -30,11 +26,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.sbt
-            ~/.ivy2
-          key: ${{ runner.os }}-${{ hashFiles('**/*.sbt') }}
+          distribution: 'temurin'
+          cache: 'sbt'
       - name: Build
         run: cat /dev/null | project/sbt checkLicenseHeaders
