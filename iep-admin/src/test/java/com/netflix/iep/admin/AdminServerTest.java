@@ -160,7 +160,6 @@ public class AdminServerTest {
   public void resolveLocalhost() throws Exception {
     InetSocketAddress addr = AdminServer.resolve("localhost", 12345);
     Assert.assertTrue(addr.getAddress().isLoopbackAddress());
-    System.out.println(addr.getAddress().getClass().getSimpleName());
   }
 
   @Test
