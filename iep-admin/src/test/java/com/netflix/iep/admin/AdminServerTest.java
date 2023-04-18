@@ -26,6 +26,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URL;
@@ -53,6 +56,10 @@ public class AdminServerTest {
   public void before() throws IOException {
     port = getUnusedPort();
     AdminConfig config = new AdminConfig() {
+      @Override public String listenOn() {
+        return null;
+      }
+
       @Override public int port() {
         return port;
       }
@@ -135,6 +142,38 @@ public class AdminServerTest {
 
   private Response httpOptions(String path, Map<String, String> headers) throws Exception {
     return http("OPTIONS", path, headers);
+  }
+
+  @Test
+  public void resolveNull() throws Exception {
+    InetSocketAddress addr = AdminServer.resolve(null, 12345);
+    Assert.assertTrue(addr.getAddress().isLoopbackAddress());
+  }
+
+  @Test
+  public void resolveAny() throws Exception {
+    InetSocketAddress addr = AdminServer.resolve("*", 12345);
+    Assert.assertTrue(addr.getAddress().isAnyLocalAddress());
+  }
+
+  @Test
+  public void resolveLocalhost() throws Exception {
+    InetSocketAddress addr = AdminServer.resolve("localhost", 12345);
+    Assert.assertTrue(addr.getAddress().isLoopbackAddress());
+  }
+
+  @Test
+  public void resolveLocalhostV4() throws Exception {
+    InetSocketAddress addr = AdminServer.resolve("127.0.0.1", 12345);
+    Assert.assertTrue(addr.getAddress().isLoopbackAddress());
+    Assert.assertTrue(addr.getAddress() instanceof Inet4Address);
+  }
+
+  @Test
+  public void resolveLocalhostV6() throws Exception {
+    InetSocketAddress addr = AdminServer.resolve("::1", 12345);
+    Assert.assertTrue(addr.getAddress().isLoopbackAddress());
+    Assert.assertTrue(addr.getAddress() instanceof Inet6Address);
   }
 
   @Test

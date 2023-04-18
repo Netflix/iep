@@ -31,6 +31,10 @@ public interface AdminConfig {
   AdminConfig DEFAULT = new AdminConfig() {
     private final Config cfg = ConfigManager.get().getConfig("netflix.iep.admin");
 
+    @Override public String listenOn() {
+      return cfg.getString("listen-on");
+    }
+
     @Override public int port() {
       return cfg.getInt("port");
     }
@@ -47,6 +51,9 @@ public interface AdminConfig {
       return cfg.getString("ui-location");
     }
   };
+
+  /** Host for the server to listen on. */
+  String listenOn();
 
   /** Port to use for the admin server. */
   int port();

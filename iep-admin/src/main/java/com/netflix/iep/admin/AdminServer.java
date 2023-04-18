@@ -22,7 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -46,6 +48,12 @@ public class AdminServer implements AutoCloseable {
     return endpoints;
   }
 
+  static InetSocketAddress resolve(String host, int port) throws UnknownHostException {
+    return "*".equals(host)
+        ? new InetSocketAddress(port)
+        : new InetSocketAddress(InetAddress.getByName(host), port);
+  }
+
   private final AdminConfig config;
   private final HttpServer server;
 
@@ -57,7 +65,7 @@ public class AdminServer implements AutoCloseable {
       throws IOException {
     this.config = config;
 
-    InetSocketAddress address = new InetSocketAddress(config.port());
+    InetSocketAddress address = resolve(config.listenOn(), config.port());
     this.server = HttpServer.create(address, config.backlog());
 
     TreeSet<String> paths = new TreeSet<>(endpoints.keySet());
