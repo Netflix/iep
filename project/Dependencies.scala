@@ -3,12 +3,12 @@ import sbt._
 object Dependencies {
   object Versions {
     val assertj    = "3.24.2"
-    val aws2       = "2.20.62"
-    val jackson    = "2.15.0"
+    val aws2       = "2.20.98"
+    val jackson    = "2.15.2"
     val scala      = "2.12.15"
     val slf4j      = "1.7.36"
-    val spectator  = "1.6.4"
-    val spring     = "6.0.8"
+    val spectator  = "1.6.6"
+    val spring     = "6.0.10"
   }
 
   import Versions._
@@ -21,7 +21,7 @@ object Dependencies {
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.1.6"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.14.1"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.14.3"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "2.1.1"
@@ -31,7 +31,7 @@ object Dependencies {
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
-  val mockitoCore        = "org.mockito" % "mockito-core" % "5.3.1"
+  val mockitoCore        = "org.mockito" % "mockito-core" % "5.4.0"
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi       = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorAtlas     = "com.netflix.spectator" % "spectator-reg-atlas" % spectator
