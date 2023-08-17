@@ -104,8 +104,7 @@ public class AwsClientFactory implements AutoCloseable {
     }
   }
 
-  ClientOverrideConfiguration createClientConfig(String name) {
-    final Config cfg = getConfig(name, "client");
+  ClientOverrideConfiguration createClientConfig(Config cfg) {
     ClientOverrideConfiguration.Builder builder = ClientOverrideConfiguration.builder();
 
     setIfPresent(cfg, "api-call-timeout", builder::apiCallTimeout);
@@ -130,11 +129,18 @@ public class AwsClientFactory implements AutoCloseable {
     return builder.build();
   }
 
-  private Config getConfig(String name, String suffix) {
+  Config getConfig(String name, Class<?> cls) {
     final String cfgPrefix = "netflix.iep.aws";
-    return (name != null && config.hasPath(cfgPrefix + "." + name + "." + suffix))
-        ? config.getConfig(cfgPrefix + "." + name + "." + suffix)
-        : config.getConfig(cfgPrefix + ".default." + suffix);
+    Config cfg = config.getConfig(cfgPrefix + ".default");
+
+    final String service = getDefaultName(cls);
+    if (config.hasPath(cfgPrefix + "." + service)) {
+      cfg = config.getConfig(cfgPrefix + "." + service).withFallback(cfg);
+    }
+
+    return (name != null && config.hasPath(cfgPrefix + "." + name))
+        ? config.getConfig(cfgPrefix + "." + name).withFallback(cfg)
+        : cfg;
   }
 
   private String createRoleArn(String arnPattern, String accountId) {
@@ -172,11 +178,10 @@ public class AwsClientFactory implements AutoCloseable {
   }
 
   AwsCredentialsProvider createCredentialsProvider(
-      String name, String accountId, SdkHttpService service) {
+      Config cfg, String accountId, SdkHttpService service) {
     final AwsCredentialsProvider dflt = DefaultCredentialsProvider.builder()
         .asyncCredentialUpdateEnabled(true)
         .build();
-    final Config cfg = getConfig(name, "credentials");
     if (cfg.hasPath("role-arn")) {
       return createAssumeRoleProvider(cfg, accountId, dflt, service);
     } else {
@@ -187,9 +192,8 @@ public class AwsClientFactory implements AutoCloseable {
     }
   }
 
-  AttributeMap getSdkHttpConfigurationOptions(String name) {
+  AttributeMap getSdkHttpConfigurationOptions(Config clientConfig) {
     Map<AttributeMap.Key<?>, Object> configuration = new HashMap<>();
-    Config clientConfig = getConfig(name, "client");
 
     if(clientConfig.hasPath("http-configuration")) {
       Config httpConfig =  clientConfig.getConfig("http-configuration");
@@ -233,8 +237,7 @@ public class AwsClientFactory implements AutoCloseable {
     return Region.of(endpointRegion);
   }
 
-  private SdkHttpService createSyncHttpService(String name) {
-    Config clientConfig = getConfig(name, "client");
+  private SdkHttpService createSyncHttpService(Config clientConfig) {
     if (clientConfig.hasPath("sync-http-impl")) {
       String clsName = clientConfig.getString("sync-http-impl");
       try {
@@ -256,8 +259,7 @@ public class AwsClientFactory implements AutoCloseable {
     }
   }
 
-  private SdkAsyncHttpService createAsyncHttpService(String name) {
-    Config clientConfig = getConfig(name, "client");
+  private SdkAsyncHttpService createAsyncHttpService(Config clientConfig) {
     if (clientConfig.hasPath("async-http-impl")) {
       String clsName = clientConfig.getString("async-http-impl");
       try {
@@ -366,21 +368,25 @@ public class AwsClientFactory implements AutoCloseable {
    * @return
    *     AWS client instance.
    */
+  @SuppressWarnings("unchecked")
   public <T> T newInstance(String name, Class<T> cls, String accountId, Optional<Region> region) {
     try {
-      SdkHttpService service = createSyncHttpService(name);
+      Config cfg = getConfig(name, cls);
+      Config clientConfig = cfg.getConfig("client");
+      SdkHttpService service = createSyncHttpService(clientConfig);
       Method builderMethod = cls.getMethod("builder");
       AwsClientBuilder<?, ?> builder = ((AwsClientBuilder<?, ?>) builderMethod.invoke(null))
-          .credentialsProvider(createCredentialsProvider(name, accountId, service))
+          .credentialsProvider(createCredentialsProvider(cfg.getConfig("credentials"), accountId, service))
           .region(region.orElseGet(() -> chooseRegion(name, cls)))
-          .overrideConfiguration(createClientConfig(name));
-      AttributeMap attributeMap = getSdkHttpConfigurationOptions(name);
+          .dualstackEnabled(cfg.getBoolean("dualstack"))
+          .overrideConfiguration(createClientConfig(clientConfig));
+      AttributeMap attributeMap = getSdkHttpConfigurationOptions(clientConfig);
 
       if (builder instanceof AwsSyncClientBuilder<?, ?>) {
         ((AwsSyncClientBuilder<?, ?>) builder)
             .httpClient(service.createHttpClientBuilder().buildWithDefaults(attributeMap));
       } else if (builder instanceof AwsAsyncClientBuilder<?, ?>) {
-        SdkAsyncHttpService asyncService = createAsyncHttpService(name);
+        SdkAsyncHttpService asyncService = createAsyncHttpService(clientConfig);
         ((AwsAsyncClientBuilder<?, ?>) builder)
             .httpClient(asyncService.createAsyncHttpClientFactory().buildWithDefaults(attributeMap));
       }
@@ -453,7 +459,6 @@ public class AwsClientFactory implements AutoCloseable {
    * @return
    *     AWS client instance.
    */
-  @SuppressWarnings("unchecked")
   public <T> T getInstance(String name, Class<T> cls, String accountId) {
     return getInstance(name, cls, accountId, Optional.empty());
   }
@@ -474,6 +479,7 @@ public class AwsClientFactory implements AutoCloseable {
    * @return
    *     AWS client instance.
    */
+  @SuppressWarnings("unchecked")
   public <T> T getInstance(String name, Class<T> cls, String accountId, Optional<Region> region) {
     try {
       final String key = name + ":" + cls.getName() + ":" + accountId + ":" + region.orElseGet(() -> chooseRegion(name, cls));

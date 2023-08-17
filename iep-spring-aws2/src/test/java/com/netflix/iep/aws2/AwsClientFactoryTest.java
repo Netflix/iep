@@ -32,6 +32,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ec2.Ec2AsyncClient;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.DescribeAddressesRequest;
+import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
 import software.amazon.awssdk.utils.AttributeMap;
@@ -74,21 +75,24 @@ public class AwsClientFactoryTest {
   @Test
   public void createClientConfig() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    ClientOverrideConfiguration settings = factory.createClientConfig(null);
+    Config cfg = factory.getConfig(null, Ec2Client.class).getConfig("client");
+    ClientOverrideConfiguration settings = factory.createClientConfig(cfg);
     Assert.assertEquals("default", getUserAgentPrefix(settings));
   }
 
   @Test
   public void createClientConfigOverride() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    ClientOverrideConfiguration settings = factory.createClientConfig("ec2-test");
+    Config cfg = factory.getConfig("ec2-test", Ec2Client.class).getConfig("client");
+    ClientOverrideConfiguration settings = factory.createClientConfig(cfg);
     Assert.assertEquals("ignored-defaults", getUserAgentPrefix(settings));
   }
 
   @Test
   public void createClientConfigOverrideWithDefaults() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    ClientOverrideConfiguration settings = factory.createClientConfig("ec2-test-default");
+    Config cfg = factory.getConfig("ec2-test-default", Ec2Client.class).getConfig("client");
+    ClientOverrideConfiguration settings = factory.createClientConfig(cfg);
     Assert.assertEquals("override-defaults", getUserAgentPrefix(settings));
   }
 
@@ -99,7 +103,8 @@ public class AwsClientFactoryTest {
   @Test
   public void createCredentialsProvider() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider(null, null, httpService());
+    Config cfg = factory.getConfig(null, Ec2Client.class).getConfig("credentials");
+    AwsCredentialsProvider creds = factory.createCredentialsProvider(cfg, null, httpService());
     Assert.assertTrue(creds instanceof DefaultCredentialsProvider);
   }
 
@@ -116,7 +121,8 @@ public class AwsClientFactoryTest {
   @Test
   public void createCredentialsProviderOverride() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", null, httpService());
+    Config cfg = factory.getConfig("ec2-test", Ec2Client.class).getConfig("credentials");
+    AwsCredentialsProvider creds = factory.createCredentialsProvider(cfg, null, httpService());
     Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
     Assert.assertEquals("arn:aws:iam::1234567890:role/IepTest", getRequest(creds).roleArn());
     Assert.assertEquals("iep", getRequest(creds).roleSessionName());
@@ -125,7 +131,8 @@ public class AwsClientFactoryTest {
   @Test
   public void createCredentialsProviderForAccount() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-account", "123", httpService());
+    Config cfg = factory.getConfig("ec2-account", Ec2Client.class).getConfig("credentials");
+    AwsCredentialsProvider creds = factory.createCredentialsProvider(cfg, "123", httpService());
     Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
     Assert.assertEquals("arn:aws:iam::123:role/IepTest", getRequest(creds).roleArn());
     Assert.assertEquals("ieptest", getRequest(creds).roleSessionName());
@@ -134,13 +141,15 @@ public class AwsClientFactoryTest {
   @Test(expected = IllegalArgumentException.class)
   public void createCredentialsProviderForAccountNull() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    factory.createCredentialsProvider("ec2-account", null, httpService());
+    Config cfg = factory.getConfig("ec2-account", Ec2Client.class).getConfig("credentials");
+    factory.createCredentialsProvider(cfg, null, httpService());
   }
 
   @Test
   public void createCredentialsProviderForAccountIgnored() throws Exception {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AwsCredentialsProvider creds = factory.createCredentialsProvider("ec2-test", "123", httpService());
+    Config cfg = factory.getConfig("ec2-test", Ec2Client.class).getConfig("credentials");
+    AwsCredentialsProvider creds = factory.createCredentialsProvider(cfg, "123", httpService());
     Assert.assertTrue(creds instanceof StsAssumeRoleCredentialsProvider);
     Assert.assertEquals("arn:aws:iam::1234567890:role/IepTest", getRequest(creds).roleArn());
     Assert.assertEquals("iep", getRequest(creds).roleSessionName());
@@ -239,21 +248,24 @@ public class AwsClientFactoryTest {
   @Test
   public void settingsUserAgentPrefix() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    ClientOverrideConfiguration settings = factory.createClientConfig(null);
+    Config cfg = factory.getConfig(null, Ec2Client.class).getConfig("client");
+    ClientOverrideConfiguration settings = factory.createClientConfig(cfg);
     Assert.assertEquals("default", getUserAgentPrefix(settings));
   }
 
   @Test
   public void settingsUserAgentSuffix() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    ClientOverrideConfiguration settings = factory.createClientConfig(null);
+    Config cfg = factory.getConfig(null, Ec2Client.class).getConfig("client");
+    ClientOverrideConfiguration settings = factory.createClientConfig(cfg);
     Assert.assertEquals("suffix", getUserAgentSuffix(settings));
   }
 
   @Test
   public void settingsHeaders() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    ClientOverrideConfiguration settings = factory.createClientConfig("headers");
+    Config cfg = factory.getConfig("headers", Ec2Client.class).getConfig("client");
+    ClientOverrideConfiguration settings = factory.createClientConfig(cfg);
     Map<String, List<String>> headers = settings.headers();
     Assert.assertEquals(1, headers.size());
     Assert.assertEquals(Collections.singletonList("gzip"), headers.get("Accept-Encoding"));
@@ -262,7 +274,8 @@ public class AwsClientFactoryTest {
   @Test
   public void settingsHeadersInvalid() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    ClientOverrideConfiguration settings = factory.createClientConfig("headers-invalid");
+    Config cfg = factory.getConfig("headers-invalid", Ec2Client.class).getConfig("client");
+    ClientOverrideConfiguration settings = factory.createClientConfig(cfg);
     Map<String, List<String>> headers = settings.headers();
     Assert.assertTrue(headers.isEmpty());
   }
@@ -270,7 +283,8 @@ public class AwsClientFactoryTest {
   @Test
   public void settingsTimeout() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    ClientOverrideConfiguration settings = factory.createClientConfig("timeouts");
+    Config cfg = factory.getConfig("timeouts", Ec2Client.class).getConfig("client");
+    ClientOverrideConfiguration settings = factory.createClientConfig(cfg);
     Assert.assertEquals(Duration.ofMillis(42000), settings.apiCallAttemptTimeout().get());
     Assert.assertEquals(Duration.ofMillis(13000), settings.apiCallTimeout().get());
     Assert.assertEquals(Integer.valueOf(5), settings.retryPolicy().get().numRetries());
@@ -279,11 +293,22 @@ public class AwsClientFactoryTest {
   @Test
   public void settingsSdkHttpClient() {
     AwsClientFactory factory = new AwsClientFactory(config);
-    AttributeMap settings = factory.getSdkHttpConfigurationOptions("sdk-http-client");
+    Config cfg = factory.getConfig("sdk-http-client", Ec2Client.class).getConfig("client");
+    AttributeMap settings = factory.getSdkHttpConfigurationOptions(cfg);
     Assert.assertEquals(Duration.ofMillis(60000), settings.get(SdkHttpConfigurationOption.CONNECTION_TIMEOUT));
     Assert.assertEquals(Duration.ofMillis(120000), settings.get(SdkHttpConfigurationOption.CONNECTION_MAX_IDLE_TIMEOUT));
     Assert.assertEquals(500, settings.get(SdkHttpConfigurationOption.MAX_CONNECTIONS).intValue());
     Assert.assertEquals(true, settings.get(SdkHttpConfigurationOption.REAP_IDLE_CONNECTIONS));
+  }
 
+  private boolean isDualstackEnabled(AwsClientFactory factory, Class<?> cls) {
+    return factory.getConfig(null, cls).getBoolean("dualstack");
+  }
+
+  @Test
+  public void dualstack() {
+    AwsClientFactory factory = new AwsClientFactory(config);
+    Assert.assertTrue(isDualstackEnabled(factory, Ec2Client.class));
+    Assert.assertFalse(isDualstackEnabled(factory, StsClient.class));
   }
 }
