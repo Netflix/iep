@@ -61,7 +61,7 @@ class AccessLogHandler implements HttpHandler {
       this.underlying = underlying;
 
       InetSocketAddress addr = underlying.getRemoteAddress();
-      this.entry = IPC_LOGGER.createClientEntry()
+      this.entry = IPC_LOGGER.createServerEntry()
           .withOwner("iep-admin")
           .markStart()
           .withHttpMethod(underlying.getRequestMethod())
