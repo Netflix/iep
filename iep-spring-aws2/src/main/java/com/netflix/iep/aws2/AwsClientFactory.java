@@ -373,12 +373,13 @@ public class AwsClientFactory implements AutoCloseable {
     try {
       Config cfg = getConfig(name, cls);
       Config clientConfig = cfg.getConfig("client");
+      Region selectedRegion = region.orElseGet(() -> chooseRegion(name, cls));
       SdkHttpService service = createSyncHttpService(clientConfig);
       Method builderMethod = cls.getMethod("builder");
       AwsClientBuilder<?, ?> builder = ((AwsClientBuilder<?, ?>) builderMethod.invoke(null))
           .credentialsProvider(createCredentialsProvider(cfg.getConfig("credentials"), accountId, service))
-          .region(region.orElseGet(() -> chooseRegion(name, cls)))
-          .dualstackEnabled(cfg.getBoolean("dualstack"))
+          .region(selectedRegion)
+          .dualstackEnabled(shouldUseDualstack(cfg, selectedRegion))
           .overrideConfiguration(createClientConfig(clientConfig));
       AttributeMap attributeMap = getSdkHttpConfigurationOptions(clientConfig);
 
@@ -395,6 +396,11 @@ public class AwsClientFactory implements AutoCloseable {
     } catch (Exception e) {
       throw new RuntimeException("failed to create instance of " + cls.getName(), e);
     }
+  }
+
+  private boolean shouldUseDualstack(Config cfg, Region region) {
+    return cfg.getBoolean("dualstack")
+        && cfg.getStringList("dualstack-regions").contains(region.id());
   }
 
   /**
