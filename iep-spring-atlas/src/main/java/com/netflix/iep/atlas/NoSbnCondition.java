@@ -26,7 +26,8 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 class NoSbnCondition implements Condition {
   @Override
   public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-    String v = context.getEnvironment().getProperty("management.metrics.export.atlas.enabled");
-    return v == null;
+    String sbn2 = context.getEnvironment().getProperty("management.metrics.export.atlas.enabled");
+    String sbn3 = context.getEnvironment().getProperty("management.atlas.metrics.export.enabled");
+    return sbn2 == null && sbn3 == null;
   }
 }
