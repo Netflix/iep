@@ -43,9 +43,24 @@ public class AtlasConfigurationTest {
   }
 
   @Test(expected = NoSuchBeanDefinitionException.class)
-  public void registryIsNotBoundIfSbnIsPresent() {
+  public void registryIsNotBoundIfSbn2IsPresent() {
     Map<String, Object> props = new HashMap<>();
     props.put("management.metrics.export.atlas.enabled", "true");
+    try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+      context.getEnvironment()
+          .getPropertySources()
+          .addFirst(new MapPropertySource("test", props));
+      context.register(AtlasConfiguration.class);
+      context.refresh();
+      context.start();
+      context.getBean(Registry.class);
+    }
+  }
+
+  @Test(expected = NoSuchBeanDefinitionException.class)
+  public void registryIsNotBoundIfSbn3IsPresent() {
+    Map<String, Object> props = new HashMap<>();
+    props.put("management.atlas.metrics.export.enabled", "true");
     try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
       context.getEnvironment()
           .getPropertySources()
