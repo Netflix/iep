@@ -15,12 +15,15 @@
  */
 package com.netflix.iep.config;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 
 @RunWith(JUnit4.class)
 public class NetflixEnvironmentTest {
@@ -42,5 +45,13 @@ public class NetflixEnvironmentTest {
     } finally {
       Thread.currentThread().setContextClassLoader(cl);
     }
+  }
+
+  @Test
+  public void hostAndIPv6() throws Exception {
+    String host = ConfigManager.get().getString("netflix.iep.env.host");
+    String ip = host.substring(1, host.length() - 1);
+    InetAddress addr = InetAddress.getByName(ip);
+    Assert.assertTrue(addr instanceof Inet6Address);
   }
 }
