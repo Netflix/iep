@@ -42,5 +42,5 @@ object Dependencies {
   val spectatorSidecar   = "com.netflix.spectator" % "spectator-reg-sidecar" % spectator
   val spectatorTagging   = "com.netflix.spectator" % "spectator-nflx-tagging" % spectator
   val springContext      = "org.springframework" % "spring-context" % spring
-  val typesafeConfig     = "com.typesafe" % "config" % "1.4.2"
+  val typesafeConfig     = "com.typesafe" % "config" % "1.4.3"
 }
