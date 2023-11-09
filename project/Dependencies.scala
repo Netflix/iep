@@ -3,12 +3,12 @@ import sbt._
 object Dependencies {
   object Versions {
     val assertj    = "3.24.2"
-    val aws2       = "2.20.162"
-    val jackson    = "2.15.2"
+    val aws2       = "2.21.19"
+    val jackson    = "2.15.3"
     val scala      = "2.12.15"
     val slf4j      = "1.7.36"
-    val spectator  = "1.6.11"
-    val spring     = "6.0.12"
+    val spectator  = "1.7.2"
+    val spring     = "6.0.13"
   }
 
   import Versions._
@@ -27,11 +27,11 @@ object Dependencies {
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "2.1.1"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
-  val jedis              = "redis.clients" % "jedis" % "5.0.0"
+  val jedis              = "redis.clients" % "jedis" % "5.0.2"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
-  val mockitoCore        = "org.mockito" % "mockito-core" % "5.6.0"
+  val mockitoCore        = "org.mockito" % "mockito-core" % "5.7.0"
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi       = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorAtlas     = "com.netflix.spectator" % "spectator-reg-atlas" % spectator
@@ -42,5 +42,5 @@ object Dependencies {
   val spectatorSidecar   = "com.netflix.spectator" % "spectator-reg-sidecar" % spectator
   val spectatorTagging   = "com.netflix.spectator" % "spectator-nflx-tagging" % spectator
   val springContext      = "org.springframework" % "spring-context" % spring
-  val typesafeConfig     = "com.typesafe" % "config" % "1.4.2"
+  val typesafeConfig     = "com.typesafe" % "config" % "1.4.3"
 }
