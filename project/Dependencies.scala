@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
   object Versions {
     val assertj    = "3.24.2"
-    val aws2       = "2.20.162"
+    val aws2       = "2.21.19"
     val jackson    = "2.15.3"
     val scala      = "2.12.15"
     val slf4j      = "1.7.36"
