@@ -218,7 +218,12 @@ public class RedisClusterLeaderDatabase implements LeaderDatabase {
     if (results == null || results.isEmpty()) {
       return false;
     } else if (results.get(0) == null || !results.get(0).equals("OK")) {
-      logger.error("Failed to acquire the leader key for {}", key);
+      String data = client.get(key);
+      if (data != null && !data.equals(leaderString)) {
+        logger.info("Leader for {} was {}", key, data);
+      } else {
+        logger.error("Failed to acquire the leader key for {}", key);
+      }
       return false;
     } else {
       String data = client.get(key);
