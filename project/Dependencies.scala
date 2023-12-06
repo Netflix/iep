@@ -27,7 +27,7 @@ object Dependencies {
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "2.1.1"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
-  val jedis              = "redis.clients" % "jedis" % "5.0.2"
+  val jedis              = "redis.clients" % "jedis" % "5.1.0"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
