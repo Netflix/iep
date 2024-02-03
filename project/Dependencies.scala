@@ -21,7 +21,7 @@ object Dependencies {
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.1.8"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.15.5"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.15.6"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "2.1.1"
