@@ -3,12 +3,12 @@ import sbt._
 object Dependencies {
   object Versions {
     val assertj    = "3.25.3"
-    val aws2       = "2.25.2"
-    val jackson    = "2.16.1"
+    val aws2       = "2.25.23"
+    val jackson    = "2.17.0"
     val scala      = "2.12.19"
     val slf4j      = "1.7.36"
-    val spectator  = "1.7.8"
-    val spring     = "6.1.4"
+    val spectator  = "1.7.11"
+    val spring     = "6.1.5"
   }
 
   import Versions._
@@ -21,13 +21,13 @@ object Dependencies {
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.1.8"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.15.8"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.16.1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "2.1.1"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
-  val jedis              = "redis.clients" % "jedis" % "5.1.0"
+  val jedis              = "redis.clients" % "jedis" % "5.1.2"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
