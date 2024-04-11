@@ -229,7 +229,6 @@ public final class Instance {
     public Instance build() {
       Preconditions.checkNotNull(node, "node must be set");
       if (privateIpAddress == null && ipv6Address == null) {
-        System.out.printf("%s %s %s%n", node, privateIpAddress, ipv6Address);
         throw new IllegalArgumentException("no IP address for instance");
       }
       if (status == null) {
