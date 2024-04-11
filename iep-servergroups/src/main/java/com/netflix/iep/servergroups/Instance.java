@@ -26,6 +26,7 @@ public final class Instance {
 
   private final String node;
   private final String privateIpAddress;
+  private final String ipv6Address;
 
   private final String vpcId;
   private final String subnetId;
@@ -39,6 +40,7 @@ public final class Instance {
   private Instance(Builder builder) {
     node = builder.node;
     privateIpAddress = builder.privateIpAddress;
+    ipv6Address = builder.ipv6Address;
     vpcId = builder.vpcId;
     subnetId = builder.subnetId;
     ami = builder.ami;
@@ -102,6 +104,7 @@ public final class Instance {
     return builder()
         .node(node)
         .privateIpAddress(orElse(privateIpAddress, other.privateIpAddress))
+        .ipv6Address(orElse(ipv6Address, other.ipv6Address))
         .vpcId(orElse(vpcId, other.vpcId))
         .subnetId(orElse(subnetId, other.subnetId))
         .ami(orElse(ami, other.ami))
@@ -121,6 +124,7 @@ public final class Instance {
     Instance instance = (Instance) o;
     return Objects.equals(node, instance.node) &&
         Objects.equals(privateIpAddress, instance.privateIpAddress) &&
+        Objects.equals(ipv6Address, instance.ipv6Address) &&
         Objects.equals(vpcId, instance.vpcId) &&
         Objects.equals(subnetId, instance.subnetId) &&
         Objects.equals(ami, instance.ami) &&
@@ -130,13 +134,14 @@ public final class Instance {
   }
 
   @Override public int hashCode() {
-    return Objects.hash(node, privateIpAddress, vpcId, subnetId, ami, vmtype, zone, status);
+    return Objects.hash(node, privateIpAddress, ipv6Address, vpcId, subnetId, ami, vmtype, zone, status);
   }
 
   @Override public String toString() {
     return "Instance("
         + "node=" + node + ", "
         + "privateIpAddress=" + privateIpAddress + ", "
+        + "ipv6Address=" + ipv6Address + ", "
         + "vpcId=" + vpcId + ", "
         + "subnetId=" + subnetId + ", "
         + "ami=" + ami + ", "
@@ -155,6 +160,7 @@ public final class Instance {
   public static class Builder {
     private String node;
     private String privateIpAddress;
+    private String ipv6Address;
     private String vpcId;
     private String subnetId;
     private String ami;
@@ -171,9 +177,15 @@ public final class Instance {
       return this;
     }
 
-    /** Set the IP address. This attribute is required. */
+    /** Set the IP address. An instance must have either a private IP or IPv6 address. */
     public Builder privateIpAddress(String value) {
       privateIpAddress = value;
+      return this;
+    }
+
+    /** Set the IPv6 address. An instance must have either a private IP or IPv6 address. */
+    public Builder ipv6Address(String value) {
+      ipv6Address = value;
       return this;
     }
 
@@ -216,7 +228,9 @@ public final class Instance {
     /** Create an instance from this builder. */
     public Instance build() {
       Preconditions.checkNotNull(node, "node must be set");
-      Preconditions.checkNotNull(privateIpAddress, "privateIpAddress must be set");
+      if (privateIpAddress == null && ipv6Address == null) {
+        throw new IllegalArgumentException("no IP address for instance");
+      }
       if (status == null) {
         status = Status.NOT_REGISTERED;
       }

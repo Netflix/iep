@@ -95,7 +95,7 @@ public class EddaLoader implements Loader {
     JsonUtils.forEach(jp, p -> {
       try {
         vs.add(decodeInstance(jp));
-      } catch (NullPointerException e) {
+      } catch (IllegalArgumentException | NullPointerException e) {
         // Log but otherwise ignore failures like missing IP address
         LOGGER.warn("failed to process instance in Edda response", e);
       }

@@ -28,7 +28,8 @@
                 "accountId": "12345",
                 "public-hostname": "10.20.30.40",
                 "vpc-id": "vpc-54321",
-                "local-ipv4": "10.20.30.42"
+                "local-ipv4": "10.20.30.42",
+                "ipv6": "::ffff:a14:1e2a"
               }
             },
             "hostName": "10.20.30.40",
