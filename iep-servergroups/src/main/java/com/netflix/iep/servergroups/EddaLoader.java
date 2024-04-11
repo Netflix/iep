@@ -63,6 +63,9 @@ public class EddaLoader implements Loader {
         case "privateIpAddress":
           builder.privateIpAddress(JsonUtils.stringValue(jp));
           break;
+        case "ipv6Address":
+          builder.ipv6Address(JsonUtils.stringValue(jp));
+          break;
         case "vpcId":
           builder.vpcId(JsonUtils.stringValue(jp));
           break;
