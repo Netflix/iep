@@ -81,7 +81,20 @@ public class EurekaLoaderTest {
   @Test
   public void preferIpAddrToMetadataLocalIp() throws Exception {
     List<ServerGroup> expected = new ArrayList<>();
-    expected.add(defaultEc2Group()); // metadata has 10.20.30.42
+    expected.add(ServerGroup.builder()
+        .platform("ec2")
+        .group("app-main-v001")
+        .addInstance(Instance.builder()
+            .node("i-1234567890")
+            .privateIpAddress("10.20.30.40")
+            .ipv6Address("::ffff:a14:1e2a")
+            .vpcId("vpc-54321")
+            .ami("ami-0987654321")
+            .vmtype("m5.large")
+            .zone("us-east-1d")
+            .status(Instance.Status.UP)
+            .build())
+        .build()); // metadata has 10.20.30.42
     List<ServerGroup> actual = get("eureka-ip.json", "12345");
     Assert.assertEquals(expected, actual);
   }

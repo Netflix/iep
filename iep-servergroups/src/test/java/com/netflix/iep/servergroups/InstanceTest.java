@@ -38,8 +38,8 @@ public class InstanceTest {
         .build();
   }
 
-  @Test(expected = NullPointerException.class)
-  public void missingPrivateIp() {
+  @Test(expected = IllegalArgumentException.class)
+  public void missingIp() {
     Instance.builder()
         .node("i-12345")
         .build();
@@ -174,6 +174,25 @@ public class InstanceTest {
       Instance i2 = Instance.builder()
           .node("i-12345")
           .privateIpAddress("1.2.3.4")
+          .status(statuses[i])
+          .build();
+      Instance merged = i1.merge(i2);
+      Assert.assertEquals(i2, merged);
+    }
+  }
+
+  @Test
+  public void mergeIPv6() {
+    Instance.Status[] statuses = Instance.Status.values();
+    for (int i = 1; i < statuses.length; ++i) {
+      Instance i1 = Instance.builder()
+          .node("i-12345")
+          .ipv6Address("::1")
+          .status(statuses[i - 1])
+          .build();
+      Instance i2 = Instance.builder()
+          .node("i-12345")
+          .ipv6Address("::1")
           .status(statuses[i])
           .build();
       Instance merged = i1.merge(i2);

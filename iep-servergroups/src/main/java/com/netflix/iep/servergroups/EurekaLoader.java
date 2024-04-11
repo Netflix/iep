@@ -89,6 +89,9 @@ public class EurekaLoader implements Loader {
             JsonUtils.skipValue(p);
           }
           break;
+        case "ipv6":
+          info.builder.ipv6Address(JsonUtils.stringValue(p));
+          break;
         case "instance-id":
           info.node = JsonUtils.stringValue(p);
           break;
