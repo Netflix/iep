@@ -110,7 +110,7 @@ class RequestHandler implements HttpHandler {
     if ("HEAD".equals(exchange.getRequestMethod())) {
       exchange.sendResponseHeaders(res.status(), -1L);
     } else {
-      exchange.sendResponseHeaders(res.status(), res.entity().length);
+      exchange.sendResponseHeaders(res.status(), 0);
       try (OutputStream out = exchange.getResponseBody()) {
         out.write(res.entity());
       }
