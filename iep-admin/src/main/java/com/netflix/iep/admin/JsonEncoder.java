@@ -15,8 +15,12 @@
  */
 package com.netflix.iep.admin;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Keeps a cached copy of the mapper to reuse.
@@ -24,16 +28,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 class JsonEncoder {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
+  private static final JsonFactory FACTORY = new JsonFactory();
 
-  static byte[] encode(Object obj) throws JsonProcessingException {
-    return MAPPER.writeValueAsBytes(obj);
-  }
-
-  static byte[] encodeUnsafe(Object obj) {
-    try {
-      return MAPPER.writeValueAsBytes(obj);
-    } catch (JsonProcessingException e) {
-      return new byte[0];
+  @SuppressWarnings("unchecked")
+  static void encode(Object obj, OutputStream out) throws IOException {
+    if (obj instanceof Iterable<?>) {
+      Iterable<Object> values = (Iterable<Object>) obj;
+      try (JsonGenerator gen = FACTORY.createGenerator(out)) {
+        gen.writeStartArray();
+        for (Object value : values) {
+          MAPPER.writeValue(gen, value);
+        }
+        gen.writeEndArray();
+      }
+    } else {
+      MAPPER.writeValue(out, obj);
     }
   }
 }

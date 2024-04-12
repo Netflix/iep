@@ -17,35 +17,8 @@ package com.netflix.iep.admin;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Map;
 
-/**
- * Minimal implementation of a response.
- */
-class BasicHttpResponse implements HttpResponse {
+interface HttpEntity {
 
-  private final int status;
-  private final Map<String, String> headers;
-  private final HttpEntity entity;
-
-  BasicHttpResponse(int status, Map<String, String> headers, HttpEntity entity) {
-    this.status = status;
-    this.headers = headers;
-    this.entity = entity;
-  }
-
-  @Override
-  public int status() {
-    return status;
-  }
-
-  @Override
-  public Map<String, String> headers() {
-    return headers;
-  }
-
-  @Override
-  public void writeEntity(OutputStream out) throws IOException {
-    entity.write(out);
-  }
+  void write(OutputStream out) throws IOException;
 }

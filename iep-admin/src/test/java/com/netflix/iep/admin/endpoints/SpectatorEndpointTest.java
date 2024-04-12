@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,20 +48,26 @@ public class SpectatorEndpointTest {
   }
 
   @SuppressWarnings("unchecked")
+  private <T> List<T> toList(Object obj) {
+    List<T> result = new ArrayList<>();
+    ((Iterable<T>) obj).forEach(result::add);
+    return result;
+  }
+
   private <T> List<T> get(String q) {
-    List<T> d1 = (List<T>) endpoint.get(q);
+    List<T> d1 = toList(endpoint.get(q));
 
     // Verify that toString on parsed query yields the same result
     SpectatorEndpoint.Query query = SpectatorEndpoint.Query.parse(q);
-    List<T> d2 = (List<T>) endpoint.get(query.toString());
+    List<T> d2 = toList(endpoint.get(query.toString()));
 
     Assert.assertEquals(d1, d2);
     return d1;
   }
 
-  @Test @SuppressWarnings("unchecked")
+  @Test
   public void get() {
-    List<Object> datapoints = (List<Object>) endpoint.get();
+    List<Object> datapoints = toList(endpoint.get());
     Assert.assertEquals(registry.stream().count(), datapoints.size());
   }
 
