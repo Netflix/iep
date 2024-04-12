@@ -17,6 +17,8 @@ package com.netflix.iep.admin;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,17 +36,10 @@ public interface HttpResponse {
 
   /** Create a new response by JSON encoding the provided object. */
   static HttpResponse json(Object obj) {
-    int status;
-    byte[] data;
-    try {
-      status = (obj instanceof ErrorMessage) ? ((ErrorMessage) obj).getStatus() : 200;
-      data = JsonEncoder.encode(obj);
-    } catch (Exception e) {
-      status = 500;
-      data = JsonEncoder.encodeUnsafe(new ErrorMessage(status, e));
-    }
+    int status = (obj instanceof ErrorMessage) ? ((ErrorMessage) obj).getStatus() : 200;
+    HttpEntity entity = out -> JsonEncoder.encode(obj, out);
     Map<String, String> headers = Collections.singletonMap("Content-Type", "application/json");
-    return new BasicHttpResponse(status, headers, data);
+    return new BasicHttpResponse(status, headers, entity);
   }
 
   /** HTTP status code. */
@@ -53,21 +48,31 @@ public interface HttpResponse {
   /** Headers to includ in the response. */
   Map<String, String> headers();
 
+  /** Write entity to the provided stream. */
+  void writeEntity(OutputStream out) throws IOException;
+
   /** Payload for the response. */
-  byte[] entity();
+  default byte[] entity() {
+    try {
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      writeEntity(out);
+      return out.toByteArray();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
 
   /**
    * Creates a copy of the response with the entity compressed using GZIP.
    */
   default HttpResponse gzip() throws IOException {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    try (GZIPOutputStream out = new GZIPOutputStream(baos)) {
-      out.write(entity());
-    }
-    byte[] compressed = baos.toByteArray();
-
+    HttpEntity entity = out -> {
+      try (GZIPOutputStream gzip = new GZIPOutputStream(out)) {
+        writeEntity(gzip);
+      }
+    };
     Map<String, String> headers = new HashMap<>(headers());
     headers.put("Content-Encoding", "gzip");
-    return new BasicHttpResponse(status(), Collections.unmodifiableMap(headers), compressed);
+    return new BasicHttpResponse(status(), Collections.unmodifiableMap(headers), entity);
   }
 }

@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * List measurements via Spectator. The path can be an Atlas query expression
@@ -56,8 +55,8 @@ public class SpectatorEndpoint implements HttpEndpoint {
   }
 
   @Override public Object get(String path) {
-    Query q = Query.parse(path);
-    return registry.stream()
+    final Query q = Query.parse(path);
+    return (Iterable<Object>) () -> registry.stream()
         .filter(m -> !m.hasExpired())
         .flatMap(m -> {
           List<Object> ms = new ArrayList<>();
@@ -73,7 +72,7 @@ public class SpectatorEndpoint implements HttpEndpoint {
           }
           return ms.stream();
         })
-        .collect(Collectors.toList());
+        .iterator();
   }
 
   private void add(Query q, Map<String, String> tags, List<Object> vs, Object obj) {

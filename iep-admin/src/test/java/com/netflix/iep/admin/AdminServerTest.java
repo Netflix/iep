@@ -34,6 +34,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -79,6 +80,7 @@ public class AdminServerTest {
     Set<EndpointMapping> mappings = new HashSet<>();
     mappings.add(new EndpointMapping("/bad", new BadEndpoint()));
     mappings.add(new EndpointMapping("/test", new TestEndpoint()));
+    mappings.add(new EndpointMapping("/iterable", new IterableEndpoint()));
     server = new AdminServer(config, mappings);
   }
 
@@ -233,6 +235,13 @@ public class AdminServerTest {
   }
 
   @Test
+  public void iterableEmpty() throws Exception {
+    Response res = httpGet("/iterable");
+    Assert.assertEquals(200, res.status);
+    Assert.assertEquals("[]", res.content);
+  }
+
+  @Test
   public void notFoundEndpoint() throws Exception {
     Response res = httpGet("/not-found");
     Assert.assertEquals(404, res.status);
@@ -301,7 +310,7 @@ public class AdminServerTest {
   public void resources() throws Exception {
     Response res = httpGet("/resources");
     Assert.assertEquals(200, res.status);
-    Assert.assertEquals("[\"bad\",\"resources\",\"test\"]", res.content);
+    Assert.assertEquals("[\"bad\",\"iterable\",\"resources\",\"test\"]", res.content);
     Assert.assertEquals(404, httpGet("/resources/test").status);
   }
 
@@ -328,6 +337,21 @@ public class AdminServerTest {
 
     public Object get(String path) {
       return path;
+    }
+  }
+
+  public static class IterableEndpoint {
+    public Object get() {
+      return Collections.emptyList();
+    }
+
+    public Object get(String path) {
+      List<Integer> values = new ArrayList<>();
+      int n = Integer.parseInt(path);
+      for (int i = 0; i < n; ++i) {
+        values.add(i);
+      }
+      return values;
     }
   }
 
