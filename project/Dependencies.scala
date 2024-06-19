@@ -2,13 +2,13 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val assertj    = "3.25.3"
-    val aws2       = "2.25.57"
+    val assertj    = "3.26.0"
+    val aws2       = "2.26.6"
     val jackson    = "2.17.1"
     val scala      = "2.12.19"
     val slf4j      = "1.7.36"
-    val spectator  = "1.7.13"
-    val spring     = "6.1.8"
+    val spectator  = "1.7.14"
+    val spring     = "6.1.10"
   }
 
   import Versions._
@@ -24,7 +24,7 @@ object Dependencies {
   val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.16.1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
-  val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "2.1.1"
+  val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
   val jedis              = "redis.clients" % "jedis" % "5.1.3"
