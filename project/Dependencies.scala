@@ -24,7 +24,7 @@ object Dependencies {
   val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.16.1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
-  val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "2.1.1"
+  val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
   val jedis              = "redis.clients" % "jedis" % "5.1.3"
