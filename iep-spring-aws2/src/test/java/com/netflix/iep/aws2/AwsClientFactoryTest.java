@@ -287,7 +287,7 @@ public class AwsClientFactoryTest {
     ClientOverrideConfiguration settings = factory.createClientConfig(cfg);
     Assert.assertEquals(Duration.ofMillis(42000), settings.apiCallAttemptTimeout().get());
     Assert.assertEquals(Duration.ofMillis(13000), settings.apiCallTimeout().get());
-    Assert.assertEquals(Integer.valueOf(5), settings.retryPolicy().get().numRetries());
+    Assert.assertEquals(6, settings.retryStrategy().get().maxAttempts());
   }
 
   @Test
