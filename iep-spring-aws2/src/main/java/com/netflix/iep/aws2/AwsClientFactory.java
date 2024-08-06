@@ -23,15 +23,14 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.awscore.client.builder.AwsAsyncClientBuilder;
 import software.amazon.awssdk.awscore.client.builder.AwsClientBuilder;
 import software.amazon.awssdk.awscore.client.builder.AwsSyncClientBuilder;
+import software.amazon.awssdk.awscore.retry.AwsRetryStrategy;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
-import software.amazon.awssdk.core.retry.RetryPolicy;
-import software.amazon.awssdk.core.retry.backoff.BackoffStrategy;
-import software.amazon.awssdk.core.retry.conditions.RetryCondition;
 import software.amazon.awssdk.http.SdkHttpConfigurationOption;
 import software.amazon.awssdk.http.SdkHttpService;
 import software.amazon.awssdk.http.async.SdkAsyncHttpService;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.retries.api.RetryStrategy;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
@@ -94,13 +93,11 @@ public class AwsClientFactory implements AutoCloseable {
 
   private void setRetriesIfPresent(Config cfg, ClientOverrideConfiguration.Builder builder) {
     if (cfg.hasPath("retry-policy.num-retries")) {
-      RetryPolicy retryPolicy = RetryPolicy.builder()
-              .backoffStrategy(BackoffStrategy.defaultStrategy())
-              .throttlingBackoffStrategy(BackoffStrategy.defaultThrottlingStrategy())
-              .numRetries(cfg.getInt("retry-policy.num-retries"))
-              .retryCondition(RetryCondition.defaultRetryCondition())
-              .build();
-      builder.retryPolicy(retryPolicy);
+      RetryStrategy retryStrategy = AwsRetryStrategy.defaultRetryStrategy()
+          .toBuilder()
+          .maxAttempts(cfg.getInt("retry-policy.num-retries") + 1)
+          .build();
+      builder.retryStrategy(retryStrategy);
     }
   }
 
