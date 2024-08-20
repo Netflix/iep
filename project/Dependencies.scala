@@ -3,12 +3,12 @@ import sbt._
 object Dependencies {
   object Versions {
     val assertj    = "3.26.3"
-    val aws2       = "2.26.21"
+    val aws2       = "2.27.8"
     val jackson    = "2.17.2"
     val scala      = "2.12.19"
-    val slf4j      = "1.7.36"
-    val spectator  = "1.7.17"
-    val spring     = "6.1.11"
+    val slf4j      = "2.0.16"
+    val spectator  = "1.7.19"
+    val spring     = "6.1.12"
   }
 
   import Versions._
@@ -27,7 +27,7 @@ object Dependencies {
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
-  val jedis              = "redis.clients" % "jedis" % "5.1.3"
+  val jedis              = "redis.clients" % "jedis" % "5.1.4"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
