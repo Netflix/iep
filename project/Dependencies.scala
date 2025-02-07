@@ -2,13 +2,13 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val assertj    = "3.27.2"
-    val aws2       = "2.29.45"
+    val assertj    = "3.27.3"
+    val aws2       = "2.30.13"
     val jackson    = "2.18.2"
     val scala      = "2.12.19"
     val slf4j      = "2.0.16"
-    val spectator  = "1.8.3"
-    val spring     = "6.1.16"
+    val spectator  = "1.8.4"
+    val spring     = "6.2.2"
   }
 
   import Versions._
@@ -20,8 +20,8 @@ object Dependencies {
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
-  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.1.8"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.18"
+  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.2.0"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "3.19"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0"
