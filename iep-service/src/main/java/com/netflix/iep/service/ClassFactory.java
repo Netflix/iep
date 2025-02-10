@@ -118,4 +118,15 @@ public interface ClassFactory {
    *     New instance of the class. Note, a new instance will be created for every call.
    */
   <T> T newInstance(Type cls, Function<Type, Object> overrides);
+
+  /**
+   *  Ensure that dependencies for the type are available. This can also be used to eagerly
+   *  create singleton dependencies.
+   *
+   *  @param cls
+   *      Class to use for creating a new instance.
+   *  @param overrides
+   *      Override bindings to use for the constructor parameter types.
+   */
+  void verifyDependencies(Type cls, Function<Type, Object> overrides);
 }

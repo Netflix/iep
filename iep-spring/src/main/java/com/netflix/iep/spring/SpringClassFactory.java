@@ -95,4 +95,20 @@ class SpringClassFactory implements ClassFactory {
       return null;
     }
   }
+
+  @Override public void verifyDependencies(Type type, Function<Type, Object> overrides) {
+    Class<?> cls = (Class<?>) type;
+    Constructor<?>[] constructors = cls.getDeclaredConstructors();
+    if (constructors.length == 1) {
+      Constructor<?> c = constructors[0];
+      Type[] ptypes = c.getGenericParameterTypes();
+      for (int i = 0; i < ptypes.length; ++i) {
+        Object value = overrides.apply(ptypes[i]);
+        if (value == null) {
+          MethodParameter parameter = new MethodParameter(c, i);
+          getBeanForType(parameter);
+        }
+      }
+    }
+  }
 }
