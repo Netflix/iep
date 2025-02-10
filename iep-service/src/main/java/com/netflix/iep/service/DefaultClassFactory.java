@@ -35,7 +35,6 @@ public class DefaultClassFactory implements ClassFactory {
     this.bindings = bindings;
   }
 
-  @SuppressWarnings("unchecked")
   @Override public <T> T newInstance(Type type, Function<Type, Object> overrides)
       throws CreationException {
     Class<?> cls = (Class<?>) type;
@@ -79,5 +78,8 @@ public class DefaultClassFactory implements ClassFactory {
     } catch (Exception e) {
       throw new CreationException(type, e);
     }
+  }
+
+  @Override public void verifyDependencies(Type type, Function<Type, Object> overrides) {
   }
 }
