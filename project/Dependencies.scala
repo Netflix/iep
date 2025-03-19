@@ -9,6 +9,7 @@ object Dependencies {
     val slf4j      = "2.0.17"
     val spectator  = "1.8.7"
     val spring     = "6.2.3"
+    val springBoot = "3.4.3"
   }
 
   import Versions._
@@ -41,6 +42,7 @@ object Dependencies {
   val spectatorJvm       = "com.netflix.spectator" % "spectator-ext-jvm" % spectator
   val spectatorSidecar   = "com.netflix.spectator" % "spectator-reg-sidecar" % spectator
   val spectatorTagging   = "com.netflix.spectator" % "spectator-nflx-tagging" % spectator
+  val springBootActuator = "org.springframework.boot" % "spring-boot-starter-actuator" % springBoot
   val springContext      = "org.springframework" % "spring-context" % spring
   val typesafeConfig     = "com.typesafe" % "config" % "1.4.3"
 }
