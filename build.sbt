@@ -18,6 +18,7 @@ lazy val iep = project.in(file("."))
     `iep-spring-leader-dynamodb`,
     `iep-spring-leader-redis-cluster`,
     `iep-spring-spectatord`,
+    `iep-spring-sbhealth`,
     `iep-spring-userservice`)
   .settings(BuildSettings.noPackaging: _*)
 
@@ -169,6 +170,13 @@ lazy val `iep-spring-spectatord` = project
       Dependencies.spectatorJvm,
       Dependencies.springContext,
       Dependencies.typesafeConfig
+  ))
+
+lazy val `iep-spring-sbhealth` = project
+  .configure(BuildSettings.profile)
+  .dependsOn(`iep-service`, `iep-spring`)
+  .settings(libraryDependencies ++= Seq(
+      Dependencies.springBootActuator
   ))
 
 lazy val `iep-spring-userservice` = project
