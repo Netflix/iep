@@ -9,7 +9,7 @@ object Dependencies {
     val slf4j      = "2.0.17"
     val spectator  = "1.8.7"
     val spring     = "6.2.5"
-    val springBoot = "3.4.2"
+    val springBoot = "3.4.4"
   }
 
   import Versions._
