@@ -1,7 +1,5 @@
 import sbt._
 import sbt.Keys._
-import xerial.sbt.Sonatype._
-import xerial.sbt.Sonatype.SonatypeKeys._
 
 object SonatypeSettings {
 
@@ -12,14 +10,36 @@ object SonatypeSettings {
   private lazy val user = get("USERNAME")
   private lazy val pass = get("PASSWORD")
 
-  lazy val settings: Seq[Def.Setting[_]] = sonatypeSettings ++ Seq(
-    sonatypeProfileName := "com.netflix",
-    sonatypeProjectHosting := Some(GitHubHosting("Netflix", "iep", "netflixoss@netflix.com")),
+  lazy val settings: Seq[Def.Setting[_]] = Seq(
+    organization := "com.netflix",
+    organizationName := "netflix",
+    organizationHomepage := Some(url("https://github.com/Netflix")),
+
+    scmInfo := Some(
+      ScmInfo(
+        url("https://github.com/Netflix/iep"),
+        "scm:git@github.com:Netflix/iep.git"
+      )
+    ),
+
+    developers := List(
+      Developer(
+        id = "netflixgithub",
+        name = "Netflix Open Source Development",
+        email = "netflixoss@netflix.com",
+        url = url("https://github.com/Netflix")
+      )
+    ),
 
     publishMavenStyle := true,
     licenses += ("APL2" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
-    credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", user, pass),
+    credentials += Credentials("Sonatype Central Portal", "central.sonatype.com", user, pass),
 
-    publishTo := sonatypePublishToBundle.value
+    publishTo := {
+      if (isSnapshot.value)
+        Some(Resolver.sonatypeCentralSnapshots)
+      else
+        localStaging.value
+    }
   )
 }
