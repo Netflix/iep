@@ -14,6 +14,8 @@ object SonatypeSettings {
     organization := "com.netflix",
     organizationName := "netflix",
     organizationHomepage := Some(url("https://github.com/Netflix")),
+    homepage := Some(url("https://github.com/Netflix/iep")),
+    description := "Insight Engineering Platform libraries",
 
     scmInfo := Some(
       ScmInfo(
@@ -32,7 +34,9 @@ object SonatypeSettings {
     ),
 
     publishMavenStyle := true,
-    licenses += ("APL2" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
+    pomIncludeRepository := { _ => false },
+
+    licenses += ("Apache 2" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
     credentials += Credentials("Sonatype Central Portal", "central.sonatype.com", user, pass),
 
     publishTo := {
