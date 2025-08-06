@@ -3,13 +3,13 @@ import sbt._
 object Dependencies {
   object Versions {
     val assertj    = "3.27.3"
-    val aws2       = "2.31.71"
-    val jackson    = "2.19.1"
+    val aws2       = "2.32.16"
+    val jackson    = "2.19.2"
     val scala      = "2.12.20"
     val slf4j      = "2.0.17"
-    val spectator  = "1.8.16"
-    val spring     = "6.2.8"
-    val springBoot = "3.5.3"
+    val spectator  = "1.8.17"
+    val spring     = "6.2.9"
+    val springBoot = "3.5.4"
   }
 
   import Versions._
@@ -22,13 +22,13 @@ object Dependencies {
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.2.1"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "4.0.3"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "4.0.7"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
-  val jedis              = "redis.clients" % "jedis" % "6.0.0"
+  val jedis              = "redis.clients" % "jedis" % "6.1.0"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
@@ -44,5 +44,5 @@ object Dependencies {
   val spectatorTagging   = "com.netflix.spectator" % "spectator-nflx-tagging" % spectator
   val springBootActuator = "org.springframework.boot" % "spring-boot-starter-actuator" % springBoot
   val springContext      = "org.springframework" % "spring-context" % spring
-  val typesafeConfig     = "com.typesafe" % "config" % "1.4.3"
+  val typesafeConfig     = "com.typesafe" % "config" % "1.4.4"
 }
