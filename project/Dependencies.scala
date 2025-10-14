@@ -2,14 +2,14 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val assertj    = "3.27.4"
-    val aws2       = "2.33.5"
+    val assertj    = "3.27.6"
+    val aws2       = "2.35.6"
     val jackson    = "2.20.0"
     val scala      = "2.12.20"
     val slf4j      = "2.0.17"
-    val spectator  = "1.9.0"
-    val spring     = "6.2.10"
-    val springBoot = "3.5.5"
+    val spectator  = "1.9.1"
+    val spring     = "6.2.11"
+    val springBoot = "3.5.6"
   }
 
   import Versions._
@@ -21,18 +21,18 @@ object Dependencies {
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
-  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.2.1"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "4.1"
+  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.2.2"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "4.2"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
-  val jedis              = "redis.clients" % "jedis" % "6.1.0"
+  val jedis              = "redis.clients" % "jedis" % "6.2.0"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
-  val mockitoCore        = "org.mockito" % "mockito-core" % "5.18.0"
+  val mockitoCore        = "org.mockito" % "mockito-core" % "5.20.0"
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi       = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorAtlas     = "com.netflix.spectator" % "spectator-reg-atlas" % spectator
@@ -44,5 +44,5 @@ object Dependencies {
   val spectatorTagging   = "com.netflix.spectator" % "spectator-nflx-tagging" % spectator
   val springBootActuator = "org.springframework.boot" % "spring-boot-starter-actuator" % springBoot
   val springContext      = "org.springframework" % "spring-context" % spring
-  val typesafeConfig     = "com.typesafe" % "config" % "1.4.4"
+  val typesafeConfig     = "com.typesafe" % "config" % "1.4.5"
 }
