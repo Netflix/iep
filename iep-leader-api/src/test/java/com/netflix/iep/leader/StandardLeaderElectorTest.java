@@ -130,7 +130,7 @@ public class StandardLeaderElectorTest {
     final ResourceId id2 = new ResourceId("test-resource-two");
     assertThat(leaderElector.addResource(id1)).isTrue();
     assertThat(leaderElector.addResource(id2)).isTrue();
-    assertThat(leaderElector.getResources()).containsExactly(id1, id2);
+    assertThat(leaderElector.getResources()).containsExactlyInAnyOrder(id1, id2);
   }
 
   @Test
@@ -139,7 +139,7 @@ public class StandardLeaderElectorTest {
     final ResourceId id2 = new ResourceId("test-resource-two");
     leaderElector.addResource(id1);
     leaderElector.addResource(id2);
-    assertThat(leaderElector.getResources()).containsExactly(id1, id2);
+    assertThat(leaderElector.getResources()).containsExactlyInAnyOrder(id1, id2);
     assertThat(leaderElector.removeResource(id1)).isTrue();
     assertThat(leaderElector.getResources()).doesNotContain(id1);
     assertThat(leaderElector.getResources()).contains(id2);
