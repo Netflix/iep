@@ -176,7 +176,7 @@ lazy val `iep-spring-sbhealth` = project
   .configure(BuildSettings.profile)
   .dependsOn(`iep-service`, `iep-spring`)
   .settings(libraryDependencies ++= Seq(
-      Dependencies.springBootActuator
+      Dependencies.springBootHealth
   ))
 
 lazy val `iep-spring-userservice` = project

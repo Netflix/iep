@@ -20,8 +20,8 @@ import com.netflix.iep.service.State;
 import com.netflix.iep.spring.IepConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.boot.actuate.health.HealthIndicator;
-import org.springframework.boot.actuate.health.Status;
+import org.springframework.boot.health.contributor.HealthIndicator;
+import org.springframework.boot.health.contributor.Status;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.concurrent.atomic.AtomicBoolean;
