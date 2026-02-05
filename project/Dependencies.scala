@@ -2,14 +2,14 @@ import sbt._
 
 object Dependencies {
   object Versions {
-    val assertj    = "3.27.6"
-    val aws2       = "2.38.8"
-    val jackson    = "2.20.1"
+    val assertj    = "3.27.7"
+    val aws2       = "2.41.22"
+    val jackson    = "2.21.0"
     val scala      = "2.12.20"
     val slf4j      = "2.0.17"
-    val spectator  = "1.9.2"
-    val spring     = "6.2.13"
-    val springBoot = "3.5.7"
+    val spectator  = "1.9.4"
+    val spring     = "6.2.15"
+    val springBoot = "3.5.10"
   }
 
   import Versions._
@@ -21,18 +21,18 @@ object Dependencies {
   val aws2SES            = "software.amazon.awssdk" % "ses" % aws2
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
-  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.2.2"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "4.2.3"
+  val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.2.3"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "4.3.1"
   val jacksonCore        = "com.fasterxml.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "com.fasterxml.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
   val jodaTime           = "joda-time" % "joda-time" % "2.10.10"
-  val jedis              = "redis.clients" % "jedis" % "6.2.0"
+  val jedis              = "redis.clients" % "jedis" % "7.2.1"
   val junit              = "junit" % "junit" % "4.12"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val jzlib              = "com.jcraft" % "jzlib" % "1.1.3"
-  val mockitoCore        = "org.mockito" % "mockito-core" % "5.20.0"
+  val mockitoCore        = "org.mockito" % "mockito-core" % "5.21.0"
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
   val spectatorApi       = "com.netflix.spectator" % "spectator-api" % spectator
   val spectatorAtlas     = "com.netflix.spectator" % "spectator-reg-atlas" % spectator
