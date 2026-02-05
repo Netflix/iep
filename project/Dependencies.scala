@@ -4,7 +4,7 @@ object Dependencies {
   object Versions {
     val assertj    = "3.27.6"
     val aws2       = "2.41.22"
-    val jackson    = "2.20.1"
+    val jackson    = "2.21.0"
     val scala      = "2.12.20"
     val slf4j      = "2.0.17"
     val spectator  = "1.9.2"
