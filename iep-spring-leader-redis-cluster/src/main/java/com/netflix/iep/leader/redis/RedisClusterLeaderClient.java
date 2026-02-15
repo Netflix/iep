@@ -21,10 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisException;
-import redis.clients.jedis.executors.ClusterCommandExecutor;
-import redis.clients.jedis.executors.CommandExecutor;
+import redis.clients.jedis.providers.ClusterConnectionProvider;
 
-import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 
 /**
  * Shim used for unit testing and for differentiating the cluster client for
@@ -37,7 +36,8 @@ public class RedisClusterLeaderClient {
 
   private static final String CONFIG_PATH_NAME = "iep.leader.rediscluster";
 
-  private final WrappedJedis jedis;
+  private final RedisClusterClient jedis;
+  private final ClusterConnectionProvider clusterProvider;
 
   public RedisClusterLeaderClient(Config config) {
     GenericObjectPoolConfig<Connection> poolConfig = new GenericObjectPoolConfig<Connection>();
@@ -46,14 +46,19 @@ public class RedisClusterLeaderClient {
     logger.info("Using Redis Cluster {} for leader election", uri);
     HostAndPort hap = new HostAndPort(uri,
         config.getInt(CONFIG_PATH_NAME + ".connection.port"));
-    jedis = new WrappedJedis(
-        hap,
-        (int) config.getDuration(CONFIG_PATH_NAME + ".cmd.timeout").getSeconds() * 1000,
-        poolConfig
-    );
+    int timeout = (int) config.getDuration(CONFIG_PATH_NAME + ".cmd.timeout").getSeconds() * 1000;
+    JedisClientConfig clientConfig = DefaultJedisClientConfig.builder()
+        .timeoutMillis(timeout)
+        .build();
+    clusterProvider = new ClusterConnectionProvider(
+        Collections.singleton(hap), clientConfig, poolConfig);
+    jedis = RedisClusterClient.builder()
+        .connectionProvider(clusterProvider)
+        .clientConfig(clientConfig)
+        .build();
   }
 
-  public JedisCluster cluster() {
+  public UnifiedJedis cluster() {
     return jedis;
   }
 
@@ -76,9 +81,7 @@ public class RedisClusterLeaderClient {
     Jedis client = getLeaderForSlot(slot);
     if (client == null) {
       // force renewal and then try one more time.
-      if (jedis.getCommandExecutor() instanceof ClusterCommandExecutor) {
-        ((ClusterCommandExecutor) jedis.getCommandExecutor()).provider.renewSlotCache();
-      }
+      clusterProvider.renewSlotCache();
 
       client = getLeaderForSlot(slot);
     }
@@ -91,7 +94,7 @@ public class RedisClusterLeaderClient {
   }
 
   private Jedis getLeaderForSlot(int slot) {
-    Connection conn = jedis.getConnectionFromSlot(slot);
+    Connection conn = clusterProvider.getConnectionFromSlot(slot);
     conn.sendCommand(Protocol.Command.INFO, "Replication");
     String info = conn.getBulkReply();
     if (info.contains("role:master")) {
@@ -100,24 +103,5 @@ public class RedisClusterLeaderClient {
     logger.warn("Received connection to {} for slot {} but it was not the leader",
         conn, slot);
     return null;
-  }
-
-  /**
-   * Wrapping here to avoid reflection. This way we'll get a compile error if they
-   * change out the CommandExecutor under the hood.
-   */
-  private class WrappedJedis extends JedisCluster {
-
-    public WrappedJedis(
-        HostAndPort node,
-        int timeout,
-        GenericObjectPoolConfig<Connection> poolConfig
-    ) {
-      super(node, timeout, poolConfig);
-    }
-
-    CommandExecutor getCommandExecutor() {
-      return executor;
-    }
   }
 }

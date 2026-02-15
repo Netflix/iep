@@ -25,8 +25,8 @@ import org.junit.Test;
 import org.mockito.stubbing.Answer;
 import redis.clients.jedis.Connection;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.Transaction;
+import redis.clients.jedis.UnifiedJedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisException;
 
@@ -56,7 +56,7 @@ public class RedisClusterLeaderDatabaseTest {
   @Before
   public void before() {
     cluster = mock(RedisClusterLeaderClient.class);
-    JedisCluster mockCluster = mock(JedisCluster.class);
+    UnifiedJedis mockCluster = mock(UnifiedJedis.class);
     when(cluster.cluster()).thenReturn(mockCluster);
     db = new RedisClusterLeaderDatabase(config, cluster);
     client = mock(Jedis.class);
