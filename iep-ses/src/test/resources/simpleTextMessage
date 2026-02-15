@@ -1,0 +1,13 @@
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+  boundary="331239ab-8a31-4cc6-84d6-5557f96ebc3a"
+From: bob@example.com
+To: andrew@example.com
+Subject: =?UTF-8?B?VGVzdCBtZXNzYWdl?=
+
+--331239ab-8a31-4cc6-84d6-5557f96ebc3a
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+
+Qm9keSBvZiB0aGUgZW1haWwgbWVzc2FnZS4=
+--331239ab-8a31-4cc6-84d6-5557f96ebc3a--

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Netflix, Inc.
+ * Copyright 2014-2026 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ package com.netflix.iep.launcher;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -36,7 +36,7 @@ public class JarBuilder {
   private String mainClass = null;
   private boolean cleanWorkingDir = true;
   private File outputFile = null;
-  private List<File> jars = new ArrayList<>();
+  private final List<File> jars = new ArrayList<>();
 
   public JarBuilder withMainClass(String mainClass) {
     this.mainClass = mainClass;
@@ -80,7 +80,7 @@ public class JarBuilder {
   private void addEntry(ZipOutputStream out, String name, String content) throws IOException {
     ZipEntry entry = new ZipEntry(name);
     out.putNextEntry(entry);
-    out.write(content.getBytes("UTF-8"));
+    out.write(content.getBytes(StandardCharsets.UTF_8));
     out.closeEntry();
   }
 
@@ -108,11 +108,7 @@ public class JarBuilder {
     File loc = getLocation();
     if (loc.isDirectory()) {
       File pkg = new File(loc, "com/netflix/iep/launcher");
-      File[] classes = pkg.listFiles(new FilenameFilter() {
-        @Override public boolean accept(File dir, String name) {
-          return name.endsWith(".class");
-        }
-      });
+      File[] classes = pkg.listFiles((dir, name) -> name.endsWith(".class"));
       for (File cls : classes) {
         try (FileInputStream in = new FileInputStream(cls)) {
           addEntry(out, "com/netflix/iep/launcher/" + cls.getName(), in);

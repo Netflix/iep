@@ -1,0 +1,28 @@
+[
+  {
+    "id": "ec2.app-main-dev-v001",
+    "platform": "ec2",
+    "app": "app",
+    "foo": ["bar", "baz", {"abc":  ["def", {}]}],
+    "cluster": "app-main-dev",
+    "group": "app-main-dev-v001",
+    "stack": "main",
+    "detail": "dev",
+    "minSize": 1,
+    "maxSize": 3,
+    "desiredSize": 2,
+    "instances": [
+      {
+        "launchTime": 1544328558000,
+        "node": "i-1234567890",
+        "privateIpAddress": "10.20.30.40",
+        "ipv6Address": "::ffff:a14:1e2a",
+        "vpcId": "vpc-54321",
+        "subnetId": "subnet-54321",
+        "ami": "ami-0987654321",
+        "vmtype": "m5.large",
+        "zone": "us-east-1d"
+      }
+    ]
+  }
+]

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Netflix, Inc.
+ * Copyright 2014-2026 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,6 @@
  */
 package com.netflix.iep.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,20 +27,14 @@ import java.util.Set;
  * is managed via the DI framework, typically via PostConstruct and PreDestroy annotations. All
  * services should be injected into the set for this manager.
  */
-@Singleton
 public class ServiceManager {
 
   private final List<Service> services;
 
-  @Inject
   public ServiceManager(Set<Service> serviceSet) {
     services = new ArrayList<>();
     services.addAll(serviceSet);
-    Collections.sort(services, new Comparator<Service>() {
-      @Override public int compare(Service o1, Service o2) {
-        return o1.name().compareTo(o2.name());
-      }
-    });
+    services.sort(Comparator.comparing(Service::name));
   }
 
   public List<Service> services() {

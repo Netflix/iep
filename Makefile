@@ -2,7 +2,7 @@
 # build script.
 SBT := cat /dev/null | project/sbt
 
-.PHONY: build snapshot release coverage license
+.PHONY: build snapshot release coverage format
 
 build:
 	echo "Starting build"
@@ -10,8 +10,9 @@ build:
 
 snapshot:
 	echo "Starting snapshot build"
-	git fetch --unshallow
-	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish
+	git fetch --unshallow --tags
+	$(SBT) storeBintrayCredentials
+	$(SBT) clean test checkLicenseHeaders publish
 
 release:
 	# Storing the bintray credentials needs to be done as a separate command so they will
@@ -20,7 +21,7 @@ release:
 	# The storeBintrayCredentials still needs to be on the subsequent command or we get:
 	# [error] (iep-service/*:bintrayEnsureCredentials) java.util.NoSuchElementException: None.get
 	echo "Starting release build"
-	git fetch --unshallow
+	git fetch --unshallow --tags
 	$(SBT) storeBintrayCredentials
 	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
 
@@ -28,6 +29,6 @@ coverage:
 	$(SBT) clean coverage test coverageReport
 	$(SBT) coverageAggregate
 
-license:
+format:
 	$(SBT) formatLicenseHeaders
 

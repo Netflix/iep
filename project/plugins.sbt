@@ -1,16 +1,7 @@
+addSbtPlugin("com.github.sbt"            % "sbt-pgp"              % "2.3.1")
+addSbtPlugin("com.github.sbt"            % "sbt-release"          % "1.4.0")
+addSbtPlugin("pl.project13.scala"        % "sbt-jmh"              % "0.4.7")
+addSbtPlugin("com.github.sbt"            % "sbt-git"              % "2.1.0")
 
-addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.4")
-
-addSbtPlugin("org.scoverage" %% "sbt-scoverage" % "1.0.1")
-
-addSbtPlugin("com.sksamuel.sbt-versions" % "sbt-versions" % "0.2.0")
-
-//addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "0.94.6")
-
-addSbtPlugin("me.lessis" % "bintray-sbt" % "0.3.0")
-
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "0.8.5")
-
-addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.1.6")
-
-addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.8.4")
+// Convenient helpers, not required
+addSbtPlugin("com.timushev.sbt"          % "sbt-updates"          % "0.6.4")
