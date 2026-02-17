@@ -100,7 +100,7 @@ public class LeaderService extends AbstractService {
   protected void startImpl() {
     logger.info("Starting leader service");
 
-    electorInitializeTimer.record(
+    electorInitializeTimer.recordRunnable(
         leaderElector::initialize
     );
 
