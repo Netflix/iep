@@ -15,7 +15,7 @@
  */
 package com.netflix.iep.servergroups;
 
-import com.fasterxml.jackson.core.JsonParser;
+import tools.jackson.core.JsonParser;
 import com.netflix.spectator.ipc.http.HttpClient;
 import com.netflix.spectator.ipc.http.HttpResponse;
 

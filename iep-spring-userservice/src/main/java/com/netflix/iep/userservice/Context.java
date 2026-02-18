@@ -15,7 +15,7 @@
  */
 package com.netflix.iep.userservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.ipc.http.HttpClient;
 import com.netflix.spectator.ipc.http.HttpRequestBuilder;
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 /** Common settings used across all services. */
 public final class Context implements AutoCloseable {
 
-  private final ObjectMapper mapper = new ObjectMapper();
+  private final JsonMapper mapper = new JsonMapper();
 
   private final Registry registry;
 
@@ -82,7 +82,7 @@ public final class Context implements AutoCloseable {
     executor.shutdown();
   }
 
-  ObjectMapper objectMapper() {
+  JsonMapper objectMapper() {
     return mapper;
   }
 

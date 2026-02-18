@@ -15,9 +15,11 @@
  */
 package com.netflix.iep.admin;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonEncoding;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.ObjectWriteContext;
+import tools.jackson.core.json.JsonFactory;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,14 +29,14 @@ import java.io.OutputStream;
  */
 class JsonEncoder {
 
-  private static final ObjectMapper MAPPER = new ObjectMapper();
-  private static final JsonFactory FACTORY = new JsonFactory();
+  private static final JsonMapper MAPPER = new JsonMapper();
+  private static final JsonFactory FACTORY = JsonFactory.builder().build();
 
   @SuppressWarnings("unchecked")
   static void encode(Object obj, OutputStream out) throws IOException {
     if (obj instanceof Iterable<?>) {
       Iterable<Object> values = (Iterable<Object>) obj;
-      try (JsonGenerator gen = FACTORY.createGenerator(out)) {
+      try (JsonGenerator gen = FACTORY.createGenerator(ObjectWriteContext.empty(), out, JsonEncoding.UTF8)) {
         gen.writeStartArray();
         for (Object value : values) {
           MAPPER.writeValue(gen, value);
