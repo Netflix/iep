@@ -15,11 +15,12 @@
  */
 package com.netflix.iep.servergroups;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonLocation;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.core.ObjectReadContext;
+import tools.jackson.core.TokenStreamLocation;
+import tools.jackson.core.json.JsonFactory;
 import com.netflix.spectator.ipc.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,23 +39,23 @@ final class JsonUtils {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtils.class);
 
-  private static final JsonFactory FACTORY = new JsonFactory();
+  private static final JsonFactory FACTORY = JsonFactory.builder().build();
 
   private static boolean isEndOfArrayOrInput(JsonParser jp) {
-    JsonToken t = jp.getCurrentToken();
+    JsonToken t = jp.currentToken();
     return t == null || t == JsonToken.END_ARRAY;
   }
 
   private static boolean isEndOfObjectOrInput(JsonParser jp) {
-    JsonToken t = jp.getCurrentToken();
+    JsonToken t = jp.currentToken();
     return t == null || t == JsonToken.END_OBJECT;
   }
 
   /** Check that the current token for the parser is of the expected type. */
   private static void expect(JsonParser jp, JsonToken expected) throws IOException {
-    JsonToken actual = jp.getCurrentToken();
+    JsonToken actual = jp.currentToken();
     if (actual != expected) {
-      JsonLocation loc = jp.currentLocation();
+      TokenStreamLocation loc = jp.currentLocation();
       throw new IllegalArgumentException(
           "invalid input: expected " + expected + ", received " + actual
               + " (line " + loc.getLineNr() + ", column " + loc.getColumnNr() + ")");
@@ -63,7 +64,7 @@ final class JsonUtils {
 
   /** Create a list from the current array value. */
   static <T> List<T> toList(JsonParser jp, IOFunction<T> f) throws IOException {
-    if (jp.getCurrentToken() == JsonToken.VALUE_NULL) {
+    if (jp.currentToken() == JsonToken.VALUE_NULL) {
       return Collections.emptyList();
     }
     List<T> vs = new ArrayList<>();
@@ -78,7 +79,7 @@ final class JsonUtils {
     while (!isEndOfArrayOrInput(jp)) {
       f.apply(jp);
     }
-    if (jp.getCurrentToken() == JsonToken.END_ARRAY) {
+    if (jp.currentToken() == JsonToken.END_ARRAY) {
       jp.nextToken();
     }
   }
@@ -88,22 +89,22 @@ final class JsonUtils {
     expect(jp, JsonToken.START_OBJECT);
     jp.nextToken();
     while (!isEndOfObjectOrInput(jp)) {
-      expect(jp, JsonToken.FIELD_NAME);
+      expect(jp, JsonToken.PROPERTY_NAME);
       jp.nextToken();
       f.apply(jp.currentName(), jp);
     }
-    if (jp.getCurrentToken() == JsonToken.END_OBJECT) {
+    if (jp.currentToken() == JsonToken.END_OBJECT) {
       jp.nextToken();
     }
   }
 
   /** Extract a string value. */
   static String stringValue(JsonParser jp) throws IOException {
-    if (jp.getCurrentToken() == JsonToken.VALUE_NULL) {
+    if (jp.currentToken() == JsonToken.VALUE_NULL) {
       return null;
     }
     expect(jp, JsonToken.VALUE_STRING);
-    String v = jp.getText();
+    String v = jp.getString();
     jp.nextToken();
     return v;
   }
@@ -114,7 +115,7 @@ final class JsonUtils {
     int v = -1;
     try {
       v = jp.getIntValue();
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       LOGGER.warn("failed to parse value as integer", e);
     }
     jp.nextToken();
@@ -126,10 +127,10 @@ final class JsonUtils {
    * tokens and set the position to the token after the end of the array or object.
    */
   static void skipValue(JsonParser jp) throws IOException {
-    if (jp.getCurrentToken() == null) {
+    if (jp.currentToken() == null) {
       return;
     }
-    switch (jp.getCurrentToken()) {
+    switch (jp.currentToken()) {
       case START_ARRAY:
       case START_OBJECT:
         jp.skipChildren();
@@ -169,12 +170,12 @@ final class JsonUtils {
       // full decompressed payload.
       try (
           GZIPInputStream gzin = new GZIPInputStream(new ByteArrayInputStream(response.entity()));
-          JsonParser jp = FACTORY.createParser(gzin)
+          JsonParser jp = FACTORY.createParser(ObjectReadContext.empty(), gzin)
       ) {
         return function.apply(jp);
       }
     } else {
-      try (JsonParser jp = FACTORY.createParser(response.entity())) {
+      try (JsonParser jp = FACTORY.createParser(ObjectReadContext.empty(), response.entity())) {
         return function.apply(jp);
       }
     }

@@ -15,9 +15,12 @@
  */
 package com.netflix.iep.admin;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 /**
  * Represents an error response that should be sent to the user.
  */
+@JsonPropertyOrder({"status", "message"})
 public class ErrorMessage {
 
   private final int status;

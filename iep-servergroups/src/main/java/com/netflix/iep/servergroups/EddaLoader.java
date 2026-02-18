@@ -15,8 +15,8 @@
  */
 package com.netflix.iep.servergroups;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
 import com.netflix.spectator.ipc.http.HttpClient;
 import com.netflix.spectator.ipc.http.HttpResponse;
 import org.slf4j.Logger;
@@ -91,7 +91,7 @@ public class EddaLoader implements Loader {
   }
 
   private List<Instance> decodeInstances(JsonParser jp) throws IOException {
-    if (jp.getCurrentToken() == JsonToken.VALUE_NULL) {
+    if (jp.currentToken() == JsonToken.VALUE_NULL) {
       return Collections.emptyList();
     }
     List<Instance> vs = new ArrayList<>();
