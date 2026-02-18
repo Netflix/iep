@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2025 Netflix, Inc.
+ * Copyright 2014-2026 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ final class JsonUtils {
   private static void expect(JsonParser jp, JsonToken expected) throws IOException {
     JsonToken actual = jp.getCurrentToken();
     if (actual != expected) {
-      JsonLocation loc = jp.getCurrentLocation();
+      JsonLocation loc = jp.currentLocation();
       throw new IllegalArgumentException(
           "invalid input: expected " + expected + ", received " + actual
               + " (line " + loc.getLineNr() + ", column " + loc.getColumnNr() + ")");
@@ -90,7 +90,7 @@ final class JsonUtils {
     while (!isEndOfObjectOrInput(jp)) {
       expect(jp, JsonToken.FIELD_NAME);
       jp.nextToken();
-      f.apply(jp.getCurrentName(), jp);
+      f.apply(jp.currentName(), jp);
     }
     if (jp.getCurrentToken() == JsonToken.END_OBJECT) {
       jp.nextToken();
