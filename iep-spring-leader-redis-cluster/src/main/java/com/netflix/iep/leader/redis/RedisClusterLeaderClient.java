@@ -53,6 +53,7 @@ public class RedisClusterLeaderClient {
     clusterProvider = new ClusterConnectionProvider(
         Collections.singleton(hap), clientConfig, poolConfig);
     jedis = RedisClusterClient.builder()
+        .nodes(Collections.singleton(hap))
         .connectionProvider(clusterProvider)
         .clientConfig(clientConfig)
         .build();
