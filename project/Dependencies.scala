@@ -27,7 +27,7 @@ object Dependencies {
   val jacksonMapper      = "tools.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
-  val jedis              = "redis.clients" % "jedis" % "7.2.1"
+  val jedis              = "redis.clients" % "jedis" % "7.4.1"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val mockitoCore        = "org.mockito" % "mockito-core" % "5.21.0"
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
