@@ -72,9 +72,19 @@ class StaticResourceHandler implements HttpHandler {
       }
     }
 
+    String resource = path.substring(1);
+    if (!isSafeResource(resource)) {
+      // Reject path traversal attempts. The JDK http server does not normalize the
+      // request path before dispatch, so a request such as `/static/../application.conf`
+      // (or the percent-encoded `%2e%2e` form, which getPath decodes) would otherwise be
+      // resolved by the class loader to a sibling classpath resource and disclosed.
+      LOGGER.debug("rejecting unsafe resource path {}", resource);
+      exchange.sendResponseHeaders(404, -1);
+      return;
+    }
+
     exchange.getResponseHeaders().add("Content-Type", getContentType(path));
 
-    String resource = path.substring(1);
     LOGGER.debug("loading resource {}", resource);
     try (InputStream in = classLoader.getResourceAsStream(resource)) {
       if (in == null) {
@@ -96,6 +106,25 @@ class StaticResourceHandler implements HttpHandler {
       e.printStackTrace();
       LOGGER.debug("failed to serve resource " + resource, e);
     }
+  }
+
+  /**
+   * Check that a class loader resource path cannot traverse outside the intended resource
+   * root. The path has already been URL-decoded by the http server, so `..` and its encoded
+   * forms both appear here as literal `..` path segments. Backslashes and null bytes are
+   * rejected outright as they have no place in a legitimate resource path and can be used to
+   * confuse path handling.
+   */
+  static boolean isSafeResource(String resource) {
+    if (resource.indexOf('\0') >= 0 || resource.indexOf('\\') >= 0) {
+      return false;
+    }
+    for (String segment : resource.split("/")) {
+      if (segment.equals("..") || segment.equals(".")) {
+        return false;
+      }
+    }
+    return true;
   }
 
   String getExtension(String name) {
