@@ -280,6 +280,15 @@ public class AdminServerTest {
   }
 
   @Test
+  public void staticContentPathTraversal() throws Exception {
+    // Encoded `..` so the client does not normalize it away before sending. Without the
+    // traversal guard the class loader would resolve this back to `static/test.txt` and
+    // return 200 with its contents; with the guard it must be rejected.
+    Response res = httpGet("/static/%2e%2e/static/test.txt");
+    Assert.assertEquals(404, res.status);
+  }
+
+  @Test
   public void cors() throws Exception {
     // Pre-flight
     Response res = httpOptions("/test", Collections.singletonMap("Origin", "foo"));
