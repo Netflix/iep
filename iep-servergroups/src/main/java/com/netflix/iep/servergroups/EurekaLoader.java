@@ -18,6 +18,8 @@ package com.netflix.iep.servergroups;
 import tools.jackson.core.JsonParser;
 import com.netflix.spectator.ipc.http.HttpClient;
 import com.netflix.spectator.ipc.http.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -39,10 +41,30 @@ import java.util.regex.Pattern;
  */
 public class EurekaLoader implements Loader {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(EurekaLoader.class);
+
   // Some environments like Titus can result in arbitrary values for the
   // instance type in the metadata. This pattern is used to check for reasonable
   // values.
   private static final Pattern VM_TYPE_PATTERN = Pattern.compile("^[a-zA-Z0-9]+\\.[a-zA-Z0-9]+$");
+
+  /**
+   * Map the status string reported by Eureka to a {@link Instance.Status}. Unrecognized or
+   * missing values are mapped to {@link Instance.Status#UNKNOWN} rather than allowing the
+   * {@code valueOf} to throw, which would otherwise abort decoding of the entire response and
+   * discard every server group. This can happen if the set of Eureka status values is extended
+   * or skews from the values known here.
+   */
+  private static Instance.Status decodeStatus(String value) {
+    if (value != null) {
+      try {
+        return Instance.Status.valueOf(value);
+      } catch (IllegalArgumentException e) {
+        LOGGER.warn("unknown Eureka instance status '{}', treating as UNKNOWN", value);
+      }
+    }
+    return Instance.Status.UNKNOWN;
+  }
 
   private final HttpClient client;
   private final URI uri;
@@ -132,7 +154,7 @@ public class EurekaLoader implements Loader {
           info.node = JsonUtils.stringValue(p);
           break;
         case "status":
-          info.builder.status(Instance.Status.valueOf(JsonUtils.stringValue(p)));
+          info.builder.status(decodeStatus(JsonUtils.stringValue(p)));
           break;
         case "dataCenterInfo":
           decodeDataCenterInfo(info, p);

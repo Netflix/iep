@@ -166,6 +166,28 @@ public class EurekaLoaderTest {
     Assert.assertEquals(expected, actual);
   }
 
+  @Test
+  public void unknownStatusMappedToUnknown() throws Exception {
+    // An unrecognized status value must not abort decoding of the response. The instance
+    // should still be loaded, with the status mapped to UNKNOWN.
+    List<ServerGroup> expected = new ArrayList<>();
+    expected.add(ServerGroup.builder()
+        .platform("ec2")
+        .group("app-main-v001")
+        .addInstance(Instance.builder()
+            .node("i-1234567890")
+            .privateIpAddress("10.20.30.40")
+            .vpcId("vpc-54321")
+            .ami("ami-0987654321")
+            .vmtype("m5.large")
+            .zone("us-east-1d")
+            .status(Instance.Status.UNKNOWN)
+            .build())
+        .build());
+    List<ServerGroup> actual = get("eureka-unknown-status.json");
+    Assert.assertEquals(expected, actual);
+  }
+
   @Test(expected = IOException.class)
   public void failedRequest() throws Exception {
     HttpClient client = TestHttpClient.empty(400);
