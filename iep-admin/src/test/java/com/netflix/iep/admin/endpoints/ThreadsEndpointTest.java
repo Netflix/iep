@@ -23,7 +23,6 @@ import org.junit.runners.JUnit4;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.PatternSyntaxException;
 
 
 @RunWith(JUnit4.class)
@@ -71,7 +70,7 @@ public class ThreadsEndpointTest {
     Assert.assertEquals(0, infos.size());
   }
 
-  @Test(expected = PatternSyntaxException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void getWithPathBadRegex() {
     endpoint.get("(");
   }

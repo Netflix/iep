@@ -23,6 +23,7 @@ import com.netflix.spectator.api.Id;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.Tag;
 import com.netflix.spectator.api.Timer;
+import com.netflix.spectator.impl.PatternMatcher;
 import com.netflix.spectator.impl.Preconditions;
 
 import java.util.ArrayDeque;
@@ -33,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 
 /**
  * List measurements via Spectator. The path can be an Atlas query expression
@@ -380,7 +380,7 @@ public class SpectatorEndpoint implements HttpEndpoint {
           case ":reic":
             v = (String) stack.pop();
             k = (String) stack.pop();
-            stack.push(new RegexQuery(k, v, Pattern.CASE_INSENSITIVE, ":reic"));
+            stack.push(new RegexQuery(k, v, true, ":reic"));
             break;
           default:
             if (token.startsWith(":")) {
@@ -597,23 +597,24 @@ public class SpectatorEndpoint implements HttpEndpoint {
   private static class RegexQuery implements Query {
     private final String k;
     private final String v;
-    private final Pattern pattern;
+    private final PatternMatcher pattern;
     private final String name;
 
     RegexQuery(String k, String v) {
-      this(k, v, 0, ":re");
+      this(k, v, false, ":re");
     }
 
-    RegexQuery(String k, String v, int flags, String name) {
+    RegexQuery(String k, String v, boolean ignoreCase, String name) {
       this.k = Preconditions.checkNotNull(k, "k");
       this.v = Preconditions.checkNotNull(v, "v");
-      this.pattern = Pattern.compile("^" + v, flags);
+      PatternMatcher m = PatternMatcher.compile("^" + v);
+      this.pattern = ignoreCase ? m.ignoreCase() : m;
       this.name = Preconditions.checkNotNull(name, "name");
     }
 
     @Override public boolean matches(Map<String, String> tags) {
       String s = tags.get(k);
-      return s != null && pattern.matcher(s).find();
+      return s != null && pattern.matches(s);
     }
 
     @Override public String toString() {

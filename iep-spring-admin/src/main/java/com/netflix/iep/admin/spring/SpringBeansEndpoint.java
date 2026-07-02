@@ -16,6 +16,7 @@
 package com.netflix.iep.admin.spring;
 
 import com.netflix.iep.admin.HttpEndpoint;
+import com.netflix.spectator.impl.PatternMatcher;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +24,6 @@ import org.springframework.context.support.GenericApplicationContext;
 
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -42,11 +42,11 @@ public class SpringBeansEndpoint implements HttpEndpoint {
   }
 
   @Override public Object get(String path) {
-    Pattern p = Pattern.compile(path);
+    PatternMatcher p = PatternMatcher.compile(path);
     return getMappings()
         .entrySet()
         .stream()
-        .filter(e -> p.matcher(e.getKey()).find() || matches(p, e.getValue()))
+        .filter(e -> p.matches(e.getKey()) || matches(p, e.getValue()))
         .collect(Collectors.toMap(
             Map.Entry<String, Map<String, Object>>::getKey,
             Map.Entry<String, Map<String, Object>>::getValue,
@@ -55,13 +55,13 @@ public class SpringBeansEndpoint implements HttpEndpoint {
         ));
   }
 
-  private boolean matches(Pattern p, Map<String, Object> value) {
+  private boolean matches(PatternMatcher p, Map<String, Object> value) {
     return value.values().stream().anyMatch(obj -> {
       if (obj instanceof String) {
-        return p.matcher((String) obj).find();
+        return p.matches((String) obj);
       } else if (obj instanceof String[]) {
         for (String s : (String[]) obj) {
-          if (p.matcher(s).find())
+          if (p.matches(s))
             return true;
         }
         return false;

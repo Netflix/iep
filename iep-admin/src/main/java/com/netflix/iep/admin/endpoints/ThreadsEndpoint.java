@@ -16,11 +16,11 @@
 package com.netflix.iep.admin.endpoints;
 
 import com.netflix.iep.admin.HttpEndpoint;
+import com.netflix.spectator.impl.PatternMatcher;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -47,9 +47,9 @@ public class ThreadsEndpoint implements HttpEndpoint {
   }
 
   @Override public Object get(String path) {
-    Pattern p = Pattern.compile(path);
+    PatternMatcher p = PatternMatcher.compile(path);
     return threads().stream()
-        .filter(t -> p.matcher(t.getName()).find())
+        .filter(t -> p.matches(t.getName()))
         .collect(Collectors.toList());
   }
 

@@ -243,4 +243,17 @@ public class SpectatorEndpointTest {
     Assert.assertEquals(100.0, datapoints.get(0).getValue(), 1e-12);
   }
 
+  @Test(timeout = 5000)
+  public void getRegexNoCatastrophicBacktracking() {
+    // A catastrophic-backtracking pattern such as "^(a+)+$" evaluated against a long run
+    // of matching characters followed by a non-matching one would take exponential time on
+    // the java.util.regex backtracking engine, hanging the admin server. PatternMatcher
+    // evaluates it in linear time, so this completes well within the timeout.
+    Registry r = new DefaultRegistry();
+    r.counter("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!").increment();
+    SpectatorEndpoint ep = new SpectatorEndpoint(r);
+    List<Object> datapoints = toList(ep.get("name,(a+)+$,:re"));
+    Assert.assertTrue(datapoints.isEmpty());
+  }
+
 }
