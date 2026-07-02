@@ -58,7 +58,6 @@ class AtlasRegistryService extends AbstractService {
   private final Config config;
 
   private AtlasRegistry registry;
-  private GcLogger gcLogger;
 
   AtlasRegistryService(Clock clock, Config config) {
     this.clock = (clock == null) ? Clock.SYSTEM : clock;
@@ -87,9 +86,8 @@ class AtlasRegistryService extends AbstractService {
     Spectator.globalRegistry().add(registry);
 
     // Enable GC logger
-    gcLogger = new GcLogger();
     if (cfg.getBoolean("atlas.collection.gc")) {
-      gcLogger.start(null);
+      GcLogger.monitor(registry);
     }
 
     // Enable JVM data collection
@@ -99,8 +97,7 @@ class AtlasRegistryService extends AbstractService {
   }
 
   @Override protected void stopImpl() throws Exception {
-    gcLogger.stop();
-    registry.stop();
+    registry.close();
   }
 
   private static class TypesafeAtlasConfig implements AtlasConfig {

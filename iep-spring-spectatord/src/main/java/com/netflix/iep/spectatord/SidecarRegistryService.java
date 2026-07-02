@@ -50,7 +50,6 @@ class SidecarRegistryService extends AbstractService {
   private final Config config;
 
   private SidecarRegistry registry;
-  private GcLogger gcLogger;
 
   SidecarRegistryService(Config config) {
     this.config = (config == null) ? defaultConfig() : config;
@@ -77,9 +76,8 @@ class SidecarRegistryService extends AbstractService {
     Spectator.globalRegistry().add(registry);
 
     // Enable GC logger
-    gcLogger = new GcLogger();
     if (cfg.getBoolean("sidecar.collection.gc")) {
-      gcLogger.start(null);
+      GcLogger.monitor(registry);
     }
 
     // Enable JVM data collection
@@ -89,7 +87,7 @@ class SidecarRegistryService extends AbstractService {
   }
 
   @Override protected void stopImpl() throws Exception {
-    gcLogger.stop();
+    registry.close();
   }
 
   private static class TypesafeConfig implements SidecarConfig {
