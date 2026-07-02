@@ -7,7 +7,7 @@ object Dependencies {
     val jackson    = "3.1.4"
     val scala      = "2.12.20"
     val slf4j      = "2.0.18"
-    val spectator  = "1.9.7"
+    val spectator  = "1.10.1"
     val spring     = "7.0.7"
     val springBoot = "4.0.6"
   }
