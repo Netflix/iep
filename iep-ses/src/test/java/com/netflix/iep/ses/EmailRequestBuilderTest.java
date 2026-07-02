@@ -350,4 +350,83 @@ public class EmailRequestBuilderTest {
     Assert.assertEquals(buffer, bytes);
     Assert.assertEquals(buffer, string);
   }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void fromAddressHeaderInjection() {
+    new EmailRequestBuilder()
+        .withFromAddress("bob@example.com\r\nBcc: attacker@evil.com")
+        .withToAddresses(TO)
+        .withSubject("Test message")
+        .withTextBody("Body of the email message.")
+        .toString();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void toAddressHeaderInjection() {
+    new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses("andrew@example.com\r\nBcc: attacker@evil.com")
+        .withSubject("Test message")
+        .withTextBody("Body of the email message.")
+        .toString();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void fromArnHeaderInjection() {
+    new EmailRequestBuilder()
+        .withFromArn(FROM_ARN + "\r\nBcc: attacker@evil.com")
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .withSubject("Test message")
+        .withTextBody("Body of the email message.")
+        .toString();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void configSetHeaderInjection() {
+    new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .withConfigSet("prod\r\nBcc: attacker@evil.com")
+        .withSubject("Test message")
+        .withTextBody("Body of the email message.")
+        .toString();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void attachmentNameHeaderInjection() {
+    new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .withSubject("Test message")
+        .withTextBody("Body of the email message.")
+        .addAttachment(Attachment.fromByteArray(
+            "evil\r\nContent-Disposition: inline", "text/plain", new byte[] {1, 2, 3}))
+        .toString();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void attachmentContentTypeHeaderInjection() {
+    new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses(TO)
+        .withSubject("Test message")
+        .withTextBody("Body of the email message.")
+        .addAttachment(Attachment.fromByteArray(
+            "file.txt", "text/plain\r\nContent-Disposition: inline", new byte[] {1, 2, 3}))
+        .toString();
+  }
+
+  @Test
+  public void multipleRecipientsStillAllowed() {
+    // A comma-separated recipient list is legitimate and must not be rejected by the
+    // line-break guard.
+    String message = new EmailRequestBuilder()
+        .withFromAddress(FROM)
+        .withToAddresses("andrew@example.com, sue@example.com")
+        .withSubject("Test message")
+        .withTextBody("Body of the email message.")
+        .toString();
+    Assert.assertTrue(message.contains("andrew@example.com, sue@example.com"));
+  }
 }

@@ -74,6 +74,25 @@ class EmailHeader {
   }
 
   /**
+   * Reject header values that contain a CR or LF character. Such characters would let a
+   * caller-supplied value inject additional header lines or MIME parts into the raw message
+   * (header/MIME injection). Values that legitimately need to span multiple lines are folded
+   * or base64 encoded by {@link EncodingUtils} after the raw input has been checked here.
+   */
+  static String checkNoLineBreaks(String value) {
+    if (value != null) {
+      for (int i = 0; i < value.length(); ++i) {
+        char c = value.charAt(i);
+        if (c == '\r' || c == '\n') {
+          throw new IllegalArgumentException(
+              "header value cannot contain CR or LF characters: '" + value + "'");
+        }
+      }
+    }
+    return value;
+  }
+
+  /**
    * Create a new custom header instance. The values will be base64 encoded and wrapped
    * to fit email restrictions.
    */
@@ -93,17 +112,19 @@ class EmailHeader {
    * the leading {@code --}.
    */
   static EmailHeader multipart(String boundary) {
-    return new EmailHeader("Content-Type", "multipart/mixed;\r\n  boundary=\"" + boundary + "\"");
+    return new EmailHeader("Content-Type",
+        "multipart/mixed;\r\n  boundary=\"" + checkNoLineBreaks(boundary) + "\"");
   }
 
   /** Content type header for a part of the message. */
   static EmailHeader contentType(String type) {
-    return new EmailHeader("Content-Type", type);
+    return new EmailHeader("Content-Type", checkNoLineBreaks(type));
   }
 
   /** Content type header for a part of the message. */
   static EmailHeader contentType(String type, String name) {
-    return new EmailHeader("Content-Type", type + "; name=\"" + name + "\"");
+    return new EmailHeader("Content-Type",
+        checkNoLineBreaks(type) + "; name=\"" + checkNoLineBreaks(name) + "\"");
   }
 
   /**
@@ -111,12 +132,12 @@ class EmailHeader {
    * attachment or indended to be viewed inline.
    */
   static EmailHeader contentDisposition(String disposition) {
-    return new EmailHeader("Content-Disposition", disposition);
+    return new EmailHeader("Content-Disposition", checkNoLineBreaks(disposition));
   }
 
   /** Transfer encoding for the content, typically {@code base64}. */
   static EmailHeader contentTransferEncoding(String encoding) {
-    return new EmailHeader("Content-Transfer-Encoding", encoding);
+    return new EmailHeader("Content-Transfer-Encoding", checkNoLineBreaks(encoding));
   }
 
   /**
@@ -124,32 +145,35 @@ class EmailHeader {
    * then the href value would be {@code cid:content-id}.
    */
   static EmailHeader contentID(String id) {
-    return new EmailHeader("Content-ID", "<" + id + ">");
+    return new EmailHeader("Content-ID", "<" + checkNoLineBreaks(id) + ">");
   }
 
   /** Addresses to use if the user replies. */
   static EmailHeader replyTo(String addresses) {
-    return new EmailHeader("Reply-To", EncodingUtils.wrap(addresses, "Reply-To: ".length(), 78));
+    return new EmailHeader("Reply-To",
+        EncodingUtils.wrap(checkNoLineBreaks(addresses), "Reply-To: ".length(), 78));
   }
 
   /** Address of the user sending the message. */
   static EmailHeader from(String address) {
-    return new EmailHeader("From", address);
+    return new EmailHeader("From", checkNoLineBreaks(address));
   }
 
   /** Identity associated with the sending authorization policy. */
   static EmailHeader fromArn(String arn) {
-    return new EmailHeader("X-SES-FROM-ARN", arn);
+    return new EmailHeader("X-SES-FROM-ARN", checkNoLineBreaks(arn));
   }
 
   /** Addresses of the users who should receive the message. */
   static EmailHeader to(String addresses) {
-    return new EmailHeader("To", EncodingUtils.wrap(addresses, "To: ".length(), 78));
+    return new EmailHeader("To",
+        EncodingUtils.wrap(checkNoLineBreaks(addresses), "To: ".length(), 78));
   }
 
   /** Addresses of additional users who should receive the message. */
   static EmailHeader cc(String addresses) {
-    return new EmailHeader("CC", EncodingUtils.wrap(addresses, "CC: ".length(), 78));
+    return new EmailHeader("CC",
+        EncodingUtils.wrap(checkNoLineBreaks(addresses), "CC: ".length(), 78));
   }
 
   /**
@@ -157,7 +181,8 @@ class EmailHeader {
    * other recipients.
    */
   static EmailHeader bcc(String addresses) {
-    return new EmailHeader("BCC", EncodingUtils.wrap(addresses, "BCC: ".length(), 78));
+    return new EmailHeader("BCC",
+        EncodingUtils.wrap(checkNoLineBreaks(addresses), "BCC: ".length(), 78));
   }
 
   /** Subject of the message. */
@@ -167,7 +192,7 @@ class EmailHeader {
 
   /** SES configuration set header. */
   static EmailHeader configSet(String name) {
-    return new EmailHeader("X-SES-CONFIGURATION-SET", name);
+    return new EmailHeader("X-SES-CONFIGURATION-SET", checkNoLineBreaks(name));
   }
 
   private final String name;
