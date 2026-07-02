@@ -3,13 +3,13 @@ import sbt._
 object Dependencies {
   object Versions {
     val assertj    = "3.27.7"
-    val aws2       = "2.45.1"
-    val jackson    = "3.1.4"
+    val aws2       = "2.46.20"
+    val jackson    = "3.2.0"
     val scala      = "2.12.20"
     val slf4j      = "2.0.18"
     val spectator  = "1.10.1"
-    val spring     = "7.0.7"
-    val springBoot = "4.0.6"
+    val spring     = "7.0.8"
+    val springBoot = "4.1.0"
   }
 
   import Versions._
@@ -27,7 +27,7 @@ object Dependencies {
   val jacksonMapper      = "tools.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
-  val jedis              = "redis.clients" % "jedis" % "7.5.2"
+  val jedis              = "redis.clients" % "jedis" % "7.5.3"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val mockitoCore        = "org.mockito" % "mockito-core" % "5.23.0"
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
@@ -40,5 +40,5 @@ object Dependencies {
   val spectatorTagging   = "com.netflix.spectator" % "spectator-nflx-tagging" % spectator
   val springBootHealth   = "org.springframework.boot" % "spring-boot-health" % springBoot
   val springContext      = "org.springframework" % "spring-context" % spring
-  val typesafeConfig     = "com.typesafe" % "config" % "1.4.8"
+  val typesafeConfig     = "com.typesafe" % "config" % "1.4.9"
 }

@@ -27,7 +27,7 @@ import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
 import software.amazon.awssdk.http.SdkHttpConfigurationOption;
 import software.amazon.awssdk.http.SdkHttpService;
-import software.amazon.awssdk.http.apache.ApacheSdkHttpService;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionSdkHttpService;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ec2.Ec2AsyncClient;
 import software.amazon.awssdk.services.ec2.Ec2Client;
@@ -97,7 +97,7 @@ public class AwsClientFactoryTest {
   }
 
   private SdkHttpService httpService() {
-    return new ApacheSdkHttpService();
+    return new UrlConnectionSdkHttpService();
   }
 
   @Test
