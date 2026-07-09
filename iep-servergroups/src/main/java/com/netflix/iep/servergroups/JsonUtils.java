@@ -122,6 +122,19 @@ final class JsonUtils {
     return v;
   }
 
+  /** Extract a long value. */
+  static long longValue(JsonParser jp) throws IOException {
+    expect(jp, JsonToken.VALUE_NUMBER_INT);
+    long v = -1L;
+    try {
+      v = jp.getLongValue();
+    } catch (JacksonException e) {
+      LOGGER.warn("failed to parse value as long", e);
+    }
+    jp.nextToken();
+    return v;
+  }
+
   /**
    * Skip the current JSON value. For arrays and objects it will skip over all of the
    * tokens and set the position to the token after the end of the array or object.

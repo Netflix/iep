@@ -21,6 +21,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.time.Instant;
+
 @RunWith(JUnit4.class)
 public class InstanceTest {
 
@@ -100,6 +102,40 @@ public class InstanceTest {
   @Test
   public void zone() {
     Assert.assertEquals("us-east-1e", defaultInstance().getZone());
+  }
+
+  @Test
+  public void launchTimeDefaultsToNull() {
+    Assert.assertNull(defaultInstance().getLaunchTime());
+  }
+
+  @Test
+  public void launchTime() {
+    Instant t = Instant.ofEpochMilli(1544328558000L);
+    Instance instance = Instance.builder()
+        .node("i-12345")
+        .privateIpAddress("1.2.3.4")
+        .launchTime(t)
+        .status(Instance.Status.UP)
+        .build();
+    Assert.assertEquals(t, instance.getLaunchTime());
+  }
+
+  @Test
+  public void mergeFillsInLaunchTimeFromOther() {
+    Instant t = Instant.ofEpochMilli(1544328558000L);
+    Instance i1 = Instance.builder()
+        .node("i-12345")
+        .privateIpAddress("1.2.3.4")
+        .status(Instance.Status.NOT_REGISTERED)
+        .build();
+    Instance i2 = Instance.builder()
+        .node("i-12345")
+        .privateIpAddress("1.2.3.4")
+        .launchTime(t)
+        .status(Instance.Status.NOT_REGISTERED)
+        .build();
+    Assert.assertEquals(t, i1.merge(i2).getLaunchTime());
   }
 
   @Test(expected = IllegalArgumentException.class)

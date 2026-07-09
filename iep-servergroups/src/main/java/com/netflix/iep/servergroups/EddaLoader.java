@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -80,6 +81,16 @@ public class EddaLoader implements Loader {
           break;
         case "zone":
           builder.zone(JsonUtils.stringValue(jp));
+          break;
+        case "launchTime":
+          // Only set when a real value is present. A JSON null must still be consumed here;
+          // routing it through longValue would fail the VALUE_NUMBER_INT check and abort the
+          // parse mid-object, stranding the parser and wedging the enclosing decode loops.
+          if (jp.currentToken() == JsonToken.VALUE_NULL) {
+            jp.nextToken();
+          } else {
+            builder.launchTime(Instant.ofEpochMilli(JsonUtils.longValue(jp)));
+          }
           break;
         default:
           // Ignore unknown fields

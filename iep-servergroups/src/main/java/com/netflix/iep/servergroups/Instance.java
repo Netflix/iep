@@ -17,6 +17,7 @@ package com.netflix.iep.servergroups;
 
 import com.netflix.spectator.impl.Preconditions;
 
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -35,6 +36,8 @@ public final class Instance {
   private final String vmtype;
   private final String zone;
 
+  private final Instant launchTime;
+
   private final Status status;
 
   private Instance(Builder builder) {
@@ -46,6 +49,7 @@ public final class Instance {
     ami = builder.ami;
     vmtype = builder.vmtype;
     zone = builder.zone;
+    launchTime = builder.launchTime;
     status = builder.status;
   }
 
@@ -84,12 +88,24 @@ public final class Instance {
     return zone;
   }
 
+  /**
+   * Return the time the instance was launched, or {@code null} if not known. This is only
+   * populated by sources that expose it (e.g. Edda); discovery data alone does not include it.
+   */
+  public Instant getLaunchTime() {
+    return launchTime;
+  }
+
   /** Return the status in Eureka for the instance. */
   public Status getStatus() {
     return status;
   }
 
   private String orElse(String v1, String v2) {
+    return v1 == null ? v2 : v1;
+  }
+
+  private Instant orElse(Instant v1, Instant v2) {
     return v1 == null ? v2 : v1;
   }
 
@@ -110,6 +126,7 @@ public final class Instance {
         .ami(orElse(ami, other.ami))
         .vmtype(orElse(vmtype, other.vmtype))
         .zone(orElse(zone, other.zone))
+        .launchTime(orElse(launchTime, other.launchTime))
         .status(status.ordinal() > other.status.ordinal() ? status : other.status)
         .build();
   }
@@ -130,11 +147,13 @@ public final class Instance {
         Objects.equals(ami, instance.ami) &&
         Objects.equals(vmtype, instance.vmtype) &&
         Objects.equals(zone, instance.zone) &&
+        Objects.equals(launchTime, instance.launchTime) &&
         status == instance.status;
   }
 
   @Override public int hashCode() {
-    return Objects.hash(node, privateIpAddress, ipv6Address, vpcId, subnetId, ami, vmtype, zone, status);
+    return Objects.hash(
+        node, privateIpAddress, ipv6Address, vpcId, subnetId, ami, vmtype, zone, launchTime, status);
   }
 
   @Override public String toString() {
@@ -147,6 +166,7 @@ public final class Instance {
         + "ami=" + ami + ", "
         + "vmtype=" + vmtype + ", "
         + "zone=" + zone + ", "
+        + "launchTime=" + launchTime + ", "
         + "status=" + status.name()
         + ")";
   }
@@ -166,6 +186,7 @@ public final class Instance {
     private String ami;
     private String vmtype;
     private String zone;
+    private Instant launchTime;
     private Status status;
 
     private Builder() {
@@ -216,6 +237,12 @@ public final class Instance {
     /** Set the availability zone. */
     public Builder zone(String value) {
       zone = value;
+      return this;
+    }
+
+    /** Set the launch time. May be left unset for sources that do not expose it. */
+    public Builder launchTime(Instant value) {
+      launchTime = value;
       return this;
     }
 
