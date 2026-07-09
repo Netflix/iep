@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -48,6 +49,7 @@ public class EddaLoaderTest {
             .ami("ami-0987654321")
             .vmtype("m5.large")
             .zone("us-east-1d")
+            .launchTime(Instant.ofEpochMilli(1544328558000L))
             .status(Instance.Status.NOT_REGISTERED)
             .build())
         .build();
@@ -79,6 +81,7 @@ public class EddaLoaderTest {
             .ami("ami-0987654321")
             .vmtype("m5.large")
             .zone("us-east-1d")
+            .launchTime(Instant.ofEpochMilli(1544328558000L))
             .status(Instance.Status.NOT_REGISTERED)
             .build())
         .build());
@@ -114,6 +117,7 @@ public class EddaLoaderTest {
             .ami("ami-0987654321")
             .vmtype("m5.large")
             .zone("us-east-1d")
+            .launchTime(Instant.ofEpochMilli(1544328558000L))
             .status(Instance.Status.NOT_REGISTERED)
             .build())
         .build());
@@ -133,6 +137,18 @@ public class EddaLoaderTest {
         .build());
     List<ServerGroup> actual = get("edda-no-instances.json");
     Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void nullLaunchTime() throws Exception {
+    // A JSON null for launchTime must be consumed without aborting the parse. The launchTime is
+    // left unset and the remaining fields (privateIpAddress, etc.) still parse.
+    List<ServerGroup> expected = new ArrayList<>();
+    expected.add(defaultEc2Group());
+    List<ServerGroup> actual = get("edda-null-launch-time.json");
+    Assert.assertNull(actual.get(0).getInstances().get(0).getLaunchTime());
+    Assert.assertEquals(expected.get(0).getInstances().get(0).getNode(),
+        actual.get(0).getInstances().get(0).getNode());
   }
 
   @Test
