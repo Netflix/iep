@@ -167,9 +167,23 @@ public class JarBuilder {
       System.exit(1);
     }
 
-    File[] jars = new File[args.length - 2];
-    for (int i = 0; i < jars.length; ++i) {
-      jars[i] = new File(args[i + 2]);
+    List<File> jars = new ArrayList<>();
+    for (int i = 2; i < args.length; ++i) {
+      // Skip empty/blank classpath elements. These can come from a leading, trailing,
+      // or repeated separator when a classpath string is split into arguments and are
+      // never valid jars; without this an empty path fails with a confusing
+      // FileNotFoundException. The File is created from the original argument so a path
+      // with significant surrounding whitespace is preserved.
+      if (!args[i].trim().isEmpty()) {
+        jars.add(new File(args[i]));
+      }
+    }
+
+    // Fail fast if the classpath was entirely empty rather than silently producing a
+    // jar with no dependencies (which would only fail later at runtime).
+    if (jars.isEmpty()) {
+      System.err.println("Error: no jars provided in classpath arguments");
+      System.exit(1);
     }
 
     new JarBuilder()
