@@ -6,13 +6,13 @@ SBT := cat /dev/null | project/sbt
 
 build:
 	echo "Starting build"
-	$(SBT) clean test checkLicenseHeaders
+	$(SBT) clean testFull checkLicenseHeaders
 
 snapshot:
 	echo "Starting snapshot build"
 	git fetch --unshallow --tags
 	$(SBT) storeBintrayCredentials
-	$(SBT) clean test checkLicenseHeaders publish
+	$(SBT) clean testFull checkLicenseHeaders publish
 
 release:
 	# Storing the bintray credentials needs to be done as a separate command so they will
@@ -23,10 +23,10 @@ release:
 	echo "Starting release build"
 	git fetch --unshallow --tags
 	$(SBT) storeBintrayCredentials
-	$(SBT) clean test checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
+	$(SBT) clean testFull checkLicenseHeaders storeBintrayCredentials publish bintrayRelease
 
 coverage:
-	$(SBT) clean coverage test coverageReport
+	$(SBT) clean coverage testFull coverageReport
 	$(SBT) coverageAggregate
 
 format:

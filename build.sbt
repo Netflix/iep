@@ -20,7 +20,7 @@ lazy val iep = project.in(file("."))
     `iep-spring-spectatord`,
     `iep-spring-sbhealth`,
     `iep-spring-userservice`)
-  .settings(BuildSettings.noPackaging: _*)
+  .settings(BuildSettings.noPackaging*)
 
 lazy val `iep-admin` = project
   .configure(BuildSettings.profile)

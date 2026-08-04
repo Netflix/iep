@@ -53,7 +53,7 @@ object GitVersion {
     parts(parts.length - 1)
   }
 
-  lazy val settings: Seq[Def.Setting[_]] = Seq(
+  lazy val settings: Seq[Def.Setting[?]] = Seq(
     ThisBuild / version := {
       val branch = extractBranchName(git.gitCurrentBranch.value)
       val branchVersion = if (branch == "main" || branch == "master") baseVersion else branch
@@ -65,6 +65,11 @@ object GitVersion {
         case v                        => v
       }
     },
-    ThisBuild / versionScheme := Some("semver-spec")
+    ThisBuild / versionScheme := Some("semver-spec"),
+
+    // Only used at the build level to compute the version, the per-project scopes
+    // set up by sbt-git are unused and would otherwise be flagged by lintUnused.
+    Global / excludeLintKeys += git.gitDescribedVersion,
+    Global / excludeLintKeys += git.gitUncommittedChanges
   )
 }

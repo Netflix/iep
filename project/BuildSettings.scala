@@ -20,9 +20,9 @@ object BuildSettings {
   lazy val checkLicenseHeaders = taskKey[Unit]("Check the license headers for all source files.")
   lazy val formatLicenseHeaders = taskKey[Unit]("Fix the license headers for all source files.")
 
-  lazy val baseSettings: Seq[Def.Setting[_]] = GitVersion.settings
+  lazy val baseSettings: Seq[Def.Setting[?]] = GitVersion.settings
 
-  lazy val buildSettings: Seq[Def.Setting[_]] = baseSettings ++ Seq(
+  lazy val buildSettings: Seq[Def.Setting[?]] = baseSettings ++ Seq(
     organization := "com.netflix.iep",
     scalaVersion := Dependencies.Versions.scala,
     scalacOptions ++= BuildSettings.compilerFlags,
@@ -32,8 +32,15 @@ object BuildSettings {
     crossPaths := false,
     sourcesInBase := false,
     Test / fork := true,
+
+    // sbt 2 defaults this to true, which runs the test classes for a project concurrently
+    // within the forked JVM. Some tests compare snapshots of JVM state, like the set of
+    // live threads or system properties, and cannot tolerate other tests running at the
+    // same time. Restore the sbt 1 behavior of running them serially.
+    Test / testForkedParallel := false,
+
     autoScalaLibrary := false,
-    externalResolvers := BuildSettings.resolvers,
+    externalResolvers := Def.uncached(BuildSettings.resolvers),
 
     // Evictions: https://github.com/sbt/sbt/issues/1636
     // Linting: https://github.com/sbt/sbt/pull/5153
@@ -57,17 +64,15 @@ object BuildSettings {
     Resolver.mavenCentral
   )
 
-  // Don't create root.jar, from:
-  // http://stackoverflow.com/questions/20747296/producing-no-artifact-for-root-project-with-package-under-multi-project-build-in
-  lazy val noPackaging: Seq[Def.Setting[_]] = Seq(
-    Keys.`package` :=  file(""),
-    packageBin in Global :=  file(""),
-    packagedArtifacts :=  Map()
+  // Don't create or publish an artifact for the aggregate root project
+  lazy val noPackaging: Seq[Def.Setting[?]] = Seq(
+    publish / skip := true,
+    packagedArtifacts := Def.uncached(Map.empty)
   )
 
   def profile: Project => Project = p => {
     p.settings(SonatypeSettings.settings)
-      .settings(buildSettings: _*)
+      .settings(buildSettings*)
       .settings(libraryDependencies ++= commonDeps)
   }
 }

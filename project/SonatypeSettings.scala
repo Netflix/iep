@@ -1,5 +1,6 @@
 import sbt._
 import sbt.Keys._
+import sbt.librarymanagement.syntax.given
 
 object SonatypeSettings {
 
@@ -10,7 +11,7 @@ object SonatypeSettings {
   private lazy val user = get("USERNAME")
   private lazy val pass = get("PASSWORD")
 
-  lazy val settings: Seq[Def.Setting[_]] = Seq(
+  lazy val settings: Seq[Def.Setting[?]] = Seq(
     organization := "com.netflix",
     organizationName := "netflix",
     organizationHomepage := Some(url("https://github.com/Netflix")),
