@@ -3,13 +3,13 @@ import sbt._
 object Dependencies {
   object Versions {
     val assertj    = "3.27.7"
-    val aws2       = "2.50.3"
-    val jackson    = "3.2.1"
+    val aws2       = "2.54.14"
+    val jackson    = "3.2.2"
     val scala      = "2.12.20"
-    val slf4j      = "2.0.18"
-    val spectator  = "1.10.5"
-    val spring     = "7.0.8"
-    val springBoot = "4.1.0"
+    val slf4j      = "2.0.19"
+    val spectator  = "1.10.7"
+    val spring     = "7.0.9"
+    val springBoot = "4.1.1"
   }
 
   import Versions._
@@ -22,12 +22,12 @@ object Dependencies {
   val aws2STS            = "software.amazon.awssdk" % "sts" % aws2
   val aws2UrlClient      = "software.amazon.awssdk" % "url-connection-client" % aws2
   val caffeine           = "com.github.ben-manes.caffeine" % "caffeine" % "3.2.4"
-  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "4.5"
+  val equalsVerifier     = "nl.jqno.equalsverifier" % "equalsverifier" % "4.5.2"
   val jacksonCore        = "tools.jackson.core" % "jackson-core" % jackson
   val jacksonMapper      = "tools.jackson.core" % "jackson-databind" % jackson
   val jakartaAnno        = "jakarta.annotation" % "jakarta.annotation-api" % "3.0.0"
   val jakartaInject      = "jakarta.inject" % "jakarta.inject-api" % "2.0.1"
-  val jedis              = "redis.clients" % "jedis" % "7.5.3"
+  val jedis              = "redis.clients" % "jedis" % "8.0.1"
   val junitInterface     = "com.novocode" % "junit-interface" % "0.11"
   val mockitoCore        = "org.mockito" % "mockito-core" % "5.23.0"
   val slf4jApi           = "org.slf4j" % "slf4j-api" % slf4j
