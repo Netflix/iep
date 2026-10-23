@@ -14,13 +14,13 @@ object SonatypeSettings {
   lazy val settings: Seq[Def.Setting[?]] = Seq(
     organization := "com.netflix",
     organizationName := "netflix",
-    organizationHomepage := Some(url("https://github.com/Netflix")),
-    homepage := Some(url("https://github.com/Netflix/iep")),
+    organizationHomepage := Some(uri("https://github.com/Netflix")),
+    homepage := Some(uri("https://github.com/Netflix/iep")),
     description := "Insight Engineering Platform libraries",
 
     scmInfo := Some(
       ScmInfo(
-        url("https://github.com/Netflix/iep"),
+        uri("https://github.com/Netflix/iep"),
         "scm:git@github.com:Netflix/iep.git"
       )
     ),
@@ -30,14 +30,14 @@ object SonatypeSettings {
         id = "netflixgithub",
         name = "Netflix Open Source Development",
         email = "netflixoss@netflix.com",
-        url = url("https://github.com/Netflix")
+        url = uri("https://github.com/Netflix")
       )
     ),
 
     publishMavenStyle := true,
     pomIncludeRepository := { _ => false },
 
-    licenses += ("Apache 2" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt")),
+    licenses += ("Apache 2" -> uri("https://www.apache.org/licenses/LICENSE-2.0.txt")),
     credentials += Credentials("Sonatype Nexus Repository Manager", "central.sonatype.com", user, pass),
 
     publishTo := {
