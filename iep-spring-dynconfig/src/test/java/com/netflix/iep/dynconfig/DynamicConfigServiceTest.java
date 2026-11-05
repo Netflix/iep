@@ -18,6 +18,7 @@ package com.netflix.iep.dynconfig;
 import com.netflix.iep.config.ConfigManager;
 import com.netflix.iep.config.DynamicConfigManager;
 import com.netflix.spectator.api.NoopRegistry;
+import com.netflix.spectator.ipc.http.HttpClient;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.junit.Assert;
@@ -32,7 +33,8 @@ public class DynamicConfigServiceTest {
   private final DynamicConfigManager manager = ConfigManager.dynamicConfigManager();
 
   private DynamicConfigService newService() {
-    return new DynamicConfigService(new NoopRegistry(), ConfigManager.get());
+    return new DynamicConfigService(new NoopRegistry(), ConfigManager.get(),
+        HttpClient.DEFAULT_CLIENT, null);
   }
 
   @Before

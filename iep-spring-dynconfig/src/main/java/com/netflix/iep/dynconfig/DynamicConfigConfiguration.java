@@ -20,10 +20,13 @@ import com.netflix.iep.config.ConfigManager;
 import com.netflix.iep.config.DynamicConfigManager;
 import com.netflix.spectator.api.NoopRegistry;
 import com.netflix.spectator.api.Registry;
+import com.netflix.spectator.ipc.http.HttpClient;
 import com.typesafe.config.Config;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.net.ssl.SSLSocketFactory;
 import java.util.Optional;
 
 /**
@@ -47,9 +50,14 @@ public class DynamicConfigConfiguration {
   }
 
   @Bean
-  DynamicConfigService dynamicConfigService(Optional<Registry> registry, Config config) {
+  DynamicConfigService dynamicConfigService(
+      Optional<Registry> registry,
+      Config config,
+      Optional<HttpClient> client,
+      @Qualifier("iep.archaius") Optional<SSLSocketFactory> factory) {
     Registry r = registry.orElseGet(NoopRegistry::new);
-    return new DynamicConfigService(r, config);
+    HttpClient h = client.orElse(HttpClient.DEFAULT_CLIENT);
+    return new DynamicConfigService(r, config, h, factory.orElse(null));
   }
 
   @Bean

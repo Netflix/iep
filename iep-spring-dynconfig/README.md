@@ -1,7 +1,7 @@
 
 ## Description
 
-Guice module that configures [iep-nflxenv] to refresh the dynamic override layer with
+Spring configuration that configures [iep-nflxenv] to refresh the dynamic override layer with
 properties from [iep-archaius].
 
 [iep-nflxenv]: https://github.com/Netflix/iep/blob/main/iep-nflxenv/README.md
@@ -41,6 +41,25 @@ The DynamicConfigManager can also be accessed statically by calling
 `ConfigManager.dynamicConfigManager()`, however, it is not recommended because there is no
 guarantee the override layer will be loaded for the first time prior to use. This can cause
 strange behavior on start-up if the remote properties are necessary to function properly.
+
+## HTTPS Client Authentication
+
+To configure client credentials for an HTTPS property endpoint, provide an
+`SSLSocketFactory` bean qualified as `iep.archaius`:
+
+```java
+@Bean("iep.archaius")
+SSLSocketFactory dynamicConfigSslSocketFactory() {
+  return clientSslContext.getSocketFactory();
+}
+```
+
+Set `netflix.iep.archaius.url` to the HTTPS endpoint. The factory is applied to both the
+initial fetch and subsequent polls. Without this bean, polling uses the default JVM TLS
+configuration. Factories for other clients are ignored.
+
+An optional `HttpClient` bean can also be supplied; otherwise the service uses
+`HttpClient.DEFAULT_CLIENT`.
 
 ## Config Precedence
 
