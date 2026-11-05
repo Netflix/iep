@@ -21,12 +21,14 @@ import com.netflix.spectator.api.Functions;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.patterns.PolledMeter;
 import com.netflix.spectator.ipc.http.HttpClient;
+import com.netflix.spectator.ipc.http.HttpRequestBuilder;
 import com.netflix.spectator.ipc.http.HttpResponse;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLSocketFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,9 +51,12 @@ class DynamicConfigService extends AbstractService {
   private final URI uri;
   private final long pollingInterval;
   private final boolean syncInit;
+  private final HttpClient client;
+  private final SSLSocketFactory sslFactory;
   private final ScheduledExecutorService executor;
 
-  DynamicConfigService(Registry registry, Config config) {
+  DynamicConfigService(Registry registry, Config config, HttpClient client,
+      SSLSocketFactory sslFactory) {
     this.lastUpdateTime = PolledMeter.using(registry)
         .withName("iep.archaius.cacheAge")
         .monitorValue(
@@ -62,6 +67,8 @@ class DynamicConfigService extends AbstractService {
     this.uri = URI.create(config.getString("netflix.iep.archaius.url"));
     this.pollingInterval = config.getDuration("netflix.iep.archaius.polling-interval", TimeUnit.MILLISECONDS);
     this.syncInit = config.getBoolean("netflix.iep.archaius.sync-init");
+    this.client = client;
+    this.sslFactory = sslFactory;
     this.executor = Executors.newSingleThreadScheduledExecutor(r -> {
       Thread t = new Thread(r, "DynamicConfigService");
       t.setDaemon(true);
@@ -99,7 +106,11 @@ class DynamicConfigService extends AbstractService {
     try {
       LOGGER.debug("updating properties from {}", uri);
 
-      HttpResponse response = HttpClient.DEFAULT_CLIENT.get(uri).send();
+      HttpRequestBuilder builder = client.get(uri);
+      if (sslFactory != null) {
+        builder.withSSLSocketFactory(sslFactory);
+      }
+      HttpResponse response = builder.send();
 
       if (response.status() == 200) {
         try (InputStream in = new ByteArrayInputStream(response.entity())) {
