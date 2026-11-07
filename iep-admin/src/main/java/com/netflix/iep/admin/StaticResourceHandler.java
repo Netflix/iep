@@ -99,12 +99,12 @@ class StaticResourceHandler implements HttpHandler {
           }
         } catch (IOException e) {
           e.printStackTrace();
-          LOGGER.debug("failed to write resource " + resource, e);
+          LOGGER.debug("failed to write resource {}", resource, e);
         }
       }
     } catch (Exception e) {
       e.printStackTrace();
-      LOGGER.debug("failed to serve resource " + resource, e);
+      LOGGER.debug("failed to serve resource {}", resource, e);
     }
   }
 

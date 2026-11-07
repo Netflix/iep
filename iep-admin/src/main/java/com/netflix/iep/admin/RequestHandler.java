@@ -60,13 +60,13 @@ class RequestHandler implements HttpHandler {
         else
           handleImpl(exchange, obj);
       } catch (HttpException e) {
-        LOGGER.debug("request failed: " + reqPath, e);
+        LOGGER.debug("request failed: {}", reqPath, e);
         sendResponse(exchange, new ErrorMessage(e.getStatus(), e.getCause()));
       } catch (IllegalArgumentException | IllegalStateException e) {
-        LOGGER.debug("request failed: " + reqPath, e);
+        LOGGER.debug("request failed: {}", reqPath, e);
         sendResponse(exchange, new ErrorMessage(400, e));
       } catch (Exception e) {
-        LOGGER.debug("request failed: " + reqPath, e);
+        LOGGER.debug("request failed: {}", reqPath, e);
         sendResponse(exchange, new ErrorMessage(500, e));
       }
     }
